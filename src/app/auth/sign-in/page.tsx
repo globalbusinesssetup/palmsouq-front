@@ -2,9 +2,8 @@
 import React, { useState } from 'react';
 import SignInForm from './SignInForm';
 import { FaArrowLeftLong } from 'react-icons/fa6';
-import SendOtp from './SendOtp';
-import OtpVerify from './OtpVerify';
 import { useRouter } from 'next/navigation';
+import { OtpVerify, SendOtp } from '@/components';
 
 // export const metadata: Metadata = {
 //   title: 'Sign In | Printcraft',

@@ -6,6 +6,13 @@ import OtpInput from 'react-otp-input';
 const OtpVerify = ({ onVerify }: { onVerify?: () => void }) => {
   const [otp, setOtp] = useState('');
 
+  const onSubmit = (data: any) => {
+    console.log(data);
+    if (otp.length === 4) {
+      onVerify();
+    }
+  };
+
   return (
     <>
       <div className="flex flex-col items-center gap-4">
@@ -42,9 +49,11 @@ const OtpVerify = ({ onVerify }: { onVerify?: () => void }) => {
       />
       <p className="text-sm text-neutral-500 mt-4 text-center">
         Didn’t receive the code?{' '}
-        <button className="font-semibold text-primary">Resent code</button>
+        <button type={'button'} className="font-semibold text-primary">
+          Resent code
+        </button>
       </p>
-      <Button onClick={onVerify} className="mt-6">
+      <Button onClick={onSubmit} className="mt-6">
         Continue
       </Button>
     </>

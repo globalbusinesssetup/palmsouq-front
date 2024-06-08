@@ -5,13 +5,21 @@ import Link from 'next/link';
 import React, { useState } from 'react';
 import { FaArrowRightLong } from 'react-icons/fa6';
 import { IoMdLogIn } from 'react-icons/io';
+import { useForm } from 'react-hook-form';
 
 // export const metadata: Metadata = {
 //   title: 'Sign In | Printcraft',
 // };
 
 const SignInForm = ({ onSignIn }: { onSignIn?: () => void }) => {
+  const { control, handleSubmit, setValue, setError, clearErrors } = useForm();
   const [enabled, setEnabled] = useState(false);
+  const [phone, setPhone] = useState<any>();
+
+  const onFormSubmit = (data: any) => {
+    console.log(data);
+    onSignIn?.();
+  };
 
   return (
     <>
@@ -26,15 +34,20 @@ const SignInForm = ({ onSignIn }: { onSignIn?: () => void }) => {
           </p>
         </div>
       </div>
-      <div className="mt-8">
+      <form onSubmit={handleSubmit(onFormSubmit)} className="mt-8">
         <Input
+          control={control}
           label="Mobile Number"
           name="phone"
+          rules={{ required: 'mobile number is required' }}
           type="phone"
-          // placeholder="••••••••"
-          // wrapClassName="mt-4"
+          setError={setError}
+          clearErrors={clearErrors}
+          onChange={(val: any) => setPhone(val)}
         />
         <Input
+          control={control}
+          rules={{ required: 'password is required' }}
           name="password"
           label="Password"
           type="password"
@@ -53,23 +66,23 @@ const SignInForm = ({ onSignIn }: { onSignIn?: () => void }) => {
             </label>
           </div>
           <Link
-            href={'#'}
+            href={'/auth/forget-password'}
             className="text-sm font-medium text-[#9A54FC] hover:text-[#9A54FC]/60 duration-200 select-none"
           >
             Forgot Password
           </Link>
         </div>
         <div className="mt-8">
-          <Button onClick={onSignIn}>Sign in</Button>
+          <Button type="submit">Sign in</Button>
           <Link
-            href={'#'}
+            href={'/auth/register'}
             className="mt-3 text-base font-semibold text-neutral-600 hover:text-neutral-400 duration-200 w-full text-center inline-flex items-center justify-center gap-2"
           >
-            Regiter here
+            Register here
             <FaArrowRightLong />
           </Link>
         </div>
-      </div>
+      </form>
     </>
   );
 };

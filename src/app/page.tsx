@@ -1,11 +1,18 @@
-import Image from "next/image";
+'use client';
+import { CategoriesBar, Footer, Header } from '@/components';
+import { TopBar } from '@/components';
+import { Select } from '@headlessui/react';
+import Image from 'next/image';
+import Link from 'next/link';
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-24">
-      <div>
-        I am dev
-      </div>
+    <main className="min-h-screen">
+      <TopBar />
+      <Header />
+      <CategoriesBar />
+      <div className="container mx-auto h-[55vh]">I am dev</div>
+      <Footer />
     </main>
   );
 }

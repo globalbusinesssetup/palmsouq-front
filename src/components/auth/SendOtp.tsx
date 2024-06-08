@@ -1,8 +1,16 @@
 import { Button, Input } from '@/components';
 import React from 'react';
 import { BsPhone } from 'react-icons/bs';
+import { useForm } from 'react-hook-form';
 
 const SendOtp = ({ onContinue }: { onContinue?: () => void }) => {
+  const { control, handleSubmit, setError, clearErrors } = useForm();
+
+  const onFormSubmit = (data: any) => {
+    onContinue();
+    console.log(data);
+  };
+
   return (
     <>
       <div className="flex flex-col items-center gap-4">
@@ -15,12 +23,16 @@ const SendOtp = ({ onContinue }: { onContinue?: () => void }) => {
       </div>
       <Input
         label="Mobile Number"
+        control={control}
+        rules={{ required: 'mobile number is required' }}
+        setError={setError}
+        clearErrors={clearErrors}
         name="phone"
         type="phone"
         // placeholder="••••••••"
         wrapClassName="mt-8"
       />
-      <Button onClick={onContinue} className="mt-6">
+      <Button onClick={handleSubmit(onFormSubmit)} className="mt-6">
         Continue
       </Button>
     </>
