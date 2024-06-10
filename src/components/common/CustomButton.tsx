@@ -8,6 +8,7 @@ interface CustomButtonProps
   children: ReactNode;
   className?: string;
   loading?: boolean;
+  outlined?: boolean;
 }
 
 const CustomButton: React.FC<CustomButtonProps> = ({
@@ -15,6 +16,7 @@ const CustomButton: React.FC<CustomButtonProps> = ({
   children,
   className,
   loading = false,
+  outlined,
   ...rest
 }) => {
   return (
@@ -23,7 +25,11 @@ const CustomButton: React.FC<CustomButtonProps> = ({
       onClick={onClick}
       disabled={loading}
       className={twMerge(
-        `w-full py-2.5 px-2 active:scale-90 disabled:scale-100 bg-primary border border-primary/50 hover:bg-transparent hover:text-primary disabled:bg-primary disabled:text-white transition-all duration-300 rounded-lg text-white`,
+        `w-full py-2.5 px-2 active:scale-90 disabled:scale-100  disabled:bg-primary disabled:text-white transition-all duration-300 rounded-lg text-white border ${
+          outlined
+            ? 'bg-transparent border-primary text-primary hover:bg-primary hover:text-white'
+            : 'bg-primary border-primary/50 hover:bg-transparent hover:text-primary'
+        }`,
         className
       )}
     >

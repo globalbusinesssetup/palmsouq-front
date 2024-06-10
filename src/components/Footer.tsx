@@ -3,6 +3,25 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { footerLinks, paymentIcons } from '../../constants';
 
+const quickLinks = [
+  {
+    title: 'Legal Notice',
+    url: '#',
+  },
+  {
+    title: 'Terms of Use',
+    url: '#',
+  },
+  {
+    title: 'Privacy Policy',
+    url: '#',
+  },
+  {
+    title: 'Return Policy',
+    url: '#',
+  },
+];
+
 const Footer = () => {
   return (
     <footer className="bg-primary">
@@ -56,30 +75,15 @@ const Footer = () => {
             </p>
           </div>
           <nav className="space-x-6">
-            <Link
-              href={'#'}
-              className="text-base font-medium text-white underline"
-            >
-              Legal Notice
-            </Link>
-            <Link
-              href={'#'}
-              className="text-base font-medium text-white underline"
-            >
-              Terms of Use
-            </Link>
-            <Link
-              href={'#'}
-              className="text-base font-medium text-white underline"
-            >
-              Privacy Policy
-            </Link>
-            <Link
-              href={'#'}
-              className="text-base font-medium text-white underline"
-            >
-              Return Policy
-            </Link>
+            {quickLinks.map((link, i) => (
+              <Link
+                key={`quickL_${i}`}
+                href={link.url}
+                className="text-base font-medium text-white hover:text-white/65 hover:scale-90 underline transition-all duration-300"
+              >
+                {link.title}
+              </Link>
+            ))}
           </nav>
         </div>
       </div>

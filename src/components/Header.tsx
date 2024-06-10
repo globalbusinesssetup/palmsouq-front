@@ -1,14 +1,15 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import React from 'react';
+import React, { useState } from 'react';
 import { RiUserSharedLine, RiWhatsappFill } from 'react-icons/ri';
 import { useForm } from 'react-hook-form';
 import CustomInput from './common/CustomInput';
+import { IoIosArrowDown } from 'react-icons/io';
+import { FiShoppingBag, FiUser } from 'react-icons/fi';
 
 const Header = () => {
   const { control, handleSubmit } = useForm<any>();
-
-  console.log(handleSubmit);
+  const [isLogedIn, setLogIn] = useState(true);
 
   return (
     <header className="py-5 border-b">
@@ -38,17 +39,42 @@ const Header = () => {
             placeholder="Search your favorite product .."
           />
         </div>
-        <Link
-          href={'/auth/sign-in'}
-          className="py-2 px-7 flex items-center gap-x-3 border rounded-lg"
-        >
-          <RiUserSharedLine className="text-[28px] text-[#1A1E5E]" />
-
-          <div className="">
-            <p className="text-xs text-[#1A1E5E] font-light">Login</p>
-            <p className="text-sm text-[#1A1E5E] font-semibold">Register</p>
+        {isLogedIn ? (
+          <div className="flex items-center gap-x-4">
+            <div className="flex items-center gap-x-3 p-2">
+              <FiUser className="text-[28px] text-[#1A1E5E]" />
+              <div className="text-[#1A1E5E]">
+                <p className="text-xs">Hi, Yallprints</p>
+                <Link href={'#'} className="flex items-center gap-x-1">
+                  <p className="text-sm font-semibold">My Account</p>
+                  <IoIosArrowDown className="text-lg" />
+                </Link>
+              </div>
+            </div>
+            <div className="flex items-center gap-x-3 p-2">
+              <FiShoppingBag className="text-[28px] text-[#1A1E5E]" />
+              <div className="text-[#1A1E5E]">
+                <p className="text-xs">My Cart</p>
+                <Link href={'#'} className="flex items-center gap-x-1">
+                  <p className="text-sm font-semibold uppercase">0.00 AED</p>
+                  <IoIosArrowDown className="text-lg" />
+                </Link>
+              </div>
+            </div>
           </div>
-        </Link>
+        ) : (
+          <Link
+            href={'/auth/sign-in'}
+            className="py-2 px-7 flex items-center gap-x-3 border rounded-lg"
+          >
+            <RiUserSharedLine className="text-[28px] text-[#1A1E5E]" />
+
+            <div className="">
+              <p className="text-xs text-[#1A1E5E] font-light">Login</p>
+              <p className="text-sm text-[#1A1E5E] font-semibold">Register</p>
+            </div>
+          </Link>
+        )}
       </div>
     </header>
   );
