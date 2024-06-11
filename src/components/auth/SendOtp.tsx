@@ -7,7 +7,7 @@ const SendOtp = ({ onContinue }: { onContinue?: () => void }) => {
   const { control, handleSubmit, setError, clearErrors } = useForm();
 
   const onFormSubmit = (data: any) => {
-    onContinue();
+    onContinue?.();
     console.log(data);
   };
 

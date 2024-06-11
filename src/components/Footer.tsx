@@ -69,7 +69,7 @@ const Footer = () => {
         <div className="w-full h-[1px] bg-gradient-to-l to-[#FDDE5C] from-[#70DB96]" />
         <div className="flex items-center justify-between pt-4">
           <div className="flex items-end gap-x-2">
-            <Image src="/logo.svg" width={127} height={32} alt="logo" />
+            <Image src="/footer-logo.svg" width={127} height={32} alt="logo" />
             <p className="text-base text-neutral-200">
               Copywrite 2023, All right reserved.
             </p>

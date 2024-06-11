@@ -9,7 +9,7 @@ const OtpVerify = ({ onVerify }: { onVerify?: () => void }) => {
   const onSubmit = (data: any) => {
     console.log(data);
     if (otp.length === 4) {
-      onVerify();
+      onVerify?.();
     }
   };
 
