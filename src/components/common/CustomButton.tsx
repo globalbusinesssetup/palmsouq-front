@@ -17,15 +17,16 @@ const CustomButton: React.FC<CustomButtonProps> = ({
   className,
   loading = false,
   outlined,
+  disabled,
   ...rest
 }) => {
   return (
     <Button
       {...rest}
       onClick={onClick}
-      disabled={loading}
+      disabled={disabled ?? loading}
       className={twMerge(
-        `w-full py-2.5 px-2 active:scale-90 disabled:scale-100  disabled:bg-primary disabled:text-white transition-all duration-300 rounded-lg text-white border ${
+        `w-full py-2.5 px-2 active:scale-90 disabled:scale-100  disabled:bg-primary/55 disabled:border-transparent disabled:text-white transition-all duration-300 rounded-lg text-white border ${
           outlined
             ? 'bg-transparent border-primary text-primary hover:bg-primary hover:text-white'
             : 'bg-primary border-primary/50 hover:bg-transparent hover:text-primary'

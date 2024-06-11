@@ -298,7 +298,7 @@ export default function Home() {
             </div>
           </div>
           <div className="mt-6">
-            <swiper-container slides-per-view={3} space-between={16}>
+            <swiper-container slides-per-view={3} space-between={16} autoplay>
               {Array(5)
                 .fill(' ')
                 .map((_, i) => (

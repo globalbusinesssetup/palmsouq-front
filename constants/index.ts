@@ -55,6 +55,133 @@ export const categories = [
   },
 ];
 
+export const cardCategoryData = [
+  {
+    label: 'Full 4x4 Colors',
+    value: 'full-4x4-colors',
+  },
+  {
+    label: 'Matt Lamination',
+    value: 'matt-lamination',
+  },
+  {
+    label: 'Size 9 x 5.5 cm',
+    value: 'size-9-x-5.5-cm',
+  },
+  {
+    label: 'Bothside Printing',
+    value: 'bothside-printing',
+  },
+];
+export const flyerCategoryData = [
+  {
+    label: 'Full 4x4 Colors',
+    value: 'full-4x4-colors',
+  },
+  {
+    label: 'Glossy Papers',
+    value: 'glossy-papers',
+  },
+  {
+    label: 'Size : 14.85 x 21 cm',
+    value: 'Size:14.85x21cm',
+  },
+  {
+    label: 'Bothside Printing',
+    value: 'bothside-printing',
+  },
+];
+export const brochureCategoryData = [
+  {
+    label: 'Full 4x4 Colors',
+    value: 'full-4x4-colors',
+  },
+  {
+    label: 'Glossy Papers',
+    value: 'glossy-papers',
+  },
+  {
+    label: 'Size 21 x 29.7 cm',
+    value: 'size-21-x-29.7-cm',
+  },
+  {
+    label: 'Bothside Printing',
+    value: 'bothside-printing',
+  },
+];
+export const stickerCategoryData = [
+  {
+    label: 'Full 4x4 Colors',
+    value: 'full4x4colors',
+  },
+  {
+    label: 'Glossy Papers',
+    value: 'glossy-papers',
+  },
+  {
+    label: 'Size: 5 x 5 cm',
+    value: 'size:5x5cm',
+  },
+  {
+    label: 'Single Side',
+    value: 'SingleSide',
+  },
+];
+export const paperBagCategoryData = [
+  {
+    label: 'Full 4x4 Colors',
+    value: 'full-4x4-colors',
+  },
+  {
+    label: 'Glossy Papers',
+    value: 'glossy-papers',
+  },
+  {
+    label: 'Size: 29x29x10 cm',
+    value: 'size:29x29x10cm',
+  },
+  {
+    label: 'Single Side',
+    value: 'SingleSide',
+  },
+];
+export const paperCupCategoryData = [
+  {
+    label: 'Full 4x4 Colors',
+    value: 'full-4x4-colors',
+  },
+  {
+    label: 'undefined',
+    value: 'undefined',
+  },
+  {
+    label: 'undefined',
+    value: 'undefined2',
+  },
+  {
+    label: 'Single Side',
+    value: 'SingleSide',
+  },
+];
+export const billBookCategoryData = [
+  {
+    label: 'Full 1x0 Colors',
+    value: 'full-1x0-colors',
+  },
+  {
+    label: 'Matt Lamination',
+    value: 'matt-lamination',
+  },
+  {
+    label: 'Size 21 x 29.7 cm',
+    value: 'size-21-x-29.7-cm',
+  },
+  {
+    label: 'Single Side',
+    value: 'SingleSide',
+  },
+];
+
 export const cardTypes = [
   { label: 'All', value: 'all' },
   { label: 'Matt Lamination', value: 'matt-lamination' },

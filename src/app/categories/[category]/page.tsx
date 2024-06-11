@@ -1,5 +1,5 @@
 'use client';
-import { Header } from '@/components';
+import { Footer, Header, ProductCard } from '@/components';
 import { Select } from '@headlessui/react';
 import Image from 'next/image';
 import React, { useState, useEffect } from 'react';
@@ -54,39 +54,49 @@ const Category: React.FC<CategoryProps> = ({ params }) => {
   return (
     <>
       <Header />
-      <main className="container mx-auto">
-        <div className="w-full h-[200px] bg-secondary rounded-md mt-6 relative">
-          <Image src={'/temp-banner.png'} fill alt="banner" />
-        </div>
-        <div className="mt-4 py-5 px-2 flex items-center justify-between">
-          <div className="flex-1 flex items-center gap-x-3">
-            {categoryData.map((type, i) => (
-              <button
-                key={`type_${i}`}
-                onClick={() => setCat(type.value)}
-                className={`text-sm font-medium px-5 h-[34px] rounded-full transition-all duration-300 active:scale-95 ${
-                  type.value === selectedCat
-                    ? 'text-white bg-primary'
-                    : 'text-neutral-600 bg-neutral-100'
-                }`}
-              >
-                {type.label}
-              </button>
-            ))}
+      <main className="bg-[#FCFCFD]">
+        <div className="container mx-auto">
+          <div className="w-full h-[200px] bg-secondary rounded-md mt-6 relative">
+            <Image src={'/temp-banner.png'} fill alt="banner" />
           </div>
-          <div className="relative">
-            <Select className="min-w-[128px] h-10 px-6 py-1 border rounded-full bg-white text-[#344054] focus-visible:outline-none appearance-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-white/25">
-              <option value="recent">Recent</option>
-              <option value="lowest">Lowest</option>
-              <option value="highest">Highest</option>
-            </Select>
-            <FiChevronDown
-              className="group pointer-events-none absolute top-2.5 right-2.5 text-[22px] text-[#344054]"
-              aria-hidden="true"
-            />
+          <div className="mt-4 py-5 px-2 flex items-center justify-between">
+            <div className="flex-1 flex items-center gap-x-3">
+              {categoryData.map((type, i) => (
+                <button
+                  key={`type_${i}`}
+                  onClick={() => setCat(type.value)}
+                  className={`text-sm font-medium px-5 h-[34px] rounded-full transition-all duration-300 active:scale-95 ${
+                    type.value === selectedCat
+                      ? 'text-white bg-primary'
+                      : 'text-neutral-600 bg-neutral-100'
+                  }`}
+                >
+                  {type.label}
+                </button>
+              ))}
+            </div>
+            <div className="relative">
+              <Select className="min-w-[128px] h-10 px-6 py-1 border rounded-full bg-white text-[#344054] focus-visible:outline-none appearance-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-white/25">
+                <option value="recent">Recent</option>
+                <option value="lowest">Lowest</option>
+                <option value="highest">Highest</option>
+              </Select>
+              <FiChevronDown
+                className="group pointer-events-none absolute top-2.5 right-2.5 text-[22px] text-[#344054]"
+                aria-hidden="true"
+              />
+            </div>
+          </div>
+          <div className="grid grid-cols-4 gap-x-4 gap-y-6 pt-4 pb-10">
+            {Array(8)
+              .fill(' ')
+              .map((product, i) => (
+                <ProductCard key={`product_${i}`} />
+              ))}
           </div>
         </div>
       </main>
+      <Footer />
     </>
   );
 };

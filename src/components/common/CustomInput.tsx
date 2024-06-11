@@ -52,7 +52,7 @@ const CustomInput = ({
   setError,
   clearErrors,
   ...rest
-}: Iprops) => {
+}: IProps) => {
   const {
     field,
     fieldState: { error },

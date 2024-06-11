@@ -16,7 +16,10 @@ const ProductCard = () => {
       </div>
       <div className="mt-2 py-2.5">
         <p className="text-xs text-success">Product name</p>
-        <Link href={'#'} className="mt-1 flex items-center justify-between">
+        <Link
+          href={'/categories/stickers/123'}
+          className="mt-1 flex items-center justify-between"
+        >
           <h5 className="text-sm font-bold text-neutral-800">
             Product Title goes here
           </h5>
