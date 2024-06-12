@@ -1,17 +1,10 @@
 'use client';
-import { Button, FileAttach, Footer, Header } from '@/components';
+import { Button, FileAttach, Footer, Header, Modal } from '@/components';
 import React, { useState, useRef } from 'react';
 import { IoCheckmark } from 'react-icons/io5';
 import { FiEdit, FiEye, FiTrash2, FiUpload } from 'react-icons/fi';
 import { FileDrop } from 'react-file-drop';
 import { formatFileSize } from '@/utils/helper';
-import {
-  Dialog,
-  DialogPanel,
-  DialogTitle,
-  Transition,
-  TransitionChild,
-} from '@headlessui/react';
 import { IoMdClose } from 'react-icons/io';
 import Image from 'next/image';
 import { BsHandbag } from 'react-icons/bs';
@@ -43,7 +36,7 @@ const Checkout = () => {
   const fileInputRef = useRef<any>(null);
   const [selected, setSelected] = useState('upload-file');
   const [uploadedFiles, setFiles] = useState<File[]>([]);
-  const [isPreviewOpen, setPreviewOpen] = useState(false);
+  const [isFilePreviewOpen, setFilePreviewOpen] = useState(false);
   const [isConfirmationOpen, setConfirmationOpen] = useState(false);
 
   const onTargetClick = () => {
@@ -147,7 +140,7 @@ const Checkout = () => {
                     </div>
                     <div className="flex items-center gap-x-4">
                       <button
-                        onClick={() => setPreviewOpen(true)}
+                        onClick={() => setFilePreviewOpen(true)}
                         className="size-10 rounded-full transition-all duration-300 hover:scale-95 bg-neutral-50 hover:bg-neutral-200 flex items-center justify-center"
                       >
                         <FiEye className="text-2xl text-neutral-500" />
@@ -252,182 +245,136 @@ const Checkout = () => {
         type="file"
         className="hidden"
       />
-      <Transition appear show={isPreviewOpen}>
-        <Dialog
-          as="div"
-          open={isPreviewOpen}
-          onClose={() => setPreviewOpen(false)}
-          className="relative z-50"
-        >
-          <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
-            <div className="flex min-h-full items-center justify-center p-4">
-              <TransitionChild
-                enter="ease-out duration-300"
-                enterFrom="opacity-0 transform-[scale(95%)]"
-                enterTo="opacity-100 transform-[scale(100%)]"
-                leave="ease-in duration-200"
-                leaveFrom="opacity-100 transform-[scale(100%)]"
-                leaveTo="opacity-0 transform-[scale(95%)]"
-              >
-                <DialogPanel className="w-full max-w-[600px] rounded-xl bg-white/5 backdrop-blur-2xl shadow-xl overflow-hidden bg-white">
-                  <div className="flex items-center justify-between bg-primary px-6 py-3">
-                    <p className="text-white text-sm font-bold">File Preview</p>
-                    <button onClick={() => setPreviewOpen(false)}>
-                      <IoMdClose className="text-2xl text-white" />
-                    </button>
+      <Modal
+        show={isFilePreviewOpen}
+        panelClassName="p-0"
+        onClose={() => setFilePreviewOpen(false)}
+      >
+        <div className="flex items-center justify-between bg-primary px-6 py-3">
+          <p className="text-white text-sm font-bold">File Preview</p>
+          <button onClick={() => setFilePreviewOpen(false)}>
+            <IoMdClose className="text-2xl text-white" />
+          </button>
+        </div>
+        <div className="p-4 bg-white">
+          <div className="w-full h-[624px] relative">
+            <Image
+              src={'/temp-banner.png'}
+              className="object-cover"
+              fill
+              alt="preview"
+            />
+          </div>
+        </div>
+      </Modal>
+      <Modal
+        show={isConfirmationOpen}
+        onClose={() => setConfirmationOpen(false)}
+      >
+        <div className="flex items-center justify-between pb-4">
+          <p className="text-black text-sm font-bold">Confirmation</p>
+          <button onClick={() => setConfirmationOpen(false)}>
+            <IoMdClose className="text-2xl" />
+          </button>
+        </div>
+        <div className="flex items-start gap-x-4">
+          <div className="w-full flex-1 border border-neutral-300 bg-white rounded-xl overflow-hidden">
+            <div className="px-5">
+              <div className="flex items-center py-4 border-b border-[#E6E6E6]">
+                <div className="flex-1">
+                  <p className="text-xs font-medium text-success">
+                    Business Card
+                  </p>
+                  <h4 className="text-black font-semibold">
+                    350 Gsm Matt Lamination
+                  </h4>
+                </div>
+                <button>
+                  <FiEdit className="text-xl leading-none text-[#667085]" />
+                </button>
+              </div>
+              <div className="space-y-[18px] pt-6 pb-8">
+                {checkoutData.map((data, i) => (
+                  <div
+                    key={`data_${i}`}
+                    className="flex items-center justify-between"
+                  >
+                    <p className="text-sm font-medium text-neutral-400">
+                      {data.title}
+                    </p>
+                    <p className="text-sm font-medium text-neutral-600">
+                      {data.value}
+                    </p>
                   </div>
-                  <div className="p-4 bg-white">
-                    <div className="w-full h-[624px] relative">
-                      <Image
-                        src={'/temp-banner.png'}
-                        className="object-cover"
-                        fill
-                        alt="preview"
-                      />
-                    </div>
-                  </div>
-                </DialogPanel>
-              </TransitionChild>
+                ))}
+              </div>
+            </div>
+            <div className="py-3.5 px-6 bg-neutral-50 flex items-center justify-between">
+              <p className="text-sm font-bold text-neutral-800">
+                Total (Exc. Vat)
+              </p>
+              <p className="text-lg font-bold text-primary">150.00 AED</p>
             </div>
           </div>
-        </Dialog>
-      </Transition>
-      <Transition appear show={isConfirmationOpen}>
-        <Dialog
-          as="div"
-          open={isConfirmationOpen}
-          onClose={() => setConfirmationOpen(false)}
-          className="relative z-50"
-        >
-          <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
-            <div className="flex min-h-full items-center justify-center p-4">
-              <TransitionChild
-                enter="ease-out duration-300"
-                enterFrom="opacity-0 transform-[scale(95%)]"
-                enterTo="opacity-100 transform-[scale(100%)]"
-                leave="ease-in duration-200"
-                leaveFrom="opacity-100 transform-[scale(100%)]"
-                leaveTo="opacity-0 transform-[scale(95%)]"
-              >
-                <DialogPanel className="w-full max-w-[800px] p-4 rounded-xl bg-white/5 backdrop-blur-2xl shadow-xl overflow-hidden bg-white">
-                  <div className="flex items-center justify-between pb-4">
-                    <p className="text-black text-sm font-bold">Confirmation</p>
-                    <button onClick={() => setConfirmationOpen(false)}>
-                      <IoMdClose className="text-2xl" />
-                    </button>
-                  </div>
-                  <div className="flex items-start gap-x-4">
-                    <div className="w-full flex-1 border border-neutral-300 bg-white rounded-xl overflow-hidden">
-                      <div className="px-5">
-                        <div className="flex items-center py-4 border-b border-[#E6E6E6]">
-                          <div className="flex-1">
-                            <p className="text-xs font-medium text-success">
-                              Business Card
-                            </p>
-                            <h4 className="text-black font-semibold">
-                              350 Gsm Matt Lamination
-                            </h4>
-                          </div>
-                          <button>
-                            <FiEdit className="text-xl leading-none text-[#667085]" />
-                          </button>
+          <div className="w-[54%] bg-white">
+            <div className="border rounded-lg border-neutral-200 px-6 pt-4 pb-7">
+              <h5 className="text-black font-semibold">File Preview</h5>
+              <div className="mt-2">
+                {uploadedFiles.length > 0 &&
+                  uploadedFiles.map((file, i) => (
+                    <div
+                      key={`file_${i}`}
+                      className="bg-white rounded-lg pt-4 border-neutral-300 flex items-center justify-between"
+                    >
+                      <div className="flex items-center gap-x-4">
+                        <div className="size-10 rounded-full flex items-center justify-center bg-neutral-700">
+                          <FileAttach />
                         </div>
-                        <div className="space-y-[18px] pt-6 pb-8">
-                          {checkoutData.map((data, i) => (
-                            <div
-                              key={`data_${i}`}
-                              className="flex items-center justify-between"
-                            >
-                              <p className="text-sm font-medium text-neutral-400">
-                                {data.title}
-                              </p>
-                              <p className="text-sm font-medium text-neutral-600">
-                                {data.value}
-                              </p>
-                            </div>
-                          ))}
+                        <div className="flex-1">
+                          <p className="text-[#111827] text-sm">{file.name}</p>
+                          <p className="text-xs text-[#6B7280] mt-1">
+                            {formatFileSize(file.size)}
+                          </p>
                         </div>
                       </div>
-                      <div className="py-3.5 px-6 bg-neutral-50 flex items-center justify-between">
-                        <p className="text-sm font-bold text-neutral-800">
-                          Total (Exc. Vat)
-                        </p>
-                        <p className="text-lg font-bold text-primary">
-                          150.00 AED
-                        </p>
+                      <div className="flex items-center gap-x-4">
+                        <button
+                          onClick={() => setFilePreviewOpen(true)}
+                          className="size-10 rounded-lg transition-all duration-300 hover:scale-95 bg-neutral-50 hover:bg-neutral-200 flex items-center justify-center"
+                        >
+                          <FiEye className="text-xl text-neutral-500" />
+                        </button>
                       </div>
                     </div>
-                    <div className="w-[54%] bg-white">
-                      <div className="border rounded-lg border-neutral-200 px-6 pt-4 pb-7">
-                        <h5 className="text-black font-semibold">
-                          File Preview
-                        </h5>
-                        <div className="mt-2">
-                          {uploadedFiles.length > 0 &&
-                            uploadedFiles.map((file, i) => (
-                              <div
-                                key={`file_${i}`}
-                                className="bg-white rounded-lg pt-4 border-neutral-300 flex items-center justify-between"
-                              >
-                                <div className="flex items-center gap-x-4">
-                                  <div className="size-10 rounded-full flex items-center justify-center bg-neutral-700">
-                                    <FileAttach />
-                                  </div>
-                                  <div className="flex-1">
-                                    <p className="text-[#111827] text-sm">
-                                      {file.name}
-                                    </p>
-                                    <p className="text-xs text-[#6B7280] mt-1">
-                                      {formatFileSize(file.size)}
-                                    </p>
-                                  </div>
-                                </div>
-                                <div className="flex items-center gap-x-4">
-                                  <button
-                                    onClick={() => setPreviewOpen(true)}
-                                    className="size-10 rounded-lg transition-all duration-300 hover:scale-95 bg-neutral-50 hover:bg-neutral-200 flex items-center justify-center"
-                                  >
-                                    <FiEye className="text-2xl text-neutral-500" />
-                                  </button>
-                                </div>
-                              </div>
-                            ))}
-                        </div>
-                      </div>
-                      <div className="p-4 border border-neutral-200 rounded-lg bg-neutral-50 mt-4">
-                        <div className="flex items-center justify-between">
-                          <h6 className="text-sm font-bold text-neutral-800">
-                            Total (Exc. Vat)
-                          </h6>
-                          <h4 className="text-xl font-bold text-primary">
-                            150.00 AED
-                          </h4>
-                        </div>
-                        <div className="flex items-center gap-x-3 mt-4">
-                          <Button
-                            outlined
-                            className="w-[138px] text-sm flex gap-x-2 items-center justify-center"
-                          >
-                            <BsHandbag className="text-base" />
-                            Add to Card
-                          </Button>
-                          <Button
-                            onClick={() => setConfirmationOpen(false)}
-                            className="h-11 flex-1 flex gap-x-2 items-center justify-center text-sm"
-                          >
-                            <IoCheckmark className="text-base" /> Proceed to
-                            Checkout
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </DialogPanel>
-              </TransitionChild>
+                  ))}
+              </div>
+            </div>
+            <div className="p-4 border border-neutral-200 rounded-lg bg-neutral-50 mt-4">
+              <div className="flex items-center justify-between">
+                <h6 className="text-sm font-bold text-neutral-800">
+                  Total (Exc. Vat)
+                </h6>
+                <h4 className="text-xl font-bold text-primary">150.00 AED</h4>
+              </div>
+              <div className="flex items-center gap-x-3 mt-4">
+                <Button
+                  outlined
+                  className="w-[138px] text-sm flex gap-x-2 items-center justify-center"
+                >
+                  <BsHandbag className="text-base" />
+                  Add to Card
+                </Button>
+                <Button
+                  onClick={() => setConfirmationOpen(false)}
+                  className="h-11 flex-1 flex gap-x-2 items-center justify-center text-sm"
+                >
+                  <IoCheckmark className="text-base" /> Proceed to Checkout
+                </Button>
+              </div>
             </div>
           </div>
-        </Dialog>
-      </Transition>
+        </div>
+      </Modal>
     </>
   );
 };

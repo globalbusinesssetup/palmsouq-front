@@ -1,3 +1,4 @@
+'use client';
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { useState } from 'react';
@@ -7,8 +8,14 @@ import CustomInput from './common/CustomInput';
 import { IoIosArrowDown } from 'react-icons/io';
 import { FiShoppingBag, FiUser } from 'react-icons/fi';
 
-const Header = () => {
-  const { control, handleSubmit } = useForm<any>();
+const Header = ({
+  showSearch = false,
+  onChange,
+}: {
+  showSearch?: boolean;
+  onChange?: (val: any) => void;
+}) => {
+  const { control } = useForm<any>();
   const [isLogedIn, setLogIn] = useState(true);
 
   return (
@@ -30,15 +37,18 @@ const Header = () => {
             </div>
           </div>
         </div>
-        <div className="flex-1">
-          <CustomInput
-            control={control}
-            wrapClassName="w-full"
-            type="search"
-            name={'search'}
-            placeholder="Search your favorite product .."
-          />
-        </div>
+        {showSearch && (
+          <div className="flex-1">
+            <CustomInput
+              control={control}
+              onChange={onChange}
+              wrapClassName="w-full"
+              type="search"
+              name={'search'}
+              placeholder="Search your favorite product .."
+            />
+          </div>
+        )}
         {isLogedIn ? (
           <div className="flex items-center gap-x-4">
             <div className="flex items-center gap-x-3 p-2">

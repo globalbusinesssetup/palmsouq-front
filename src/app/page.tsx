@@ -54,11 +54,12 @@ export default function Home() {
       <CategoriesBar />
       <div className="container mx-auto min-h-[55vh] mt-10 pb-7">
         <section className="flex space-x-4">
-          <div className="w-7/12 h-[304px] overflow-hidden">
+          <div className="w-7/12 h-[304px] rounded-[10px] overflow-hidden">
             <swiper-container
               className="w-full"
               pagination="true"
               navigation="true"
+              space-between={10}
               autoplay
             >
               {Array(3)

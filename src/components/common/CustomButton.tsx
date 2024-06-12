@@ -26,10 +26,10 @@ const CustomButton: React.FC<CustomButtonProps> = ({
       onClick={onClick}
       disabled={disabled ?? loading}
       className={twMerge(
-        `w-full py-2.5 px-2 active:scale-90 disabled:scale-100  disabled:bg-primary/55 disabled:border-transparent disabled:text-white transition-all duration-300 rounded-lg text-white border ${
+        `w-full py-2.5 px-2 active:scale-90 disabled:scale-100 transition-all duration-300 rounded-lg text-white border ${
           outlined
-            ? 'bg-transparent border-primary text-primary hover:bg-primary hover:text-white'
-            : 'bg-primary border-primary/50 hover:bg-transparent hover:text-primary'
+            ? 'bg-transparent border-primary text-primary hover:bg-primary disabled:hover:bg-transparent hover:text-white disabled:hover:text-primary disabled:opacity-35'
+            : 'bg-primary border-primary/50 hover:bg-transparent hover:text-primary disabled:border-transparent disabled:bg-primary/55 disabled:text-white'
         }`,
         className
       )}
