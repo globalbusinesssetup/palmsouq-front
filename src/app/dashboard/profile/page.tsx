@@ -189,7 +189,6 @@ const Profile = () => {
               name="new_email"
               label="Email Address *"
               placeholder="example@email.com"
-              type="email"
               rules={{
                 required: 'Email Address is required',
                 pattern: {

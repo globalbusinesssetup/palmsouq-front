@@ -213,7 +213,7 @@ const CustomInput = ({
         />
       )}
       <p
-        className={`text-red-500 text-xs mt-0.5 ml-0.5 ${
+        className={`text-red-500 text-xs mt-0.5 ml-0.5 min-h-4 ${
           error ? 'visible' : 'invisible'
         }`}
       >

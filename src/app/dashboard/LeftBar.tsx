@@ -93,8 +93,8 @@ const LeftBar = () => {
             />
           ))}
         </div>
-        <div className="pt-10">
-          <p className="text-base font-medium text-neutral-400 pb-3 pl-8">
+        <div className="pt-10 space-y-1">
+          <p className="text-base font-medium text-neutral-400 pb-2 pl-8">
             Account Setting&apos;s
           </p>
           {settingLinks.map((link, i) => (
