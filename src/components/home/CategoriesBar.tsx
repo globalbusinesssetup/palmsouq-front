@@ -3,7 +3,7 @@ import Link from 'next/link';
 import React from 'react';
 import { HiArrowNarrowRight, HiOutlineMenuAlt2 } from 'react-icons/hi';
 import { IoChevronDown } from 'react-icons/io5';
-import { categories, topBarCategories } from '../../../constants';
+import { categories, topBarCategories } from '@/constants';
 const CategoriesBar = () => {
   return (
     <div className="py-2 border-b">

@@ -1,7 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { footerLinks, paymentIcons } from '../../constants';
+import { footerLinks, paymentIcons } from '@/constants';
 
 const quickLinks = [
   {

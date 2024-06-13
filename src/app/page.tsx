@@ -10,7 +10,7 @@ import { TopBar } from '@/components';
 import Image from 'next/image';
 import Link from 'next/link';
 import { FaArrowRightLong } from 'react-icons/fa6';
-import { categories, features, orderSteps } from '../../constants';
+import { categories, features, orderSteps } from '@/constants';
 import { HiArrowLeft, HiArrowRight, HiOutlineMail } from 'react-icons/hi';
 import { GrLocation } from 'react-icons/gr';
 import { IoCallOutline } from 'react-icons/io5';

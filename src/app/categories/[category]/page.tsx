@@ -12,7 +12,7 @@ import {
   paperBagsTyps,
   paperCupsTypes,
   stickersTypes,
-} from '../../../../constants';
+} from '@/constants';
 import { useRouter } from 'next/navigation';
 
 interface CategoryProps {

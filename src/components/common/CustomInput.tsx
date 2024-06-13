@@ -13,12 +13,12 @@ import {
   useFormContext,
 } from 'react-hook-form';
 
-type inputType = 'password' | 'phone' | 'file' | 'search';
+type InputType = 'password' | 'phone' | 'file' | 'search';
 
 interface BaseProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   name: string;
-  type?: inputType;
+  type?: InputType;
   placeholder?: string;
   wrapClassName?: string;
   className?: string;
@@ -29,12 +29,12 @@ interface BaseProps extends React.InputHTMLAttributes<HTMLInputElement> {
 
 interface PhoneProps extends BaseProps {
   type: 'phone';
-  setError: any;
+  // setError?: any;
   clearErrors: any;
 }
 
 interface NonPhoneProps extends BaseProps {
-  type?: Exclude<inputType, 'phone'>;
+  type?: Omit<InputType, 'phone'>;
 }
 
 type IProps = PhoneProps | NonPhoneProps;
@@ -49,7 +49,7 @@ const CustomInput = ({
   rules,
   control,
   onChange,
-  setError,
+  // setError,
   clearErrors,
   ...rest
 }: IProps) => {
@@ -71,24 +71,24 @@ const CustomInput = ({
 
     // Validate phone number
     try {
-      const phoneNumber = parsePhoneNumber(phone, 'AE'); // Set a default country code
-      setIsValid(isValidPhoneNumber(phoneNumber.number));
+      const phoneNumber = parsePhoneNumber(phone, 'AE'); 
       const valid = isValidPhoneNumber(phoneNumber.number);
       setIsValid(valid);
       if (!valid) {
-        setError(name, {
-          type: 'validation',
-          message: 'Please input a valid number',
-        });
+        // setError(name, {
+        //   type: 'validation',
+        //   message: 'Please input a valid number',
+        // });
+        console.log("Valid")
       } else {
         clearErrors(name); // Clear errors if the phone number is valid
       }
     } catch (error) {
       setIsValid(false);
-      setError(name, {
-        type: 'validation',
-        message: 'Please input a valid number',
-      });
+      // setError(name, {
+      //   type: 'validation',
+      //   message: 'Please input a valid number',
+      // });
       console.log('Phone number validation error:', error);
     }
   };
