@@ -1,5 +1,5 @@
 'use client';
-import { Input, Button, CheckBox } from '@/components';
+import { Input, InputPhoneNumber, Button, CheckBox } from '@/components';
 import { Metadata } from 'next';
 import Link from 'next/link';
 import React, { useState } from 'react';
@@ -35,13 +35,12 @@ const SignInForm = ({ onSignIn }: { onSignIn?: () => void }) => {
         </div>
       </div>
       <form onSubmit={handleSubmit(onFormSubmit)} className="mt-8">
-        <Input
+        <InputPhoneNumber
           control={control}
           label="Mobile Number"
           name="phone"
           rules={{ required: 'mobile number is required' }}
-          type="phone"
-          setError={setError}
+          // setError={setError}
           clearErrors={clearErrors}
           onChange={(val: any) => setPhone(val)}
         />

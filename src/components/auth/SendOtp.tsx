@@ -1,4 +1,4 @@
-import { Button, Input } from '@/components';
+import { Button, InputPhoneNumber } from '@/components';
 import React from 'react';
 import { BsPhone } from 'react-icons/bs';
 import { useForm } from 'react-hook-form';
@@ -28,14 +28,13 @@ const SendOtp = ({
             `Please enter your mobile number for your new yallaprints account.`}
         </p>
       </div>
-      <Input
+      <InputPhoneNumber
         label="Mobile Number"
         control={control}
         rules={{ required: 'mobile number is required' }}
-        setError={setError}
+        // setError={setError}
         clearErrors={clearErrors}
         name="phone"
-        type="phone"
         // placeholder="••••••••"
         wrapClassName="mt-8"
       />

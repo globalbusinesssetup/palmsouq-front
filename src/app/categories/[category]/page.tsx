@@ -12,14 +12,14 @@ import {
   paperBagsTyps,
   paperCupsTypes,
   stickersTypes,
-} from '../../../../constants';
+} from '@/constants';
 import { useRouter } from 'next/navigation';
 
-interface CategoryProps {
+type CategoryProps = {
   params: {
     category: string;
   };
-}
+};
 
 const Category: React.FC<CategoryProps> = ({ params }) => {
   const router = useRouter();

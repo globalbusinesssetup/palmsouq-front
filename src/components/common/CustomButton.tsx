@@ -3,15 +3,14 @@ import React, { ReactNode } from 'react';
 import { FiLoader } from 'react-icons/fi';
 import { twMerge } from 'tailwind-merge';
 
-interface CustomButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+type CustomButtonProps = {
   children: ReactNode;
   className?: string;
   loading?: boolean;
   outlined?: boolean;
-}
+};
 
-const CustomButton: React.FC<CustomButtonProps> = ({
+const CustomButton = ({
   onClick,
   children,
   className,
@@ -19,7 +18,7 @@ const CustomButton: React.FC<CustomButtonProps> = ({
   outlined,
   disabled,
   ...rest
-}) => {
+}: CustomButtonProps & React.ButtonHTMLAttributes<HTMLButtonElement>) => {
   return (
     <Button
       {...rest}

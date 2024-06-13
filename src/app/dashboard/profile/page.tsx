@@ -3,7 +3,14 @@ import Image from 'next/image';
 import React, { useState, useRef } from 'react';
 import { avatar } from '../LeftBar';
 import { useForm } from 'react-hook-form';
-import { Input, Modal, SendOtp, OtpVerify, Button } from '@/components';
+import {
+  Input,
+  InputPhoneNumber,
+  Modal,
+  SendOtp,
+  OtpVerify,
+  Button,
+} from '@/components';
 import { BiEnvelope } from 'react-icons/bi';
 
 type FormInputs = {
@@ -51,7 +58,7 @@ const Profile = () => {
   };
 
   return (
-    <div className="px-8 pt-6 pb-10 border border-neutral-200 rounded-xl">
+    <div className="px-8 pt-6 pb-10 bg-white border border-neutral-200 rounded-xl">
       <h5 className="text-lg font-semibold text-neutral-900">Profile</h5>
       <div className="mt-3 flex items-end gap-x-[18px]">
         <div className="">
@@ -107,14 +114,13 @@ const Profile = () => {
           />
         </div>
         <div className="flex items-end gap-x-1.5 mt-7">
-          <Input
+          <InputPhoneNumber
             disabled
             control={control}
             defaultValue={25493854}
-            type="phone"
             name="phone"
             label="Mobile number"
-            setError={setError}
+            // setError={setError}
             clearErrors={clearErrors}
             wrapClassName="flex-1"
           />

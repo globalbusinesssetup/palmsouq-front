@@ -10,7 +10,7 @@ import { TopBar } from '@/components';
 import Image from 'next/image';
 import Link from 'next/link';
 import { FaArrowRightLong } from 'react-icons/fa6';
-import { categories, features, orderSteps } from '../../constants';
+import { categories, features, orderSteps } from '@/constants';
 import { HiArrowLeft, HiArrowRight, HiOutlineMail } from 'react-icons/hi';
 import { GrLocation } from 'react-icons/gr';
 import { IoCallOutline } from 'react-icons/io5';
@@ -55,7 +55,7 @@ export default function Home() {
       <div className="container mx-auto min-h-[55vh] mt-10 pb-7">
         <section className="flex space-x-4">
           <div className="w-7/12 h-[304px] rounded-[10px] overflow-hidden">
-            <swiper-container
+            {/* <swiper-container
               className="w-full"
               pagination="true"
               navigation="true"
@@ -71,7 +71,7 @@ export default function Home() {
                     </div>
                   </swiper-slide>
                 ))}
-            </swiper-container>
+            </swiper-container> */}
           </div>
           <div className="w-5/12 h-[304px] relative overflow-hidden rounded-[10px]">
             <Image src={'/banners/weekly-offer.jpeg'} fill alt={'banner'} />
@@ -93,7 +93,7 @@ export default function Home() {
             </div>
           </div>
           <div className="mt-5">
-            <swiper-container slides-per-view="7" space-between={16}>
+            {/* <swiper-container slides-per-view="7" space-between={16}>
               {categories.map((cat, i) => (
                 <swiper-slide key={`cat_${i}`} className="">
                   <div className="rounded-lg bg-[#F5F5F7] min-w-[155px] flex-1 pt-4">
@@ -109,7 +109,7 @@ export default function Home() {
                   </div>
                 </swiper-slide>
               ))}
-            </swiper-container>
+            </swiper-container> */}
           </div>
         </section>
         <section className="flex items-center gap-x-4 mt-8">
@@ -299,7 +299,7 @@ export default function Home() {
             </div>
           </div>
           <div className="mt-6">
-            <swiper-container slides-per-view={3} space-between={16} autoplay>
+            {/* <swiper-container slides-per-view={3} space-between={16} autoplay>
               {Array(5)
                 .fill(' ')
                 .map((_, i) => (
@@ -326,7 +326,7 @@ export default function Home() {
                     </div>
                   </swiper-slide>
                 ))}
-            </swiper-container>
+            </swiper-container> */}
           </div>
         </section>
         {/* industry banner  */}

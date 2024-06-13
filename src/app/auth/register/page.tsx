@@ -42,7 +42,7 @@ const Register = () => {
               {accountTypes.map((account) => (
                 <Field
                   key={account.value}
-                  className={`flex-1 flex items-center gap-2 p-4 border rounded-lg transition-all duration-300 ${
+                  className={`flex-1 flex items-center gap-2 p-4 border rounded-lg transition-all duration-300 cursor-pointer ${
                     selectedType === account.value
                       ? 'bg-neutral-50 border-[#9B9DFD]'
                       : ''

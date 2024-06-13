@@ -3,7 +3,7 @@ import { Button, Header } from '@/components';
 import Image from 'next/image';
 import React, { useState } from 'react';
 import { FiMinus, FiPlus } from 'react-icons/fi';
-import { features, cardCategoryData } from '../../../../../constants';
+import { features, cardCategoryData } from '@/constants';
 import {
   Disclosure,
   DisclosureButton,
@@ -11,12 +11,12 @@ import {
 } from '@headlessui/react';
 import { FaAngleDown } from 'react-icons/fa6';
 
-interface CategoryProps {
+type CategoryProps = {
   params: {
     category: string;
     id: string | number;
   };
-}
+};
 
 const packages = [
   {
