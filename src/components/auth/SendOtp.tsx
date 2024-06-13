@@ -3,7 +3,13 @@ import React from 'react';
 import { BsPhone } from 'react-icons/bs';
 import { useForm } from 'react-hook-form';
 
-const SendOtp = ({ onContinue }: { onContinue?: () => void }) => {
+const SendOtp = ({
+  onContinue,
+  description,
+}: {
+  onContinue?: () => void;
+  description?: string;
+}) => {
   const { control, handleSubmit, setError, clearErrors } = useForm();
 
   const onFormSubmit = (data: any) => {
@@ -18,7 +24,8 @@ const SendOtp = ({ onContinue }: { onContinue?: () => void }) => {
           <BsPhone className="text-2xl text-[#344054]" />
         </div>
         <p className="text-sm text-neutral-500 mt-1 text-center">
-          Please enter your mobile number for your new yallaprints account.
+          {description ??
+            `Please enter your mobile number for your new yallaprints account.`}
         </p>
       </div>
       <Input

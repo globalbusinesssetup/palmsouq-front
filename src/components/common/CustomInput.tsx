@@ -133,12 +133,13 @@ const CustomInput = ({
                 onBlur={onBlur}
                 country={'ae'}
                 value={value}
+                {...rest}
                 onChange={(val) => handlePhoneChange(val, onChange)}
-                containerClass={`h-11 border px-3.5 rounded-lg pl-0 ${
+                containerClass={`h-11 border rounded-lg ${
                   isValid ? 'border-[#D0D5DD]' : 'border-red-500'
                 }`}
                 countryCodeEditable={false}
-                inputClass="!h-full !w-full !border-none !pl-[68px] !rounded-lg"
+                inputClass="!h-full !w-full !border-none !pl-[68px] !rounded-lg disabled:!bg-neutral-100 disabled:!text-neutral-400"
               />
             )}
           />
@@ -186,6 +187,18 @@ const CustomInput = ({
             <FiSearch className="text-xl" />
           </button>
         </div>
+      ) : type === 'email' ? (
+        <Input
+          {...field}
+          {...rest}
+          name={name}
+          type="email"
+          placeholder={placeholder}
+          className={twMerge(
+            'border border-[#D0D5DD] rounded-lg h-11 w-full focus-visible:outline-neutral-300 px-3.5 py-2.5 text-[#667085]',
+            className
+          )}
+        />
       ) : (
         <Input
           {...field}

@@ -3,5 +3,6 @@ import Location from './Location';
 import FileSearch from './FileSearch';
 import FileDownload from './FileDownload';
 import Excel from './Excel';
+import WalletAdd from './WalletAdd';
 
-export { FileAttach, Location, FileSearch, FileDownload, Excel };
+export { FileAttach, Location, FileSearch, FileDownload, Excel, WalletAdd };

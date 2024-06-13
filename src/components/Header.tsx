@@ -65,7 +65,10 @@ const Header = ({
               <FiShoppingBag className="text-[28px] text-[#1A1E5E]" />
               <div className="text-[#1A1E5E]">
                 <p className="text-xs">My Cart</p>
-                <Link href={'#'} className="flex items-center gap-x-1">
+                <Link
+                  href={'/dashboard/cart'}
+                  className="flex items-center gap-x-1"
+                >
                   <p className="text-sm font-semibold uppercase">0.00 AED</p>
                   <IoIosArrowDown className="text-lg" />
                 </Link>

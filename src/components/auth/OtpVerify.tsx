@@ -3,13 +3,24 @@ import React, { useState } from 'react';
 import { BiEnvelope } from 'react-icons/bi';
 import OtpInput from 'react-otp-input';
 
-const OtpVerify = ({ onVerify }: { onVerify?: () => void }) => {
+const OtpVerify = ({
+  onVerify,
+  number,
+  title,
+}: {
+  onVerify?: () => void;
+  number?: string | number;
+  title?: string;
+}) => {
   const [otp, setOtp] = useState('');
+  const [error, setError] = useState(false);
 
-  const onSubmit = (data: any) => {
-    console.log(data);
+  const onSubmit = () => {
     if (otp.length === 4) {
       onVerify?.();
+      console.log(otp);
+    } else {
+      setError(true);
     }
   };
 
@@ -29,7 +40,10 @@ const OtpVerify = ({ onVerify }: { onVerify?: () => void }) => {
 
       <OtpInput
         value={otp}
-        onChange={setOtp}
+        onChange={(v) => {
+          setOtp(v);
+          v.length > 3 && setError(false);
+        }}
         numInputs={4}
         renderSeparator={<span></span>}
         renderInput={(props) => <input {...props} />}
@@ -43,18 +57,21 @@ const OtpVerify = ({ onVerify }: { onVerify?: () => void }) => {
         inputStyle={{
           width: '56px',
           height: '70px',
-          border: '1px solid #D1D5DB',
+          border: `1px solid ${!error ? '#D1D5DB' : '#FECDCA'}`,
           borderRadius: '5px',
         }}
       />
+      {error && (
+        <p className={'text-error mt-3 text-xs pl-7'}>please fill all input</p>
+      )}
       <p className="text-sm text-neutral-500 mt-4 text-center">
-        Didn’t receive the code?{' '}
+        Didn&apos;t receive the code?{' '}
         <button type={'button'} className="font-semibold text-primary">
           Resent code
         </button>
       </p>
       <Button onClick={onSubmit} className="mt-6">
-        Continue
+        {title ?? 'Continue'}
       </Button>
     </>
   );
