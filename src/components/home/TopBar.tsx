@@ -20,7 +20,7 @@ const TopBar = () => {
           </p>
           <div className="w-[1px] h-3.5 bg-neutral-400" />
           <Select
-            name="language"
+            // name="language"
             defaultValue={'english'}
             className="w-20 bg-transparent focus-visible:outline-none text-white text-xs font-semibold"
           >

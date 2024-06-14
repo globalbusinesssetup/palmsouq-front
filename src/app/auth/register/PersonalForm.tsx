@@ -1,14 +1,7 @@
 'use client';
-import { Input, Button, CheckBox } from '@/components';
-import { Metadata } from 'next';
-import Link from 'next/link';
-import React, { useState } from 'react';
-import { FaArrowRightLong } from 'react-icons/fa6';
-import { useForm } from 'react-hook-form';
-
-// export const metadata: Metadata = {
-//   title: 'Sign In | Printcraft',
-// };
+import { Input, Button } from '@/components';
+import React from 'react';
+import { FieldError, useForm } from 'react-hook-form';
 
 const PersonalForm = () => {
   const {
@@ -16,9 +9,7 @@ const PersonalForm = () => {
     handleSubmit,
     formState: { errors },
     setError,
-  } = useForm<any>();
-  // setError('password', { type: 'minLength', message: 'min 6' });
-  console.log(errors);
+  } = useForm<any>({ mode: 'onChange' });
   const onRegister = (data: any) => {
     console.log(data);
   };
@@ -33,6 +24,7 @@ const PersonalForm = () => {
           label="First Name *"
           placeholder="Enter first name"
           wrapClassName="flex-1 mt-4 sm:mt-0"
+          error={errors.first_name}
         />
         <Input
           control={control}
@@ -41,6 +33,7 @@ const PersonalForm = () => {
           label="Last Name *"
           placeholder="Enter last name"
           wrapClassName="flex-1 mt-4 sm:mt-0"
+          error={errors.last_name}
         />
       </div>
       <Input
@@ -56,6 +49,7 @@ const PersonalForm = () => {
         label="Email Address *"
         placeholder="Enter email address"
         wrapClassName="flex-1 mt-4 sm:mt-6"
+        error={errors.email}
       />
       <div className="sm:flex flex-row items-center gap-4 mt-6">
         <Input
@@ -65,7 +59,7 @@ const PersonalForm = () => {
             pattern: {
               value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/,
               message:
-                'Password must contain at least 8 characters, one uppercase letter, one lowercase letter, one number',
+                'Password must be 8+ chars with uppercase, lowercase, and number',
             },
           }}
           name="password"
@@ -86,9 +80,17 @@ const PersonalForm = () => {
           type="password"
           placeholder="••••••••"
           wrapClassName="flex-1 mt-4 sm:mt-0"
+          error={errors.cnfm_password}
         />
       </div>
-      <Button type={'submit'} className="mt-8">
+      <p
+        className={`text-error text-xs min-h-4 ${
+          errors.password ? 'visible' : 'invisible'
+        }`}
+      >
+        {(errors.password as FieldError)?.message || ''}
+      </p>
+      <Button type={'submit'} className="mt-4">
         Register
       </Button>
     </form>

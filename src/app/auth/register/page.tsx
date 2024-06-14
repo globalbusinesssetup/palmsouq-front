@@ -1,5 +1,4 @@
 'use client';
-import { Button } from '@/components';
 import Link from 'next/link';
 import React, { useState } from 'react';
 import { FaArrowLeftLong } from 'react-icons/fa6';
@@ -7,6 +6,7 @@ import { IoMdLogIn } from 'react-icons/io';
 import PersonalForm from './PersonalForm';
 import { Field, Label, Radio, RadioGroup } from '@headlessui/react';
 import CorporateForm from './CorporateForm';
+import Head from 'next/head';
 
 const accountTypes = [
   { title: 'Personal Account', value: 'personal' },
@@ -17,6 +17,10 @@ const Register = () => {
   const [selectedType, setSelectedType] = useState(accountTypes[0].value);
   return (
     <main className="bg-white flex items-center justify-center px-5">
+      <Head>
+        <title>Regist | Printcraft</title>
+        <meta name="description" content="My client component description" />
+      </Head>
       <div className="py-10">
         <div className="sm:w-[567px] border border-[#D0D5DD] rounded-xl shadow-md p-6">
           <div className="flex flex-col items-center gap-4">
