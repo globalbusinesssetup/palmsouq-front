@@ -2,14 +2,8 @@
 import { Input } from '@headlessui/react';
 import React, { useRef, useState } from 'react';
 import { FiEye, FiEyeOff, FiSearch, FiUpload } from 'react-icons/fi';
-import { IoSearch } from 'react-icons/io5';
 import { twMerge } from 'tailwind-merge';
-import {
-  UseControllerProps,
-  useController,
-  Controller,
-  useFormContext,
-} from 'react-hook-form';
+import { Controller } from 'react-hook-form';
 
 type InputType = 'password' | 'file' | 'search' | 'email';
 
@@ -145,13 +139,15 @@ const CustomInput = ({
           </>
         )}
       />
-      <p
-        className={`text-red-500 text-xs mt-0.5 ml-0.5 min-h-4 ${
-          error ? 'visible' : 'invisible'
-        }`}
-      >
-        {error?.message}
-      </p>
+      {type !== 'search' && (
+        <p
+          className={`text-red-500 text-xs mt-0.5 ml-0.5 min-h-4 ${
+            error ? 'visible' : 'invisible'
+          }`}
+        >
+          {error?.message}
+        </p>
+      )}
     </div>
   );
 };
