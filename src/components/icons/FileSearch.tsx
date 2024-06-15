@@ -1,8 +1,9 @@
 import React from 'react';
 
-const FileSearch = () => {
+const FileSearch = ({ ...rest }: React.SVGProps<SVGSVGElement>) => {
   return (
     <svg
+      {...rest}
       width="21"
       height="21"
       viewBox="0 0 21 21"

@@ -1,8 +1,9 @@
 import React from 'react';
 
-const Location = () => {
+const Location = ({ ...rest }: React.SVGProps<SVGSVGElement>) => {
   return (
     <svg
+      {...rest}
       width="22"
       height="23"
       viewBox="0 0 22 23"

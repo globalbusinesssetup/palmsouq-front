@@ -1,8 +1,9 @@
 import React from 'react';
 
-const WalletAdd = () => {
+const WalletAdd = ({ ...rest }: React.SVGProps<SVGSVGElement>) => {
   return (
     <svg
+      {...rest}
       width="16"
       height="17"
       viewBox="0 0 16 17"

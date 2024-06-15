@@ -4,5 +4,14 @@ import FileSearch from './FileSearch';
 import FileDownload from './FileDownload';
 import Excel from './Excel';
 import WalletAdd from './WalletAdd';
+import File from './File';
 
-export { FileAttach, Location, FileSearch, FileDownload, Excel, WalletAdd };
+export {
+  FileAttach,
+  Location,
+  FileSearch,
+  FileDownload,
+  Excel,
+  WalletAdd,
+  File,
+};

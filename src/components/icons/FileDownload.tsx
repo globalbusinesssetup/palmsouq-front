@@ -1,8 +1,9 @@
 import React from 'react';
 
-const FileDownload = () => {
+const FileDownload = ({ ...rest }: React.SVGProps<SVGSVGElement>) => {
   return (
     <svg
+      {...rest}
       width="16"
       height="19"
       viewBox="0 0 16 19"

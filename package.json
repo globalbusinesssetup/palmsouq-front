@@ -13,7 +13,6 @@
     "@types/react-star-ratings": "^2.3.3",
     "libphonenumber-js": "^1.11.3",
     "next": "14.2.3",
-    "rc-steps": "^6.0.1",
     "react": "^18",
     "react-dom": "^18",
     "react-file-drop": "^3.1.6",
@@ -23,13 +22,14 @@
     "react-phone-input-2": "^2.15.1",
     "react-rating": "^2.0.5",
     "react-star-ratings": "^2.3.0",
+    "react-stepper-horizontal": "^1.0.11",
     "swiper": "^11.1.4",
     "tailwind-merge": "^2.3.0",
     "tailwind-scrollbar": "^3.1.0"
   },
   "devDependencies": {
     "@types/node": "^20",
-    "@types/react": "^18",
+    "@types/react": "^18.3.3",
     "@types/react-dom": "^18",
     "eslint": "^8",
     "eslint-config-next": "14.2.3",

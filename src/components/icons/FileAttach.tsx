@@ -1,8 +1,9 @@
 import React from 'react';
 
-const FileAttach = () => {
+const FileAttach = ({ ...rest }: React.SVGProps<SVGSVGElement>) => {
   return (
     <svg
+      {...rest}
       width="24"
       height="25"
       viewBox="0 0 24 25"
