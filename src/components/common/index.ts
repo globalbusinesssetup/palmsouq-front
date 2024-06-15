@@ -5,5 +5,15 @@ import Modal from './Modal';
 import Tag from './Tag';
 import InputPhoneNumber from './InputPhoneNumber';
 import Select from './CustomSelect';
+import Avatar from './Avatar';
 
-export { Button, Input, CheckBox, Modal, Tag, InputPhoneNumber, Select };
+export {
+  Button,
+  Input,
+  CheckBox,
+  Modal,
+  Tag,
+  InputPhoneNumber,
+  Select,
+  Avatar,
+};

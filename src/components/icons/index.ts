@@ -5,6 +5,7 @@ import FileDownload from './FileDownload';
 import Excel from './Excel';
 import WalletAdd from './WalletAdd';
 import File from './File';
+import Bag from './Bag';
 
 export {
   FileAttach,
@@ -14,4 +15,5 @@ export {
   Excel,
   WalletAdd,
   File,
+  Bag,
 };
