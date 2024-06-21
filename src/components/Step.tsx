@@ -34,7 +34,7 @@ const Step = ({
           circleClassName
         )}
       >
-        {icon ?? <p className={`text-base font-semibold`}>{index}</p>}
+        {icon ?? <p className={`text-base font-semibold`}>{index + 1}</p>}
       </div>
       <div className="flex-1">
         {title && (
@@ -46,7 +46,11 @@ const Step = ({
             {title}
           </p>
         )}
-        <div className="w-full rounded-full overflow-hidden mt-2 bg-[#EFF0F6]">
+        <div
+          className={`w-full rounded-full overflow-hidden mt-2 bg-[#EFF0F6] ${
+            !title && !icon && index === 3 && 'hidden'
+          }`}
+        >
           <div
             className={`h-[5.67px] rounded-full ${
               isActive ? 'bg-[#4A3AFF] w-[50%]' : 'w-0'

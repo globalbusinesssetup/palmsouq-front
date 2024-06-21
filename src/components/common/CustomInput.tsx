@@ -5,7 +5,7 @@ import { FiEye, FiEyeOff, FiSearch, FiUpload } from 'react-icons/fi';
 import { twMerge } from 'tailwind-merge';
 import { Controller } from 'react-hook-form';
 
-type InputType = 'password' | 'file' | 'search' | 'email';
+type InputType = 'password' | 'file' | 'search' | 'email' | 'date';
 
 type IProps = {
   label?: string;
@@ -119,6 +119,23 @@ const CustomInput = ({
                 >
                   <FiSearch className="text-xl" />
                 </button>
+              </div>
+            ) : type === 'date' ? (
+              <div className="relative">
+                <Input
+                  onChange={onChange}
+                  onBlur={onBlur}
+                  value={value}
+                  ref={ref}
+                  {...rest}
+                  name={name}
+                  type="date"
+                  placeholder={placeholder}
+                  className={twMerge(
+                    'border border-[#D0D5DD] rounded-lg h-11 w-full focus-visible:outline-neutral-300 px-3.5 py-2.5 text-[#667085]',
+                    className
+                  )}
+                />
               </div>
             ) : (
               <Input
