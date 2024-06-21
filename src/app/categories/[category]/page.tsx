@@ -56,8 +56,15 @@ const Category: React.FC<CategoryProps> = ({ params }) => {
       <Header />
       <main className="bg-[#FCFCFD]">
         <div className="container mx-auto">
-          <div className="w-full h-[200px] bg-secondary rounded-md mt-6 relative">
-            <Image src={'/temp-banner.png'} fill alt="banner" />
+          <div className="w-full h-[200px] bg-secondary rounded-md mt-6 relative overflow-hidden">
+            <Image
+              src={
+                'https://images.unsplash.com/photo-1565688842882-e0b2693d349a?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+              }
+              fill
+              alt="banner"
+              className="object-cover"
+            />
           </div>
           <div className="mt-4 py-5 px-2 flex items-center justify-between">
             <div className="flex-1 flex items-center gap-x-3">

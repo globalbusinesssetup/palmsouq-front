@@ -1,5 +1,12 @@
 'use client';
-import { Button, FileAttach, Footer, Header, Modal } from '@/components';
+import {
+  Button,
+  FileAttach,
+  Footer,
+  Header,
+  Modal,
+  PdfPreview,
+} from '@/components';
 import React, { useState, useRef } from 'react';
 import { IoCheckmark } from 'react-icons/io5';
 import { FiEdit, FiEye, FiTrash2, FiUpload } from 'react-icons/fi';
@@ -8,6 +15,7 @@ import { formatFileSize } from '@/utils/helper';
 import { IoMdClose } from 'react-icons/io';
 import Image from 'next/image';
 import { BsHandbag } from 'react-icons/bs';
+import { useRouter } from 'next/navigation';
 
 const checkoutData = [
   {
@@ -33,9 +41,11 @@ const checkoutData = [
 ];
 
 const Checkout = () => {
+  const router = useRouter();
   const fileInputRef = useRef<any>(null);
   const [selected, setSelected] = useState('upload-file');
   const [uploadedFiles, setFiles] = useState<File[]>([]);
+  const [filePreviews, setPreview] = useState<string[]>([]);
   const [isFilePreviewOpen, setFilePreviewOpen] = useState(false);
   const [isConfirmationOpen, setConfirmationOpen] = useState(false);
 
@@ -50,6 +60,7 @@ const Checkout = () => {
       );
       if (newFiles.length + uploadedFiles.length <= 2) {
         setFiles([...uploadedFiles, ...newFiles]);
+        setPreview((prev) => [...prev, URL.createObjectURL(newFiles[0])]);
       } else {
         alert('You can upload a maximum of 2 files.');
       }
@@ -64,6 +75,7 @@ const Checkout = () => {
 
   const removeFile = (index: number) => {
     setFiles(uploadedFiles.filter((_, i) => i !== index));
+    setPreview(filePreviews.filter((_, i) => i !== index));
   };
 
   return (
@@ -120,13 +132,13 @@ const Checkout = () => {
                 </div>
               </button>
             </div>
-            {uploadedFiles.length > 0 &&
-              uploadedFiles.map((file, i) => (
-                <div
-                  key={`file_${i}`}
-                  className="mt-4 p-4 bg-neutral-100 rounded-xl"
-                >
-                  <div className="p-4 bg-white rounded-lg border- border-neutral-300 flex items-center justify-between">
+            <div className="mt-4 p-4 bg-neutral-100 rounded-xl space-y-3">
+              {uploadedFiles.length > 0 &&
+                uploadedFiles.map((file, i) => (
+                  <div
+                    key={`file_${i}`}
+                    className="p-4 bg-white rounded-lg border- border-neutral-300 flex items-center justify-between"
+                  >
                     <div className="flex items-center gap-x-4">
                       <div className="size-10 rounded-full flex items-center justify-center bg-neutral-700">
                         <FileAttach />
@@ -153,8 +165,8 @@ const Checkout = () => {
                       </button>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))}
+            </div>
             <FileDrop
               onDrop={(files, event) => handleFileDrop(files)}
               className={`flex flex-col items-center justify-center bg-neutral-50 border border-black border-dashed rounded-lg mt-4 transition-all duration-500 overflow-hidden ${
@@ -256,14 +268,9 @@ const Checkout = () => {
             <IoMdClose className="text-2xl text-white" />
           </button>
         </div>
-        <div className="p-4 bg-white">
+        <div className="p-4 bg-white h-[85vh] overflow-y-scroll scrollbar-thin">
           <div className="w-full h-[624px] relative">
-            <Image
-              src={'/temp-banner.png'}
-              className="object-cover"
-              fill
-              alt="preview"
-            />
+            <PdfPreview fileUrl={filePreviews[0]} />
           </div>
         </div>
       </Modal>
@@ -358,6 +365,10 @@ const Checkout = () => {
               </div>
               <div className="flex items-center gap-x-3 mt-4">
                 <Button
+                  onClick={() => {
+                    setConfirmationOpen(false);
+                    router.push('/dashboard/cart');
+                  }}
                   outlined
                   className="w-[138px] text-sm flex gap-x-2 items-center justify-center"
                 >
@@ -365,7 +376,10 @@ const Checkout = () => {
                   Add to Card
                 </Button>
                 <Button
-                  onClick={() => setConfirmationOpen(false)}
+                  onClick={() => {
+                    setConfirmationOpen(false);
+                    router.push('/dashboard/cart');
+                  }}
                   className="h-11 flex-1 flex gap-x-2 items-center justify-center text-sm"
                 >
                   <IoCheckmark className="text-base" /> Proceed to Checkout

@@ -53,6 +53,7 @@ const OtpVerify = ({
           justifyContent: 'space-between',
           marginTop: '32px',
           paddingInline: '28px',
+          gap: '0 10px',
         }}
         inputStyle={{
           width: '56px',

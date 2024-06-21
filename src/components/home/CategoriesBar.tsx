@@ -18,7 +18,7 @@ const CategoriesBar = () => {
             </MenuButton>
             <MenuItems
               anchor="bottom"
-              className="bg-primary w-[250px] mt-1 py-3 rounded-lg "
+              className="bg-primary w-[250px] mt-1 py-3 rounded-lg z-10 "
             >
               {categories.map((cat, i) => (
                 <MenuItem key={i}>

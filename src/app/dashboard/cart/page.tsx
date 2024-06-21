@@ -275,7 +275,7 @@ const Cart = () => {
             <IoMdClose className="text-2xl text-white" />
           </button>
         </div>
-        <div className="p-4 bg-white">
+        <div className="p-4 bg-white h-[85vh] overflow-y-scroll scrollbar-thin">
           <div className="w-full h-[624px] relative">
             <Image
               src={'/temp-banner.png'}

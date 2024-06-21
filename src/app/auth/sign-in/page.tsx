@@ -14,9 +14,9 @@ const SignIn = () => {
   const [flow, setFlow] = useState('sign-in');
 
   return (
-    <main className="bg-white h-screen flex items-center justify-center">
+    <main className="bg-white min-h-screen flex items-center justify-center px-4">
       <div>
-        <div className="w-[400px] border border-[#D0D5DD] rounded-xl shadow-md p-6">
+        <div className="sm:w-[400px] border border-[#D0D5DD] rounded-xl shadow-md p-5 sm:p-6 my-6">
           {flow === 'sign-in' ? (
             <SignInForm onSignIn={() => setFlow('send-otp')} />
           ) : flow === 'send-otp' ? (

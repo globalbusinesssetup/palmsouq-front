@@ -1,25 +1,16 @@
-// // src/declarations.d.ts
-// declare namespace JSX {
-//   type SwiperContainerProps = React.DetailedHTMLProps<
-//     React.HTMLAttributes<HTMLElement>,
-//     HTMLElement
-//   > & {
-//     pagination?: string;
-//     navigation?: string;
-//     autoplay?: boolean;
-//   };
+import type { SwiperSlideProps, SwiperProps } from 'swiper/react';
 
-//   type SwiperSlideProps = React.DetailedHTMLProps<
-//     React.HTMLAttributes<HTMLElement>,
-//     HTMLElement
-//   >;
-
-//   type IntrinsicElements = {
-//     'swiper-container': SwiperContainerProps;
-//     'swiper-slide': SwiperSlideProps;
-//     [elemName: string]: React.DetailedHTMLProps<
-//       React.HTMLAttributes<HTMLElement>,
-//       HTMLElement
-//     >;
-//   };
-// }
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      'swiper-container': React.DetailedHTMLProps<
+        React.HTMLAttributes<HTMLElement> & SwiperProps,
+        HTMLElement
+      >;
+      'swiper-slide': React.DetailedHTMLProps<
+        React.HTMLAttributes<HTMLElement> & SwiperSlideProps,
+        HTMLElement
+      >;
+    }
+  }
+}

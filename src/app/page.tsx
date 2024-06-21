@@ -53,12 +53,13 @@ export default function Home() {
       <Header />
       <CategoriesBar />
       <div className="container mx-auto min-h-[55vh] mt-10 pb-7">
-        <section className="flex space-x-4">
-          <div className="w-7/12 h-[304px] rounded-[10px] overflow-hidden">
-            {/* <swiper-container
+        {/* Banner  */}
+        <section className="sm:flex sm:space-x-4">
+          <div className="sm:w-7/12 h-[304px] sm:rounded-[10px] overflow-hidden">
+            <swiper-container
               className="w-full"
-              pagination="true"
-              navigation="true"
+              pagination={true}
+              navigation={true}
               space-between={10}
               autoplay
             >
@@ -66,14 +67,14 @@ export default function Home() {
                 .fill('')
                 .map((_, i) => (
                   <swiper-slide key={`banner_${i}`} style={{ width: '100%' }}>
-                    <div className="w-full h-[304px] relative overflow-hidden rounded-[10px]">
+                    <div className="w-full h-[304px] relative overflow-hidden sm:rounded-[10px]">
                       <Image src={'/banners/banner.jpeg'} fill alt={'banner'} />
                     </div>
                   </swiper-slide>
                 ))}
-            </swiper-container> */}
+            </swiper-container>
           </div>
-          <div className="w-5/12 h-[304px] relative overflow-hidden rounded-[10px]">
+          <div className="sm:w-5/12 h-[304px] relative overflow-hidden sm:rounded-[10px] mt-4 sm:mt-0">
             <Image src={'/banners/weekly-offer.jpeg'} fill alt={'banner'} />
           </div>
         </section>
@@ -92,8 +93,26 @@ export default function Home() {
               </button>
             </div>
           </div>
-          <div className="mt-5">
-            {/* <swiper-container slides-per-view="7" space-between={16}>
+          <div className="mt-5 max-h-[172px] overflow-hidden">
+            <swiper-container
+              slides-per-view="7"
+              space-between={16}
+              breakpointsBase="window"
+              // breakpoints={{
+              //   640: {
+              //     slidesPerView: 2,
+              //     spaceBetween: 20,
+              //   },
+              //   768: {
+              //     slidesPerView: 4,
+              //     spaceBetween: 40,
+              //   },
+              //   1024: {
+              //     slidesPerView: 7,
+              //     spaceBetween: 50,
+              //   },
+              // }}
+            >
               {categories.map((cat, i) => (
                 <swiper-slide key={`cat_${i}`} className="">
                   <div className="rounded-lg bg-[#F5F5F7] min-w-[155px] flex-1 pt-4">
@@ -109,13 +128,15 @@ export default function Home() {
                   </div>
                 </swiper-slide>
               ))}
-            </swiper-container> */}
+            </swiper-container>
           </div>
         </section>
         <section className="flex items-center gap-x-4 mt-8">
           <div className="flex-1 h-[108px] bg-[#F5F5F7] relative rounded overflow-hidden">
             <Image
-              src={'/temp-banner.png'}
+              src={
+                'https://plus.unsplash.com/premium_photo-1682126556008-d6ac9170c9fa?q=80&w=1558&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+              }
               fill
               alt="banner"
               className=" object-cover"
@@ -123,10 +144,12 @@ export default function Home() {
           </div>
           <div className="flex-1 h-[108px] bg-[#F5F5F7] relative rounded overflow-hidden">
             <Image
-              src={'/temp-banner.png'}
+              src={
+                'https://plus.unsplash.com/premium_photo-1682145481505-80614272c426?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+              }
               fill
               alt="banner"
-              className=" object-cover"
+              className="object-cover object-[left_60%]"
             />
           </div>
         </section>
@@ -140,7 +163,7 @@ export default function Home() {
               Discover the Best Selling Products on the Market Today.
             </p>
           </div>
-          <div className="grid grid-cols-4 gap-x-4 gap-y-6">
+          <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-6">
             {Array(8)
               .fill(' ')
               .map((product, i) => (
@@ -150,7 +173,9 @@ export default function Home() {
         </section>
         <div className="w-full h-[240px] bg-secondary mt-10 rounded-md overflow-hidden relative">
           <Image
-            src={'/temp-banner.png'}
+            src={
+              'https://images.unsplash.com/photo-1565688842882-e0b2693d349a?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+            }
             fill
             alt="banner"
             className="object-cover"
@@ -158,24 +183,24 @@ export default function Home() {
         </div>
         {/* popular business cards  */}
         <section className="mt-10 bg-[#F9FAFB] rounded-[10px] px-5 py-4">
-          <div className="pb-4 flex items-center justify-between">
-            <div className="">
-              <h3 className="text-2xl text-primary font-semibold">
+          <div className="pb-4 flex lg:items-center justify-between">
+            <div className="max-w-[70%] sm:max-w-none">
+              <h3 className="text-xl sm:text-2xl text-primary font-semibold">
                 Popular Business Cards
               </h3>
-              <p className="text-base text-neutral-600 mt-1">
+              <p className="text-xs sm:text-base text-neutral-600 mt-1">
                 Personalized Business Cards Printing for all your networking
                 needs
               </p>
             </div>
             <Link
               href={'#'}
-              className="w-[115px] h-10 flex items-center justify-center gap-x-2 rounded-full transition-all duration-300 text-[#6835B1] border border-[#6835B1] hover:scale-95"
+              className="sm:w-[115px] px-2 h-8 sm:h-10 flex text-xs sm:text-base items-center justify-center gap-x-2 rounded-full transition-all duration-300 text-[#6835B1] border border-[#6835B1] hover:scale-95"
             >
               View All <HiArrowRight />
             </Link>
           </div>
-          <div className="grid grid-cols-4 gap-x-4 gap-y-6">
+          <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-6">
             {Array(8)
               .fill(' ')
               .map((product, i) => (
@@ -186,7 +211,9 @@ export default function Home() {
         <section className="flex items-center gap-x-4 mt-8">
           <div className="flex-1 h-[240px] bg-[#F5F5F7] relative rounded-md overflow-hidden">
             <Image
-              src={'/temp-banner.png'}
+              src={
+                'https://images.unsplash.com/photo-1563097013-a1df1d1fd1c7?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+              }
               fill
               alt="banner"
               className="object-cover"
@@ -194,7 +221,9 @@ export default function Home() {
           </div>
           <div className="flex-1 h-[240px] bg-[#F5F5F7] relative rounded-md overflow-hidden">
             <Image
-              src={'/temp-banner.png'}
+              src={
+                'https://plus.unsplash.com/premium_photo-1661274103468-71e91f7ea517?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+              }
               fill
               alt="banner"
               className="object-cover"
@@ -203,23 +232,23 @@ export default function Home() {
         </section>
         {/* High demand flyers  */}
         <section className="mt-10 bg-[#F9FAFB] rounded-[10px] px-5 py-4">
-          <div className="pb-4 flex items-center justify-between">
-            <div className="">
-              <h3 className="text-2xl text-primary font-semibold">
+          <div className="pb-4 flex lg:items-center justify-between">
+            <div className="max-w-[70%] sm:max-w-none">
+              <h3 className="text-xl sm:text-2xl text-primary font-semibold">
                 High Demand Flyers
               </h3>
-              <p className="text-base text-neutral-600 mt-1">
+              <p className="text-sm sm:text-base text-neutral-600 mt-1">
                 Elevate Your Brand with our Quality Flyers Printing
               </p>
             </div>
             <Link
               href={'#'}
-              className="w-[115px] h-10 flex items-center justify-center gap-x-2 rounded-full transition-all duration-300 text-[#6835B1] border border-[#6835B1] hover:scale-95"
+              className="sm:w-[115px] px-2 h-8 sm:h-10 flex text-xs sm:text-base items-center justify-center gap-x-2 rounded-full transition-all duration-300 text-[#6835B1] border border-[#6835B1] hover:scale-95"
             >
               View All <HiArrowRight />
             </Link>
           </div>
-          <div className="grid grid-cols-4 gap-x-4 gap-y-6">
+          <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-6">
             {Array(8)
               .fill(' ')
               .map((product, i) => (
@@ -229,7 +258,9 @@ export default function Home() {
         </section>
         <div className="w-full h-[240px] bg-secondary mt-10 rounded-md overflow-hidden relative">
           <Image
-            src={'/temp-banner.png'}
+            src={
+              'https://images.unsplash.com/photo-1513884923967-4b182ef167ab?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+            }
             fill
             alt="banner"
             className="object-cover"
@@ -253,7 +284,7 @@ export default function Home() {
               View All <HiArrowRight />
             </Link>
           </div>
-          <div className="grid grid-cols-4 gap-x-4 gap-y-6">
+          <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-6">
             {Array(8)
               .fill(' ')
               .map((product, i) => (
@@ -262,7 +293,7 @@ export default function Home() {
           </div>
         </section>
         {/* features */}
-        <section className="mt-10 p-4 flex items-center gap-x-[18px]">
+        <section className="mt-10 p-4 flex flex-wrap items-center gap-[18px]">
           {features.map((feature, i) => (
             <div
               key={`feature_${i}`}
@@ -299,7 +330,7 @@ export default function Home() {
             </div>
           </div>
           <div className="mt-6">
-            {/* <swiper-container slides-per-view={3} space-between={16} autoplay>
+            <swiper-container slides-per-view={3} space-between={16} autoplay>
               {Array(5)
                 .fill(' ')
                 .map((_, i) => (
@@ -326,11 +357,11 @@ export default function Home() {
                     </div>
                   </swiper-slide>
                 ))}
-            </swiper-container> */}
+            </swiper-container>
           </div>
         </section>
         {/* industry banner  */}
-        <section className="mt-10 px-6 py-[33px] border border-[#10182833] rounded-[10px] flex items-center gap-x-10 justify-between">
+        <section className="mt-10 p-4 sm:px-6 py-5 sm:py-[33px] border border-[#10182833] rounded-[10px] sm:flex items-center gap-x-10 justify-between mx-4 sm:mx-0">
           <div className="flex-1 w-full h-[293px] relative">
             <Image
               src={'/banners/industry-banner.png'}
@@ -338,14 +369,14 @@ export default function Home() {
               alt="industry banner"
             />
           </div>
-          <div className="flex-1">
-            <p className="text-lg font-medium text-success/80">
+          <div className="flex-1 mt-5 sm:mt-0">
+            <p className="sm:text-lg font-medium text-success/80">
               Fastest and Cheapest Printing in UAE{' '}
             </p>
-            <h3 className="text-3xl font-semibold text-neutral-800 mt-2">
+            <h3 className="text-xl sm:text-3xl font-semibold text-neutral-800 mt-2">
               Printcraft is Revolutionizing the Online Printing Industry.
             </h3>
-            <p className="mt-4 text-lg text-neutral-600">
+            <p className="mt-4 sm:text-lg text-neutral-600">
               Delivering top-quality Design and Printing in UAE with a wide
               range of high-quality printing products at the best prices in the
               UAE. Our easy-to-use website makes it a breeze to order the
@@ -356,7 +387,7 @@ export default function Home() {
           </div>
         </section>
         {/* order steps */}
-        <section className="mt-10 px-6 py-4 bg-neutral-50 rounded-[10px] flex items-center gap-6">
+        <section className="mt-10 px-6 py-4 bg-neutral-50 rounded-[10px] flex flex-wrap items-center gap-6">
           {orderSteps.map((step, i) => (
             <div
               key={`step_${i}`}
@@ -378,8 +409,8 @@ export default function Home() {
         </section>
       </div>
       {/* companyDetails */}
-      <section className="bg-neutral-50 pt-10 pb-[30px]">
-        <div className="container mx-auto flex items-center justify-between">
+      <section className="bg-neutral-50 pt-10 pb-[30px] px-4 sm:px-0">
+        <div className="container mx-auto flex flex-wrap gap-5 items-center justify-between">
           {companyDetails.map((detail, i) => (
             <div key={`detail_${i}`} className="flex gap-x-3.5">
               {detail.icon}

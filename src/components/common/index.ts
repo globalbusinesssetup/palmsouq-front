@@ -6,6 +6,7 @@ import Tag from './Tag';
 import InputPhoneNumber from './InputPhoneNumber';
 import Select from './CustomSelect';
 import Avatar from './Avatar';
+import PdfPreview from './PdfPreview';
 
 export {
   Button,
@@ -16,4 +17,5 @@ export {
   InputPhoneNumber,
   Select,
   Avatar,
+  PdfPreview,
 };

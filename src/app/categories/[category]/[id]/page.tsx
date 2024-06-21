@@ -10,6 +10,7 @@ import {
   DisclosurePanel,
 } from '@headlessui/react';
 import { FaAngleDown } from 'react-icons/fa6';
+import { useRouter } from 'next/navigation';
 
 type CategoryProps = {
   params: {
@@ -114,6 +115,7 @@ const timelines = [
 ];
 
 const ProductDeatils: React.FC<CategoryProps> = ({ params }) => {
+  const router = useRouter();
   const [selectedType, setType] = useState('');
   const [selectedTimeline, setTimeline] = useState('');
   const [quantity, setQuantity] = useState(100);
@@ -134,9 +136,9 @@ const ProductDeatils: React.FC<CategoryProps> = ({ params }) => {
       <main className="container mx-auto mt-8 bg-[#FCFCFD]">
         <div className="p-6 border border-neutral-200 bg-white rounded-xl flex gap-x-8">
           <div className="w-5/12">
-            <div className="w-full h-[396px] rounded-lg overflow-hidden relative">
+            <div className="w-full h-[396px] rounded-lg overflow-hidden relative bg-secondary">
               <Image
-                src={'/temp-banner.png'}
+                src={'/categories/paper-bags.png'}
                 fill
                 alt="product image"
                 className="object-cover"
@@ -148,10 +150,10 @@ const ProductDeatils: React.FC<CategoryProps> = ({ params }) => {
                 .map((_, i) => (
                   <div
                     key={`image_${i}`}
-                    className="w-full h-[101px] rounded-lg overflow-hidden relative"
+                    className="w-full h-[101px] rounded-lg overflow-hidden relative cursor-pointer bg-secondary"
                   >
                     <Image
-                      src={'/temp-banner.png'}
+                      src={'/categories/paper-bags.png'}
                       fill
                       alt="product image"
                       className="object-cover"
@@ -366,7 +368,12 @@ const ProductDeatils: React.FC<CategoryProps> = ({ params }) => {
               </span>
             </div>
             <div className="flex justify-end mt-8">
-              <Button className="h-11 w-[167px]">Yalla Let&apos;s Go</Button>
+              <Button
+                onClick={() => router.push('/order')}
+                className="h-11 w-[167px]"
+              >
+                Yalla Let&apos;s Go
+              </Button>
             </div>
           </div>
         </div>

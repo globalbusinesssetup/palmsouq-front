@@ -8,7 +8,7 @@ const ProductCard = () => {
     <div className="border border-neutral-200 rounded-lg bg-white p-3">
       <div className="w-full h-[228px] rounded bg-secondary relative">
         <Image
-          src={'/temp-banner.png'}
+          src={'/categories/paper-bags.png'}
           fill
           alt="banner"
           className="object-cover"

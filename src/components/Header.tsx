@@ -55,14 +55,17 @@ const Header = ({
               <FiUser className="text-[28px] text-[#1A1E5E]" />
               <div className="text-[#1A1E5E]">
                 <p className="text-xs">Hi, Yallprints</p>
-                <Link href={'#'} className="flex items-center gap-x-1">
+                <Link
+                  href={'/dashboard/profile'}
+                  className="flex items-center gap-x-1"
+                >
                   <p className="text-sm font-semibold">My Account</p>
                   <IoIosArrowDown className="text-lg" />
                 </Link>
               </div>
             </div>
             <div className="flex items-center gap-x-3 p-2">
-              <FiShoppingBag className="text-[28px] text-[#1A1E5E]" />
+              <FiShoppingBag className="text-[26px] text-[#1A1E5E]" />
               <div className="text-[#1A1E5E]">
                 <p className="text-xs">My Cart</p>
                 <Link
