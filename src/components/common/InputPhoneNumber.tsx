@@ -17,6 +17,7 @@ type IProps = {
   onChange?: (val: any) => void;
   //   setError?: any;
   clearErrors?: any;
+  error?: any;
 };
 
 const InputPhoneNumber = ({
@@ -30,6 +31,7 @@ const InputPhoneNumber = ({
   onChange,
   //   setError,
   clearErrors,
+  error,
   ...rest
 }: IProps & React.InputHTMLAttributes<HTMLInputElement>) => {
   const [isValid, setIsValid] = useState<boolean>(true);
@@ -64,6 +66,8 @@ const InputPhoneNumber = ({
     }
   };
 
+  console.log(error);
+
   return (
     <div className={`flex flex-col ${wrapClassName}`}>
       {label && (
@@ -72,8 +76,9 @@ const InputPhoneNumber = ({
         </label>
       )}
       <Controller
-        name="name"
+        name={name}
         control={control}
+        rules={rules}
         render={({ field: { onChange, onBlur, value, ref } }) => (
           <PhoneInput
             onBlur={onBlur}
@@ -83,7 +88,7 @@ const InputPhoneNumber = ({
             {...rest}
             onChange={(val) => handlePhoneChange(val, onChange)}
             containerClass={`h-11 border rounded-lg ${
-              isValid ? 'border-[#D0D5DD]' : 'border-red-500'
+              isValid && !error ? 'border-[#D0D5DD]' : 'border-error'
             }`}
             countryCodeEditable={false}
             inputClass="!h-full !w-full !border-none !pl-[68px] !rounded-lg disabled:!bg-neutral-100 disabled:!text-neutral-400"
@@ -92,7 +97,7 @@ const InputPhoneNumber = ({
       />
       <p
         className={`text-red-500 text-xs mt-0.5 ml-0.5 min-h-4 ${
-          !isValid ? 'visible' : 'invisible'
+          !isValid || error ? 'visible' : 'invisible'
         }`}
       >
         Please input a valid number

@@ -37,7 +37,7 @@ const CustomInput = ({
   const [isShow, setShow] = useState(false);
 
   return (
-    <div className={`flex flex-col ${wrapClassName}`}>
+    <div className={`flex flex-col text-sm lg:text-base ${wrapClassName}`}>
       {label && (
         <label className="mb-1.5 text-[#344054] text-sm font-medium">
           {label}
@@ -109,7 +109,7 @@ const CustomInput = ({
                   type="text"
                   placeholder={placeholder}
                   className={twMerge(
-                    'rounded-lg bg-neutral-50 h-11 w-full focus-visible:outline-neutral-300 pr-3.5 pl-10 py-2.5 text-[#667085]',
+                    'rounded-lg bg-neutral-50 h-10 sm:h-11 w-full focus-visible:outline-neutral-300 pr-3.5 pl-10 py-2 sm:py-2.5 text-[#667085]',
                     className
                   )}
                 />
@@ -148,7 +148,9 @@ const CustomInput = ({
                 type={type}
                 placeholder={placeholder}
                 className={twMerge(
-                  'border border-[#D0D5DD] rounded-lg h-11 w-full focus-visible:outline-neutral-300 px-3.5 py-2.5 text-[#667085]',
+                  `border ${
+                    error ? 'border-error' : 'border-[#D0D5DD]'
+                  } rounded-lg h-11 w-full focus-visible:outline-neutral-300 px-3.5 py-2.5 text-[#667085]`,
                   className
                 )}
               />
@@ -160,7 +162,7 @@ const CustomInput = ({
         <p
           className={`text-red-500 text-xs mt-0.5 ml-0.5 min-h-4 ${
             error ? 'visible' : 'invisible'
-          }`}
+          } ${name === 'password' && 'sm:invisible'}`}
         >
           {error?.message}
         </p>

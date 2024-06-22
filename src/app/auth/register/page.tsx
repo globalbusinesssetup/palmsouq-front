@@ -46,7 +46,7 @@ const Register = () => {
               {accountTypes.map((account) => (
                 <Field
                   key={account.value}
-                  className={`flex-1 flex items-center gap-2 p-3 sm:p-4 border rounded-lg transition-all duration-300 cursor-pointer ${
+                  className={`flex-1 flex items-center gap-2 p-2 sm:p-4 border rounded-lg transition-all duration-300 cursor-pointer ${
                     selectedType === account.value
                       ? 'bg-neutral-50 border-[#9B9DFD]'
                       : ''
@@ -58,7 +58,7 @@ const Register = () => {
                   >
                     <span className="invisible size-1.5 sm:size-2 rounded-full bg-primary group-data-[checked]:visible" />
                   </Radio>
-                  <Label className="text-sm sm:text-base text-[#344054] font-medium sm:font-semibold whitespace-nowrap">
+                  <Label className="text-xs sm:text-base text-[#344054] font-medium sm:font-semibold whitespace-nowrap">
                     {account.title}
                   </Label>
                 </Field>

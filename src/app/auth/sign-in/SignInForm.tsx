@@ -12,7 +12,14 @@ import { useForm } from 'react-hook-form';
 // };
 
 const SignInForm = ({ onSignIn }: { onSignIn?: () => void }) => {
-  const { control, handleSubmit, setValue, setError, clearErrors } = useForm();
+  const {
+    control,
+    handleSubmit,
+    setValue,
+    setError,
+    clearErrors,
+    formState: { errors },
+  } = useForm();
   const [enabled, setEnabled] = useState(false);
   const [phone, setPhone] = useState<any>();
 
@@ -43,6 +50,7 @@ const SignInForm = ({ onSignIn }: { onSignIn?: () => void }) => {
           // setError={setError}
           clearErrors={clearErrors}
           onChange={(val: any) => setPhone(val)}
+          error={errors?.phone}
         />
         <Input
           control={control}
@@ -52,6 +60,7 @@ const SignInForm = ({ onSignIn }: { onSignIn?: () => void }) => {
           type="password"
           placeholder="••••••••"
           wrapClassName="mt-4"
+          error={errors?.password}
         />
         <div className="mt-5 flex items-center justify-between">
           <div className="flex items-center gap-2">

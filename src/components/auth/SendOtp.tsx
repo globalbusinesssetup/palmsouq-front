@@ -10,7 +10,13 @@ const SendOtp = ({
   onContinue?: () => void;
   description?: string;
 }) => {
-  const { control, handleSubmit, setError, clearErrors } = useForm();
+  const {
+    control,
+    handleSubmit,
+    setError,
+    clearErrors,
+    formState: { errors },
+  } = useForm();
 
   const onFormSubmit = (data: any) => {
     onContinue?.();
@@ -35,7 +41,7 @@ const SendOtp = ({
         // setError={setError}
         clearErrors={clearErrors}
         name="phone"
-        // placeholder="••••••••"
+        error={errors?.phone}
         wrapClassName="mt-8"
       />
       <Button onClick={handleSubmit(onFormSubmit)} className="mt-6">

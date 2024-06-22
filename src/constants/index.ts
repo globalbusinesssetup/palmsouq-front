@@ -1,3 +1,4 @@
+export const currentYear = new Date().getFullYear();
 export const topBarCategories = [
   {
     title: 'Flyers & Brochures',

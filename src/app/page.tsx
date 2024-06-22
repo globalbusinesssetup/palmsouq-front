@@ -22,22 +22,22 @@ const companyDetails = [
   {
     title: 'E-mail us',
     data: ['email@yallaprints.com', 'email@yallaprints.com'],
-    icon: <HiOutlineMail className="text-4xl" />,
+    icon: <HiOutlineMail className="text-2xl md:text-4xl" />,
   },
   {
     title: 'Call us',
     data: ['+971 50 1234567 (Contact)', '+971 50 1234567 (Contact)'],
-    icon: <IoCallOutline className="text-4xl" />,
+    icon: <IoCallOutline className="text-2xl md:text-4xl" />,
   },
   {
     title: 'Support',
     data: ['+971 50 1234567 (Contact)', '+971 50 1234567 (Contact)'],
-    icon: <IoCallOutline className="text-4xl" />,
+    icon: <IoCallOutline className="text-2xl md:text-4xl" />,
   },
   {
     title: 'Location',
     data: ['Industrial Area #4, Behind LuLu Al Wahda Road, Sharjah - U.A.E.'],
-    icon: <GrLocation className="text-4xl" />,
+    icon: <GrLocation className="text-2xl md:text-4xl" />,
   },
 ];
 
@@ -50,12 +50,12 @@ export default function Home() {
   return (
     <main>
       <TopBar />
-      <Header />
+      <Header showSearch />
       <CategoriesBar />
-      <div className="container mx-auto min-h-[55vh] mt-10 pb-7">
+      <div className="container mx-auto min-h-[55vh] mt-10 pb-7 px-4">
         {/* Banner  */}
-        <section className="sm:flex sm:space-x-4">
-          <div className="sm:w-7/12 h-[304px] sm:rounded-[10px] overflow-hidden">
+        <section className="lg:flex lg:space-x-4">
+          <div className="lg:w-7/12 h-[200px] sm:h-[250px] xl:h-[304px] rounded-[10px] overflow-hidden">
             <swiper-container
               className="w-full"
               pagination={true}
@@ -67,29 +67,32 @@ export default function Home() {
                 .fill('')
                 .map((_, i) => (
                   <swiper-slide key={`banner_${i}`} style={{ width: '100%' }}>
-                    <div className="w-full h-[304px] relative overflow-hidden sm:rounded-[10px]">
+                    <div className="w-full h-[200px] sm:h-[250px] xl:h-[304px] relative overflow-hidden rounded-[10px]">
                       <Image src={'/banners/banner.jpeg'} fill alt={'banner'} />
                     </div>
                   </swiper-slide>
                 ))}
             </swiper-container>
           </div>
-          <div className="sm:w-5/12 h-[304px] relative overflow-hidden sm:rounded-[10px] mt-4 sm:mt-0">
+          <Link
+            href={'#'}
+            className="lg:w-5/12 h-[250px] xl:h-[304px] hidden lg:block relative overflow-hidden sm:rounded-[10px] mt-4 lg:mt-0"
+          >
             <Image src={'/banners/weekly-offer.jpeg'} fill alt={'banner'} />
-          </div>
+          </Link>
         </section>
         {/* explore by categories */}
         <section className="mt-7 p-4 rounded-[10px] border border-neutral-200">
           <div className="flex items-center justify-between">
-            <h3 className="text-2xl text-primary font-semibold">
+            <h3 className="text-lg sm:text-xl lg:text-2xl text-primary font-semibold">
               Explore by categories
             </h3>
             <div className="flex items-center gap-x-2">
-              <button className="w-10 h-10 rounded-full flex items-center justify-center bg-[#F5F5F7] hover:bg-[#F5F5F7]/70 hover:scale-95 active:scale-90">
-                <HiArrowLeft className="text-2xl text-neutral-500" />
+              <button className="size-8 lg:size-10 rounded-full flex items-center justify-center bg-[#F5F5F7] hover:bg-[#F5F5F7]/70 hover:scale-95 active:scale-90">
+                <HiArrowLeft className="lg:text-2xl text-neutral-500" />
               </button>
-              <button className="w-10 h-10 rounded-full flex items-center justify-center bg-[#F5F5F7] hover:bg-[#F5F5F7]/70 hover:scale-95 active:scale-90">
-                <HiArrowRight className="text-2xl text-neutral-500" />
+              <button className="size-8 lg:size-10 rounded-full flex items-center justify-center bg-[#F5F5F7] hover:bg-[#F5F5F7]/70 hover:scale-95 active:scale-90">
+                <HiArrowRight className="lg:text-2xl text-neutral-500" />
               </button>
             </div>
           </div>
@@ -154,12 +157,12 @@ export default function Home() {
           </div>
         </section>
         {/* in demand products */}
-        <section className="mt-7 bg-[#F9FAFB] rounded-[10px] px-5 py-4">
+        <section className="mt-7 bg-[#F9FAFB] rounded-[10px] px-2 lg:px-5 py-4">
           <div className="pb-4">
-            <h3 className="text-2xl text-primary font-semibold">
+            <h3 className="text-lg md:text-2xl text-primary font-semibold">
               In-demand Products
             </h3>
-            <p className="text-base text-neutral-600 mt-1">
+            <p className="text-xs sm:text-sm lg:text-base text-neutral-600 mt-1">
               Discover the Best Selling Products on the Market Today.
             </p>
           </div>
@@ -182,10 +185,10 @@ export default function Home() {
           />
         </div>
         {/* popular business cards  */}
-        <section className="mt-10 bg-[#F9FAFB] rounded-[10px] px-5 py-4">
+        <section className="mt-10 bg-[#F9FAFB] rounded-[10px] px-2 lg:px-5 py-4">
           <div className="pb-4 flex lg:items-center justify-between">
             <div className="max-w-[70%] sm:max-w-none">
-              <h3 className="text-xl sm:text-2xl text-primary font-semibold">
+              <h3 className="text-lg md:text-xl lg:text-2xl text-primary font-semibold">
                 Popular Business Cards
               </h3>
               <p className="text-xs sm:text-base text-neutral-600 mt-1">
@@ -231,10 +234,10 @@ export default function Home() {
           </div>
         </section>
         {/* High demand flyers  */}
-        <section className="mt-10 bg-[#F9FAFB] rounded-[10px] px-5 py-4">
+        <section className="mt-10 bg-[#F9FAFB] rounded-[10px] px-2 lg:px-5 py-4">
           <div className="pb-4 flex lg:items-center justify-between">
             <div className="max-w-[70%] sm:max-w-none">
-              <h3 className="text-xl sm:text-2xl text-primary font-semibold">
+              <h3 className="text-lg md:text-xl lg:text-2xl text-primary font-semibold">
                 High Demand Flyers
               </h3>
               <p className="text-sm sm:text-base text-neutral-600 mt-1">
@@ -267,19 +270,19 @@ export default function Home() {
           />
         </div>
         {/* best selling paper bags  */}
-        <section className="mt-10 bg-[#F9FAFB] rounded-[10px] px-5 py-4">
+        <section className="mt-10 bg-[#F9FAFB] rounded-[10px] px-2 lg:px-5 py-4">
           <div className="pb-4 flex items-center justify-between">
-            <div className="">
-              <h3 className="text-2xl text-primary font-semibold">
+            <div className="max-w-[70%] sm:max-w-none">
+              <h3 className="text-lg md:text-xl lg:text-2xl text-primary font-semibold">
                 Best Selling Paper Bags
               </h3>
-              <p className="text-base text-neutral-600 mt-1">
+              <p className="text-sm sm:text-base text-neutral-600 mt-1">
                 Maximize Reach with Custom Paper Bags Printing
               </p>
             </div>
             <Link
               href={'#'}
-              className="w-[115px] h-10 flex items-center justify-center gap-x-2 rounded-full transition-all duration-300 text-[#6835B1] border border-[#6835B1] hover:scale-95"
+              className="sm:w-[115px] px-2 h-8 sm:h-10 flex text-xs sm:text-base items-center justify-center gap-x-2 rounded-full transition-all duration-300 text-[#6835B1] border border-[#6835B1] hover:scale-95"
             >
               View All <HiArrowRight />
             </Link>
@@ -299,33 +302,37 @@ export default function Home() {
               key={`feature_${i}`}
               className="flex-1 p-4 border border-[#385f48bf] rounded-lg flex items-center gap-x-4"
             >
-              <div className="w-[72px] h-[72px] rounded-full flex items-center justify-center bg-neutral-50">
+              <div className="size-10 lg:size-[72px] rounded-full flex items-center justify-center bg-neutral-50">
                 <Image src={feature.icon} width={42} height={42} alt="icon" />
               </div>
-              <div className="">
-                <h6 className="text-lg font-semibold text-black">
+              <div className="flex-1">
+                <h6 className=" sm:text-lg font-semibold text-black whitespace-nowrap">
                   {feature.title}
                 </h6>
-                <p className="text-sm text-neutral-600 mt-1">{feature.desc}</p>
+                <p className="text-xs sm:text-sm text-neutral-600 mt-1 whitespace-nowrap">
+                  {feature.desc}
+                </p>
               </div>
             </div>
           ))}
         </section>
         {/* client testimonial  */}
-        <section className="p-8 bg-[#A79F881A] mt-10">
+        <section className="p-4 lg:p-8 bg-[#A79F881A] mt-10">
           <div className="flex items-center">
             <div className="flex-1">
-              <p className="text-success text-2xl">Client, Testimonial</p>
-              <p className="mt-1 text-2xl text-primary font-semibold">
+              <p className="text-success text-lg md:text-xl lg:text-2xl">
+                Client, Testimonial
+              </p>
+              <p className="mt-1 text-lg md:text-xl lg:text-2xl text-primary font-semibold">
                 The preferred printing partner for over 2000+ professionals.
               </p>
             </div>
-            <div className="flex items-center gap-x-2">
-              <button className="w-10 h-10 rounded-full flex items-center justify-center bg-white hover:bg-white/70 hover:scale-95 active:scale-90">
-                <HiArrowLeft className="text-2xl text-neutral-500" />
+            <div className="hidden md:flex items-center gap-x-2">
+              <button className="size-8 lg:size-10 rounded-full flex items-center justify-center bg-white hover:bg-white/70 hover:scale-95 active:scale-90">
+                <HiArrowLeft className="lg:text-2xl text-neutral-500" />
               </button>
-              <button className="w-10 h-10 rounded-full flex items-center justify-center bg-white hover:bg-white/70 hover:scale-95 active:scale-90">
-                <HiArrowRight className="text-2xl text-neutral-500" />
+              <button className="size-8 lg:size-10 rounded-full flex items-center justify-center bg-white hover:bg-white/70 hover:scale-95 active:scale-90">
+                <HiArrowRight className="lg:text-2xl text-neutral-500" />
               </button>
             </div>
           </div>
@@ -335,8 +342,8 @@ export default function Home() {
                 .fill(' ')
                 .map((_, i) => (
                   <swiper-slide key={`testimonial_${i}`}>
-                    <div className="flex-1 bg-white border border-neutral-200 p-6 space-y-3 rounded-lg">
-                      <h5 className="text-neutral-700 font-medium text-[21.31px] leading-[25.79px]">
+                    <div className="flex-1 bg-white border border-neutral-200 p-3 lg:p-6 space-y-3 rounded-lg">
+                      <h5 className="text-neutral-700 font-medium text-lg lg:text-[21.31px] leading-[25.79px]">
                         Floyd Miles
                       </h5>
                       <StarRatings
@@ -348,7 +355,7 @@ export default function Home() {
                         starSpacing="5px"
                         name="rating"
                       />
-                      <p className="text-[#133240]">
+                      <p className="text-[#133240] text-sm lg:text-base">
                         Amet minim mollit non deserunt ullamco est sit aliqua
                         dolor do amet sint. Velit officia consequat duis enim
                         velit mollit. Exercitation veniam consequat sunt nostrud
@@ -361,7 +368,7 @@ export default function Home() {
           </div>
         </section>
         {/* industry banner  */}
-        <section className="mt-10 p-4 sm:px-6 py-5 sm:py-[33px] border border-[#10182833] rounded-[10px] sm:flex items-center gap-x-10 justify-between mx-4 sm:mx-0">
+        <section className="mt-10 p-4 sm:px-6 py-5 sm:py-[33px] border border-[#10182833] rounded-[10px] sm:flex items-center gap-x-10 justify-between">
           <div className="flex-1 w-full h-[293px] relative">
             <Image
               src={'/banners/industry-banner.png'}
@@ -370,13 +377,13 @@ export default function Home() {
             />
           </div>
           <div className="flex-1 mt-5 sm:mt-0">
-            <p className="sm:text-lg font-medium text-success/80">
+            <p className=" md:text-lg font-medium text-success/80">
               Fastest and Cheapest Printing in UAE{' '}
             </p>
-            <h3 className="text-xl sm:text-3xl font-semibold text-neutral-800 mt-2">
+            <h3 className="text-lg md:text-xl lg:text-3xl font-semibold text-neutral-800 mt-2">
               Printcraft is Revolutionizing the Online Printing Industry.
             </h3>
-            <p className="mt-4 sm:text-lg text-neutral-600">
+            <p className="mt-4 text-sm md:text-base lg:text-lg text-neutral-600">
               Delivering top-quality Design and Printing in UAE with a wide
               range of high-quality printing products at the best prices in the
               UAE. Our easy-to-use website makes it a breeze to order the
@@ -387,7 +394,7 @@ export default function Home() {
           </div>
         </section>
         {/* order steps */}
-        <section className="mt-10 px-6 py-4 bg-neutral-50 rounded-[10px] flex flex-wrap items-center gap-6">
+        <section className="mt-10 sm:px-6 py-4 bg-neutral-50 rounded-[10px] flex flex-wrap items-center gap-6">
           {orderSteps.map((step, i) => (
             <div
               key={`step_${i}`}
@@ -397,10 +404,10 @@ export default function Home() {
                 <Image src={step.icon} fill alt="icon" />
               </div>
               <div className="text-center">
-                <h4 className="text-xl font-medium text-primary">
+                <h4 className="md:text-lg lg:text-xl font-medium text-primary text-nowrap">
                   {step.title}
                 </h4>
-                <p className="text-sm font-medium text-neutral-500">
+                <p className="text-xs sm:text-sm font-medium text-neutral-500">
                   {step.desc}
                 </p>
               </div>
@@ -410,16 +417,22 @@ export default function Home() {
       </div>
       {/* companyDetails */}
       <section className="bg-neutral-50 pt-10 pb-[30px] px-4 sm:px-0">
-        <div className="container mx-auto flex flex-wrap gap-5 items-center justify-between">
+        <div className="container px-4 mx-auto flex flex-wrap gap-2 lg:gap-5 lg:justify-between">
           {companyDetails.map((detail, i) => (
-            <div key={`detail_${i}`} className="flex gap-x-3.5">
+            <div
+              key={`detail_${i}`}
+              className="flex gap-x-3.5 xs:max-w-[50%] sm:max-w-fit"
+            >
               {detail.icon}
-              <div className="max-w-[220px]">
+              <div className="max-w-[220px] flex-1">
                 <h5 className="text-lg text-neutral-900 font-semibold">
                   {detail.title}
                 </h5>
                 {detail.data.map((d, i) => (
-                  <p key={`k_${i}`} className="mt-1 text-sm text-neutral-700">
+                  <p
+                    key={`k_${i}`}
+                    className="mt-1 text-xs lg:text-sm text-neutral-700"
+                  >
                     {d}
                   </p>
                 ))}

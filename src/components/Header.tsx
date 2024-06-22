@@ -19,13 +19,16 @@ const Header = ({
   const [isLogedIn, setLogIn] = useState(true);
 
   return (
-    <header className="py-5 border-b">
-      <div className="container mx-auto flex items-center justify-between gap-x-6">
+    <header className="py-4 sm:py-5 border-b">
+      <div className="container mx-auto flex items-center justify-between gap-x-6 px-4">
         <div className="flex items-center gap-6">
-          <Link href={'/'} className="w-[176px] h-[31px] relative">
+          <Link
+            href={'/'}
+            className="w-[110px] sm:w-[136px] md:w-[156px] xl:w-[176px] h-7 sm:h-[31px] relative"
+          >
             <Image src="/logo.svg" fill alt="logo" />
           </Link>
-          <div className="py-1 px-2 flex items-center gap-x-3">
+          <div className="py-1 px-2 items-center gap-x-3 hidden lg:flex">
             <Link href={'#'}>
               <RiWhatsappFill className="text-[28px] text-[#1FAF38]" />
             </Link>
@@ -50,30 +53,34 @@ const Header = ({
           </div>
         )}
         {isLogedIn ? (
-          <div className="flex items-center gap-x-4">
+          <div className="hidden md:flex items-center gap-x-4">
             <div className="flex items-center gap-x-3 p-2">
-              <FiUser className="text-[28px] text-[#1A1E5E]" />
+              <FiUser className="text-2xl xl:text-[28px] text-[#1A1E5E]" />
               <div className="text-[#1A1E5E]">
-                <p className="text-xs">Hi, Yallprints</p>
+                <p className="text-tiny lg:text-xs">Hi, Yallprints</p>
                 <Link
                   href={'/dashboard/profile'}
                   className="flex items-center gap-x-1"
                 >
-                  <p className="text-sm font-semibold">My Account</p>
-                  <IoIosArrowDown className="text-lg" />
+                  <p className="text-xs lg:text-sm font-medium xl:font-semibold">
+                    My Account
+                  </p>
+                  <IoIosArrowDown className="xl:text-lg" />
                 </Link>
               </div>
             </div>
             <div className="flex items-center gap-x-3 p-2">
-              <FiShoppingBag className="text-[26px] text-[#1A1E5E]" />
+              <FiShoppingBag className="text-2xl xl:text-[26px] text-[#1A1E5E]" />
               <div className="text-[#1A1E5E]">
-                <p className="text-xs">My Cart</p>
+                <p className="text-tiny lg:text-xs">My Cart</p>
                 <Link
                   href={'/dashboard/cart'}
                   className="flex items-center gap-x-1"
                 >
-                  <p className="text-sm font-semibold uppercase">0.00 AED</p>
-                  <IoIosArrowDown className="text-lg" />
+                  <p className="text-xs lg:text-sm font-medium xl:font-semibold uppercase">
+                    0.00 AED
+                  </p>
+                  <IoIosArrowDown className="xl:text-lg" />
                 </Link>
               </div>
             </div>
@@ -83,7 +90,7 @@ const Header = ({
             href={'/auth/sign-in'}
             className="py-2 px-7 flex items-center gap-x-3 border rounded-lg"
           >
-            <RiUserSharedLine className="text-[28px] text-[#1A1E5E]" />
+            <RiUserSharedLine className="text-2xl lg:text-[28px] text-[#1A1E5E]" />
 
             <div className="">
               <p className="text-xs text-[#1A1E5E] font-light">Login</p>

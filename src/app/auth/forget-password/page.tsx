@@ -15,7 +15,7 @@ const ForgotPassword = () => {
   return (
     <main className="bg-white min-h-screen flex items-center justify-center px-5">
       <div className="py-10">
-        <div className="sm:w-[400px] border border-[#D0D5DD] rounded-xl shadow-md p-6">
+        <div className="sm:w-[400px] border border-[#D0D5DD] rounded-xl shadow-md p-6 overflow-hidden">
           {currentFlow === 'number' ? (
             <SendOtp onContinue={() => setFlow('otp')} />
           ) : currentFlow === 'otp' ? (

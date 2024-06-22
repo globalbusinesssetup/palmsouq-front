@@ -52,7 +52,8 @@ const OtpVerify = ({
           alignItems: 'center',
           justifyContent: 'space-between',
           marginTop: '32px',
-          paddingInline: '28px',
+          maxWidth: '294px',
+          marginInline: 'auto',
           gap: '0 10px',
         }}
         inputStyle={{
@@ -63,7 +64,7 @@ const OtpVerify = ({
         }}
       />
       {error && (
-        <p className={'text-error mt-3 text-xs pl-7'}>please fill all input</p>
+        <p className={'text-error mt-3 text-xs'}>please fill all input</p>
       )}
       <p className="text-sm text-neutral-500 mt-4 text-center">
         Didn&apos;t receive the code?{' '}

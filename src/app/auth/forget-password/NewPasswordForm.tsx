@@ -4,7 +4,11 @@ import { HiOutlineLockClosed } from 'react-icons/hi';
 import { useForm } from 'react-hook-form';
 
 const NewPasswordForm = ({ onUpdate }: { onUpdate?: () => void }) => {
-  const { control, handleSubmit } = useForm();
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({ mode: 'onChange' });
 
   const onFormSubmit = (data: any) => {
     console.log(data);
@@ -36,6 +40,7 @@ const NewPasswordForm = ({ onUpdate }: { onUpdate?: () => void }) => {
               'Password must contain at least 8 characters, one uppercase letter, one lowercase letter, one number',
           },
         }}
+        error={errors?.password}
         name="password"
         label="Password"
         type="password"
@@ -51,6 +56,7 @@ const NewPasswordForm = ({ onUpdate }: { onUpdate?: () => void }) => {
         }}
         name="cnfm_password"
         label="Confirm Password *"
+        error={errors?.cnfm_password}
         type="password"
         placeholder="••••••••"
         wrapClassName="mt-4 w-full"

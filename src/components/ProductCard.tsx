@@ -6,14 +6,17 @@ import { HiArrowRight } from 'react-icons/hi';
 const ProductCard = () => {
   return (
     <div className="border border-neutral-200 rounded-lg bg-white p-3">
-      <div className="w-full h-[228px] rounded bg-secondary relative">
+      <Link
+        href={'/categories/stickers/123'}
+        className="block w-full h-[228px] rounded bg-secondary relative"
+      >
         <Image
           src={'/categories/paper-bags.png'}
           fill
           alt="banner"
-          className="object-cover"
+          className="object-fill"
         />
-      </div>
+      </Link>
       <div className="mt-2 py-2.5">
         <p className="text-xs text-success">Product name</p>
         <Link

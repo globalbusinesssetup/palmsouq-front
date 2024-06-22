@@ -63,6 +63,7 @@ const PersonalForm = () => {
             },
           }}
           name="password"
+          error={errors.password}
           label="Password"
           type="password"
           placeholder="••••••••"
@@ -85,7 +86,7 @@ const PersonalForm = () => {
       </div>
       <p
         className={`text-error text-xs min-h-4 ${
-          errors.password ? 'visible' : 'invisible'
+          errors.password ? 'invisible sm:visible' : 'invisible'
         }`}
       >
         {(errors.password as FieldError)?.message || ''}

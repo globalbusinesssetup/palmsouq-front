@@ -6,14 +6,18 @@ import React, { useState } from 'react';
 import { BiUpload } from 'react-icons/bi';
 import { FaArrowRightLong } from 'react-icons/fa6';
 import { FiUpload } from 'react-icons/fi';
-import { useForm } from 'react-hook-form';
+import { FieldError, useForm } from 'react-hook-form';
 
 // export const metadata: Metadata = {
 //   title: 'Sign In | Printcraft',
 // };
 
 const CorporateForm = () => {
-  const { control, handleSubmit } = useForm<any>();
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<any>({ mode: 'onChange' });
 
   const onRegister = (data: any) => {
     console.log(data);
@@ -26,6 +30,7 @@ const CorporateForm = () => {
           control={control}
           rules={{ required: 'First Name is required' }}
           name="first_name"
+          error={errors.first_name}
           label="First Name *"
           placeholder="Enter first name"
           wrapClassName="flex-1 mt-4 sm:mt-0"
@@ -34,6 +39,7 @@ const CorporateForm = () => {
           control={control}
           rules={{ required: 'Last Name is required' }}
           name="last_name"
+          error={errors.last_name}
           label="Last Name *"
           placeholder="Enter last name"
           wrapClassName="flex-1 mt-4 sm:mt-0"
@@ -43,6 +49,7 @@ const CorporateForm = () => {
         control={control}
         rules={{ required: 'Company Name is required' }}
         name="company"
+        error={errors.company}
         label="Company Name *"
         placeholder="Enter your company name"
         wrapClassName="flex-1 mt-4 sm:mt-6"
@@ -57,6 +64,7 @@ const CorporateForm = () => {
           },
         }}
         name="email"
+        error={errors.email}
         label="Email Address *"
         placeholder="Enter email address"
         wrapClassName="flex-1 mt-4 sm:mt-6"
@@ -73,6 +81,7 @@ const CorporateForm = () => {
             },
           }}
           name="password"
+          error={errors.password}
           label="Password"
           type="password"
           placeholder="••••••••"
@@ -86,6 +95,7 @@ const CorporateForm = () => {
               value === formValues.password,
           }}
           name="cnfm_password"
+          error={errors.cnfm_password}
           label="Confirm Password *"
           type="password"
           placeholder="••••••••"
@@ -98,6 +108,7 @@ const CorporateForm = () => {
           rules={{ required: 'Trade License is required' }}
           label="Trade License *"
           name="trade_license"
+          error={errors.trade_license}
           type="file"
           wrapClassName="flex-1"
         />
@@ -106,10 +117,18 @@ const CorporateForm = () => {
           rules={{ required: 'TRN Certificate is required' }}
           label="TRN Certificate *"
           name="trn_certificate"
+          error={errors.trn_certificate}
           type="file"
           wrapClassName="flex-1"
         />
       </div>
+      <p
+        className={`text-error text-xs min-h-4 ${
+          errors.password ? 'invisible sm:visible' : 'invisible'
+        }`}
+      >
+        {(errors.password as FieldError)?.message || ''}
+      </p>
       <Button type="submit" className="mt-8">
         Register
       </Button>
