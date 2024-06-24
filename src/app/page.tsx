@@ -42,7 +42,7 @@ const companyDetails = [
 ];
 
 export default function Home() {
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const [windowWidth, setWindowWidth] = useState(0);
   const [rating, setRating] = useState<number>(3.5);
   const [catSlidesPerView, setCatPerView] = useState<number>();
   const [reviewSlidesPerView, setReviewPerView] = useState<number>();
@@ -51,6 +51,9 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setWindowWidth(window.innerWidth);
+    }
     const handleResize = () => {
       setWindowWidth(window.innerWidth);
     };
@@ -88,23 +91,6 @@ export default function Home() {
       window.removeEventListener('resize', handleResize);
     };
   }, [windowWidth]);
-
-  // useEffect(() => {
-  //   const getCurrentCatSlide = () => {
-  //     if (windowWidth > 1279) {
-  //       return 7;
-  //     } else if (windowWidth > 1023) {
-  //       return 6;
-  //     } else if (windowWidth > 767) {
-  //       return 4;
-  //     } else if (windowWidth > 639) {
-  //       return 3;
-  //     } else {
-  //       return 2;
-  //     }
-  //   };
-  //   setCatPerView(getCurrentCatSlide());
-  // }, [windowWidth]);
 
   return (
     <main>
