@@ -170,7 +170,7 @@ const Shippings = () => {
         <h4 className="text-lg text-neutral-900 font-semibold">
           New Shipping Address
         </h4>
-        <div className="flex gap-x-6 mt-8">
+        <div className="flex flex-col md:flex-row gap-y-4 gap-x-6 mt-4 sm:mt-6 lg:mt-8">
           <div className="flex-1">
             <label
               htmlFor="countries"
@@ -202,7 +202,7 @@ const Shippings = () => {
             <Input name="phone" control={control} label="Phone" />
           </div>
         </div>
-        <div className="flex gap-x-6 mt-8">
+        <div className="flex flex-col md:flex-row gap-y-4 gap-x-6 mt-2 sm:mt-4 lg:mt-8">
           <div className="flex-1">
             <label
               htmlFor="state"
@@ -267,8 +267,8 @@ const Shippings = () => {
           placeholder="Street, Building, Apt. etc"
           wrapClassName="mt-6"
         />
-        <div className="flex items-center justify-end">
-          <Button type="submit" className="w-[150px] text-sm font-semibold">
+        <div className="md:flex items-center justify-end">
+          <Button type="submit" className="md:w-[150px] text-sm font-semibold">
             Add new address
           </Button>
         </div>

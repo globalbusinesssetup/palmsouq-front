@@ -9,7 +9,7 @@ const CategoriesBar = () => {
     <div className="py-2 border-b">
       <div className="container mx-auto flex items-center gap-x-4 xl:gap-x-[30px] px-4">
         <Menu>
-          <MenuButton className="group flex-auto sm:flex-none text-left gap-2 xl:gap-4 flex items-center justify-between bg-primary rounded-lg py-2 xl:py-3 px-3 xl:px-5 text-white text-sm xl:text-base font-medium xl:font-semibold">
+          <MenuButton className="group flex-auto sm:flex-none text-left gap-2 xl:gap-4 flex items-center justify-between bg-primary rounded-md lg:rounded-lg py-2 xl:py-3 px-3 xl:px-5 text-white text-sm xl:text-base font-medium xl:font-semibold">
             <div className="flex items-center gap-2 xl:gap-3 flex-1">
               <HiOutlineMenuAlt2 className="text-base xl:text-xl" /> Browse
               Categories
@@ -18,7 +18,7 @@ const CategoriesBar = () => {
           </MenuButton>
           <MenuItems
             anchor="bottom"
-            className="bg-primary w-[calc(100%-32px)] sm:w-[200px] xl:w-[250px] mt-1 py-3 rounded-lg z-10"
+            className="bg-primary w-[calc(100%-40px)] sm:w-[200px] xl:w-[250px] mt-1 py-3 rounded-lg z-10"
           >
             {categories.map((cat, i) => (
               <MenuItem key={i}>

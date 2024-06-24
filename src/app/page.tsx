@@ -42,17 +42,76 @@ const companyDetails = [
 ];
 
 export default function Home() {
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [rating, setRating] = useState<number>(3.5);
+  const [catSlidesPerView, setCatPerView] = useState<number>();
+  const [reviewSlidesPerView, setReviewPerView] = useState<number>();
   useEffect(() => {
     register();
   }, []);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    // Initial setting of perView based on the initial window width
+    const getCurrentCatSlide = () => {
+      if (windowWidth > 1279) {
+        return 7;
+      } else if (windowWidth > 1023) {
+        return 6;
+      } else if (windowWidth > 767) {
+        return 4;
+      } else if (windowWidth > 639) {
+        return 3;
+      } else {
+        return 2;
+      }
+    };
+    const getCurrentTestimonialSlide = () => {
+      if (windowWidth > 1023) {
+        return 3;
+      } else if (windowWidth > 639) {
+        return 2;
+      } else {
+        return 1;
+      }
+    };
+
+    setCatPerView(getCurrentCatSlide());
+    setReviewPerView(getCurrentTestimonialSlide());
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [windowWidth]);
+
+  // useEffect(() => {
+  //   const getCurrentCatSlide = () => {
+  //     if (windowWidth > 1279) {
+  //       return 7;
+  //     } else if (windowWidth > 1023) {
+  //       return 6;
+  //     } else if (windowWidth > 767) {
+  //       return 4;
+  //     } else if (windowWidth > 639) {
+  //       return 3;
+  //     } else {
+  //       return 2;
+  //     }
+  //   };
+  //   setCatPerView(getCurrentCatSlide());
+  // }, [windowWidth]);
 
   return (
     <main>
       <TopBar />
       <Header showSearch />
       <CategoriesBar />
-      <div className="container mx-auto min-h-[55vh] mt-10 pb-7 px-4">
+      <div className="container mx-auto min-h-[55vh] mt-5 lg:mt-8 xl:mt-10 pb-7 px-4">
         {/* Banner  */}
         <section className="lg:flex lg:space-x-4">
           <div className="lg:w-7/12 h-[200px] sm:h-[250px] xl:h-[304px] rounded-[10px] overflow-hidden">
@@ -98,43 +157,32 @@ export default function Home() {
           </div>
           <div className="mt-5 max-h-[172px] overflow-hidden">
             <swiper-container
-              slides-per-view="7"
+              slides-per-view={catSlidesPerView}
               space-between={16}
               breakpointsBase="window"
-              // breakpoints={{
-              //   640: {
-              //     slidesPerView: 2,
-              //     spaceBetween: 20,
-              //   },
-              //   768: {
-              //     slidesPerView: 4,
-              //     spaceBetween: 40,
-              //   },
-              //   1024: {
-              //     slidesPerView: 7,
-              //     spaceBetween: 50,
-              //   },
-              // }}
             >
               {categories.map((cat, i) => (
                 <swiper-slide key={`cat_${i}`} className="">
-                  <div className="rounded-lg bg-[#F5F5F7] min-w-[155px] flex-1 pt-4">
+                  <Link
+                    href={cat.link}
+                    className="block rounded-lg bg-[#F5F5F7] xs:min-w-[155px] flex-1 pt-4"
+                  >
                     <div className="w-full h-[100px] relative mx-1 mb-4">
                       <Image src={cat.img} fill alt="cat image" />
                     </div>
                     <Link
                       href={cat.link}
-                      className="px-5 py-3 text-xs font-semibold text-neutral-600 flex items-center justify-center gap-x-2"
+                      className="px-3 xs:px-5 py-3 text-xs font-semibold text-neutral-600 transition-all duration-300 hover:text-primary/70 flex items-center justify-center gap-x-2"
                     >
                       {cat.title} <FaArrowRightLong className="text-base" />
                     </Link>
-                  </div>
+                  </Link>
                 </swiper-slide>
               ))}
             </swiper-container>
           </div>
         </section>
-        <section className="flex items-center gap-x-4 mt-8">
+        <section className="flex items-center gap-x-4 mt-5 md:mt-8">
           <div className="flex-1 h-[108px] bg-[#F5F5F7] relative rounded overflow-hidden">
             <Image
               src={
@@ -145,7 +193,7 @@ export default function Home() {
               className=" object-cover"
             />
           </div>
-          <div className="flex-1 h-[108px] bg-[#F5F5F7] relative rounded overflow-hidden">
+          <div className="hidden md:block flex-1 h-[108px] bg-[#F5F5F7] relative rounded overflow-hidden">
             <Image
               src={
                 'https://plus.unsplash.com/premium_photo-1682145481505-80614272c426?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
@@ -166,7 +214,7 @@ export default function Home() {
               Discover the Best Selling Products on the Market Today.
             </p>
           </div>
-          <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-6">
+          <div className="grid xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-6">
             {Array(8)
               .fill(' ')
               .map((product, i) => (
@@ -174,7 +222,7 @@ export default function Home() {
               ))}
           </div>
         </section>
-        <div className="w-full h-[240px] bg-secondary mt-10 rounded-md overflow-hidden relative">
+        <div className="w-full h-[180px] lg:h-[240px] bg-secondary mt-8 lg:mt-10 rounded-md overflow-hidden relative">
           <Image
             src={
               'https://images.unsplash.com/photo-1565688842882-e0b2693d349a?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
@@ -185,7 +233,7 @@ export default function Home() {
           />
         </div>
         {/* popular business cards  */}
-        <section className="mt-10 bg-[#F9FAFB] rounded-[10px] px-2 lg:px-5 py-4">
+        <section className="mt-5 md:mt-8 lg:mt-10 bg-[#F9FAFB] rounded-[10px] px-2 lg:px-5 py-4">
           <div className="pb-4 flex lg:items-center justify-between">
             <div className="max-w-[70%] sm:max-w-none">
               <h3 className="text-lg md:text-xl lg:text-2xl text-primary font-semibold">
@@ -203,7 +251,7 @@ export default function Home() {
               View All <HiArrowRight />
             </Link>
           </div>
-          <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-6">
+          <div className="grid xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-6">
             {Array(8)
               .fill(' ')
               .map((product, i) => (
@@ -211,8 +259,8 @@ export default function Home() {
               ))}
           </div>
         </section>
-        <section className="flex items-center gap-x-4 mt-8">
-          <div className="flex-1 h-[240px] bg-[#F5F5F7] relative rounded-md overflow-hidden">
+        <section className="flex items-center gap-x-4 mt-5 md:mt-8">
+          <div className="flex-1 h-[150px] sm:h-[180px] lg:h-[240px] bg-[#F5F5F7] relative rounded-md overflow-hidden">
             <Image
               src={
                 'https://images.unsplash.com/photo-1563097013-a1df1d1fd1c7?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
@@ -222,7 +270,7 @@ export default function Home() {
               className="object-cover"
             />
           </div>
-          <div className="flex-1 h-[240px] bg-[#F5F5F7] relative rounded-md overflow-hidden">
+          <div className="hidden md:block flex-1 h-[180px] lg:h-[240px] bg-[#F5F5F7] relative rounded-md overflow-hidden">
             <Image
               src={
                 'https://plus.unsplash.com/premium_photo-1661274103468-71e91f7ea517?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
@@ -234,7 +282,7 @@ export default function Home() {
           </div>
         </section>
         {/* High demand flyers  */}
-        <section className="mt-10 bg-[#F9FAFB] rounded-[10px] px-2 lg:px-5 py-4">
+        <section className="mt-5 md:mt-8 lg:mt-10 bg-[#F9FAFB] rounded-[10px] px-2 lg:px-5 py-4">
           <div className="pb-4 flex lg:items-center justify-between">
             <div className="max-w-[70%] sm:max-w-none">
               <h3 className="text-lg md:text-xl lg:text-2xl text-primary font-semibold">
@@ -251,7 +299,7 @@ export default function Home() {
               View All <HiArrowRight />
             </Link>
           </div>
-          <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-6">
+          <div className="grid xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-6">
             {Array(8)
               .fill(' ')
               .map((product, i) => (
@@ -259,7 +307,7 @@ export default function Home() {
               ))}
           </div>
         </section>
-        <div className="w-full h-[240px] bg-secondary mt-10 rounded-md overflow-hidden relative">
+        <div className="w-full h-[180px] lg:h-[240px] bg-secondary mt-8 lg:mt-10 rounded-md overflow-hidden relative">
           <Image
             src={
               'https://images.unsplash.com/photo-1513884923967-4b182ef167ab?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
@@ -270,7 +318,7 @@ export default function Home() {
           />
         </div>
         {/* best selling paper bags  */}
-        <section className="mt-10 bg-[#F9FAFB] rounded-[10px] px-2 lg:px-5 py-4">
+        <section className="mt-5 md:mt-8 lg:mt-10 bg-[#F9FAFB] rounded-[10px] px-2 lg:px-5 py-4">
           <div className="pb-4 flex items-center justify-between">
             <div className="max-w-[70%] sm:max-w-none">
               <h3 className="text-lg md:text-xl lg:text-2xl text-primary font-semibold">
@@ -287,7 +335,7 @@ export default function Home() {
               View All <HiArrowRight />
             </Link>
           </div>
-          <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-6">
+          <div className="grid xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-6">
             {Array(8)
               .fill(' ')
               .map((product, i) => (
@@ -296,20 +344,26 @@ export default function Home() {
           </div>
         </section>
         {/* features */}
-        <section className="mt-10 p-4 flex flex-wrap items-center gap-[18px]">
+        <section className="mt-5 md:mt-8 lg:mt-10 p-4 flex flex-wrap items-center gap-[18px]">
           {features.map((feature, i) => (
             <div
               key={`feature_${i}`}
-              className="flex-1 p-4 border border-[#385f48bf] rounded-lg flex items-center gap-x-4"
+              className="flex-1 p-3 xl:p-4 border border-[#385f48bf] rounded-lg flex items-center gap-x-3 xl:gap-x-4"
             >
-              <div className="size-10 lg:size-[72px] rounded-full flex items-center justify-center bg-neutral-50">
-                <Image src={feature.icon} width={42} height={42} alt="icon" />
+              <div className="size-10 lg:size-14 xl:size-[72px] rounded-full flex items-center justify-center bg-neutral-50">
+                <Image
+                  src={feature.icon}
+                  width={42}
+                  height={42}
+                  className="size-8 xl:size-[42px]"
+                  alt="icon"
+                />
               </div>
               <div className="flex-1">
-                <h6 className=" sm:text-lg font-semibold text-black whitespace-nowrap">
+                <h6 className=" xl:text-lg font-semibold text-black whitespace-nowrap">
                   {feature.title}
                 </h6>
-                <p className="text-xs sm:text-sm text-neutral-600 mt-1 whitespace-nowrap">
+                <p className="text-xs xl:text-sm text-neutral-600 mt-1 whitespace-nowrap">
                   {feature.desc}
                 </p>
               </div>
@@ -317,7 +371,7 @@ export default function Home() {
           ))}
         </section>
         {/* client testimonial  */}
-        <section className="p-4 lg:p-8 bg-[#A79F881A] mt-10">
+        <section className="p-4 lg:p-8 bg-[#A79F881A] mt-8 lg:mt-10">
           <div className="flex items-center">
             <div className="flex-1">
               <p className="text-success text-lg md:text-xl lg:text-2xl">
@@ -337,13 +391,17 @@ export default function Home() {
             </div>
           </div>
           <div className="mt-6">
-            <swiper-container slides-per-view={3} space-between={16} autoplay>
+            <swiper-container
+              slides-per-view={reviewSlidesPerView}
+              space-between={16}
+              autoplay
+            >
               {Array(5)
                 .fill(' ')
                 .map((_, i) => (
                   <swiper-slide key={`testimonial_${i}`}>
                     <div className="flex-1 bg-white border border-neutral-200 p-3 lg:p-6 space-y-3 rounded-lg">
-                      <h5 className="text-neutral-700 font-medium text-lg lg:text-[21.31px] leading-[25.79px]">
+                      <h5 className="text-neutral-700 font-medium md:text-lg lg:text-[21.31px] leading-[25.79px]">
                         Floyd Miles
                       </h5>
                       <StarRatings
@@ -368,22 +426,22 @@ export default function Home() {
           </div>
         </section>
         {/* industry banner  */}
-        <section className="mt-10 p-4 sm:px-6 py-5 sm:py-[33px] border border-[#10182833] rounded-[10px] sm:flex items-center gap-x-10 justify-between">
-          <div className="flex-1 w-full h-[293px] relative">
+        <section className="mt-5 md:mt-8 lg:mt-10 p-4 sm:px-6 py-5 sm:py-[33px] border border-[#10182833] rounded-[10px] md:flex items-center gap-x-10 justify-between">
+          <div className="flex-1 w-full h-[250px] xs:h-[293px] relative">
             <Image
               src={'/banners/industry-banner.png'}
               fill
               alt="industry banner"
             />
           </div>
-          <div className="flex-1 mt-5 sm:mt-0">
-            <p className=" md:text-lg font-medium text-success/80">
+          <div className="flex-1 mt-5 md:mt-0">
+            <p className=" xl:text-lg font-medium text-success/80">
               Fastest and Cheapest Printing in UAE{' '}
             </p>
-            <h3 className="text-lg md:text-xl lg:text-3xl font-semibold text-neutral-800 mt-2">
+            <h3 className="text-lg lg:text-xl xl:text-3xl font-semibold text-neutral-800 mt-2">
               Printcraft is Revolutionizing the Online Printing Industry.
             </h3>
-            <p className="mt-4 text-sm md:text-base lg:text-lg text-neutral-600">
+            <p className="mt-4 text-sm lg:text-base xl:text-lg text-neutral-600">
               Delivering top-quality Design and Printing in UAE with a wide
               range of high-quality printing products at the best prices in the
               UAE. Our easy-to-use website makes it a breeze to order the
@@ -394,20 +452,20 @@ export default function Home() {
           </div>
         </section>
         {/* order steps */}
-        <section className="mt-10 sm:px-6 py-4 bg-neutral-50 rounded-[10px] flex flex-wrap items-center gap-6">
+        <section className="mt-5 md:mt-8 lg:mt-10 sm:px-6 py-4 bg-neutral-50 rounded-[10px] flex flex-wrap items-center gap-6">
           {orderSteps.map((step, i) => (
             <div
               key={`step_${i}`}
               className="flex-1 flex flex-col gap-y-4 items-center"
             >
-              <div className="w-[93px] h-[88px] relative">
+              <div className="w-[83px] h-[78px] md:w-[93px] md:h-[88px] relative">
                 <Image src={step.icon} fill alt="icon" />
               </div>
               <div className="text-center">
-                <h4 className="md:text-lg lg:text-xl font-medium text-primary text-nowrap">
+                <h4 className="lg:text-lg xl:text-xl font-medium text-primary text-nowrap">
                   {step.title}
                 </h4>
-                <p className="text-xs sm:text-sm font-medium text-neutral-500">
+                <p className="text-xs lg:text-sm font-medium text-neutral-500">
                   {step.desc}
                 </p>
               </div>
@@ -417,7 +475,7 @@ export default function Home() {
       </div>
       {/* companyDetails */}
       <section className="bg-neutral-50 pt-10 pb-[30px] px-4 sm:px-0">
-        <div className="container px-4 mx-auto flex flex-wrap gap-2 lg:gap-5 lg:justify-between">
+        <div className="container px-4 mx-auto flex flex-wrap gap-3 lg:gap-5 lg:justify-between">
           {companyDetails.map((detail, i) => (
             <div
               key={`detail_${i}`}
@@ -425,7 +483,7 @@ export default function Home() {
             >
               {detail.icon}
               <div className="max-w-[220px] flex-1">
-                <h5 className="text-lg text-neutral-900 font-semibold">
+                <h5 className="md:text-lg text-neutral-900 font-semibold">
                   {detail.title}
                 </h5>
                 {detail.data.map((d, i) => (

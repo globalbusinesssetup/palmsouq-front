@@ -21,7 +21,7 @@ const links = [
   {
     title: 'My order’s',
     url: '/dashboard/orders',
-    icon: <Bag />,
+    icon: <Bag className="w-[18px] md:w-5 lg:w-6" />,
   },
   {
     title: 'My Wallet',
@@ -48,7 +48,7 @@ const settingLinks = [
   {
     title: `Shipping's`,
     url: '/dashboard/shippings',
-    icon: <Location />,
+    icon: <Location className="w-[18px] md:w-5 lg:w-6" />,
   },
   {
     title: 'Notifications',
@@ -61,9 +61,9 @@ const LeftBar = () => {
   const pathname = usePathname();
 
   return (
-    <section className="w-[264px] h-[calc(100vh-50px)] relative bg-white rounded-xl border border-neutral-200 overflow-hidden mb-2">
+    <aside className="w-[150px] md:w-[200px] lg:w-[264px] h-[calc(100vh-50px)] relative bg-white rounded-xl border border-neutral-200 overflow-hidden mb-2">
       <div className="py-6 bg-gradient-to-l to-[#002169] from-[#002169B5] flex flex-col items-center">
-        <div className="size-16 rounded-full overflow-hidden border-[1.5px] border-white relative">
+        <div className="size-12 lg:size-16 rounded-full overflow-hidden border-[1.5px] border-white relative">
           <Image src={avatar} alt="user avatar" fill className="object-cover" />
         </div>
         <div className="text-center mt-3">
@@ -72,7 +72,7 @@ const LeftBar = () => {
           <p className="text-sm text-white">{'+971 55 1234567'} </p>
         </div>
       </div>
-      <nav className="p-4 space-y-1 h-[calc(100%-256px)] overflow-auto scrollbar-thin">
+      <nav className="p-4 space-y-1 h-[calc(100%-232px)] lg:h-[calc(100%-256px)] overflow-auto scrollbar-thin">
         {links.slice(0, 2).map((link, i) => (
           <LinkButton
             isActive={link.url === pathname}
@@ -82,7 +82,7 @@ const LeftBar = () => {
             icon={link.icon}
           />
         ))}
-        <div className="pt-3 space-y-1">
+        <div className="pt-2 md:pt-3 space-y-1">
           {links.slice(2, 4).map((link, i) => (
             <LinkButton
               isActive={link.url === pathname}
@@ -93,8 +93,8 @@ const LeftBar = () => {
             />
           ))}
         </div>
-        <div className="pt-10 space-y-1">
-          <p className="text-base font-medium text-neutral-400 pb-2 pl-8">
+        <div className="pt-4 md:pt-6 lg:pt-10 space-y-1">
+          <p className="text-xs md:text-base font-medium text-neutral-400 pb-2 pl-2 md:pl-4 lg:pl-8">
             Account Setting&apos;s
           </p>
           {settingLinks.map((link, i) => (
@@ -109,11 +109,11 @@ const LeftBar = () => {
         </div>
       </nav>
       <div className="pt-2 px-4 pb-4">
-        <button className="w-full h-12 text-[#344054] transition-all duration-300 hover:bg-neutral-200 font-semibold flex items-center justify-center gap-x-2 bg-neutral-50 rounded-lg">
-          <FiLogOut className="text-base" /> Sign Out
+        <button className="w-full h-10 lg:h-12 text-[#344054] text-sm lg:text-base transition-all duration-300 hover:bg-neutral-200 font-semibold flex items-center justify-center gap-x-2 bg-neutral-50 rounded-lg">
+          <FiLogOut className="text-sm lg:text-base" /> Sign Out
         </button>
       </div>
-    </section>
+    </aside>
   );
 };
 
@@ -133,11 +133,11 @@ const LinkButton = ({
   return (
     <Link
       href={url}
-      className={`py-2 pl-8 flex items-center gap-x-3 text-neutral-600 text-2xl font-semibold hover:bg-primary/10 transition-all duration-300 rounded-md ${
+      className={`py-2 pl-2 md:pl-4 lg:pl-8 flex items-center gap-x-3 text-neutral-600 text-lg md:text-xl lg:text-2xl font-semibold hover:bg-primary/10 transition-all duration-300 rounded-md ${
         isActive && 'bg-primary/5 text-primary'
       }`}
     >
-      {icon} <span className="text-base">{title}</span>
+      {icon} <span className="text-xs md:text-sm lg:text-base">{title}</span>
     </Link>
   );
 };

@@ -13,7 +13,7 @@ export default function DashboardLayout({
 }>) {
   return (
     <main className="bg-neutral-50">
-      <div className="container mx-auto flex items-start gap-x-4 pt-10">
+      <div className="sm:container sm:mx-auto flex items-start gap-x-4 pt-10 px-4">
         <LeftBar />
         <section className="flex-1">{children}</section>
       </div>

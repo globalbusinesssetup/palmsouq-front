@@ -7,6 +7,7 @@ import { useForm } from 'react-hook-form';
 import CustomInput from './common/CustomInput';
 import { IoIosArrowDown } from 'react-icons/io';
 import { FiShoppingBag, FiUser } from 'react-icons/fi';
+import { useRouter } from 'next/navigation';
 
 const Header = ({
   showSearch = false,
@@ -15,16 +16,17 @@ const Header = ({
   showSearch?: boolean;
   onChange?: (val: any) => void;
 }) => {
+  const router = useRouter();
   const { control } = useForm<any>();
   const [isLogedIn, setLogIn] = useState(true);
 
   return (
-    <header className="py-4 sm:py-5 border-b">
+    <header className="py-3 sm:py-4 md:py-5 border-b">
       <div className="container mx-auto flex items-center justify-between gap-x-6 px-4">
         <div className="flex items-center gap-6">
           <Link
             href={'/'}
-            className="w-[110px] sm:w-[136px] md:w-[156px] xl:w-[176px] h-7 sm:h-[31px] relative"
+            className="w-[90px] sm:w-[110px] md:w-[136px] lg:w-[156px] xl:w-[176px] h-7 sm:h-[31px] relative"
           >
             <Image src="/logo.svg" fill alt="logo" />
           </Link>
@@ -41,7 +43,7 @@ const Header = ({
           </div>
         </div>
         {showSearch && (
-          <div className="flex-1">
+          <div className="hidden md:block flex-1">
             <CustomInput
               control={control}
               onChange={onChange}
@@ -53,10 +55,12 @@ const Header = ({
           </div>
         )}
         {isLogedIn ? (
-          <div className="hidden md:flex items-center gap-x-4">
+          <div className="flex items-center gap-x-2 md:gap-x-4">
             <div className="flex items-center gap-x-3 p-2">
-              <FiUser className="text-2xl xl:text-[28px] text-[#1A1E5E]" />
-              <div className="text-[#1A1E5E]">
+              <button onClick={() => router.push('/dashboard/profile')}>
+                <FiUser className="text-2xl xl:text-[28px] text-[#1A1E5E]" />
+              </button>
+              <div className="text-[#1A1E5E] hidden md:block">
                 <p className="text-tiny lg:text-xs">Hi, Yallprints</p>
                 <Link
                   href={'/dashboard/profile'}
@@ -69,9 +73,9 @@ const Header = ({
                 </Link>
               </div>
             </div>
-            <div className="flex items-center gap-x-3 p-2">
+            <div className="hidden md:flex items-center gap-x-3 p-2">
               <FiShoppingBag className="text-2xl xl:text-[26px] text-[#1A1E5E]" />
-              <div className="text-[#1A1E5E]">
+              <div className="text-[#1A1E5E] hidden md:block">
                 <p className="text-tiny lg:text-xs">My Cart</p>
                 <Link
                   href={'/dashboard/cart'}
@@ -88,11 +92,11 @@ const Header = ({
         ) : (
           <Link
             href={'/auth/sign-in'}
-            className="py-2 px-7 flex items-center gap-x-3 border rounded-lg"
+            className="py-2 px-3 md:px-7 flex items-center gap-x-3 md:border rounded-lg"
           >
             <RiUserSharedLine className="text-2xl lg:text-[28px] text-[#1A1E5E]" />
 
-            <div className="">
+            <div className="hidden md:block">
               <p className="text-xs text-[#1A1E5E] font-light">Login</p>
               <p className="text-sm text-[#1A1E5E] font-semibold">Register</p>
             </div>

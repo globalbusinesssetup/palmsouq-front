@@ -25,13 +25,13 @@ const Notifications = () => {
         Select the kind of notification you get about your activities and
         recommendations
       </p>
-      <div className="mt-6 flex gap-x-8 gap-y-2 flex-wrap max-w-[672px] select-none">
+      <div className="mt-6 flex flex-col md:flex-row gap-x-8 gap-y-2 flex-wrap lg:max-w-[672px] select-none">
         {notifications.map((ntfs, i) => (
           <label
             onClick={() => handleOnChange(i)}
             key={`ntfs_${i}`}
             htmlFor={`ntfs_${i}`}
-            className="w-[calc(50%-16px)] flex items-center gap-x-3 text-[#101828] cursor-pointer"
+            className="lg:w-[calc(50%-16px)] flex items-center gap-x-3 text-[#101828] cursor-pointer"
           >
             <CheckBox
               outlined
@@ -39,7 +39,7 @@ const Notifications = () => {
               checked={ntfs.value}
               onChange={() => handleOnChange(i)}
             />
-            {ntfs.label}
+            <span className="flex-1">{ntfs.label}</span>
           </label>
         ))}
       </div>
@@ -47,7 +47,7 @@ const Notifications = () => {
         <h4 className="text-lg text-neutral-900 font-semibold pb-4 border-b border-neutral-200">
           Channels
         </h4>
-        <div className="flex items-center gap-x-6 mt-6 max-w-[664px] select-none">
+        <div className="flex flex-col lg:flex-row lg:items-center gap-y-5 gap-x-6 mt-6 md:max-w-[664px] select-none">
           <div className="flex-1">
             <p className="text-sm font-medium text-[#344054]">Mobile number</p>
             <label

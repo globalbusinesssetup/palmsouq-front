@@ -58,21 +58,21 @@ const Profile = () => {
   };
 
   return (
-    <div className="px-8 pt-6 pb-10 bg-white border border-neutral-200 rounded-xl">
+    <div className="px-4 md:px-6 lg:px-8 pt-6 pb-10 bg-white border border-neutral-200 rounded-xl">
       <h5 className="text-lg font-semibold text-neutral-900">Profile</h5>
-      <div className="mt-3 flex items-end gap-x-[18px]">
+      <div className="mt-3 flex items-end gap-x-4 lg:gap-x-[18px]">
         <div className="">
           <p className="text-center text-xs font-semibold text-neutral-700">
             Picture
           </p>
-          <div className="mt-2.5 size-20 rounded-full overflow-hidden relative">
+          <div className="mt-2.5 size-10 sm:size-14 lg:size-20 rounded-full overflow-hidden relative">
             <Image src={preview ?? avatar} fill alt="user avatar" />
           </div>
         </div>
-        <div className="border border-neutral-200 rounded-lg overflow-hidden mb-3.5">
+        <div className="border border-neutral-200 rounded-lg overflow-hidden mb-1 sm:mb-2.5 lg:mb-3.5 text-xs md:text-sm lg:text-base">
           <button
             onClick={() => uploadRef.current?.click()}
-            className="w-20 h-10 text-[#344054] transition-all duration-300 hover:bg-neutral-100 hover:scale-95 border-r"
+            className="w-16 lg:w-20 h-8 lg:h-10 text-[#344054] transition-all duration-300 hover:bg-neutral-100 hover:scale-95 border-r"
           >
             Upload
           </button>
@@ -81,7 +81,7 @@ const Profile = () => {
               setPreview(null);
               setFile(undefined);
             }}
-            className="w-20 h-10 text-[#344054] transition-all duration-300 hover:bg-neutral-100 hover:scale-95"
+            className="w-16 lg:w-20 h-8 lg:h-10 text-[#344054] transition-all duration-300 hover:bg-neutral-100 hover:scale-95"
           >
             Remove
           </button>
@@ -97,7 +97,7 @@ const Profile = () => {
         <h5 className="text-lg font-semibold text-neutral-900">
           Personal Information
         </h5>
-        <div className="mt-6 flex items-center gap-x-4 max-w-[720px]">
+        <div className="mt-6 flex flex-col md:flex-row md:items-center gap-x-4 max-w-[720px]">
           <Input
             control={control}
             name="firstName"
@@ -113,7 +113,7 @@ const Profile = () => {
             wrapClassName="flex-1"
           />
         </div>
-        <div className="flex items-end gap-x-1.5 mt-7">
+        <div className="flex items-center gap-x-1.5 mt-3 lg:mt-7">
           <InputPhoneNumber
             disabled
             control={control}
@@ -126,12 +126,12 @@ const Profile = () => {
           />
           <button
             onClick={() => setPhoneModalOpen(true)}
-            className="h-11 w-[94px] text-primary hover:text-primary/80 text-sm font-semibold"
+            className="h-11 w-16 md:w-[94px] text-primary hover:text-primary/80 text-xs sm:text-sm font-semibold mt-0.5"
           >
             Change
           </button>
         </div>
-        <div className="flex items-end gap-x-1.5 mt-7">
+        <div className="flex items-center gap-x-1.5 mt-3 lg:mt-7">
           <Input
             disabled
             control={control}
@@ -141,7 +141,7 @@ const Profile = () => {
           />
           <button
             onClick={() => setEmailModalOpen(true)}
-            className="h-11 w-[94px] text-primary hover:text-primary/80 text-sm font-semibold"
+            className="h-11 w-16 md:w-[94px] text-primary hover:text-primary/80 text-xs sm:text-sm font-semibold mt-0.5"
           >
             Change
           </button>
