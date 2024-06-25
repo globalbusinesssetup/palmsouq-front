@@ -51,9 +51,9 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      setWindowWidth(window.innerWidth);
-    }
+    // if (typeof window !== 'undefined') {
+    //   setWindowWidth(window.innerWidth);
+    // }
     const handleResize = () => {
       setWindowWidth(window.innerWidth);
     };
@@ -156,12 +156,9 @@ export default function Home() {
                     <div className="w-full h-[100px] relative mx-1 mb-4">
                       <Image src={cat.img} fill alt="cat image" />
                     </div>
-                    <Link
-                      href={cat.link}
-                      className="px-3 xs:px-5 py-3 text-xs font-semibold text-neutral-600 transition-all duration-300 hover:text-primary/70 flex items-center justify-center gap-x-2"
-                    >
+                    <div className="px-3 xs:px-5 py-3 text-xs font-semibold text-neutral-600 transition-all duration-300 hover:text-primary/70 flex items-center justify-center gap-x-2">
                       {cat.title} <FaArrowRightLong className="text-base" />
-                    </Link>
+                    </div>
                   </Link>
                 </swiper-slide>
               ))}
@@ -241,7 +238,7 @@ export default function Home() {
             {Array(8)
               .fill(' ')
               .map((product, i) => (
-                <ProductCard key={`product_${i}`} />
+                <ProductCard key={`p_product_${i}`} />
               ))}
           </div>
         </section>
@@ -289,7 +286,7 @@ export default function Home() {
             {Array(8)
               .fill(' ')
               .map((product, i) => (
-                <ProductCard key={`product_${i}`} />
+                <ProductCard key={`h_product_${i}`} />
               ))}
           </div>
         </section>
@@ -325,7 +322,7 @@ export default function Home() {
             {Array(8)
               .fill(' ')
               .map((product, i) => (
-                <ProductCard key={`product_${i}`} />
+                <ProductCard key={`b_product_${i}`} />
               ))}
           </div>
         </section>
