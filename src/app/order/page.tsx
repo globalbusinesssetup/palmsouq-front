@@ -7,7 +7,7 @@ import {
   Modal,
   PdfPreview,
 } from '@/components';
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { IoCheckmark } from 'react-icons/io5';
 import { FiEdit, FiEye, FiTrash2, FiUpload } from 'react-icons/fi';
 import { FileDrop } from 'react-file-drop';
@@ -49,6 +49,12 @@ const Checkout = () => {
   const [isFilePreviewOpen, setFilePreviewOpen] = useState(false);
   const [isConfirmationOpen, setConfirmationOpen] = useState(false);
 
+  useEffect(() => {
+    if (uploadedFiles.length > 0 && selected === 'hire-designer') {
+      setSelected('upload-file');
+    }
+  }, [uploadedFiles, selected]);
+
   const onTargetClick = () => {
     fileInputRef.current?.click();
   };
@@ -81,29 +87,31 @@ const Checkout = () => {
   return (
     <>
       <Header />
-      <main className="bg-neutral-50 min-h-screen pt-14 pb-10">
-        <div className="container mx-auto flex items-start space-x-6">
-          <div className="flex-1 bg-white rounded-xl border-neutral-300 px-6 py-4 border">
-            <h2 className="text-xl text-neutral-900 font-semibold text-center">
+      <main className="bg-neutral-50 min-h-screen pt-14 pb-10 px-4">
+        <div className="container mx-auto lg:flex items-start space-y-4 lg:space-y-0 lg:space-x-4 xl:space-x-6">
+          <div className="flex-1 bg-white rounded-xl border-neutral-300 px-4 sm:px-6 py-3 sm:py-4 border">
+            <h2 className="text-lg lg:text-xl text-neutral-900 font-semibold text-center">
               Choose your file type
             </h2>
-            <div className="mt-4 flex items-center gap-x-3">
+            <div className="mt-4 xs:flex items-center gap-x-3 space-y-3 xs:space-y-0">
               <button
                 onClick={() => setSelected('upload-file')}
-                className={`flex-1 text-left flex items-center justify-center border rounded-lg h-[98px] transition-all duration-300 ${
+                className={`flex-1 text-left flex items-center justify-center border rounded-lg w-full xs:w-auto h-16 sm:h-[98px] transition-all duration-300 ${
                   selected === 'upload-file'
                     ? 'border-[#4B4EFC] bg-neutral-50'
                     : 'border-neutral-300'
                 }`}
               >
                 <div className="">
-                  <div className="flex items-center gap-x-10">
-                    <h6 className="text-primary font-semibold">Upload File</h6>
-                    <span className="px-2 py-0.5 bg-neutral-100 rounded-full text-xs font-medium text-[#363F72]">
+                  <div className="flex items-center gap-x-3 xs:gap-x-5 sm:gap-x-10">
+                    <h6 className="text-primary font-semibold text-xs sm:text-sm xl:text-base">
+                      Upload File
+                    </h6>
+                    <span className="px-1 sm:px-2 py-0.5 bg-neutral-100 rounded-full text-tiny sm:text-xs font-medium text-[#363F72]">
                       Free Review
                     </span>
                   </div>
-                  <p className="mt-1 text-xs text-primary">
+                  <p className="mt-1 text-tiny sm:text-xs text-primary">
                     Upload Your Design
                   </p>
                 </div>
@@ -111,96 +119,101 @@ const Checkout = () => {
               <button
                 disabled={uploadedFiles.length > 0}
                 onClick={() => setSelected('hire-designer')}
-                className={`flex-1 flex text-left items-center disabled:opacity-40 justify-center border rounded-lg h-[98px] transition-all duration-300 ${
+                className={`flex-1 flex text-left items-center disabled:opacity-40 justify-center border rounded-lg w-full xs:w-auto h-16 sm:h-[98px] transition-all duration-300 ${
                   selected === 'hire-designer'
                     ? 'border-[#4B4EFC] bg-neutral-50'
                     : 'border-neutral-300'
                 }`}
               >
                 <div className="">
-                  <div className="flex items-center gap-x-10">
-                    <h6 className="text-primary font-semibold">
+                  <div className="flex items-center gap-x-3 xs:gap-x-5 sm:gap-x-10">
+                    <h6 className="text-primary font-semibold text-xs sm:text-sm xl:text-base">
                       Hire Designer
                     </h6>
-                    <span className="px-2 py-0.5 bg-[#ECFDF3] rounded-full text-xs font-medium text-success">
+                    <span className="px-1 sm:px-2 py-0.5 bg-[#ECFDF3] rounded-full text-tiny sm:text-xs font-medium text-success">
                       0.00 AED
                     </span>
                   </div>
-                  <p className="mt-1 text-xs text-primary">
+                  <p className="mt-1 text-tiny sm:text-xs text-primary">
                     Create Personalized Design
                   </p>
                 </div>
               </button>
             </div>
-            <div className="mt-4 p-4 bg-neutral-100 rounded-xl space-y-3">
-              {uploadedFiles.length > 0 &&
-                uploadedFiles.map((file, i) => (
+            {uploadedFiles.length > 0 && (
+              <div className="mt-4 p-2 xs:p-3 lg:p-4 bg-neutral-100 rounded-xl space-y-3">
+                {uploadedFiles.map((file, i) => (
                   <div
                     key={`file_${i}`}
-                    className="p-4 bg-white rounded-lg border- border-neutral-300 flex items-center justify-between"
+                    className="p-3 lg:p-4 bg-white rounded-lg border- border-neutral-300 flex items-center justify-between"
                   >
-                    <div className="flex items-center gap-x-4">
-                      <div className="size-10 rounded-full flex items-center justify-center bg-neutral-700">
-                        <FileAttach />
+                    <div className="flex flex-1 items-center gap-x-4">
+                      <div className="size-8 sm:size-10 rounded-full flex items-center justify-center bg-neutral-700">
+                        <FileAttach className="w-5 sm:w-6" />
                       </div>
                       <div className="">
-                        <p className="text-[#111827]">{file.name}</p>
-                        <p className="text-sm text-[#6B7280] mt-1">
+                        <p className="text-[#111827] text-sm md:text-base">
+                          {file.name}
+                        </p>
+                        <p className="text-xs sm:text-sm text-[#6B7280] mt-1">
                           {formatFileSize(file.size)}
                         </p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-x-4">
+                    <div className="flex items-center gap-x-2 sm:gap-x-4">
                       <button
                         onClick={() => setFilePreviewOpen(true)}
-                        className="size-10 rounded-full transition-all duration-300 hover:scale-95 bg-neutral-50 hover:bg-neutral-200 flex items-center justify-center"
+                        className="size-6 xs:size-8 lg:size-10 rounded-full transition-all duration-300 hover:scale-95 bg-neutral-50 hover:bg-neutral-200 flex items-center justify-center"
                       >
-                        <FiEye className="text-2xl text-neutral-500" />
+                        <FiEye className="xs:text-xl lg:text-2xl text-neutral-500" />
                       </button>
                       <button
                         onClick={() => removeFile(i)}
-                        className="size-10 rounded-full transition-all duration-300 hover:scale-95 bg-[#FEF2F2] hover:bg-red-200 flex items-center justify-center"
+                        className="size-6 xs:size-8 lg:size-10 rounded-full transition-all duration-300 hover:scale-95 bg-[#FEF2F2] hover:bg-red-200 flex items-center justify-center"
                       >
-                        <FiTrash2 className="text-2xl text-[#EF4444]" />
+                        <FiTrash2 className="xs:text-xl lg:text-2xl text-[#EF4444]" />
                       </button>
                     </div>
                   </div>
                 ))}
-            </div>
+              </div>
+            )}
             <FileDrop
               onDrop={(files, event) => handleFileDrop(files)}
               className={`flex flex-col items-center justify-center bg-neutral-50 border border-black border-dashed rounded-lg mt-4 transition-all duration-500 overflow-hidden ${
-                uploadedFiles.length > 0 ? 'h-[156px]' : 'h-[250px]'
+                uploadedFiles.length > 0 ? 'h-[156px]' : 'h-52 xs:h-[250px]'
               }`}
             >
-              <div className="size-12 mx-auto flex items-center justify-center rounded-full bg-neutral-100">
+              <div className="size-10 lg:size-12 mx-auto flex items-center justify-center rounded-full bg-neutral-100">
                 <FiUpload className="text-lg text-neutral-700" />
               </div>
-              <p className="text-neutral-500 mt-3">Drag & Drop or Click to</p>
+              <p className="text-neutral-500 mt-3 text-sm lg:text-base">
+                Drag & Drop or Click to
+              </p>
               <div className="flex justify-center">
                 <Button
                   onClick={onTargetClick}
-                  className="text-white bg-neutral-700 mt-2 w-[153px] h-8 text-sm py-0"
+                  className="text-white bg-neutral-700 mt-2 w-[153px] h-8 text-xs lg:text-sm py-0"
                 >
                   Choose File
                 </Button>
               </div>
             </FileDrop>
             <div className="flex items-center justify-between mt-4">
-              <p className="text-xs text-neutral-400 font-medium">
+              <p className="text-tiny sm:text-xs text-neutral-400 font-medium">
                 <span className="font-semibold text-neutral-700">Format:</span>{' '}
                 Submit your design file in (PDF) format.
               </p>
               <Button
                 outlined
-                className="text-neutral-900 h-[26px] w-[139px] py-0 text-[10px]/[13px] rounded-full flex items-center justify-center gap-x-1.5 border-[0.42px] border-[#EF4444]"
+                className="text-neutral-900 h-[26px] w-[139px] py-0 text-[10px]/[13px] lg:text-[10px]/[13px] rounded-full flex items-center justify-center gap-x-1.5 border-[0.42px] border-[#EF4444] hover:bg-error"
               >
                 <FiUpload className="text-xs" />
                 Guide Template
               </Button>
             </div>
           </div>
-          <div className="w-3/12 ">
+          <div className="lg:w-[336px]">
             <div className="w-full border border-neutral-300 bg-white rounded-xl overflow-hidden">
               <div className="px-5">
                 <div className="flex items-center py-4 border-b border-[#E6E6E6]">
@@ -236,7 +249,7 @@ const Checkout = () => {
                 <p className="text-sm font-bold text-neutral-800">
                   Total (Exc. Vat)
                 </p>
-                <p className="text-lg font-bold text-primary">150.00 AED</p>
+                <p className="sm:text-lg font-bold text-primary">150.00 AED</p>
               </div>
             </div>
             <Button
