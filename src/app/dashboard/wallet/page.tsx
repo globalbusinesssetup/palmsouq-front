@@ -5,7 +5,7 @@ import { FaAngleLeft, FaAngleRight } from 'react-icons/fa6';
 
 const Wallet = () => {
   return (
-    <div className="border border-neutral-200 bg-white rounded-xl overflow-hidden p-4">
+    <div className="border border-neutral-200 bg-white rounded-xl overflow-hidden p-4 max-w-[912px]">
       <h5 className="text-lg font-semibold text-neutral-900">My Wallet</h5>
       <div className="flex items-center gap-x-4 mt-4">
         <div className="flex-1 h-[132px] rounded-lg bg-[#6835B1] flex flex-col justify-center items-center text-center">

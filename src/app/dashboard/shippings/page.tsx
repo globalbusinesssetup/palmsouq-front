@@ -103,7 +103,7 @@ const Shippings = () => {
   };
 
   return (
-    <div className="bg-white border border-neutral-200 rounded-xl py-[18px] px-8">
+    <div className="bg-white border border-neutral-200 rounded-xl py-[18px] px-4 xs:px-5 lg:px-8">
       <h4 className="text-lg text-neutral-900 font-semibold">
         Shipping Address
       </h4>
@@ -112,12 +112,12 @@ const Shippings = () => {
           value={defaultAddress}
           onChange={setDefaultAddress}
           aria-label="Server size"
-          className={'flex items-center gap-4'}
+          className={'flex flex-col sm:flex-row sm:items-center gap-4'}
         >
           {addresses.map((address) => (
             <Field
               key={address.value}
-              className={`flex-1 flex items-start gap-2 p-4 border rounded-lg transition-all duration-300 cursor-pointer ${
+              className={`flex-1 flex items-start gap-2 p-3 lg:p-4 border rounded-lg transition-all duration-300 cursor-pointer ${
                 defaultAddress === address.value
                   ? 'bg-neutral-50 border-[#9B9DFD]'
                   : ''
@@ -125,22 +125,24 @@ const Shippings = () => {
             >
               <Radio
                 value={address.value}
-                className="group flex size-5 items-center justify-center rounded-full border bg-white data-[checked]:border-primary duration-300 transition-all"
+                className="group flex size-4 lg:size-5 items-center justify-center rounded-full border bg-white data-[checked]:border-primary duration-300 transition-all"
               >
-                <span className="invisible size-2 rounded-full bg-primary group-data-[checked]:visible" />
+                <span className="invisible size-1.5 lg:size-2 rounded-full bg-primary group-data-[checked]:visible" />
               </Radio>
-              <Label className={'flex-1 flex gap-x-2.5 cursor-pointer'}>
+              <Label
+                className={'flex-1 flex gap-x-2 md:gap-x-2.5 cursor-pointer'}
+              >
                 <div className="flex-1">
-                  <p className="text-base text-[#344054] font-semibold">
+                  <p className="text-sm lg:text-base text-[#344054] font-semibold">
                     {address.title}
                   </p>
-                  <p className="text-sm text-neutral-400 mt-0.5">
+                  <p className="text-xs lg:text-sm text-neutral-400 mt-0.5">
                     Dubai, United Arab Emirates
                   </p>
-                  <p className="text-sm text-neutral-400 mt-0.5">
+                  <p className="text-xs lg:text-sm text-neutral-400 mt-0.5">
                     Al Wahda Road, Industrial Area # 4
                   </p>
-                  <p className="text-sm text-neutral-600 mt-0.5">
+                  <p className="text-xs lg:text-sm text-neutral-600 mt-0.5">
                     +971 55 6265479
                   </p>
                 </div>
@@ -156,7 +158,7 @@ const Shippings = () => {
                     )}
                   </div>
                   {defaultAddress === address.value && (
-                    <p className="h-[18px] w-12 rounded-full text-neutral-200 font-medium bg-primary text-[8px]/[14px] flex items-center justify-center">
+                    <p className="h-[18px] w-10 md:w-12 rounded-full text-neutral-200 md:font-medium bg-primary text-[8px]/[14px] flex items-center justify-center">
                       Default
                     </p>
                   )}
@@ -167,7 +169,7 @@ const Shippings = () => {
         </RadioGroup>
       </div>
       <div className="mt-8">
-        <h4 className="text-lg text-neutral-900 font-semibold">
+        <h4 className="md:text-lg text-neutral-900 font-semibold">
           New Shipping Address
         </h4>
         <div className="flex flex-col md:flex-row gap-y-4 gap-x-6 mt-4 sm:mt-6 lg:mt-8">

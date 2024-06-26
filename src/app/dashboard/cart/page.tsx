@@ -74,25 +74,25 @@ const Cart = () => {
         <table className="w-full">
           <thead>
             <tr className="px-6 bg-[#F9FAFB] py-3.5 text-left">
-              <th className="pl-6 py-3.5 w-[10%]">
+              <th className="pl-6 py-3.5 w-[10%] pr-2">
                 <CheckBox
                   checked={isAllChecked}
                   onChange={(e: any) => setChecked(e?.target?.checked)}
                 />
               </th>
-              <th className="text-xs font-semibold text-[#667085] py-3.5 w-[20%]">
+              <th className="text-xs font-semibold text-[#667085] py-3.5 w-[20%] pr-2">
                 Action
               </th>
-              <th className="text-xs font-semibold text-[#667085] py-3.5 w-[30%]">
+              <th className="text-xs font-semibold text-[#667085] py-3.5 w-[30%] pr-2">
                 Product Name
               </th>
-              <th className="text-xs font-semibold text-[#667085] py-3.5 w-[20%]">
+              <th className="text-xs font-semibold text-[#667085] py-3.5 w-[20%] pr-2">
                 Submit Date
               </th>
-              <th className="text-xs font-semibold text-[#667085] py-3.5 w-[10%]">
+              <th className="text-xs font-semibold text-[#667085] py-3.5 w-[10%] pr-2">
                 Quantity
               </th>
-              <th className="text-xs font-semibold text-[#667085] py-3.5 w-[10%]">
+              <th className="text-xs font-semibold text-[#667085] py-3.5 w-[10%] pr-2">
                 Amount
               </th>
             </tr>
@@ -102,13 +102,13 @@ const Cart = () => {
               .fill(' ')
               .map((_, i) => (
                 <tr key={`table_${i}`} className="border-b border-neutral-200">
-                  <td className="py-4 pl-6 w-[10%]">
+                  <td className="py-4 pl-6 w-[10%] pr-2">
                     <CheckBox
                       checked={isAllChecked}
                       onChange={(e: any) => setChecked(e?.target?.checked)}
                     />
                   </td>
-                  <td className="py-4 flex min-w-[20%] items-center gap-x-2">
+                  <td className="py-4 flex min-w-[20%] pr-2 items-center gap-x-2">
                     <button className="size-10 bg-neutral-100 text-[#475467] transition-all duration-300 hover:bg-red-100 hover:text-red-600 rounded-lg flex items-center justify-center">
                       <FiTrash2 />
                     </button>
@@ -119,13 +119,13 @@ const Cart = () => {
                       <FileSearch />
                     </button>
                   </td>
-                  <td className="py-4 w-[30%]">
+                  <td className="py-4 w-[30%] pr-2">
                     <p className="text-xs text-success">Business Card</p>
-                    <p className="text-sm text-neutral-600 font-semibold">
+                    <p className="text-sm text-neutral-600 font-semibold whitespace-nowrap">
                       350 Gsm Matt Lamination
                     </p>
                   </td>
-                  <td className="py-4 w-[20%]">
+                  <td className="py-4 w-[20%] pr-2">
                     <p className="text-[13px]/[19px] text-neutral-500 uppercase">
                       02 SEP 2023
                     </p>
@@ -133,10 +133,10 @@ const Cart = () => {
                       21:13
                     </p>
                   </td>
-                  <td className="py-4 text-neutral-500 text-sm w-[10%]">
+                  <td className="py-4 text-neutral-500 text-sm w-[10%] pr-2">
                     1000
                   </td>
-                  <td className="py-4 text-neutral-500 text-sm w-[10%]">
+                  <td className="py-4 text-neutral-500 text-sm w-[10%] pr-2">
                     150.00
                   </td>
                 </tr>

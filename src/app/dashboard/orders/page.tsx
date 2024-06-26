@@ -69,7 +69,7 @@ const Orders = () => {
   ];
 
   return (
-    <div className="border border-neutral-200 bg-white rounded-xl overflow-hidden">
+    <div className="border border-neutral-200 bg-white rounded-xl overflow-hidden max-w-[912px]">
       <div className="py-3.5 px-6 flex items-center justify-between">
         <h5 className="text-lg font-semibold text-neutral-700">
           My Order&apos;s

@@ -43,7 +43,7 @@ const Step = ({
       <div className="flex-1">
         {title && (
           <p
-            className={`text-sm font-semibold ${
+            className={`text-tiny sm:text-xs lg:text-sm font-medium xs:font-semibold mb-1 lg:mb-2 ${
               isActive || isCompleted ? 'text-[#4B5563]' : 'text-[#9CA3AF]'
             }`}
           >

@@ -1,5 +1,5 @@
 'use client';
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { FiBell, FiLogOut, FiShoppingBag } from 'react-icons/fi';
@@ -8,6 +8,7 @@ import { usePathname } from 'next/navigation';
 import { LiaUserEditSolid } from 'react-icons/lia';
 import { HiOutlineLockClosed } from 'react-icons/hi';
 import { Location, Bag } from '@/components';
+import { FaBarsStaggered } from 'react-icons/fa6';
 
 export const avatar =
   'https://s3-alpha-sig.figma.com/img/0a41/0cef/bfab589bdae4d108dbdbd1d5294ae731?Expires=1719187200&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=HMQ3IlA3DCEF5yeUIKW8bTFw54QE2hfEXo3ydvn5~IwbU-RJ3zHAO7sUxBGKFGa7Iqr8NqP9GhW6AcQU9temWgyC4DdwdBtto81T3kJeMUdH9c4Of9ZoPyI~CKDxkFLq3QxA5jKzlt0aEQc2OrUX37~GqVsLPmv0XpsqKUgc74-~6ZbiMR74y0a4Eq6ziQqdTGGBoW2EpPVEBUDci8rdau2KPDvXz1TU6uSgxPkVw1CY2edjHZsT8I40GNOqvshAm4Qy5nkBvJGNe46cZ9u2a3ARLVq3iU60YLo3PNvwwJXG5fdlEzM1xhb1A2kUMYBmnJpoKGrRH~twcxSB-IRVTA__';
@@ -59,10 +60,11 @@ const settingLinks = [
 
 const LeftBar = () => {
   const pathname = usePathname();
+  const [isExpand, setExpand] = useState(false);
 
   return (
-    <aside className="w-[150px] md:w-[200px] lg:w-[264px] h-[calc(100vh-50px)] relative bg-white rounded-xl border border-neutral-200 overflow-hidden mb-2">
-      <div className="py-6 bg-gradient-to-l to-[#002169] from-[#002169B5] flex flex-col items-center">
+    <aside className="w-14 sm:w-[150px] md:w-[200px] lg:w-[264px] fixed left-2 top-2 lg:left-5 lg:top-5 h-[calc(100vh-15px)] lg:h-[calc(100vh-40px)] bg-white rounded md:rounded-xl border border-neutral-200 overflow-hidden mb-2 transition-all duration-300">
+      <div className="hidden py-6 bg-gradient-to-l to-[#002169] from-[#002169B5] md:flex flex-col items-center">
         <div className="size-12 lg:size-16 rounded-full overflow-hidden border-[1.5px] border-white relative">
           <Image src={avatar} alt="user avatar" fill className="object-cover" />
         </div>
@@ -72,7 +74,13 @@ const LeftBar = () => {
           <p className="text-sm text-white">{'+971 55 1234567'} </p>
         </div>
       </div>
-      <nav className="p-4 space-y-1 h-[calc(100%-232px)] lg:h-[calc(100%-256px)] overflow-auto scrollbar-thin">
+      <nav className=" p-2 md:p-4 space-y-1 h-[calc(100%-58px)] md:h-[calc(100%-232px)] lg:h-[calc(100%-256px)] overflow-auto scrollbar-thin">
+        <button
+          onClick={() => setExpand(true)}
+          className="w-full flex sm:hidden items-center justify-center py-3 text-lg text-neutral-600"
+        >
+          <FaBarsStaggered />
+        </button>
         {links.slice(0, 2).map((link, i) => (
           <LinkButton
             isActive={link.url === pathname}
@@ -94,7 +102,7 @@ const LeftBar = () => {
           ))}
         </div>
         <div className="pt-4 md:pt-6 lg:pt-10 space-y-1">
-          <p className="text-xs md:text-base font-medium text-neutral-400 pb-2 pl-2 md:pl-4 lg:pl-8">
+          <p className="hidden sm:block text-xs md:text-base font-medium text-neutral-400 pb-2 pl-2 md:pl-4 lg:pl-8">
             Account Setting&apos;s
           </p>
           {settingLinks.map((link, i) => (
@@ -108,9 +116,10 @@ const LeftBar = () => {
           ))}
         </div>
       </nav>
-      <div className="pt-2 px-4 pb-4">
-        <button className="w-full h-10 lg:h-12 text-[#344054] text-sm lg:text-base transition-all duration-300 hover:bg-neutral-200 font-semibold flex items-center justify-center gap-x-2 bg-neutral-50 rounded-lg">
-          <FiLogOut className="text-sm lg:text-base" /> Sign Out
+      <div className="pt-2 px-2 md:px-4 pb-4">
+        <button className="w-full h-8 sm:h-10 lg:h-12 text-[#344054] text-sm lg:text-base transition-all duration-300 hover:bg-neutral-200 font-semibold flex items-center justify-center gap-x-2 bg-neutral-50 rounded-lg">
+          <FiLogOut className="text-sm lg:text-base" />{' '}
+          <span className="hidden sm:inline">Sign Out</span>
         </button>
       </div>
     </aside>
@@ -133,11 +142,14 @@ const LinkButton = ({
   return (
     <Link
       href={url}
-      className={`py-2 pl-2 md:pl-4 lg:pl-8 flex items-center gap-x-3 text-neutral-600 text-lg md:text-xl lg:text-2xl font-semibold hover:bg-primary/10 transition-all duration-300 rounded-md ${
+      className={`py-2 sm:pl-2 md:pl-4 lg:pl-8 flex items-center justify-center sm:justify-start gap-x-3 text-neutral-600 text-lg md:text-xl lg:text-2xl font-semibold hover:bg-primary/10 transition-all duration-300 rounded-md ${
         isActive && 'bg-primary/5 text-primary'
       }`}
     >
-      {icon} <span className="text-xs md:text-sm lg:text-base">{title}</span>
+      {icon}{' '}
+      <span className="text-xs md:text-sm lg:text-base hidden sm:inline-block">
+        {title}
+      </span>
     </Link>
   );
 };

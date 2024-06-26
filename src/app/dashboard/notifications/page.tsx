@@ -17,11 +17,11 @@ const Notifications = () => {
   };
 
   return (
-    <div className="bg-white border border-neutral-200 rounded-xl py-4 px-6">
-      <h4 className="text-lg text-neutral-900 font-semibold">
+    <div className="bg-white border border-neutral-200 rounded-xl py-4 px-4 xs:px-6">
+      <h4 className="xs:text-lg text-neutral-900 font-semibold">
         Notification settings
       </h4>
-      <p className="text-sm text-enutral-600 mt-1">
+      <p className="text-xs xs:text-sm text-enutral-600 mt-1">
         Select the kind of notification you get about your activities and
         recommendations
       </p>
@@ -43,8 +43,8 @@ const Notifications = () => {
           </label>
         ))}
       </div>
-      <div className="mt-8">
-        <h4 className="text-lg text-neutral-900 font-semibold pb-4 border-b border-neutral-200">
+      <div className="mt-5 sm:mt-8">
+        <h4 className="xs:text-lg text-neutral-900 font-semibold pb-4 border-b border-neutral-200">
           Channels
         </h4>
         <div className="flex flex-col lg:flex-row lg:items-center gap-y-5 gap-x-6 mt-6 md:max-w-[664px] select-none">
@@ -52,7 +52,7 @@ const Notifications = () => {
             <p className="text-sm font-medium text-[#344054]">Mobile number</p>
             <label
               onClick={() => setPhoneAllow((prev) => !prev)}
-              className="flex items-center gap-x-3 text-[#101828] cursor-pointer p-6 bg-neutral-100 rounded-lg mt-3"
+              className="flex items-center gap-x-3 text-[#101828] cursor-pointer p-4 xs:p-6 bg-neutral-100 rounded-lg mt-3"
             >
               <CheckBox
                 checked={isPhoneAllow}
@@ -66,7 +66,7 @@ const Notifications = () => {
             <p className="text-sm font-medium text-[#344054]">Email address</p>
             <label
               onClick={() => setEmailAllow((prev) => !prev)}
-              className="flex items-center gap-x-3 text-[#101828] cursor-pointer p-6 bg-neutral-100 rounded-lg mt-3"
+              className="flex items-center gap-x-3 text-[#101828] cursor-pointer p-4 xs:p-6 bg-neutral-100 rounded-lg mt-3"
             >
               <CheckBox
                 checked={isEmailAllow}

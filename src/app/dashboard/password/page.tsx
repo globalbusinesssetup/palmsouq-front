@@ -14,7 +14,7 @@ const Password = () => {
   return (
     <form
       onSubmit={handleSubmit(onPasswordChange)}
-      className="py-4 sm:py-6 px-4 sm:px-6 lg:px-8 border border-neutral-200 rounded-xl bg-white"
+      className="py-4 sm:py-6 px-4 sm:px-6 lg:px-8 border border-neutral-200 rounded-xl bg-white max-w-[914px]"
     >
       <h4 className="text-lg text-neutral-900 font-semibold">
         Change password

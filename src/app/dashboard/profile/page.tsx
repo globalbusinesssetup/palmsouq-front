@@ -35,7 +35,7 @@ const Profile = () => {
     reset,
     watch,
     formState: { errors, isDirty: isEmailFormDirty },
-  } = useForm<{ new_email: string }>();
+  } = useForm<{ new_email: string }>({ mode: 'onChange' });
   const uploadRef = useRef<HTMLInputElement>(null);
   const [uploadedFile, setFile] = useState<File | undefined>();
   const [preview, setPreview] = useState<string | null>(null);
@@ -58,7 +58,7 @@ const Profile = () => {
   };
 
   return (
-    <div className="px-4 md:px-6 lg:px-8 pt-6 pb-10 bg-white border border-neutral-200 rounded-xl">
+    <div className="px-4 md:px-6 lg:px-8 pt-6 pb-10 bg-white border border-neutral-200 rounded-xl max-w-[924px]">
       <h5 className="text-lg font-semibold text-neutral-900">Profile</h5>
       <div className="mt-3 flex items-end gap-x-4 lg:gap-x-[18px]">
         <div className="">
@@ -87,14 +87,14 @@ const Profile = () => {
           </button>
         </div>
       </div>
-      <div className="mt-10">
-        <h5 className="text-lg font-semibold text-neutral-900">Account</h5>
-        <button className="w-[124px] h-[43px] bg-neutral-100 transition-all duration-300 rounded-lg overflow-hidden text-sm text-neutral-600 font-semibold mt-4">
+      <div className="mt-8 sm:mt-10">
+        <h5 className="md:text-lg font-semibold text-neutral-900">Account</h5>
+        <button className="w-[124px] h-9 sm:h-[43px] bg-neutral-100 transition-all duration-300 rounded-lg overflow-hidden text-sm text-neutral-600 font-semibold mt-4">
           Personal
         </button>
       </div>
       <div className="mt-10 max-w-[820px]">
-        <h5 className="text-lg font-semibold text-neutral-900">
+        <h5 className="md:text-lg font-semibold text-neutral-900">
           Personal Information
         </h5>
         <div className="mt-6 flex flex-col md:flex-row md:items-center gap-x-4 max-w-[720px]">
@@ -126,7 +126,7 @@ const Profile = () => {
           />
           <button
             onClick={() => setPhoneModalOpen(true)}
-            className="h-11 w-16 md:w-[94px] text-primary hover:text-primary/80 text-xs sm:text-sm font-semibold mt-0.5"
+            className="h-8 sm:h-11 w-12 sm:w-16 md:w-[94px] text-primary hover:text-primary/80 text-xs sm:text-sm font-semibold mt-1.5 sm:mt-0.5"
           >
             Change
           </button>
@@ -141,7 +141,7 @@ const Profile = () => {
           />
           <button
             onClick={() => setEmailModalOpen(true)}
-            className="h-11 w-16 md:w-[94px] text-primary hover:text-primary/80 text-xs sm:text-sm font-semibold mt-0.5"
+            className="h-8 sm:h-11 w-12 sm:w-16 md:w-[94px] text-primary hover:text-primary/80 text-xs sm:text-sm font-semibold mt-1.5 sm:mt-0.5"
           >
             Change
           </button>
@@ -157,7 +157,7 @@ const Profile = () => {
       <Modal
         show={isPhoneModalOpen}
         onClose={() => setPhoneModalOpen(false)}
-        panelClassName={'w-[400px] p-8'}
+        panelClassName={'w-[400px] p-6 lg:p-8'}
       >
         {!isOtpSent ? (
           <SendOtp
@@ -177,7 +177,7 @@ const Profile = () => {
       <Modal
         show={isEmailModalOpen}
         onClose={() => setEmailModalOpen(false)}
-        panelClassName={'w-[400px] p-8'}
+        panelClassName={'w-[400px] p-6 lg:p-8'}
       >
         {!isOtpSent ? (
           <>
@@ -202,6 +202,7 @@ const Profile = () => {
                   message: 'Invalid email address',
                 },
               }}
+              error={errors.new_email}
             />
             <Button
               disabled={!isEmailFormDirty}

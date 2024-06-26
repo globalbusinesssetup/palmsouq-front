@@ -51,9 +51,9 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    // if (typeof window !== 'undefined') {
-    //   setWindowWidth(window.innerWidth);
-    // }
+    if (typeof window !== 'undefined') {
+      setWindowWidth(window.innerWidth);
+    }
     const handleResize = () => {
       setWindowWidth(window.innerWidth);
     };
@@ -145,7 +145,6 @@ export default function Home() {
             <swiper-container
               slides-per-view={catSlidesPerView}
               space-between={16}
-              breakpointsBase="window"
             >
               {categories.map((cat, i) => (
                 <swiper-slide key={`cat_${i}`} className="">
