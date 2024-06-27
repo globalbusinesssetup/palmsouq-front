@@ -65,7 +65,7 @@ const Tag = ({ status, className }: Tagtype) => {
   return (
     <div
       className={twMerge(
-        `max-w-fit h-[22px] flex items-center justify-center gap-x-1 rounded-full text-xs font-medium px-2 ${statusClassNames[status]}`,
+        `max-w-fit h-5 lg:h-[22px] flex items-center justify-center gap-x-1 rounded-full !text-tiny lg:!text-xs font-medium px-2 ${statusClassNames[status]}`,
         className
       )}
     >

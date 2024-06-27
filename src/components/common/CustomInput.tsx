@@ -117,7 +117,7 @@ const CustomInput = ({
                   type="button"
                   className="absolute top-1/2 left-3.5 -translate-y-1/2 text-base text-[#98A2B3]"
                 >
-                  <FiSearch className="text-xl" />
+                  <FiSearch className="text-lg lg:text-xl" />
                 </button>
               </div>
             ) : type === 'date' ? (

@@ -10,8 +10,7 @@ import { HiOutlineLockClosed } from 'react-icons/hi';
 import { Location, Bag } from '@/components';
 import { FaBarsStaggered } from 'react-icons/fa6';
 
-export const avatar =
-  'https://s3-alpha-sig.figma.com/img/0a41/0cef/bfab589bdae4d108dbdbd1d5294ae731?Expires=1719187200&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=HMQ3IlA3DCEF5yeUIKW8bTFw54QE2hfEXo3ydvn5~IwbU-RJ3zHAO7sUxBGKFGa7Iqr8NqP9GhW6AcQU9temWgyC4DdwdBtto81T3kJeMUdH9c4Of9ZoPyI~CKDxkFLq3QxA5jKzlt0aEQc2OrUX37~GqVsLPmv0XpsqKUgc74-~6ZbiMR74y0a4Eq6ziQqdTGGBoW2EpPVEBUDci8rdau2KPDvXz1TU6uSgxPkVw1CY2edjHZsT8I40GNOqvshAm4Qy5nkBvJGNe46cZ9u2a3ARLVq3iU60YLo3PNvwwJXG5fdlEzM1xhb1A2kUMYBmnJpoKGrRH~twcxSB-IRVTA__';
+export const avatar = '/avatar.png';
 
 const links = [
   {

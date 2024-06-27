@@ -9,7 +9,7 @@ const CustomCheckBox = ({
   outlined = false,
 }: {
   checked: boolean;
-  onChange: (val: any) => void;
+  onChange?: (checked: boolean) => void;
   id?: string;
   outlined?: boolean;
 }) => {
