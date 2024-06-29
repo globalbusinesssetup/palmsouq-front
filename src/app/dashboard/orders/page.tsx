@@ -12,7 +12,6 @@ import {
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { FaAngleLeft, FaAngleRight } from 'react-icons/fa6';
-import Stepper from 'react-stepper-horizontal';
 import { FiCalendar, FiDownload } from 'react-icons/fi';
 import { BiMessageDots } from 'react-icons/bi';
 import { FiEdit, FiEye } from 'react-icons/fi';
@@ -59,7 +58,7 @@ const Orders = () => {
   const { control } = useForm();
   const [isOpen, setOpen] = useState(false);
   const [isFilePreviewOpen, setFilePreviewOpen] = useState(false);
-  const [status, setStatus] = useState<StatusTypes>('production');
+  const [status, setStatus] = useState<StatusTypes>('review');
 
   const steps = [
     { title: 'Order received', icon: '/icons/check.svg' },
@@ -94,7 +93,7 @@ const Orders = () => {
       </div>
       <div className="">
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[630px]">
+          <table className="w-full min-w-[650px]">
             <thead>
               <tr className="px-6 bg-[#F9FAFB] py-3.5 text-left">
                 <th className="text-xs font-semibold text-[#667085] py-3.5 pl-6"></th>
@@ -182,6 +181,11 @@ const Orders = () => {
         </div>
       </div>
       <Modal show={isOpen} onClose={() => setOpen(false)}>
+        <div className="flex md:hidden items-center justify-end pb-3 -mt-1">
+          <button onClick={() => setOpen(false)}>
+            <IoMdClose className="text-xl" />
+          </button>
+        </div>
         <div className="px-[18px] py-4 border border-neutral-300 rounded-xl">
           <div className="flex justify-between">
             <div className="">
@@ -206,10 +210,15 @@ const Orders = () => {
                 </div>
               </div>
             </div>
-            <div className="flex flex-col items-end">
+            <div
+              aria-disabled={status === 'cancelled'}
+              className="flex flex-col items-end aria-disabled:opacity-40"
+            >
               {status === 'review' || status === 'cancelled' ? (
                 <Button
                   outlined
+                  disabled={status === 'cancelled'}
+                  onClick={() => setStatus('cancelled')}
                   className="w-32 sm:w-[146px] border-[#FDA29B] !text-xs md:!text-sm font-semibold text-error hover:text-error hover:scale-90 hover:bg-transparent flex items-center justify-center gap-x-2.5"
                 >
                   <File varient="FileClose" className="size-4 md:size-5" />{' '}
@@ -229,7 +238,10 @@ const Orders = () => {
               </div>
             </div>
           </div>
-          <div className="flex xs:items-center justify-center pt-10 pb-4">
+          <div
+            aria-disabled={status === 'cancelled'}
+            className="flex flex-col sm:flex-row sm:items-center justify-center pt-10 pb-4 aria-disabled:opacity-45"
+          >
             {steps.map((step, i) => (
               <OrderStep
                 key={`step_${i}`}

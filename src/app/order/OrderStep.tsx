@@ -6,7 +6,7 @@ import { twMerge } from 'tailwind-merge';
 type StepProps = {
   circleClassName?: string;
   className?: string;
-  activeCircle?: string;
+  activeDot?: string;
   title: string;
   index: number;
   lastIndex: number;
@@ -16,7 +16,7 @@ type StepProps = {
 const OrderStep = ({
   circleClassName,
   className,
-  activeCircle,
+  activeDot,
   title,
   index,
   lastIndex,
@@ -25,6 +25,8 @@ const OrderStep = ({
   const isCompleted = () => {
     switch (status) {
       case 'success':
+        return index < 1;
+      case 'cancelled':
         return index < 1;
       case 'review':
         return index <= 1;
@@ -43,6 +45,8 @@ const OrderStep = ({
     switch (status) {
       case 'success':
         return index < 1;
+      case 'cancelled':
+        return index < 2;
       case 'review':
         return index <= 2;
       case 'production':
@@ -57,21 +61,25 @@ const OrderStep = ({
   return (
     <div className={`group ${index !== lastIndex ? 'flex-1' : ''}`}>
       <div className={twMerge(' flex items-center', className)}>
-        <div className={`${index === 0 ? 'hidden' : 'flex-1'}`}>
+        <div className={`hidden sm:block ${index === 0 ? 'hidden' : 'flex-1'}`}>
           <div className={`w-full overflow-hidden bg-gray-200 `}>
             <div
               className={`h-[1.5px] ${
-                isActive() || isCompleted() ? 'bg-green-500 w-full' : 'w-0'
+                (isActive() || isCompleted()) && status !== 'cancelled'
+                  ? 'bg-green-500 w-full'
+                  : 'w-0'
               }`}
             />
           </div>
         </div>
         <div
           className={twMerge(
-            `rounded-full overflow-hidden flex items-center justify-center size-5 sm:size-6 md:size-[30px] border ${
-              isCompleted()
+            `rounded-full overflow-hidden flex items-center justify-center size-6 md:size-[30px] border ${
+              status === 'cancelled' && isCompleted()
+                ? 'bg-neutral-200 border-neutral-200'
+                : isCompleted()
                 ? 'bg-green-500 border-green-500'
-                : isActive()
+                : isActive() && status !== 'cancelled'
                 ? 'border-green-500'
                 : 'border-gray-200'
             }`,
@@ -83,18 +91,26 @@ const OrderStep = ({
           ) : isActive() ? (
             <div
               className={twMerge(
-                'size-2 sm:size-3 md:size-[15px] rounded-full bg-green-500',
-                activeCircle
+                `size-3 md:size-[15px] rounded-full ${
+                  status === 'cancelled' ? 'bg-gray-200' : 'bg-green-500'
+                } `,
+                activeDot
               )}
             />
           ) : null}
         </div>
 
-        <div className={`${index === lastIndex ? 'hidden' : 'flex-1'}`}>
+        <div
+          className={`hidden sm:block ${
+            index === lastIndex ? 'hidden' : 'flex-1'
+          }`}
+        >
           <div className={`w-full overflow-hidden bg-gray-200 `}>
             <div
               className={`h-[1.5px] ${
-                isActive() || isCompleted() ? 'bg-green-500 w-full' : 'w-0'
+                (isActive() || isCompleted()) && status !== 'cancelled'
+                  ? 'bg-green-500 w-full'
+                  : 'w-0'
               }`}
             />
           </div>
@@ -102,13 +118,39 @@ const OrderStep = ({
       </div>
       {title && (
         <p
-          className={`text-tiny sm:text-xs lg:text-sm font-medium xs:font-semibold group-first:text-left group-last:text-right text-center mt-1.5 ${
-            isActive() || isCompleted() ? 'text-[#111827]' : 'text-neutral-500'
+          className={`hidden sm:block text-tiny sm:text-xs lg:text-sm font-medium xs:font-semibold group-first:text-left group-last:text-right text-center mt-1.5 ${
+            (isActive() || isCompleted()) && status !== 'cancelled'
+              ? 'text-[#111827]'
+              : 'text-neutral-500'
           }`}
         >
           {title}
         </p>
       )}
+      <div className={`flex sm:hidden gap-x-4 `}>
+        <div
+          className={`w-[1.5px] overflow-hidden bg-gray-200 ml-[11px] ${
+            index === lastIndex && 'hidden'
+          }`}
+        >
+          <div
+            className={`w-[1.5px] h-10 ${
+              (isActive() || isCompleted()) && status !== 'cancelled'
+                ? 'bg-green-500 w-full'
+                : 'w-0'
+            }`}
+          />
+        </div>
+        <p
+          className={`text-xs lg:text-sm font-medium xs:font-semibold text-center -mt-5 ml-2 ${
+            (isActive() || isCompleted()) && status !== 'cancelled'
+              ? 'text-[#111827]'
+              : 'text-neutral-500'
+          } ${index === lastIndex && 'ml-[34px]'}`}
+        >
+          {title}
+        </p>
+      </div>
     </div>
   );
 };
