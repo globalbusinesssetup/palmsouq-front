@@ -1,11 +1,5 @@
 'use client';
-import {
-  Button,
-  CategoriesBar,
-  Footer,
-  Header,
-  ProductCard,
-} from '@/components';
+import { CategoriesBar, Footer, Header, ProductCard } from '@/components';
 import { TopBar } from '@/components';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -17,6 +11,28 @@ import { IoCallOutline } from 'react-icons/io5';
 import StarRatings from 'react-star-ratings';
 import { useEffect, useState } from 'react';
 import { register } from 'swiper/element/bundle';
+import { useResponsiveSlides, useWindoWidth } from '@/hooks';
+
+type SwiperElement = Element & {
+  swiper?: {
+    slideNext: () => void;
+    slidePrev: () => void;
+  };
+};
+
+const catBreakpoints = [
+  { width: 1279, slide: 7 },
+  { width: 1023, slide: 6 },
+  { width: 767, slide: 4 },
+  { width: 639, slide: 3 },
+  { width: 0, slide: 2 },
+];
+
+const testimonialBreakpoints = [
+  { width: 1023, slide: 3 },
+  { width: 639, slide: 2 },
+  { width: 0, slide: 1 },
+];
 
 const companyDetails = [
   {
@@ -42,55 +58,25 @@ const companyDetails = [
 ];
 
 export default function Home() {
-  const [windowWidth, setWindowWidth] = useState(0);
+  const windowWidth = useWindoWidth();
+  const getCatSlide = useResponsiveSlides(catBreakpoints, 2);
+  const getTestimonialSlide = useResponsiveSlides(testimonialBreakpoints);
   const [rating, setRating] = useState<number>(3.5);
-  const [catSlidesPerView, setCatPerView] = useState<number>();
-  const [reviewSlidesPerView, setReviewPerView] = useState<number>();
+  const [swiperEl, setSwiperEl] = useState<NodeListOf<SwiperElement> | null>(
+    null
+  );
+
   useEffect(() => {
+    setSwiperEl(document.querySelectorAll('swiper-container'));
     register();
   }, []);
 
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      setWindowWidth(window.innerWidth);
-    }
-    const handleResize = () => {
-      setWindowWidth(window.innerWidth);
-    };
-
-    window.addEventListener('resize', handleResize);
-
-    // Initial setting of perView based on the initial window width
-    const getCurrentCatSlide = () => {
-      if (windowWidth > 1279) {
-        return 7;
-      } else if (windowWidth > 1023) {
-        return 6;
-      } else if (windowWidth > 767) {
-        return 4;
-      } else if (windowWidth > 639) {
-        return 3;
-      } else {
-        return 2;
-      }
-    };
-    const getCurrentTestimonialSlide = () => {
-      if (windowWidth > 1023) {
-        return 3;
-      } else if (windowWidth > 639) {
-        return 2;
-      } else {
-        return 1;
-      }
-    };
-
-    setCatPerView(getCurrentCatSlide());
-    setReviewPerView(getCurrentTestimonialSlide());
-
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, [windowWidth]);
+  const onNext = (id: number) => {
+    swiperEl?.[id]?.swiper?.slideNext();
+  };
+  const onPrev = (id: number) => {
+    swiperEl?.[id]?.swiper?.slidePrev();
+  };
 
   return (
     <main>
@@ -133,19 +119,22 @@ export default function Home() {
               Explore by categories
             </h3>
             <div className="flex items-center gap-x-2">
-              <button className="size-8 lg:size-10 rounded-full flex items-center justify-center bg-[#F5F5F7] hover:bg-[#F5F5F7]/70 hover:scale-95 active:scale-90">
+              <button
+                onClick={() => onPrev(1)}
+                className="size-8 lg:size-10 rounded-full flex items-center justify-center bg-[#F5F5F7] hover:bg-[#F5F5F7]/70 hover:scale-95 active:scale-90"
+              >
                 <HiArrowLeft className="lg:text-2xl text-neutral-500" />
               </button>
-              <button className="size-8 lg:size-10 rounded-full flex items-center justify-center bg-[#F5F5F7] hover:bg-[#F5F5F7]/70 hover:scale-95 active:scale-90">
+              <button
+                onClick={() => onNext(1)}
+                className="size-8 lg:size-10 rounded-full flex items-center justify-center bg-[#F5F5F7] hover:bg-[#F5F5F7]/70 hover:scale-95 active:scale-90"
+              >
                 <HiArrowRight className="lg:text-2xl text-neutral-500" />
               </button>
             </div>
           </div>
           <div className="mt-5 max-h-[172px] overflow-hidden">
-            <swiper-container
-              slides-per-view={catSlidesPerView}
-              space-between={16}
-            >
+            <swiper-container slides-per-view={getCatSlide} space-between={16}>
               {categories.map((cat, i) => (
                 <swiper-slide key={`cat_${i}`} className="">
                   <Link
@@ -364,17 +353,23 @@ export default function Home() {
               </p>
             </div>
             <div className="hidden md:flex items-center gap-x-2">
-              <button className="size-8 lg:size-10 rounded-full flex items-center justify-center bg-white hover:bg-white/70 hover:scale-95 active:scale-90">
+              <button
+                onClick={() => onPrev(2)}
+                className="size-8 lg:size-10 rounded-full flex items-center justify-center bg-white hover:bg-white/70 hover:scale-95 active:scale-90"
+              >
                 <HiArrowLeft className="lg:text-2xl text-neutral-500" />
               </button>
-              <button className="size-8 lg:size-10 rounded-full flex items-center justify-center bg-white hover:bg-white/70 hover:scale-95 active:scale-90">
+              <button
+                onClick={() => onNext(2)}
+                className="size-8 lg:size-10 rounded-full flex items-center justify-center bg-white hover:bg-white/70 hover:scale-95 active:scale-90"
+              >
                 <HiArrowRight className="lg:text-2xl text-neutral-500" />
               </button>
             </div>
           </div>
           <div className="mt-6">
             <swiper-container
-              slides-per-view={reviewSlidesPerView}
+              slides-per-view={getTestimonialSlide}
               space-between={16}
               autoplay
             >
