@@ -25,7 +25,7 @@ const Header = ({
 }) => {
   const router = useRouter();
   const { control } = useForm<any>();
-  const [isLogedIn, setLogIn] = useState(true);
+  const [isLogedIn, setLogIn] = useState(false);
   const [isOpen, setIsOpen] = React.useState(false);
 
   return (
