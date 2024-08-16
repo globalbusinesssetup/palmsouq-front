@@ -2,23 +2,26 @@ import { Button } from '@/components';
 import React, { useState } from 'react';
 import { BiEnvelope } from 'react-icons/bi';
 import OtpInput from 'react-otp-input';
+import { useSearchParams } from 'next/navigation';
 
 const OtpVerify = ({
   onVerify,
   number,
   title,
+  loading,
 }: {
-  onVerify?: () => void;
+  onVerify?: (otp: string) => void;
   number?: string | number;
   title?: string;
+  loading?: boolean;
 }) => {
   const [otp, setOtp] = useState('');
   const [error, setError] = useState(false);
+  const params = useSearchParams();
 
   const onSubmit = () => {
     if (otp.length === 4) {
-      onVerify?.();
-      console.log(otp);
+      onVerify?.(otp);
     } else {
       setError(true);
     }
@@ -34,7 +37,7 @@ const OtpVerify = ({
           Please enter 4 digit code sent to
         </p>
         <p className="text-sm text-neutral-500 font-bold mt-1 text-center">
-          +971******479
+          {params.get('data') ?? '+971******479'}
         </p>
       </div>
 
@@ -72,7 +75,7 @@ const OtpVerify = ({
           Resent code
         </button>
       </p>
-      <Button onClick={onSubmit} className="mt-6">
+      <Button loading={loading} onClick={onSubmit} className="mt-6">
         {title ?? 'Continue'}
       </Button>
     </>

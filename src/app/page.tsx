@@ -11,7 +11,8 @@ import { IoCallOutline } from 'react-icons/io5';
 import StarRatings from 'react-star-ratings';
 import { useEffect, useState } from 'react';
 import { register } from 'swiper/element/bundle';
-import { useResponsiveSlides, useWindoWidth } from '@/hooks';
+import { useMount, useResponsiveSlides, useWindoWidth } from '@/hooks';
+import { LuLoader2 } from 'react-icons/lu';
 
 type SwiperElement = Element & {
   swiper?: {
@@ -65,11 +66,20 @@ export default function Home() {
   const [swiperEl, setSwiperEl] = useState<NodeListOf<SwiperElement> | null>(
     null
   );
+  const isMount = useMount();
 
   useEffect(() => {
     setSwiperEl(document.querySelectorAll('swiper-container'));
     register();
   }, []);
+
+  if (!isMount) {
+    return (
+      <div className="w-screen h-screen flex items-center justify-center bg-primary">
+        <LuLoader2 size={30} className="text-white animate-spin" />
+      </div>
+    );
+  }
 
   const onNext = (id: number) => {
     swiperEl?.[id]?.swiper?.slideNext();

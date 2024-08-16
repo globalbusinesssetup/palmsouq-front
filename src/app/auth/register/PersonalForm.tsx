@@ -1,7 +1,10 @@
 'use client';
 import { Input, Button } from '@/components';
-import React from 'react';
+import { api } from '@/utils/fetcher';
+import { useRouter } from 'next/navigation';
+import React, { useState } from 'react';
 import { FieldError, useForm } from 'react-hook-form';
+import { toast } from 'react-toastify';
 
 const PersonalForm = () => {
   const {
@@ -9,9 +12,23 @@ const PersonalForm = () => {
     handleSubmit,
     formState: { errors },
     setError,
+    reset,
   } = useForm<any>({ mode: 'onChange' });
-  const onRegister = (data: any) => {
-    console.log(data);
+  const router = useRouter();
+  const [isLoading, setLoading] = useState(false);
+
+  const onRegister = async (data: any) => {
+    setLoading(true);
+    delete data.cnfm_password;
+    try {
+      const res = await api.post('/user/signup', data);
+      reset();
+      router.push(`/auth/register/?data=${res.data.data}`);
+      toast.success('Account has been created successfully!');
+    } catch (err) {
+      console.log(err);
+    }
+    setLoading(false);
   };
 
   return (
@@ -91,7 +108,7 @@ const PersonalForm = () => {
       >
         {(errors.password as FieldError)?.message || ''}
       </p>
-      <Button type={'submit'} className="mt-4">
+      <Button loading={isLoading} type={'submit'} className="mt-4">
         Register
       </Button>
     </form>

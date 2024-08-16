@@ -10,7 +10,11 @@
   },
   "dependencies": {
     "@headlessui/react": "^2.0.4",
+    "@types/js-cookie": "^3.0.6",
     "@types/react-star-ratings": "^2.3.3",
+    "axios": "^1.7.4",
+    "dayjs": "^1.11.12",
+    "js-cookie": "^3.0.5",
     "libphonenumber-js": "^1.11.3",
     "next": "14.2.3",
     "react": "^18",
@@ -23,7 +27,9 @@
     "react-phone-input-2": "^2.15.1",
     "react-rating": "^2.0.5",
     "react-star-ratings": "^2.3.0",
+    "react-toastify": "^10.0.5",
     "swiper": "^11.1.4",
+    "swr": "^2.2.5",
     "tailwind-merge": "^2.3.0",
     "tailwind-scrollbar": "^3.1.0"
   },

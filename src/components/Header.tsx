@@ -15,6 +15,7 @@ import { IoChevronDown } from 'react-icons/io5';
 import { topBarCategories } from '@/constants';
 import { CloseButton } from '@headlessui/react';
 import { FaBars } from 'react-icons/fa6';
+import useAuth from '@/hooks/useAuth';
 
 const Header = ({
   showSearch = false,
@@ -25,8 +26,8 @@ const Header = ({
 }) => {
   const router = useRouter();
   const { control } = useForm<any>();
-  const [isLogedIn, setLogIn] = useState(false);
   const [isOpen, setIsOpen] = React.useState(false);
+  const { isLoggedIn, user } = useAuth();
 
   return (
     <>
@@ -63,7 +64,7 @@ const Header = ({
               />
             </div>
           )}
-          {isLogedIn ? (
+          {isLoggedIn ? (
             <div className="flex items-center gap-x-2 md:gap-x-4">
               <button className=" md:hidden" onClick={() => setIsOpen(true)}>
                 <FaBars className="text-xl sm:text-2xl text-[#1A1E5E]" />

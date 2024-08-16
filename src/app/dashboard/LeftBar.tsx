@@ -9,6 +9,7 @@ import { LiaUserEditSolid } from 'react-icons/lia';
 import { HiOutlineLockClosed } from 'react-icons/hi';
 import { Location, Bag } from '@/components';
 import { FaBarsStaggered } from 'react-icons/fa6';
+import useAuth from '@/hooks/useAuth';
 
 export const avatar = '/avatar.png';
 
@@ -60,6 +61,7 @@ const settingLinks = [
 const LeftBar = () => {
   const pathname = usePathname();
   const [isExpand, setExpand] = useState(false);
+  const { logOut, isLoggedIn } = useAuth();
 
   return (
     <>
@@ -131,7 +133,11 @@ const LeftBar = () => {
           </div>
         </nav>
         <div className="pt-2 px-2 md:px-4 pb-4">
-          <button className="w-full h-8 sm:h-10 lg:h-12 text-[#344054] text-sm lg:text-base transition-all duration-300 hover:bg-neutral-200 font-semibold flex items-center justify-center gap-x-2 bg-neutral-50 rounded-lg">
+          <button
+            disabled={!isLoggedIn}
+            onClick={() => logOut()}
+            className="w-full h-8 sm:h-10 lg:h-12 text-[#344054] text-sm lg:text-base transition-all duration-300 hover:bg-neutral-200 font-semibold flex items-center justify-center gap-x-2 bg-neutral-50 rounded-lg"
+          >
             <FiLogOut className="text-sm lg:text-base" />{' '}
             <span className={`hidden sm:inline ${isExpand && '!inline'}`}>
               Sign Out

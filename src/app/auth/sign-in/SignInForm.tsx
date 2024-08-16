@@ -6,6 +6,7 @@ import React, { useState } from 'react';
 import { FaArrowRightLong } from 'react-icons/fa6';
 import { IoMdLogIn } from 'react-icons/io';
 import { useForm } from 'react-hook-form';
+import useAuth from '@/hooks/useAuth';
 
 // export const metadata: Metadata = {
 //   title: 'Sign In | Printcraft',
@@ -20,12 +21,20 @@ const SignInForm = ({ onSignIn }: { onSignIn?: () => void }) => {
     clearErrors,
     formState: { errors },
   } = useForm();
+  const { login, isLoggedIn } = useAuth();
   const [enabled, setEnabled] = useState(false);
   const [phone, setPhone] = useState<any>();
+  const [isLoading, setLoading] = useState(false);
 
-  const onFormSubmit = (data: any) => {
-    console.log(data);
-    onSignIn?.();
+  const onFormSubmit = async (data: any) => {
+    setLoading(true);
+    try {
+      await login(data);
+    } catch (err) {
+      console.log('Err Login ==>', err);
+    }
+    setLoading(false);
+    // onSignIn?.();
   };
 
   return (
@@ -42,15 +51,20 @@ const SignInForm = ({ onSignIn }: { onSignIn?: () => void }) => {
         </div>
       </div>
       <form onSubmit={handleSubmit(onFormSubmit)} className="mt-8">
-        <InputPhoneNumber
+        <Input
           control={control}
-          label="Mobile Number"
-          name="phone"
-          rules={{ required: 'mobile number is required' }}
-          // setError={setError}
-          clearErrors={clearErrors}
-          onChange={(val: any) => setPhone(val)}
-          error={errors?.phone}
+          rules={{
+            required: 'Email Address is required',
+            pattern: {
+              value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/i,
+              message: 'Invalid email address',
+            },
+          }}
+          name="email"
+          label="Email Address *"
+          placeholder="Enter email address"
+          wrapClassName="flex-1 mt-4 sm:mt-6"
+          error={errors.email}
         />
         <Input
           control={control}
@@ -81,7 +95,9 @@ const SignInForm = ({ onSignIn }: { onSignIn?: () => void }) => {
           </Link>
         </div>
         <div className="mt-8">
-          <Button type="submit">Sign in</Button>
+          <Button loading={isLoading} type="submit">
+            Sign in
+          </Button>
           <Link
             href={'/auth/register'}
             className="mt-3 text-base font-semibold text-neutral-600 hover:text-neutral-400 duration-200 w-full text-center inline-flex items-center justify-center gap-2"
