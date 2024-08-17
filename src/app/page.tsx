@@ -73,13 +73,13 @@ export default function Home() {
     register();
   }, []);
 
-  if (!isMount) {
-    return (
-      <div className="w-screen h-screen flex items-center justify-center bg-primary">
-        <LuLoader2 size={30} className="text-white animate-spin" />
-      </div>
-    );
-  }
+  // if (!isMount) {
+  //   return (
+  //     <div className="w-screen h-screen flex items-center justify-center bg-primary">
+  //       <LuLoader2 size={40} className="text-white animate-spin" />
+  //     </div>
+  //   );
+  // }
 
   const onNext = (id: number) => {
     swiperEl?.[id]?.swiper?.slideNext();

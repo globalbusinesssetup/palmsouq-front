@@ -66,8 +66,6 @@ const InputPhoneNumber = ({
     }
   };
 
-  console.log(error);
-
   return (
     <div className={`flex flex-col ${wrapClassName}`}>
       {label && (

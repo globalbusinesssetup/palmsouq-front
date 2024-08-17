@@ -3,7 +3,13 @@ import React from 'react';
 import { HiOutlineLockClosed } from 'react-icons/hi';
 import { useForm } from 'react-hook-form';
 
-const NewPasswordForm = ({ onUpdate }: { onUpdate?: () => void }) => {
+const NewPasswordForm = ({
+  onUpdate,
+  loading = false,
+}: {
+  onUpdate?: (password: string) => void;
+  loading?: boolean;
+}) => {
   const {
     control,
     handleSubmit,
@@ -12,7 +18,7 @@ const NewPasswordForm = ({ onUpdate }: { onUpdate?: () => void }) => {
 
   const onFormSubmit = (data: any) => {
     console.log(data);
-    onUpdate?.();
+    onUpdate?.(data.password);
   };
 
   return (
@@ -61,7 +67,7 @@ const NewPasswordForm = ({ onUpdate }: { onUpdate?: () => void }) => {
         placeholder="••••••••"
         wrapClassName="mt-4 w-full"
       />
-      <Button type={'submit'} className="mt-6">
+      <Button loading={loading} type={'submit'} className="mt-6">
         Update password
       </Button>
     </form>

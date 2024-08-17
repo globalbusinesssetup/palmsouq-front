@@ -21,7 +21,7 @@ const SignInForm = ({ onSignIn }: { onSignIn?: () => void }) => {
     clearErrors,
     formState: { errors },
   } = useForm();
-  const { login, isLoggedIn } = useAuth();
+  const { login } = useAuth();
   const [enabled, setEnabled] = useState(false);
   const [phone, setPhone] = useState<any>();
   const [isLoading, setLoading] = useState(false);

@@ -16,6 +16,8 @@ import { topBarCategories } from '@/constants';
 import { CloseButton } from '@headlessui/react';
 import { FaBars } from 'react-icons/fa6';
 import useAuth from '@/hooks/useAuth';
+import useGetUser from '@/hooks/useGetUser';
+import { useQuery } from '@tanstack/react-query';
 
 const Header = ({
   showSearch = false,
@@ -24,10 +26,13 @@ const Header = ({
   showSearch?: boolean;
   onChange?: (val: any) => void;
 }) => {
-  const router = useRouter();
   const { control } = useForm<any>();
   const [isOpen, setIsOpen] = React.useState(false);
-  const { isLoggedIn, user } = useAuth();
+  const { isLoggedIn } = useAuth();
+  const { data: user, isLoading } = useQuery({
+    queryKey: ['user'],
+    queryFn: useGetUser,
+  });
 
   return (
     <>
@@ -64,17 +69,43 @@ const Header = ({
               />
             </div>
           )}
-          {isLoggedIn ? (
+          <button className=" md:hidden" onClick={() => setIsOpen(true)}>
+            <FaBars className="text-xl sm:text-2xl text-[#1A1E5E]" />
+          </button>
+          {isLoading ? (
+            <div className="hidden md:flex items-center gap-x-2 md:gap-x-4">
+              <div className="hidden md:flex items-center gap-x-3 p-2">
+                <div
+                  key={1}
+                  className="w-10 h-10 bg-gray-200 rounded animate-pulse"
+                />
+                <div
+                  key={2}
+                  className="w-20 h-10 bg-gray-200 rounded animate-pulse"
+                />
+              </div>
+              <div className="hidden md:flex items-center gap-x-3 p-2">
+                <div
+                  key={1}
+                  className="w-10 h-10 bg-gray-200 rounded animate-pulse"
+                />
+                <div
+                  key={2}
+                  className="w-20 h-10 bg-gray-200 rounded animate-pulse"
+                />
+              </div>
+            </div>
+          ) : isLoggedIn ? (
             <div className="flex items-center gap-x-2 md:gap-x-4">
-              <button className=" md:hidden" onClick={() => setIsOpen(true)}>
-                <FaBars className="text-xl sm:text-2xl text-[#1A1E5E]" />
-              </button>
               <div className="hidden md:flex items-center gap-x-3 p-2">
                 <Link href={'/dashboard/profile'}>
                   <FiUser className="text-2xl xl:text-[28px] text-[#1A1E5E]" />
                 </Link>
                 <div className="text-[#1A1E5E] hidden md:block">
-                  <p className="text-tiny lg:text-xs">Hi, Yallprints</p>
+                  <p className="text-tiny lg:text-xs">
+                    Hi,{' '}
+                    <span className=" capitalize">{user?.data.first_name}</span>
+                  </p>
                   <Link
                     href={'/dashboard/profile'}
                     className="flex items-center gap-x-1"

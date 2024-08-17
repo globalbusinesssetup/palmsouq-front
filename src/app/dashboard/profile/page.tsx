@@ -12,21 +12,28 @@ import {
   Button,
 } from '@/components';
 import { BiEnvelope } from 'react-icons/bi';
+import useGetUser from '@/hooks/useGetUser';
+import { useQuery } from '@tanstack/react-query';
 
 type FormInputs = {
-  firstName: string;
-  lastName: string;
+  first_name: string;
+  last_name: string;
   phone: string;
   email: string;
 };
 
 const Profile = () => {
+  const { data: user, isFetching } = useQuery({
+    queryKey: ['user'],
+    queryFn: useGetUser,
+  });
+  console.log(user);
   const { control, handleSubmit, setError, clearErrors } = useForm<FormInputs>({
     defaultValues: {
-      firstName: 'Sadequl',
-      lastName: 'Islam',
-      phone: '259387439',
-      email: 'example@gmail.com',
+      first_name: user?.data.first_name,
+      last_name: user?.data.last_name,
+      phone: user?.data.phone ?? '',
+      email: user?.data.email,
     },
   });
   const {
@@ -90,7 +97,7 @@ const Profile = () => {
       <div className="mt-8 sm:mt-10">
         <h5 className="md:text-lg font-semibold text-neutral-900">Account</h5>
         <button className="w-[124px] h-9 sm:h-[43px] bg-neutral-100 transition-all duration-300 rounded-lg overflow-hidden text-sm text-neutral-600 font-semibold mt-4">
-          Personal
+          {user?.data.user_type}
         </button>
       </div>
       <div className="mt-10 max-w-[820px]">
@@ -100,14 +107,14 @@ const Profile = () => {
         <div className="mt-6 flex flex-col md:flex-row md:items-center gap-x-4 max-w-[720px]">
           <Input
             control={control}
-            name="firstName"
+            name="first_name"
             disabled
             label="First name"
             wrapClassName="flex-1"
           />
           <Input
             control={control}
-            name="lastName"
+            name="last_name"
             disabled
             label="Last name"
             wrapClassName="flex-1"

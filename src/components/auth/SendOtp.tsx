@@ -1,4 +1,4 @@
-import { Button, InputPhoneNumber } from '@/components';
+import { Button, InputPhoneNumber, Input } from '@/components';
 import React from 'react';
 import { BsPhone } from 'react-icons/bs';
 import { useForm } from 'react-hook-form';
@@ -6,9 +6,11 @@ import { useForm } from 'react-hook-form';
 const SendOtp = ({
   onContinue,
   description,
+  loading,
 }: {
-  onContinue?: () => void;
+  onContinue?: (email: string) => void;
   description?: string;
+  loading?: boolean;
 }) => {
   const {
     control,
@@ -19,7 +21,7 @@ const SendOtp = ({
   } = useForm();
 
   const onFormSubmit = (data: any) => {
-    onContinue?.();
+    onContinue?.(data.email);
     console.log(data);
   };
 
@@ -34,7 +36,22 @@ const SendOtp = ({
             `Please enter your mobile number for your new yallaprints account.`}
         </p>
       </div>
-      <InputPhoneNumber
+      <Input
+        control={control}
+        rules={{
+          required: 'Email Address is required',
+          pattern: {
+            value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/i,
+            message: 'Invalid email address',
+          },
+        }}
+        name="email"
+        label="Email Address *"
+        placeholder="Enter email address"
+        wrapClassName="flex-1 mt-4 sm:mt-6"
+        error={errors.email}
+      />
+      {/* <InputPhoneNumber
         label="Mobile Number"
         control={control}
         rules={{ required: 'mobile number is required' }}
@@ -43,8 +60,12 @@ const SendOtp = ({
         name="phone"
         error={errors?.phone}
         wrapClassName="mt-8"
-      />
-      <Button onClick={handleSubmit(onFormSubmit)} className="mt-6">
+      /> */}
+      <Button
+        loading={loading}
+        onClick={handleSubmit(onFormSubmit)}
+        className="mt-6"
+      >
         Continue
       </Button>
     </>

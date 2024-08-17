@@ -2,7 +2,7 @@
 import React, { ReactNode, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { FiBell, FiLogOut, FiShoppingBag } from 'react-icons/fi';
+import { FiBell, FiLoader, FiLogOut, FiShoppingBag } from 'react-icons/fi';
 import { IoCardOutline, IoWalletOutline } from 'react-icons/io5';
 import { usePathname } from 'next/navigation';
 import { LiaUserEditSolid } from 'react-icons/lia';
@@ -10,6 +10,7 @@ import { HiOutlineLockClosed } from 'react-icons/hi';
 import { Location, Bag } from '@/components';
 import { FaBarsStaggered } from 'react-icons/fa6';
 import useAuth from '@/hooks/useAuth';
+import { UserData } from '@/types';
 
 export const avatar = '/avatar.png';
 
@@ -58,7 +59,7 @@ const settingLinks = [
   },
 ];
 
-const LeftBar = () => {
+const LeftBar = ({ user }: { user: UserData | undefined }) => {
   const pathname = usePathname();
   const [isExpand, setExpand] = useState(false);
   const { logOut, isLoggedIn } = useAuth();
@@ -80,9 +81,9 @@ const LeftBar = () => {
             />
           </div>
           <div className="text-center mt-3">
-            <h6 className="text-sm font-semibold text-white">Jhon Millar</h6>
-            <p className="text-sm text-white">{'info@printcraft.ae'}</p>
-            <p className="text-sm text-white">{'+971 55 1234567'} </p>
+            <h6 className="text-sm font-semibold text-white capitalize">{`${user?.first_name} ${user?.last_name}`}</h6>
+            <p className="text-sm text-white">{user?.email}</p>
+            <p className="text-sm text-white">{user?.phone}</p>
           </div>
         </div>
         <nav className=" p-2 md:p-4 space-y-1 h-[calc(100%-58px)] md:h-[calc(100%-232px)] lg:h-[calc(100%-256px)] overflow-auto scrollbar-thin">
