@@ -1,10 +1,11 @@
+'use client';
 import React, { Suspense } from 'react';
 import ForgotPassword from './ForgotPassword';
-import { LuLoader } from 'react-icons/lu';
+import { Loader } from '@/components';
 
 const ForgotPasswordPage = () => {
   return (
-    <Suspense fallback={<LuLoader />}>
+    <Suspense fallback={<Loader />}>
       <ForgotPassword />
     </Suspense>
   );

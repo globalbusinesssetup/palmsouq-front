@@ -1,10 +1,11 @@
+'use client';
 import React, { Suspense } from 'react';
 import SignIn from './SignIn';
-import { LuLoader } from 'react-icons/lu';
+import { Loader } from '@/components';
 
 const RegisterPage = () => {
   return (
-    <Suspense fallback={<LuLoader />}>
+    <Suspense fallback={<Loader />}>
       <SignIn />
     </Suspense>
   );

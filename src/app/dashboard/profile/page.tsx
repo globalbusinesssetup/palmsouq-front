@@ -96,9 +96,9 @@ const Profile = () => {
       </div>
       <div className="mt-8 sm:mt-10">
         <h5 className="md:text-lg font-semibold text-neutral-900">Account</h5>
-        <button className="w-[124px] h-9 sm:h-[43px] bg-neutral-100 transition-all duration-300 rounded-lg overflow-hidden text-sm text-neutral-600 font-semibold mt-4">
+        <div className="w-[124px] h-9 sm:h-[43px] flex items-center justify-center bg-neutral-100 transition-all duration-300 rounded-lg overflow-hidden text-sm text-neutral-600 font-semibold mt-4">
           {user?.data.user_type}
-        </button>
+        </div>
       </div>
       <div className="mt-10 max-w-[820px]">
         <h5 className="md:text-lg font-semibold text-neutral-900">

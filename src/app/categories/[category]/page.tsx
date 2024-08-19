@@ -1,5 +1,5 @@
 'use client';
-import { Footer, Header, ProductCard } from '@/components';
+import { Footer, Header, Loader, ProductCard } from '@/components';
 import { Select } from '@headlessui/react';
 import Image from 'next/image';
 import React, { useState, useEffect } from 'react';
@@ -14,6 +14,9 @@ import {
   stickersTypes,
 } from '@/constants';
 import { useRouter } from 'next/navigation';
+import { useQuery } from '@tanstack/react-query';
+import { useGetProducts } from '@/utils/api';
+import { AiOutlineLoading } from 'react-icons/ai';
 
 type CategoryProps = {
   params: {
@@ -25,6 +28,10 @@ const Category: React.FC<CategoryProps> = ({ params }) => {
   const router = useRouter();
   const [selectedCat, setCat] = useState('all');
   const [categoryData, setCategoryData] = useState<any[]>([]);
+  const { data: products, isLoading } = useQuery({
+    queryKey: ['products'],
+    queryFn: useGetProducts,
+  });
 
   useEffect(() => {
     const fetchCategoryData = () => {
@@ -95,11 +102,15 @@ const Category: React.FC<CategoryProps> = ({ params }) => {
             </div>
           </div>
           <div className="grid xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-6 pt-4 pb-10">
-            {Array(8)
-              .fill(' ')
-              .map((product, i) => (
-                <ProductCard key={`product_${i}`} />
-              ))}
+            {isLoading ? (
+              <div className="w-full h-[60vh] flex items-center justify-center xs:col-span-2 md:col-span-3 lg:col-span-4">
+                <AiOutlineLoading size={40} className=" animate-spin" />
+              </div>
+            ) : (
+              products?.data.map((product, i) => (
+                <ProductCard key={`product_${i}`} data={product} />
+              ))
+            )}
           </div>
         </div>
       </main>

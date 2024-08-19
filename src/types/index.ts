@@ -47,3 +47,24 @@ export type ProfileApiResponse = {
   token: string | null;
   message: string;
 };
+
+export type ProductData = {
+  id: number;
+  badge: string;
+  title: string;
+  slug: string;
+  selling: number;
+  offered: number;
+  image: string;
+  review_count: number;
+  rating: number;
+  price: number;
+};
+
+export type ProductsApiResponse = {
+  data: {
+    result: {
+      data: ProductData[];
+    };
+  };
+};

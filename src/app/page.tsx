@@ -461,6 +461,7 @@ export default function Home() {
         </section>
       </div>
       {/* companyDetails */}
+
       <section className="bg-neutral-50 pt-10 pb-[30px] px-4 sm:px-0">
         <div className="container px-4 mx-auto flex flex-wrap gap-3 lg:gap-5 lg:justify-between">
           {companyDetails.map((detail, i) => (
