@@ -2,6 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+.custom-input {
+  @apply border border-[#D0D5DD] rounded-lg w-full focus-visible:outline-neutral-300 px-3.5 py-2.5 text-[#667085];
+}
+.label {
+  @apply mb-1.5 text-[#344054] text-sm font-medium;
+}
+
 input:focus-visible {
   outline-color: #d4d4d4;
 }
@@ -32,17 +39,13 @@ input:focus-visible {
 swiper-container::part(bullet-active) {
   background-color: white;
 }
-swiper-container::part(button-next) {
-  width: 24px;
-  height: 24px;
-  /* background: #ffffffe5; */
-  border-radius: 9999px;
-}
+swiper-container::part(button-next),
 swiper-container::part(button-prev) {
-  width: 24px;
-  height: 24px;
-  /* background: #ffffffe5; */
+  width: 14px;
+  height: 14px;
+  background: #ffffffe5;
   border-radius: 9999px;
+  padding: 10px;
 }
 
 .no-number-input-appearance::-webkit-outer-spin-button,

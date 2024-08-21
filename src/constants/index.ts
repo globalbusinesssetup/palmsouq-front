@@ -1,3 +1,4 @@
+export const currentYear = new Date().getFullYear();
 export const topBarCategories = [
   {
     title: 'Flyers & Brochures',
@@ -438,4 +439,45 @@ export const paymentIcons = [
   '/payment-icons/discover.svg',
   '/payment-icons/mastercard.svg',
   '/payment-icons/dinners-club.svg',
+];
+
+// dashboard
+
+export const notificationSettings = [
+  {
+    value: false,
+    label: 'New deals',
+  },
+  {
+    value: true,
+    label: 'Password changes',
+  },
+  {
+    value: false,
+    label: 'Special offers',
+  },
+  {
+    value: true,
+    label: 'Mobile number changes',
+  },
+  {
+    value: true,
+    label: 'Monthly discount',
+  },
+  {
+    value: true,
+    label: 'Order cancellation',
+  },
+  {
+    value: true,
+    label: 'Weekly discount',
+  },
+  {
+    value: true,
+    label: 'Order status',
+  },
+  {
+    value: true,
+    label: 'Reminders',
+  },
 ];

@@ -1,11 +1,5 @@
 'use client';
-import {
-  Button,
-  CategoriesBar,
-  Footer,
-  Header,
-  ProductCard,
-} from '@/components';
+import { CategoriesBar, Footer, Header, ProductCard } from '@/components';
 import { TopBar } from '@/components';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -17,48 +11,96 @@ import { IoCallOutline } from 'react-icons/io5';
 import StarRatings from 'react-star-ratings';
 import { useEffect, useState } from 'react';
 import { register } from 'swiper/element/bundle';
+import { useMount, useResponsiveSlides, useWindoWidth } from '@/hooks';
+import { LuLoader2 } from 'react-icons/lu';
+
+type SwiperElement = Element & {
+  swiper?: {
+    slideNext: () => void;
+    slidePrev: () => void;
+  };
+};
+
+const catBreakpoints = [
+  { width: 1279, slide: 7 },
+  { width: 1023, slide: 6 },
+  { width: 767, slide: 4 },
+  { width: 639, slide: 3 },
+  { width: 0, slide: 2 },
+];
+
+const testimonialBreakpoints = [
+  { width: 1023, slide: 3 },
+  { width: 639, slide: 2 },
+  { width: 0, slide: 1 },
+];
 
 const companyDetails = [
   {
     title: 'E-mail us',
     data: ['email@yallaprints.com', 'email@yallaprints.com'],
-    icon: <HiOutlineMail className="text-4xl" />,
+    icon: <HiOutlineMail className="text-2xl md:text-4xl" />,
   },
   {
     title: 'Call us',
     data: ['+971 50 1234567 (Contact)', '+971 50 1234567 (Contact)'],
-    icon: <IoCallOutline className="text-4xl" />,
+    icon: <IoCallOutline className="text-2xl md:text-4xl" />,
   },
   {
     title: 'Support',
     data: ['+971 50 1234567 (Contact)', '+971 50 1234567 (Contact)'],
-    icon: <IoCallOutline className="text-4xl" />,
+    icon: <IoCallOutline className="text-2xl md:text-4xl" />,
   },
   {
     title: 'Location',
     data: ['Industrial Area #4, Behind LuLu Al Wahda Road, Sharjah - U.A.E.'],
-    icon: <GrLocation className="text-4xl" />,
+    icon: <GrLocation className="text-2xl md:text-4xl" />,
   },
 ];
 
 export default function Home() {
+  const windowWidth = useWindoWidth();
+  const getCatSlide = useResponsiveSlides(catBreakpoints, 2);
+  const getTestimonialSlide = useResponsiveSlides(testimonialBreakpoints);
   const [rating, setRating] = useState<number>(3.5);
+  const [swiperEl, setSwiperEl] = useState<NodeListOf<SwiperElement> | null>(
+    null
+  );
+  const isMount = useMount();
+
   useEffect(() => {
+    setSwiperEl(document.querySelectorAll('swiper-container'));
     register();
   }, []);
+
+  // if (!isMount) {
+  //   return (
+  //     <div className="w-screen h-screen flex items-center justify-center bg-primary">
+  //       <LuLoader2 size={40} className="text-white animate-spin" />
+  //     </div>
+  //   );
+  // }
+
+  const onNext = (id: number) => {
+    swiperEl?.[id]?.swiper?.slideNext();
+  };
+  const onPrev = (id: number) => {
+    swiperEl?.[id]?.swiper?.slidePrev();
+  };
 
   return (
     <main>
       <TopBar />
-      <Header />
+      <Header showSearch />
       <CategoriesBar />
-      <div className="container mx-auto min-h-[55vh] mt-10 pb-7">
-        <section className="flex space-x-4">
-          <div className="w-7/12 h-[304px] rounded-[10px] overflow-hidden">
+      <div className="container mx-auto min-h-[55vh] mt-5 lg:mt-8 xl:mt-10 pb-7 px-4">
+        {/* Banner  */}
+        <section className="lg:flex lg:space-x-4">
+          <div className="lg:w-7/12 h-[200px] sm:h-[250px] xl:h-[304px] rounded-[10px] overflow-hidden">
             <swiper-container
               className="w-full"
-              pagination="true"
-              navigation="true"
+              pagination={true}
+              navigation={true}
               space-between={10}
               autoplay
             >
@@ -66,81 +108,94 @@ export default function Home() {
                 .fill('')
                 .map((_, i) => (
                   <swiper-slide key={`banner_${i}`} style={{ width: '100%' }}>
-                    <div className="w-full h-[304px] relative overflow-hidden rounded-[10px]">
+                    <div className="w-full h-[200px] sm:h-[250px] xl:h-[304px] relative overflow-hidden rounded-[10px]">
                       <Image src={'/banners/banner.jpeg'} fill alt={'banner'} />
                     </div>
                   </swiper-slide>
                 ))}
             </swiper-container>
           </div>
-          <div className="w-5/12 h-[304px] relative overflow-hidden rounded-[10px]">
+          <Link
+            href={'#'}
+            className="lg:w-5/12 h-[250px] xl:h-[304px] hidden lg:block relative overflow-hidden sm:rounded-[10px] mt-4 lg:mt-0"
+          >
             <Image src={'/banners/weekly-offer.jpeg'} fill alt={'banner'} />
-          </div>
+          </Link>
         </section>
         {/* explore by categories */}
         <section className="mt-7 p-4 rounded-[10px] border border-neutral-200">
           <div className="flex items-center justify-between">
-            <h3 className="text-2xl text-primary font-semibold">
+            <h3 className="text-lg sm:text-xl lg:text-2xl text-primary font-semibold">
               Explore by categories
             </h3>
             <div className="flex items-center gap-x-2">
-              <button className="w-10 h-10 rounded-full flex items-center justify-center bg-[#F5F5F7] hover:bg-[#F5F5F7]/70 hover:scale-95 active:scale-90">
-                <HiArrowLeft className="text-2xl text-neutral-500" />
+              <button
+                onClick={() => onPrev(1)}
+                className="size-8 lg:size-10 rounded-full flex items-center justify-center bg-[#F5F5F7] hover:bg-[#F5F5F7]/70 hover:scale-95 active:scale-90"
+              >
+                <HiArrowLeft className="lg:text-2xl text-neutral-500" />
               </button>
-              <button className="w-10 h-10 rounded-full flex items-center justify-center bg-[#F5F5F7] hover:bg-[#F5F5F7]/70 hover:scale-95 active:scale-90">
-                <HiArrowRight className="text-2xl text-neutral-500" />
+              <button
+                onClick={() => onNext(1)}
+                className="size-8 lg:size-10 rounded-full flex items-center justify-center bg-[#F5F5F7] hover:bg-[#F5F5F7]/70 hover:scale-95 active:scale-90"
+              >
+                <HiArrowRight className="lg:text-2xl text-neutral-500" />
               </button>
             </div>
           </div>
-          <div className="mt-5">
-            <swiper-container slides-per-view="7" space-between={16}>
+          <div className="mt-5 max-h-[172px] overflow-hidden">
+            <swiper-container slides-per-view={getCatSlide} space-between={16}>
               {categories.map((cat, i) => (
                 <swiper-slide key={`cat_${i}`} className="">
-                  <div className="rounded-lg bg-[#F5F5F7] min-w-[155px] flex-1 pt-4">
+                  <Link
+                    href={cat.link}
+                    className="block rounded-lg bg-[#F5F5F7] xs:min-w-[155px] flex-1 pt-4"
+                  >
                     <div className="w-full h-[100px] relative mx-1 mb-4">
                       <Image src={cat.img} fill alt="cat image" />
                     </div>
-                    <Link
-                      href={cat.link}
-                      className="px-5 py-3 text-xs font-semibold text-neutral-600 flex items-center justify-center gap-x-2"
-                    >
+                    <div className="px-3 xs:px-5 py-3 text-xs font-semibold text-neutral-600 transition-all duration-300 hover:text-primary/70 flex items-center justify-center gap-x-2">
                       {cat.title} <FaArrowRightLong className="text-base" />
-                    </Link>
-                  </div>
+                    </div>
+                  </Link>
                 </swiper-slide>
               ))}
             </swiper-container>
           </div>
         </section>
-        <section className="flex items-center gap-x-4 mt-8">
+        <section className="flex items-center gap-x-4 mt-5 md:mt-8">
           <div className="flex-1 h-[108px] bg-[#F5F5F7] relative rounded overflow-hidden">
             <Image
-              src={'/temp-banner.png'}
+              src={
+                'https://plus.unsplash.com/premium_photo-1682126556008-d6ac9170c9fa?q=80&w=1558&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+              }
               fill
               alt="banner"
               className=" object-cover"
             />
           </div>
-          <div className="flex-1 h-[108px] bg-[#F5F5F7] relative rounded overflow-hidden">
+          <div className="hidden md:block flex-1 h-[108px] bg-[#F5F5F7] relative rounded overflow-hidden">
             <Image
-              src={'/temp-banner.png'}
+              src={
+                'https://plus.unsplash.com/premium_photo-1682145481505-80614272c426?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+              }
               fill
               alt="banner"
-              className=" object-cover"
+              className="object-cover object-[left_60%]"
             />
           </div>
         </section>
         {/* in demand products */}
-        <section className="mt-7 bg-[#F9FAFB] rounded-[10px] px-5 py-4">
+        <section className="mt-7 bg-[#F9FAFB] rounded-[10px] px-2 lg:px-5 py-4">
           <div className="pb-4">
-            <h3 className="text-2xl text-primary font-semibold">
+            <h3 className="text-lg md:text-2xl text-primary font-semibold">
               In-demand Products
             </h3>
-            <p className="text-base text-neutral-600 mt-1">
+            <p className="text-xs sm:text-sm lg:text-base text-neutral-600 mt-1">
               Discover the Best Selling Products on the Market Today.
             </p>
           </div>
-          <div className="grid grid-cols-4 gap-x-4 gap-y-6">
+          <div className="grid xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-6">
             {Array(8)
               .fill(' ')
               .map((product, i) => (
@@ -148,53 +203,59 @@ export default function Home() {
               ))}
           </div>
         </section>
-        <div className="w-full h-[240px] bg-secondary mt-10 rounded-md overflow-hidden relative">
+        <div className="w-full h-[180px] lg:h-[240px] bg-secondary mt-8 lg:mt-10 rounded-md overflow-hidden relative">
           <Image
-            src={'/temp-banner.png'}
+            src={
+              'https://images.unsplash.com/photo-1565688842882-e0b2693d349a?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+            }
             fill
             alt="banner"
             className="object-cover"
           />
         </div>
         {/* popular business cards  */}
-        <section className="mt-10 bg-[#F9FAFB] rounded-[10px] px-5 py-4">
-          <div className="pb-4 flex items-center justify-between">
-            <div className="">
-              <h3 className="text-2xl text-primary font-semibold">
+        <section className="mt-5 md:mt-8 lg:mt-10 bg-[#F9FAFB] rounded-[10px] px-2 lg:px-5 py-4">
+          <div className="pb-4 flex lg:items-center justify-between">
+            <div className="max-w-[70%] sm:max-w-none">
+              <h3 className="text-lg md:text-xl lg:text-2xl text-primary font-semibold">
                 Popular Business Cards
               </h3>
-              <p className="text-base text-neutral-600 mt-1">
+              <p className="text-xs sm:text-base text-neutral-600 mt-1">
                 Personalized Business Cards Printing for all your networking
                 needs
               </p>
             </div>
             <Link
               href={'#'}
-              className="w-[115px] h-10 flex items-center justify-center gap-x-2 rounded-full transition-all duration-300 text-[#6835B1] border border-[#6835B1] hover:scale-95"
+              className="sm:w-[115px] px-2 h-8 sm:h-10 flex text-xs sm:text-base items-center justify-center gap-x-2 rounded-full transition-all duration-300 text-[#6835B1] border border-[#6835B1] hover:scale-95"
             >
               View All <HiArrowRight />
             </Link>
           </div>
-          <div className="grid grid-cols-4 gap-x-4 gap-y-6">
+          <div className="grid xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-6">
             {Array(8)
               .fill(' ')
               .map((product, i) => (
-                <ProductCard key={`product_${i}`} />
+                <ProductCard key={`p_product_${i}`} />
               ))}
           </div>
         </section>
-        <section className="flex items-center gap-x-4 mt-8">
-          <div className="flex-1 h-[240px] bg-[#F5F5F7] relative rounded-md overflow-hidden">
+        <section className="flex items-center gap-x-4 mt-5 md:mt-8">
+          <div className="flex-1 h-[150px] sm:h-[180px] lg:h-[240px] bg-[#F5F5F7] relative rounded-md overflow-hidden">
             <Image
-              src={'/temp-banner.png'}
+              src={
+                'https://images.unsplash.com/photo-1563097013-a1df1d1fd1c7?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+              }
               fill
               alt="banner"
               className="object-cover"
             />
           </div>
-          <div className="flex-1 h-[240px] bg-[#F5F5F7] relative rounded-md overflow-hidden">
+          <div className="hidden md:block flex-1 h-[180px] lg:h-[240px] bg-[#F5F5F7] relative rounded-md overflow-hidden">
             <Image
-              src={'/temp-banner.png'}
+              src={
+                'https://plus.unsplash.com/premium_photo-1661274103468-71e91f7ea517?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+              }
               fill
               alt="banner"
               className="object-cover"
@@ -202,110 +263,132 @@ export default function Home() {
           </div>
         </section>
         {/* High demand flyers  */}
-        <section className="mt-10 bg-[#F9FAFB] rounded-[10px] px-5 py-4">
-          <div className="pb-4 flex items-center justify-between">
-            <div className="">
-              <h3 className="text-2xl text-primary font-semibold">
+        <section className="mt-5 md:mt-8 lg:mt-10 bg-[#F9FAFB] rounded-[10px] px-2 lg:px-5 py-4">
+          <div className="pb-4 flex lg:items-center justify-between">
+            <div className="max-w-[70%] sm:max-w-none">
+              <h3 className="text-lg md:text-xl lg:text-2xl text-primary font-semibold">
                 High Demand Flyers
               </h3>
-              <p className="text-base text-neutral-600 mt-1">
+              <p className="text-sm sm:text-base text-neutral-600 mt-1">
                 Elevate Your Brand with our Quality Flyers Printing
               </p>
             </div>
             <Link
               href={'#'}
-              className="w-[115px] h-10 flex items-center justify-center gap-x-2 rounded-full transition-all duration-300 text-[#6835B1] border border-[#6835B1] hover:scale-95"
+              className="sm:w-[115px] px-2 h-8 sm:h-10 flex text-xs sm:text-base items-center justify-center gap-x-2 rounded-full transition-all duration-300 text-[#6835B1] border border-[#6835B1] hover:scale-95"
             >
               View All <HiArrowRight />
             </Link>
           </div>
-          <div className="grid grid-cols-4 gap-x-4 gap-y-6">
+          <div className="grid xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-6">
             {Array(8)
               .fill(' ')
               .map((product, i) => (
-                <ProductCard key={`product_${i}`} />
+                <ProductCard key={`h_product_${i}`} />
               ))}
           </div>
         </section>
-        <div className="w-full h-[240px] bg-secondary mt-10 rounded-md overflow-hidden relative">
+        <div className="w-full h-[180px] lg:h-[240px] bg-secondary mt-8 lg:mt-10 rounded-md overflow-hidden relative">
           <Image
-            src={'/temp-banner.png'}
+            src={
+              'https://images.unsplash.com/photo-1513884923967-4b182ef167ab?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+            }
             fill
             alt="banner"
             className="object-cover"
           />
         </div>
         {/* best selling paper bags  */}
-        <section className="mt-10 bg-[#F9FAFB] rounded-[10px] px-5 py-4">
+        <section className="mt-5 md:mt-8 lg:mt-10 bg-[#F9FAFB] rounded-[10px] px-2 lg:px-5 py-4">
           <div className="pb-4 flex items-center justify-between">
-            <div className="">
-              <h3 className="text-2xl text-primary font-semibold">
+            <div className="max-w-[70%] sm:max-w-none">
+              <h3 className="text-lg md:text-xl lg:text-2xl text-primary font-semibold">
                 Best Selling Paper Bags
               </h3>
-              <p className="text-base text-neutral-600 mt-1">
+              <p className="text-sm sm:text-base text-neutral-600 mt-1">
                 Maximize Reach with Custom Paper Bags Printing
               </p>
             </div>
             <Link
               href={'#'}
-              className="w-[115px] h-10 flex items-center justify-center gap-x-2 rounded-full transition-all duration-300 text-[#6835B1] border border-[#6835B1] hover:scale-95"
+              className="sm:w-[115px] px-2 h-8 sm:h-10 flex text-xs sm:text-base items-center justify-center gap-x-2 rounded-full transition-all duration-300 text-[#6835B1] border border-[#6835B1] hover:scale-95"
             >
               View All <HiArrowRight />
             </Link>
           </div>
-          <div className="grid grid-cols-4 gap-x-4 gap-y-6">
+          <div className="grid xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-6">
             {Array(8)
               .fill(' ')
               .map((product, i) => (
-                <ProductCard key={`product_${i}`} />
+                <ProductCard key={`b_product_${i}`} />
               ))}
           </div>
         </section>
         {/* features */}
-        <section className="mt-10 p-4 flex items-center gap-x-[18px]">
+        <section className="mt-5 md:mt-8 lg:mt-10 p-4 flex flex-wrap items-center gap-[18px]">
           {features.map((feature, i) => (
             <div
               key={`feature_${i}`}
-              className="flex-1 p-4 border border-[#385f48bf] rounded-lg flex items-center gap-x-4"
+              className="flex-1 p-3 xl:p-4 border border-[#385f48bf] rounded-lg flex items-center gap-x-3 xl:gap-x-4"
             >
-              <div className="w-[72px] h-[72px] rounded-full flex items-center justify-center bg-neutral-50">
-                <Image src={feature.icon} width={42} height={42} alt="icon" />
+              <div className="size-10 lg:size-14 xl:size-[72px] rounded-full flex items-center justify-center bg-neutral-50">
+                <Image
+                  src={feature.icon}
+                  width={42}
+                  height={42}
+                  className="size-8 xl:size-[42px]"
+                  alt="icon"
+                />
               </div>
-              <div className="">
-                <h6 className="text-lg font-semibold text-black">
+              <div className="flex-1">
+                <h6 className=" xl:text-lg font-semibold text-black whitespace-nowrap">
                   {feature.title}
                 </h6>
-                <p className="text-sm text-neutral-600 mt-1">{feature.desc}</p>
+                <p className="text-xs xl:text-sm text-neutral-600 mt-1 whitespace-nowrap">
+                  {feature.desc}
+                </p>
               </div>
             </div>
           ))}
         </section>
         {/* client testimonial  */}
-        <section className="p-8 bg-[#A79F881A] mt-10">
+        <section className="p-4 lg:p-8 bg-[#A79F881A] mt-8 lg:mt-10">
           <div className="flex items-center">
             <div className="flex-1">
-              <p className="text-success text-2xl">Client, Testimonial</p>
-              <p className="mt-1 text-2xl text-primary font-semibold">
+              <p className="text-success text-lg md:text-xl lg:text-2xl">
+                Client, Testimonial
+              </p>
+              <p className="mt-1 text-lg md:text-xl lg:text-2xl text-primary font-semibold">
                 The preferred printing partner for over 2000+ professionals.
               </p>
             </div>
-            <div className="flex items-center gap-x-2">
-              <button className="w-10 h-10 rounded-full flex items-center justify-center bg-white hover:bg-white/70 hover:scale-95 active:scale-90">
-                <HiArrowLeft className="text-2xl text-neutral-500" />
+            <div className="hidden md:flex items-center gap-x-2">
+              <button
+                onClick={() => onPrev(2)}
+                className="size-8 lg:size-10 rounded-full flex items-center justify-center bg-white hover:bg-white/70 hover:scale-95 active:scale-90"
+              >
+                <HiArrowLeft className="lg:text-2xl text-neutral-500" />
               </button>
-              <button className="w-10 h-10 rounded-full flex items-center justify-center bg-white hover:bg-white/70 hover:scale-95 active:scale-90">
-                <HiArrowRight className="text-2xl text-neutral-500" />
+              <button
+                onClick={() => onNext(2)}
+                className="size-8 lg:size-10 rounded-full flex items-center justify-center bg-white hover:bg-white/70 hover:scale-95 active:scale-90"
+              >
+                <HiArrowRight className="lg:text-2xl text-neutral-500" />
               </button>
             </div>
           </div>
           <div className="mt-6">
-            <swiper-container slides-per-view={3} space-between={16} autoplay>
+            <swiper-container
+              slides-per-view={getTestimonialSlide}
+              space-between={16}
+              autoplay
+            >
               {Array(5)
                 .fill(' ')
                 .map((_, i) => (
                   <swiper-slide key={`testimonial_${i}`}>
-                    <div className="flex-1 bg-white border border-neutral-200 p-6 space-y-3 rounded-lg">
-                      <h5 className="text-neutral-700 font-medium text-[21.31px] leading-[25.79px]">
+                    <div className="flex-1 bg-white border border-neutral-200 p-3 lg:p-6 space-y-3 rounded-lg">
+                      <h5 className="text-neutral-700 font-medium md:text-lg lg:text-[21.31px] leading-[25.79px]">
                         Floyd Miles
                       </h5>
                       <StarRatings
@@ -317,7 +400,7 @@ export default function Home() {
                         starSpacing="5px"
                         name="rating"
                       />
-                      <p className="text-[#133240]">
+                      <p className="text-[#133240] text-sm lg:text-base">
                         Amet minim mollit non deserunt ullamco est sit aliqua
                         dolor do amet sint. Velit officia consequat duis enim
                         velit mollit. Exercitation veniam consequat sunt nostrud
@@ -330,22 +413,22 @@ export default function Home() {
           </div>
         </section>
         {/* industry banner  */}
-        <section className="mt-10 px-6 py-[33px] border border-[#10182833] rounded-[10px] flex items-center gap-x-10 justify-between">
-          <div className="flex-1 w-full h-[293px] relative">
+        <section className="mt-5 md:mt-8 lg:mt-10 p-4 sm:px-6 py-5 sm:py-[33px] border border-[#10182833] rounded-[10px] md:flex items-center gap-x-10 justify-between">
+          <div className="flex-1 w-full h-[250px] xs:h-[293px] relative">
             <Image
               src={'/banners/industry-banner.png'}
               fill
               alt="industry banner"
             />
           </div>
-          <div className="flex-1">
-            <p className="text-lg font-medium text-success/80">
+          <div className="flex-1 mt-5 md:mt-0">
+            <p className=" xl:text-lg font-medium text-success/80">
               Fastest and Cheapest Printing in UAE{' '}
             </p>
-            <h3 className="text-3xl font-semibold text-neutral-800 mt-2">
+            <h3 className="text-lg lg:text-xl xl:text-3xl font-semibold text-neutral-800 mt-2">
               Printcraft is Revolutionizing the Online Printing Industry.
             </h3>
-            <p className="mt-4 text-lg text-neutral-600">
+            <p className="mt-4 text-sm lg:text-base xl:text-lg text-neutral-600">
               Delivering top-quality Design and Printing in UAE with a wide
               range of high-quality printing products at the best prices in the
               UAE. Our easy-to-use website makes it a breeze to order the
@@ -356,20 +439,20 @@ export default function Home() {
           </div>
         </section>
         {/* order steps */}
-        <section className="mt-10 px-6 py-4 bg-neutral-50 rounded-[10px] flex items-center gap-6">
+        <section className="mt-5 md:mt-8 lg:mt-10 sm:px-6 py-4 bg-neutral-50 rounded-[10px] flex flex-wrap items-center gap-6">
           {orderSteps.map((step, i) => (
             <div
               key={`step_${i}`}
               className="flex-1 flex flex-col gap-y-4 items-center"
             >
-              <div className="w-[93px] h-[88px] relative">
+              <div className="w-[83px] h-[78px] md:w-[93px] md:h-[88px] relative">
                 <Image src={step.icon} fill alt="icon" />
               </div>
               <div className="text-center">
-                <h4 className="text-xl font-medium text-primary">
+                <h4 className="lg:text-lg xl:text-xl font-medium text-primary text-nowrap">
                   {step.title}
                 </h4>
-                <p className="text-sm font-medium text-neutral-500">
+                <p className="text-xs lg:text-sm font-medium text-neutral-500">
                   {step.desc}
                 </p>
               </div>
@@ -378,17 +461,24 @@ export default function Home() {
         </section>
       </div>
       {/* companyDetails */}
-      <section className="bg-neutral-50 pt-10 pb-[30px]">
-        <div className="container mx-auto flex items-center justify-between">
+
+      <section className="bg-neutral-50 pt-10 pb-[30px] px-4 sm:px-0">
+        <div className="container px-4 mx-auto flex flex-wrap gap-3 lg:gap-5 lg:justify-between">
           {companyDetails.map((detail, i) => (
-            <div key={`detail_${i}`} className="flex gap-x-3.5">
+            <div
+              key={`detail_${i}`}
+              className="flex gap-x-3.5 xs:max-w-[50%] sm:max-w-fit"
+            >
               {detail.icon}
-              <div className="max-w-[220px]">
-                <h5 className="text-lg text-neutral-900 font-semibold">
+              <div className="max-w-[220px] flex-1">
+                <h5 className="md:text-lg text-neutral-900 font-semibold">
                   {detail.title}
                 </h5>
                 {detail.data.map((d, i) => (
-                  <p key={`k_${i}`} className="mt-1 text-sm text-neutral-700">
+                  <p
+                    key={`k_${i}`}
+                    className="mt-1 text-xs lg:text-sm text-neutral-700"
+                  >
                     {d}
                   </p>
                 ))}

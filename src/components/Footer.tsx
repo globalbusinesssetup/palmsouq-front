@@ -1,7 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { footerLinks, paymentIcons } from '@/constants';
+import { currentYear, footerLinks, paymentIcons } from '@/constants';
 
 const quickLinks = [
   {
@@ -25,8 +25,8 @@ const quickLinks = [
 const Footer = () => {
   return (
     <footer className="bg-primary">
-      <div className="container mx-auto py-[50px]">
-        <div className="flex flex-row flex-wrap items-center justify-between pb-6">
+      <div className="container mx-auto py-[50px] px-4 sm:px-5">
+        <div className="flex flex-row flex-wrap items-center justify-between pb-6 gap-4">
           {footerLinks.map((footerLink, i) => (
             <nav key={`footer_${i}`} className="space-y-2">
               <h6 className="text-neutral-400 text-sm font-semibold pb-1">
@@ -43,8 +43,8 @@ const Footer = () => {
               ))}
             </nav>
           ))}
-          <div className="pl-2.5">
-            <h3 className="text-xl text-neutral-300 font-medium">
+          <div className="lg:pl-2.5">
+            <h3 className="text-lg lg:text-xl text-neutral-300 font-medium">
               Payment Methods
             </h3>
             <div className="flex items-center mt-2 gap-x-1">
@@ -59,7 +59,7 @@ const Footer = () => {
                 />
               ))}
             </div>
-            <ul className="mt-4 text-[#E1E1FE] list-disc pl-5">
+            <ul className="mt-4 text-[#E1E1FE] list-disc pl-5 text-sm sm:text-base">
               <li>Pay on Delivery</li>
               <li>Make a Bank Transfer</li>
               <li>We accept Cheques</li>
@@ -67,19 +67,19 @@ const Footer = () => {
           </div>
         </div>
         <div className="w-full h-[1px] bg-gradient-to-l to-[#FDDE5C] from-[#70DB96]" />
-        <div className="flex items-center justify-between pt-4">
-          <div className="flex items-end gap-x-2">
+        <div className="flex flex-col lg:flex-row items-center justify-between pt-4 gap-y-4">
+          <div className="flex flex-col lg:flex-row items-center lg:items-end gap-2">
             <Image src="/footer-logo.svg" width={127} height={32} alt="logo" />
-            <p className="text-base text-neutral-200">
-              Copywrite 2023, All right reserved.
+            <p className="text-sm md:text-base text-neutral-200">
+              Copywrite {currentYear}, All right reserved.
             </p>
           </div>
-          <nav className="space-x-6">
+          <nav className="space-x-3 sm:space-x-6">
             {quickLinks.map((link, i) => (
               <Link
                 key={`quickL_${i}`}
                 href={link.url}
-                className="text-base font-medium text-white hover:text-white/65 hover:scale-90 underline transition-all duration-300"
+                className="text-xs sm:text-sm md:text-base sm:font-medium text-white hover:text-white/65 hover:scale-90 underline transition-all duration-300"
               >
                 {link.title}
               </Link>

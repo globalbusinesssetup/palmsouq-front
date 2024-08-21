@@ -5,8 +5,8 @@ import { FiPhoneForwarded } from 'react-icons/fi';
 
 const TopBar = () => {
   return (
-    <div className="bg-primary px-auto py-2">
-      <div className="container mx-auto flex items-center justify-between">
+    <div className="bg-primary px-auto py-2 hidden lg:block">
+      <div className="container mx-auto flex items-center justify-between px-4">
         <p className="text-neutral-50 text-sm">
           Era of Endless Printing Solutions, Printcraft welcomes you
         </p>
@@ -20,7 +20,7 @@ const TopBar = () => {
           </p>
           <div className="w-[1px] h-3.5 bg-neutral-400" />
           <Select
-            name="language"
+            // name="language"
             defaultValue={'english'}
             className="w-20 bg-transparent focus-visible:outline-none text-white text-xs font-semibold"
           >

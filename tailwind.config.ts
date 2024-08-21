@@ -20,6 +20,12 @@ const config: Config = {
           '0 45px 65px rgba(16, 24, 40, 0.05)',
         ],
       },
+      fontSize: {
+        tiny: '10px',
+      },
+      screens: {
+        xs: '480px',
+      },
     },
   },
   plugins: [require('tailwind-scrollbar')],

@@ -2,14 +2,28 @@ import { Button } from '@/components';
 import React, { useState } from 'react';
 import { BiEnvelope } from 'react-icons/bi';
 import OtpInput from 'react-otp-input';
+import { useSearchParams } from 'next/navigation';
 
-const OtpVerify = ({ onVerify }: { onVerify?: () => void }) => {
+const OtpVerify = ({
+  onVerify,
+  number,
+  title,
+  loading,
+}: {
+  onVerify?: (otp: string) => void;
+  number?: string | number;
+  title?: string;
+  loading?: boolean;
+}) => {
   const [otp, setOtp] = useState('');
+  const [error, setError] = useState(false);
+  const params = useSearchParams();
 
-  const onSubmit = (data: any) => {
-    console.log(data);
+  const onSubmit = () => {
     if (otp.length === 4) {
-      onVerify?.();
+      onVerify?.(otp);
+    } else {
+      setError(true);
     }
   };
 
@@ -23,13 +37,16 @@ const OtpVerify = ({ onVerify }: { onVerify?: () => void }) => {
           Please enter 4 digit code sent to
         </p>
         <p className="text-sm text-neutral-500 font-bold mt-1 text-center">
-          +971******479
+          {params.get('data') ?? '+971******479'}
         </p>
       </div>
 
       <OtpInput
         value={otp}
-        onChange={setOtp}
+        onChange={(v) => {
+          setOtp(v);
+          v.length > 3 && setError(false);
+        }}
         numInputs={4}
         renderSeparator={<span></span>}
         renderInput={(props) => <input {...props} />}
@@ -38,23 +55,28 @@ const OtpVerify = ({ onVerify }: { onVerify?: () => void }) => {
           alignItems: 'center',
           justifyContent: 'space-between',
           marginTop: '32px',
-          paddingInline: '28px',
+          maxWidth: '294px',
+          marginInline: 'auto',
+          gap: '0 10px',
         }}
         inputStyle={{
           width: '56px',
           height: '70px',
-          border: '1px solid #D1D5DB',
+          border: `1px solid ${!error ? '#D1D5DB' : '#FECDCA'}`,
           borderRadius: '5px',
         }}
       />
+      {error && (
+        <p className={'text-error mt-3 text-xs'}>please fill all input</p>
+      )}
       <p className="text-sm text-neutral-500 mt-4 text-center">
-        Didn’t receive the code?{' '}
+        Didn&apos;t receive the code?{' '}
         <button type={'button'} className="font-semibold text-primary">
           Resent code
         </button>
       </p>
-      <Button onClick={onSubmit} className="mt-6">
-        Continue
+      <Button loading={loading} onClick={onSubmit} className="mt-6">
+        {title ?? 'Continue'}
       </Button>
     </>
   );

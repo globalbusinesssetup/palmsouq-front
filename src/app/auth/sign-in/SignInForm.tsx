@@ -1,24 +1,40 @@
 'use client';
-import { Input, Button, CheckBox } from '@/components';
+import { Input, InputPhoneNumber, Button, CheckBox } from '@/components';
 import { Metadata } from 'next';
 import Link from 'next/link';
 import React, { useState } from 'react';
 import { FaArrowRightLong } from 'react-icons/fa6';
 import { IoMdLogIn } from 'react-icons/io';
 import { useForm } from 'react-hook-form';
+import useAuth from '@/hooks/useAuth';
 
 // export const metadata: Metadata = {
 //   title: 'Sign In | Printcraft',
 // };
 
 const SignInForm = ({ onSignIn }: { onSignIn?: () => void }) => {
-  const { control, handleSubmit, setValue, setError, clearErrors } = useForm();
+  const {
+    control,
+    handleSubmit,
+    setValue,
+    setError,
+    clearErrors,
+    formState: { errors },
+  } = useForm();
+  const { login } = useAuth();
   const [enabled, setEnabled] = useState(false);
   const [phone, setPhone] = useState<any>();
+  const [isLoading, setLoading] = useState(false);
 
-  const onFormSubmit = (data: any) => {
-    console.log(data);
-    onSignIn?.();
+  const onFormSubmit = async (data: any) => {
+    setLoading(true);
+    try {
+      await login(data);
+    } catch (err) {
+      console.log('Err Login ==>', err);
+    }
+    setLoading(false);
+    // onSignIn?.();
   };
 
   return (
@@ -37,13 +53,18 @@ const SignInForm = ({ onSignIn }: { onSignIn?: () => void }) => {
       <form onSubmit={handleSubmit(onFormSubmit)} className="mt-8">
         <Input
           control={control}
-          label="Mobile Number"
-          name="phone"
-          rules={{ required: 'mobile number is required' }}
-          type="phone"
-          setError={setError}
-          clearErrors={clearErrors}
-          onChange={(val: any) => setPhone(val)}
+          rules={{
+            required: 'Email Address is required',
+            pattern: {
+              value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/i,
+              message: 'Invalid email address',
+            },
+          }}
+          name="email"
+          label="Email Address *"
+          placeholder="Enter email address"
+          wrapClassName="flex-1 mt-4 sm:mt-6"
+          error={errors.email}
         />
         <Input
           control={control}
@@ -53,6 +74,7 @@ const SignInForm = ({ onSignIn }: { onSignIn?: () => void }) => {
           type="password"
           placeholder="••••••••"
           wrapClassName="mt-4"
+          error={errors?.password}
         />
         <div className="mt-5 flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -73,7 +95,9 @@ const SignInForm = ({ onSignIn }: { onSignIn?: () => void }) => {
           </Link>
         </div>
         <div className="mt-8">
-          <Button type="submit">Sign in</Button>
+          <Button loading={isLoading} type="submit">
+            Sign in
+          </Button>
           <Link
             href={'/auth/register'}
             className="mt-3 text-base font-semibold text-neutral-600 hover:text-neutral-400 duration-200 w-full text-center inline-flex items-center justify-center gap-2"
