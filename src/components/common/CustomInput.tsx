@@ -35,6 +35,39 @@ const CustomInput = ({
 }: IProps & React.InputHTMLAttributes<HTMLInputElement>) => {
   const uploadRef = useRef<HTMLInputElement>(null);
   const [isShow, setShow] = useState(false);
+  const [phonValue, setValue] = useState<string>('');
+  const [isValid, setIsValid] = useState<boolean>(true);
+
+  const handlePhoneChange = (
+    phone: string,
+    onChange: (val: string) => void
+  ) => {
+    setValue(phone);
+    onChange(phone);
+
+    // Validate phone number
+    try {
+      const phoneNumber = parsePhoneNumber(phone, 'AE'); 
+      const valid = isValidPhoneNumber(phoneNumber.number);
+      setIsValid(valid);
+      if (!valid) {
+        // setError(name, {
+        //   type: 'validation',
+        //   message: 'Please input a valid number',
+        // });
+        console.log("Valid")
+      } else {
+        clearErrors(name); // Clear errors if the phone number is valid
+      }
+    } catch (error) {
+      setIsValid(false);
+      // setError(name, {
+      //   type: 'validation',
+      //   message: 'Please input a valid number',
+      // });
+      console.log('Phone number validation error:', error);
+    }
+  };
 
   return (
     <div className={`flex flex-col text-sm lg:text-base ${wrapClassName}`}>
