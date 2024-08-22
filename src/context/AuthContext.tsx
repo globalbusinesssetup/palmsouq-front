@@ -2,20 +2,13 @@
 import { AuthContextTypes, LoginForm } from '@/types';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
-import React, { ReactNode, createContext, useEffect, useState } from 'react';
+import React, { ReactNode, createContext, useState } from 'react';
 import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 import { toast } from 'react-toastify';
-import { SWRConfig, SWRConfiguration } from 'swr';
-import useSWRMutation from 'swr/mutation';
 import Cookies from 'js-cookie';
 import fetcher, { api } from '@/utils/fetcher';
 import dayjs from 'dayjs';
-import {
-  QueryClient,
-  QueryClientProvider,
-  useMutation,
-  useQuery,
-} from '@tanstack/react-query';
+import { QueryClient, useQuery } from '@tanstack/react-query';
 import useGetUser from '@/hooks/useGetUser';
 
 export const AuthContext = createContext<AuthContextTypes>({
@@ -29,11 +22,14 @@ export const AuthContext = createContext<AuthContextTypes>({
 const AuthProvider = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
   const queryClient = new QueryClient();
-  const [user, setUser] = useState<any | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const token = Cookies.get('token');
+  const { data: user, isLoading } = useQuery({
+    queryKey: ['user'],
+    queryFn: useGetUser,
+    enabled: token ? false : true,
+  });
 
   async function login(arg: LoginForm) {
-    setIsLoading(true);
     try {
       const res = await api.post('/user/signin', { ...arg });
       Cookies.set('token', res.data?.data.token as string, {
@@ -41,7 +37,6 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         sameSite: 'lax',
         expires: dayjs(res.data?.data.expires_in).toDate(),
       });
-      setUser(res.data?.data.user);
       queryClient.invalidateQueries({ queryKey: ['user'] });
       await router.push('/dashboard/profile');
       toast.success('Login succesfully');
@@ -52,7 +47,6 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         throw 'An unexpected error occurred';
       }
     }
-    setIsLoading(false);
   }
 
   const logOut = () => {
@@ -64,22 +58,14 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   return (
     <AuthContext.Provider
       value={{
-        isLoggedIn: Cookies.get('token') ? true : false,
-        user: user,
+        isLoggedIn: token ? true : false,
+        user: user?.data ?? {},
         login,
         logOut,
         isLoading,
       }}
     >
-      <QueryClientProvider client={queryClient}>
-        {isLoading ? (
-          <div className="flex items-center justify-center h-screen">
-            <AiOutlineLoading3Quarters size={30} className=" animate-spin" />
-          </div>
-        ) : (
-          children
-        )}
-      </QueryClientProvider>
+      {children}
     </AuthContext.Provider>
   );
 };

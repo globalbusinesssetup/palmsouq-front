@@ -28,8 +28,8 @@ const Header = ({
 }) => {
   const { control } = useForm<any>();
   const [isOpen, setIsOpen] = React.useState(false);
-  const { isLoggedIn } = useAuth();
-  const { data: user, isLoading } = useQuery({
+  const { isLoggedIn, user } = useAuth();
+  const { data, isLoading } = useQuery({
     queryKey: ['user'],
     queryFn: useGetUser,
   });
@@ -37,7 +37,7 @@ const Header = ({
   return (
     <>
       <header className="py-3 sm:py-4 md:py-5 border-b">
-        <div className="container mx-auto flex items-center justify-between gap-x-6 px-4">
+        <div className="lg:container mx-auto flex items-center justify-between gap-x-6 px-4">
           <div className="flex items-center gap-6">
             <Link
               href={'/'}
@@ -96,15 +96,14 @@ const Header = ({
               </div>
             </div>
           ) : isLoggedIn ? (
-            <div className="flex items-center gap-x-2 md:gap-x-4">
+            <div className="hidden md:flex items-center gap-x-2 md:gap-x-4">
               <div className="hidden md:flex items-center gap-x-3 p-2">
                 <Link href={'/dashboard/profile'}>
                   <FiUser className="text-2xl xl:text-[28px] text-[#1A1E5E]" />
                 </Link>
                 <div className="text-[#1A1E5E] hidden md:block">
                   <p className="text-tiny lg:text-xs">
-                    Hi,{' '}
-                    <span className=" capitalize">{user?.data.first_name}</span>
+                    Hi, <span className=" capitalize">{user?.first_name}</span>
                   </p>
                   <Link
                     href={'/dashboard/profile'}
@@ -136,7 +135,7 @@ const Header = ({
           ) : (
             <Link
               href={'/auth/sign-in'}
-              className="py-2 px-3 md:px-7 flex items-center gap-x-3 md:border rounded-lg"
+              className="py-2 px-3 md:px-7 hidden md:flex items-center gap-x-3 md:border rounded-lg"
             >
               <RiUserSharedLine className="text-2xl lg:text-[28px] text-[#1A1E5E]" />
 

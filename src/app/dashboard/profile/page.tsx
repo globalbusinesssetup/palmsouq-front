@@ -27,7 +27,6 @@ const Profile = () => {
     queryKey: ['user'],
     queryFn: useGetUser,
   });
-  console.log(user);
   const { control, handleSubmit, setError, clearErrors } = useForm<FormInputs>({
     defaultValues: {
       first_name: user?.data.first_name,
