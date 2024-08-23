@@ -2,7 +2,7 @@
 import type { Metadata } from 'next';
 import LeftBar, { avatar } from './LeftBar';
 import Image from 'next/image';
-import useGetUser from '@/hooks/useGetUser';
+import { useGetUser } from '@/utils/api';
 import { useQuery } from '@tanstack/react-query';
 import useAuth from '@/hooks/useAuth';
 import { useRouter } from 'next/navigation';

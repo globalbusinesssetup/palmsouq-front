@@ -3,13 +3,11 @@ import { AuthContextTypes, LoginForm } from '@/types';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import React, { ReactNode, createContext, useState } from 'react';
-import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 import { toast } from 'react-toastify';
 import Cookies from 'js-cookie';
-import fetcher, { api } from '@/utils/fetcher';
+import { api } from '@/utils/fetcher';
 import dayjs from 'dayjs';
-import { QueryClient, useQuery } from '@tanstack/react-query';
-import useGetUser from '@/hooks/useGetUser';
+import { QueryClient } from '@tanstack/react-query';
 
 export const AuthContext = createContext<AuthContextTypes>({
   isLoggedIn: false,
@@ -22,14 +20,11 @@ export const AuthContext = createContext<AuthContextTypes>({
 const AuthProvider = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
   const queryClient = new QueryClient();
-  const token = Cookies.get('token');
-  const { data: user, isLoading } = useQuery({
-    queryKey: ['user'],
-    queryFn: useGetUser,
-    enabled: token ? false : true,
-  });
+  const [user, setUser] = useState({});
+  const [isLoading, setLoading] = useState(false);
 
   async function login(arg: LoginForm) {
+    setLoading(true);
     try {
       const res = await api.post('/user/signin', { ...arg });
       Cookies.set('token', res.data?.data.token as string, {
@@ -38,7 +33,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         expires: dayjs(res.data?.data.expires_in).toDate(),
       });
       queryClient.invalidateQueries({ queryKey: ['user'] });
-      await router.push('/dashboard/profile');
+      router.push('/dashboard/profile');
       toast.success('Login succesfully');
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -47,6 +42,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         throw 'An unexpected error occurred';
       }
     }
+    setLoading(false);
   }
 
   const logOut = () => {
@@ -58,8 +54,8 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   return (
     <AuthContext.Provider
       value={{
-        isLoggedIn: token ? true : false,
-        user: user?.data ?? {},
+        isLoggedIn: Cookies.get('token') ? true : false,
+        user: user,
         login,
         logOut,
         isLoading,

@@ -15,8 +15,9 @@ import {
 } from '@/constants';
 import { useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
-import { useGetProducts } from '@/utils/api';
+import { getCategories, getProducts } from '@/utils/api';
 import { AiOutlineLoading } from 'react-icons/ai';
+import { Categorydata, ProductData } from '@/types';
 
 type CategoryProps = {
   params: {
@@ -24,13 +25,22 @@ type CategoryProps = {
   };
 };
 
+// export async function getStaticPaths() {
+//   const categories = await getCategories();
+//   const paths = categories?.data?.categories?.map((cat: Categorydata) => ({
+//     category: cat.id,
+//   }));
+
+//   return paths;
+// }
+
 const Category: React.FC<CategoryProps> = ({ params }) => {
   const router = useRouter();
   const [selectedCat, setCat] = useState('all');
   const [categoryData, setCategoryData] = useState<any[]>([]);
   const { data: products, isLoading } = useQuery({
     queryKey: ['products'],
-    queryFn: useGetProducts,
+    queryFn: () => getProducts(params.category),
   });
 
   useEffect(() => {
@@ -51,7 +61,6 @@ const Category: React.FC<CategoryProps> = ({ params }) => {
         case 'bill-books':
           return billBooksTypes;
         default:
-          router.push('/');
           return [];
       }
     };
@@ -107,8 +116,12 @@ const Category: React.FC<CategoryProps> = ({ params }) => {
                 <AiOutlineLoading size={40} className=" animate-spin" />
               </div>
             ) : (
-              products?.data.map((product, i) => (
-                <ProductCard key={`product_${i}`} data={product} />
+              products?.data.map((product: ProductData, i: number) => (
+                <ProductCard
+                  key={`product_${i}`}
+                  data={product}
+                  category={params.category}
+                />
               ))
             )}
           </div>

@@ -48,6 +48,8 @@ export type ProfileApiResponse = {
   message: string;
 };
 
+// Profil
+
 export type ProductData = {
   id: number;
   badge: string;
@@ -67,4 +69,40 @@ export type ProductsApiResponse = {
       data: ProductData[];
     };
   };
+};
+
+// Category
+
+export type SubCategory = {
+  id: number;
+  title: string;
+  slug: string;
+  parent: number;
+};
+
+export type Categorydata = {
+  id: number;
+  title: string;
+  slug: string;
+  in_footer_child: SubCategory[];
+};
+
+// Address
+
+export type Address = {
+  id: number;
+  user_id: number;
+  country: string;
+  state: string;
+  city: string;
+  zip: string;
+  address_1: string;
+  address_2: string;
+  name: string;
+  phone: string;
+  delivery_instruction: string | null;
+  default: number;
+  user_token: string | null;
+  email: string;
+  created: string;
 };

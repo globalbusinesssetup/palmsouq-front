@@ -5,7 +5,7 @@ import { FiEye, FiEyeOff, FiSearch, FiUpload } from 'react-icons/fi';
 import { twMerge } from 'tailwind-merge';
 import { Controller } from 'react-hook-form';
 
-type InputType = 'password' | 'file' | 'search' | 'email' | 'date';
+type InputType = 'password' | 'file' | 'search' | 'email' | 'date' | 'number';
 
 type IProps = {
   label?: string;
@@ -37,37 +37,6 @@ const CustomInput = ({
   const [isShow, setShow] = useState(false);
   const [phonValue, setValue] = useState<string>('');
   const [isValid, setIsValid] = useState<boolean>(true);
-
-  const handlePhoneChange = (
-    phone: string,
-    onChange: (val: string) => void
-  ) => {
-    setValue(phone);
-    onChange(phone);
-
-    // Validate phone number
-    try {
-      const phoneNumber = parsePhoneNumber(phone, 'AE'); 
-      const valid = isValidPhoneNumber(phoneNumber.number);
-      setIsValid(valid);
-      if (!valid) {
-        // setError(name, {
-        //   type: 'validation',
-        //   message: 'Please input a valid number',
-        // });
-        console.log("Valid")
-      } else {
-        clearErrors(name); // Clear errors if the phone number is valid
-      }
-    } catch (error) {
-      setIsValid(false);
-      // setError(name, {
-      //   type: 'validation',
-      //   message: 'Please input a valid number',
-      // });
-      console.log('Phone number validation error:', error);
-    }
-  };
 
   return (
     <div className={`flex flex-col text-sm lg:text-base ${wrapClassName}`}>

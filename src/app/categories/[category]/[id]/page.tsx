@@ -11,6 +11,8 @@ import {
 } from '@headlessui/react';
 import { FaAngleDown } from 'react-icons/fa6';
 import { useRouter } from 'next/navigation';
+import { useQuery } from '@tanstack/react-query';
+import { getProduct } from '@/utils/api';
 
 type CategoryProps = {
   params: {
@@ -121,6 +123,11 @@ const ProductDeatils: React.FC<CategoryProps> = ({ params }) => {
   const [quantity, setQuantity] = useState(100);
   const [selectedImage, setImage] = useState(0);
 
+  const { data: product, isLoading } = useQuery({
+    queryKey: ['product', params.id],
+    queryFn: () => getProduct({ categoryId: params.category, id: params.id }),
+  });
+
   const handleQuantity = (type: 'minus' | 'plus' | number) => {
     if (type === 'plus') {
       setQuantity((prev) => prev + 1);
@@ -130,6 +137,8 @@ const ProductDeatils: React.FC<CategoryProps> = ({ params }) => {
       setQuantity(type);
     }
   };
+
+  console.log('product =>', product);
 
   return (
     <>

@@ -13,10 +13,9 @@ import 'react-modern-drawer/dist/index.css';
 import { HiArrowNarrowRight } from 'react-icons/hi';
 import { IoChevronDown } from 'react-icons/io5';
 import { topBarCategories } from '@/constants';
-import { CloseButton } from '@headlessui/react';
 import { FaBars } from 'react-icons/fa6';
 import useAuth from '@/hooks/useAuth';
-import useGetUser from '@/hooks/useGetUser';
+import { useGetUser } from '@/utils/api';
 import { useQuery } from '@tanstack/react-query';
 
 const Header = ({
@@ -28,7 +27,7 @@ const Header = ({
 }) => {
   const { control } = useForm<any>();
   const [isOpen, setIsOpen] = React.useState(false);
-  const { isLoggedIn, user } = useAuth();
+  const { isLoggedIn } = useAuth();
   const { data, isLoading } = useQuery({
     queryKey: ['user'],
     queryFn: useGetUser,
@@ -103,7 +102,10 @@ const Header = ({
                 </Link>
                 <div className="text-[#1A1E5E] hidden md:block">
                   <p className="text-tiny lg:text-xs">
-                    Hi, <span className=" capitalize">{user?.first_name}</span>
+                    Hi,{' '}
+                    <span className=" capitalize">
+                      {data?.data?.first_name}
+                    </span>
                   </p>
                   <Link
                     href={'/dashboard/profile'}

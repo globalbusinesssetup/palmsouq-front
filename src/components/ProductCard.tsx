@@ -4,11 +4,17 @@ import Link from 'next/link';
 import { HiArrowRight } from 'react-icons/hi';
 import { ProductData } from '@/types';
 
-const ProductCard = ({ data }: { data?: ProductData }) => {
+const ProductCard = ({
+  data,
+  category,
+}: {
+  data?: ProductData;
+  category?: string | number;
+}) => {
   return (
     <div className="border border-neutral-200 rounded-lg bg-white p-2 sm:p-3">
       <Link
-        href={`/categories/stickers/${data?.slug ?? 123}`}
+        href={`/categories/${category ?? 'sticker'}/${data?.id ?? 123}`}
         className="block w-full h-[228px] xs:h-[180px] sm:h-[220px] md:h-[200px] xl:h-[228px] rounded overflow-hidden bg-secondary relative"
       >
         <Image

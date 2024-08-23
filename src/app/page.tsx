@@ -13,6 +13,8 @@ import { useEffect, useState } from 'react';
 import { register } from 'swiper/element/bundle';
 import { useMount, useResponsiveSlides, useWindoWidth } from '@/hooks';
 import { LuLoader2 } from 'react-icons/lu';
+import { useQuery } from '@tanstack/react-query';
+import { getCategories, getCommons } from '@/utils/api';
 
 type SwiperElement = Element & {
   swiper?: {
@@ -67,19 +69,19 @@ export default function Home() {
     null
   );
   const isMount = useMount();
+  const { data, isLoading } = useQuery({
+    queryKey: ['categories'],
+    queryFn: getCategories,
+  });
+  // const { data: common } = useQuery({
+  //   queryKey: ['common'],
+  //   queryFn: getCommons,
+  // });
 
   useEffect(() => {
     setSwiperEl(document.querySelectorAll('swiper-container'));
     register();
   }, []);
-
-  // if (!isMount) {
-  //   return (
-  //     <div className="w-screen h-screen flex items-center justify-center bg-primary">
-  //       <LuLoader2 size={40} className="text-white animate-spin" />
-  //     </div>
-  //   );
-  // }
 
   const onNext = (id: number) => {
     swiperEl?.[id]?.swiper?.slideNext();
@@ -145,14 +147,18 @@ export default function Home() {
           </div>
           <div className="mt-5 max-h-[172px] overflow-hidden">
             <swiper-container slides-per-view={getCatSlide} space-between={16}>
-              {categories.map((cat, i) => (
+              {data?.data?.categories.map((cat, i) => (
                 <swiper-slide key={`cat_${i}`} className="">
                   <Link
-                    href={cat.link}
+                    href={`/categories/${cat.slug}`}
                     className="block rounded-lg bg-[#F5F5F7] xs:min-w-[155px] flex-1 pt-4"
                   >
                     <div className="w-full h-[100px] relative mx-1 mb-4">
-                      <Image src={cat.img} fill alt="cat image" />
+                      <Image
+                        src={'/categories/cards.png'}
+                        fill
+                        alt="cat image"
+                      />
                     </div>
                     <div className="px-3 xs:px-5 py-3 text-xs font-semibold text-neutral-600 transition-all duration-300 hover:text-primary/70 flex items-center justify-center gap-x-2">
                       {cat.title} <FaArrowRightLong className="text-base" />

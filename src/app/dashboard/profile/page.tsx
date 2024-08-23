@@ -12,7 +12,7 @@ import {
   Button,
 } from '@/components';
 import { BiEnvelope } from 'react-icons/bi';
-import useGetUser from '@/hooks/useGetUser';
+import { useGetUser } from '@/utils/api';
 import { useQuery } from '@tanstack/react-query';
 
 type FormInputs = {
@@ -29,10 +29,10 @@ const Profile = () => {
   });
   const { control, handleSubmit, setError, clearErrors } = useForm<FormInputs>({
     defaultValues: {
-      first_name: user?.data.first_name,
-      last_name: user?.data.last_name,
+      first_name: user?.data.first_name ?? '',
+      last_name: user?.data.last_name ?? '',
       phone: user?.data.phone ?? '',
-      email: user?.data.email,
+      email: user?.data.email ?? '',
     },
   });
   const {

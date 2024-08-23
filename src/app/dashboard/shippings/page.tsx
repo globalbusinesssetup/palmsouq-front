@@ -7,6 +7,11 @@ import { useForm } from 'react-hook-form';
 import { getCountries, getCountryCallingCode } from 'libphonenumber-js';
 import { getCountryData } from '@/utils/helper';
 import { FaAngleDown } from 'react-icons/fa6';
+import { getAddress, useGetUser } from '@/utils/api';
+import { useQuery } from '@tanstack/react-query';
+import { api } from '@/utils/fetcher';
+import Cookies from 'js-cookie';
+import { toast } from 'react-toastify';
 
 type Country = {
   code2: string;
@@ -30,8 +35,27 @@ const addresses = [
 ];
 
 const Shippings = () => {
-  const [defaultAddress, setDefaultAddress] = useState(addresses[0].value);
-  const { control } = useForm();
+  const { data: user } = useQuery({
+    queryKey: ['user'],
+    queryFn: useGetUser,
+  });
+  const { data: addresses, isLoading: isAddressLoading } = useQuery({
+    queryKey: ['address'],
+    queryFn: () => getAddress(),
+  });
+  const [isSubmitLoading, setSubmitLoading] = useState(false);
+  const [defaultAddress, setDefaultAddress] = useState(addresses?.data[0].id);
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm({
+    defaultValues: {
+      phone: '',
+      address: '',
+    },
+  });
   const [countryData, setCountryData] = useState<{
     [key: string]: Country;
   } | null>(null);
@@ -65,7 +89,13 @@ const Shippings = () => {
       setStates([]);
     }
     // eslint-disable-next-line
-  }, [countryData]);
+  }, [!countryData]);
+
+  useEffect(() => {
+    if (!defaultAddress && addresses?.data.length) {
+      setDefaultAddress(addresses?.data[0].id);
+    }
+  }, [defaultAddress, addresses]);
 
   const handleCountryChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const countryCode = event.target.value;
@@ -102,73 +132,110 @@ const Shippings = () => {
     setSelectedCity(event.target.value);
   };
 
+  const addNewAddress = async (data: any) => {
+    setSubmitLoading(true);
+    const token = Cookies.get('token');
+    try {
+      const res = await api.post('/user/address/action', {
+        city: selectedCity,
+        state: selectedState,
+        country: selectedCountry,
+        phone: data.phone,
+        address_1: data.address,
+        user_token: token,
+        email: user?.data?.email,
+        name: `${user?.data.first_name} ${user?.data.last_name}`,
+        zip: '23424',
+      });
+      if (res?.data?.data?.form) {
+        toast.error(res?.data?.data?.form[0]);
+        return;
+      } else {
+        toast.success(res?.data?.data?.message);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+    setSubmitLoading(false);
+  };
+
   return (
     <div className="bg-white border border-neutral-200 rounded-xl py-[18px] px-4 xs:px-5 lg:px-8">
       <h4 className="text-lg text-neutral-900 font-semibold">
         Shipping Address
       </h4>
-      <div className="mt-6">
-        <RadioGroup
-          value={defaultAddress}
-          onChange={setDefaultAddress}
-          aria-label="Server size"
-          className={'flex flex-col sm:flex-row sm:items-center gap-4'}
-        >
-          {addresses.map((address) => (
-            <Field
-              key={address.value}
-              className={`flex-1 flex items-start gap-2 p-3 lg:p-4 border rounded-lg transition-all duration-300 cursor-pointer ${
-                defaultAddress === address.value
-                  ? 'bg-neutral-50 border-[#9B9DFD]'
-                  : ''
-              }`}
-            >
-              <Radio
-                value={address.value}
-                className="group flex size-4 lg:size-5 items-center justify-center rounded-full border bg-white data-[checked]:border-primary duration-300 transition-all"
+      {isAddressLoading ? (
+        <div className="mt-6 flex flex-col sm:flex-row sm:items-center gap-4">
+          <div className="flex-1 bg-gray-300 animate-pulse h-32 rounded-lg" />
+          <div className="flex-1 bg-gray-300 animate-pulse h-32 rounded-lg" />
+        </div>
+      ) : addresses?.data?.length ? (
+        <div className="mt-6">
+          <RadioGroup
+            value={defaultAddress}
+            onChange={setDefaultAddress}
+            aria-label="Server size"
+            className={'flex flex-col sm:flex-row sm:items-center gap-4'}
+          >
+            {addresses?.data.map((address) => (
+              <Field
+                key={address.id}
+                className={`flex-1 sm:max-w-[calc(50%-16px)] flex items-start gap-2 p-3 lg:p-4 border rounded-lg transition-all duration-300 cursor-pointer ${
+                  defaultAddress === address.id
+                    ? 'bg-neutral-50 border-[#9B9DFD]'
+                    : ''
+                }`}
               >
-                <span className="invisible size-1.5 lg:size-2 rounded-full bg-primary group-data-[checked]:visible" />
-              </Radio>
-              <Label
-                className={'flex-1 flex gap-x-2 md:gap-x-2.5 cursor-pointer'}
-              >
-                <div className="flex-1">
-                  <p className="text-sm lg:text-base text-[#344054] font-semibold">
-                    {address.title}
-                  </p>
-                  <p className="text-xs lg:text-sm text-neutral-400 mt-0.5">
-                    Dubai, United Arab Emirates
-                  </p>
-                  <p className="text-xs lg:text-sm text-neutral-400 mt-0.5">
-                    Al Wahda Road, Industrial Area # 4
-                  </p>
-                  <p className="text-xs lg:text-sm text-neutral-600 mt-0.5">
-                    +971 55 6265479
-                  </p>
-                </div>
-                <div className="min-h-full flex flex-col justify-between items-end">
-                  <div className="flex items-center gap-2">
-                    <button className="text-neutral-500 text-base">
-                      <FiEdit />
-                    </button>
-                    {defaultAddress !== address.value && (
+                <Radio
+                  value={address.id}
+                  className="group flex size-4 lg:size-5 items-center justify-center rounded-full border bg-white data-[checked]:border-primary duration-300 transition-all"
+                >
+                  <span className="invisible size-1.5 lg:size-2 rounded-full bg-primary group-data-[checked]:visible" />
+                </Radio>
+                <Label
+                  className={'flex-1 flex gap-x-2 md:gap-x-2.5 cursor-pointer'}
+                >
+                  <div className="flex-1">
+                    <p className="text-sm lg:text-base text-[#344054] font-semibold">
+                      {'Sharjah'}
+                    </p>
+                    <p className="text-xs lg:text-sm text-neutral-400 mt-0.5">
+                      Dubai, United Arab Emirates
+                    </p>
+                    <p className="text-xs lg:text-sm text-neutral-400 mt-0.5">
+                      {address.address_1}
+                    </p>
+                    <p className="text-xs lg:text-sm text-neutral-600 mt-0.5">
+                      +{address.phone}
+                    </p>
+                  </div>
+                  <div className="min-h-full flex flex-col justify-between items-end">
+                    <div className="flex items-center gap-2">
                       <button className="text-neutral-500 text-base">
-                        <FiTrash2 />
+                        <FiEdit />
                       </button>
+                      {defaultAddress !== address.id && (
+                        <button className="text-neutral-500 text-base">
+                          <FiTrash2 />
+                        </button>
+                      )}
+                    </div>
+                    {defaultAddress === address.id && (
+                      <p className="h-[18px] w-10 md:w-12 rounded-full text-neutral-200 md:font-medium bg-primary text-[8px]/[14px] flex items-center justify-center">
+                        Default
+                      </p>
                     )}
                   </div>
-                  {defaultAddress === address.value && (
-                    <p className="h-[18px] w-10 md:w-12 rounded-full text-neutral-200 md:font-medium bg-primary text-[8px]/[14px] flex items-center justify-center">
-                      Default
-                    </p>
-                  )}
-                </div>
-              </Label>
-            </Field>
-          ))}
-        </RadioGroup>
-      </div>
-      <div className="mt-8">
+                </Label>
+              </Field>
+            ))}
+          </RadioGroup>
+        </div>
+      ) : (
+        <div className=""></div>
+      )}
+
+      <form onSubmit={handleSubmit(addNewAddress)} className="mt-8">
         <h4 className="md:text-lg text-neutral-900 font-semibold">
           New Shipping Address
         </h4>
@@ -201,7 +268,18 @@ const Shippings = () => {
             </Select>
           </div>
           <div className="flex-1">
-            <Input name="phone" control={control} label="Phone" />
+            <Input
+              name="phone"
+              control={control}
+              rules={{
+                required: 'phone number required',
+                min: 10,
+              }}
+              label="Phone"
+              placeholder="000-000-000"
+              type="number"
+              error={errors?.phone}
+            />
           </div>
         </div>
         <div className="flex flex-col md:flex-row gap-y-4 gap-x-6 mt-2 sm:mt-4 lg:mt-8">
@@ -264,17 +342,24 @@ const Shippings = () => {
         </div>
         <Input
           control={control}
+          rules={{ required: 'address is required' }}
           name="address"
           label="Address"
           placeholder="Street, Building, Apt. etc"
           wrapClassName="mt-6"
+          error={errors?.address}
         />
         <div className="md:flex items-center justify-end">
-          <Button type="submit" className="md:w-[150px] text-sm font-semibold">
+          <Button
+            loading={isSubmitLoading}
+            disabled={!selectedCity || !selectedCountry || !selectedState}
+            type="submit"
+            className="md:w-[160px] text-sm font-semibold"
+          >
             Add new address
           </Button>
         </div>
-      </div>
+      </form>
     </div>
   );
 };
