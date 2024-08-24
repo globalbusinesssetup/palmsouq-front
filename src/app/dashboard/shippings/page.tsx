@@ -8,7 +8,7 @@ import { getCountries, getCountryCallingCode } from 'libphonenumber-js';
 import { getCountryData } from '@/utils/helper';
 import { FaAngleDown } from 'react-icons/fa6';
 import { getAddress, useGetUser } from '@/utils/api';
-import { useQuery } from '@tanstack/react-query';
+import { QueryClient, useQuery } from '@tanstack/react-query';
 import { api } from '@/utils/fetcher';
 import Cookies from 'js-cookie';
 import { toast } from 'react-toastify';
@@ -44,7 +44,7 @@ const Shippings = () => {
     queryFn: () => getAddress(),
   });
   const [isSubmitLoading, setSubmitLoading] = useState(false);
-  const [defaultAddress, setDefaultAddress] = useState(addresses?.data[0].id);
+  const [defaultAddress, setDefaultAddress] = useState(addresses?.data[0]?.id);
   const {
     control,
     handleSubmit,
@@ -64,6 +64,7 @@ const Shippings = () => {
   const [selectedState, setSelectedState] = useState('');
   const [selectedCities, setCities] = useState<City>([]);
   const [selectedCity, setSelectedCity] = useState('');
+  const queryClient = new QueryClient();
 
   useEffect(() => {
     async function loadData() {
@@ -152,6 +153,7 @@ const Shippings = () => {
         return;
       } else {
         toast.success(res?.data?.data?.message);
+        queryClient.invalidateQueries({ queryKey: ['address'] });
       }
     } catch (err) {
       console.log(err);
@@ -175,12 +177,14 @@ const Shippings = () => {
             value={defaultAddress}
             onChange={setDefaultAddress}
             aria-label="Server size"
-            className={'flex flex-col sm:flex-row sm:items-center gap-4'}
+            className={
+              'flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-4'
+            }
           >
             {addresses?.data.map((address) => (
               <Field
                 key={address.id}
-                className={`flex-1 sm:max-w-[calc(50%-16px)] flex items-start gap-2 p-3 lg:p-4 border rounded-lg transition-all duration-300 cursor-pointer ${
+                className={`flex-1 sm:max-w-[calc(50%-16px)] sm:min-w-[calc(50%-16px)]  flex items-start gap-2 p-3 lg:p-4 border rounded-lg transition-all duration-300 cursor-pointer ${
                   defaultAddress === address.id
                     ? 'bg-neutral-50 border-[#9B9DFD]'
                     : ''

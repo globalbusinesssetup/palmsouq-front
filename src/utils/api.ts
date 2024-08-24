@@ -2,6 +2,7 @@ import {
   Address,
   Categorydata,
   ProductData,
+  ProductResponse,
   ProductsApiResponse,
   ProfileApiResponse,
 } from '@/types';
@@ -48,17 +49,9 @@ export const getProducts = async (categorySlug: number | string) => {
     console.error(err);
   }
 };
-export const getProduct = async ({
-  categoryId,
-  id,
-}: {
-  categoryId: string | number;
-  id: string | number;
-}) => {
+export const getProduct = async (id: string | number) => {
   try {
-    const { data } = await fetcher<{ data: ProductData }>(
-      `/product/${categoryId}?id=${id}`
-    );
+    const { data } = await fetcher<ProductResponse>(`/product/${id}`);
     return data;
   } catch (err) {
     console.error(err);
@@ -70,6 +63,17 @@ export const getAddress = async (page?: number) => {
       data: { data: Address[]; current_page: number; last_page: number };
     }>(`/user/address/all?page=${page ?? 1}`);
     return data;
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+export const getCart = async (token: string) => {
+  try {
+    const res = await fetcher<{ data: [] }>(
+      `/cart/by-user?user_token=${token}`
+    );
+    return res ?? [];
   } catch (err) {
     console.error(err);
   }

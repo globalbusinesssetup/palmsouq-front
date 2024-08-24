@@ -31,7 +31,7 @@ const ProductCard = ({
       <div className="mt-2 py-2.5">
         <p className="text-xs text-success">Product name</p>
         <Link
-          href={`/categories/stickers/${data?.slug ?? 123}`}
+          href={`/categories/${category ?? 'sticker'}/${data?.id ?? 123}`}
           className="mt-1 flex items-center justify-between gap-x-3"
         >
           <h5 className="text-sm font-bold text-neutral-800 whitespace-nowrap overflow-hidden flex-1">

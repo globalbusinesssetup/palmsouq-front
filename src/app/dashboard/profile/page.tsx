@@ -107,6 +107,7 @@ const Profile = () => {
           <Input
             control={control}
             name="first_name"
+            defaultValue={user?.data.first_name}
             disabled
             label="First name"
             wrapClassName="flex-1"
@@ -114,6 +115,7 @@ const Profile = () => {
           <Input
             control={control}
             name="last_name"
+            defaultValue={user?.data.last_name}
             disabled
             label="Last name"
             wrapClassName="flex-1"
@@ -123,7 +125,7 @@ const Profile = () => {
           <InputPhoneNumber
             disabled
             control={control}
-            defaultValue={25493854}
+            defaultValue={user?.data.phone ?? ''}
             name="phone"
             label="Mobile number"
             // setError={setError}
@@ -141,6 +143,7 @@ const Profile = () => {
           <Input
             disabled
             control={control}
+            defaultValue={user?.data.email}
             name="email"
             label="Email Address *"
             wrapClassName="flex-1"

@@ -27,14 +27,18 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     setLoading(true);
     try {
       const res = await api.post('/user/signin', { ...arg });
-      Cookies.set('token', res.data?.data.token as string, {
-        secure: true,
-        sameSite: 'lax',
-        expires: dayjs(res.data?.data.expires_in).toDate(),
-      });
-      queryClient.invalidateQueries({ queryKey: ['user'] });
-      router.push('/dashboard/profile');
-      toast.success('Login succesfully');
+      if (res.data?.data?.token) {
+        Cookies.set('token', res.data?.data.token as string, {
+          secure: true,
+          sameSite: 'lax',
+          expires: dayjs(res.data?.data.expires_in).toDate(),
+        });
+        queryClient.invalidateQueries({ queryKey: ['user'] });
+        router.push('/dashboard/profile');
+        toast.success('Login succesfully');
+      } else {
+        toast.error(res?.data?.message);
+      }
     } catch (error) {
       if (axios.isAxiosError(error)) {
         throw error.response?.data || 'An error occurred';

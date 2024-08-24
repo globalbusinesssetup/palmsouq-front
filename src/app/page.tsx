@@ -160,8 +160,9 @@ export default function Home() {
                         alt="cat image"
                       />
                     </div>
-                    <div className="px-3 xs:px-5 py-3 text-xs font-semibold text-neutral-600 transition-all duration-300 hover:text-primary/70 flex items-center justify-center gap-x-2">
-                      {cat.title} <FaArrowRightLong className="text-base" />
+                    <div className="px-3 xs:px-5 py-3 text-xs font-semibold text-neutral-600 transition-all duration-300 hover:text-primary/70 flex items-center justify-center gap-x-2 whitespace-nowrap">
+                      <p className="flex-1 overflow-hidden">{cat.title}</p>
+                      <FaArrowRightLong className="text-base" />
                     </div>
                   </Link>
                 </swiper-slide>

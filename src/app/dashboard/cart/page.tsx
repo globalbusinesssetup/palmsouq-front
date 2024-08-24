@@ -1,6 +1,8 @@
 'use client';
 import { Button, CheckBox, FileAttach, FileSearch, Modal } from '@/components';
+import { getCart } from '@/utils/api';
 import { formatFileSize } from '@/utils/helper';
+import { useQuery } from '@tanstack/react-query';
 import Image from 'next/image';
 import React, { useState } from 'react';
 import { BsHandbag } from 'react-icons/bs';
@@ -67,6 +69,10 @@ const Cart = () => {
   const [isPreviewOpen, setPreviewOpen] = useState(false);
   const [isFilePreviewOpen, setFilePreviewOpen] = useState(false);
   const [isCheckoutOpen, setCheckoutOpen] = useState(false);
+  const { data: cart, isLoading } = useQuery({
+    queryKey: ['cart'],
+    queryFn: () => getCart('Giverise123456@'),
+  });
 
   const handleChecked = (i: number) => {
     const newSelected = selected.includes(i)
@@ -155,50 +161,71 @@ const Cart = () => {
               </tr>
             </thead>
             <tbody>
-              {products.map((pd, i) => (
-                <tr key={`table_${i}`} className="border-b border-neutral-200">
-                  <td className="py-4 pl-6 w-[10%] pr-2">
-                    <CheckBox
-                      checked={isAllChecked || selected.includes(i)}
-                      onChange={(checked) => handleChecked(i)}
-                    />
-                  </td>
-                  <td className="py-4 flex pr-2 items-center gap-x-2">
-                    <button
-                      onClick={() => handleDelete(i)}
-                      className="size-8 md:size-10 bg-neutral-100 text-[#475467] transition-all duration-300 hover:bg-red-100 hover:text-red-600 rounded-lg flex items-center justify-center"
+              {isLoading
+                ? Array(3)
+                    .fill(' ')
+                    .map((_, i) => (
+                      <tr
+                        key={i}
+                        className="bg-gray-200 animate-pulse border-b border-white"
+                      >
+                        {Array(6)
+                          .fill(' ')
+                          .map((_, i) => (
+                            <td key={i} className="h-10 tab " />
+                          ))}
+                      </tr>
+                    ))
+                : cart?.data?.map((pd: any, i: number) => (
+                    <tr
+                      key={`table_${i}`}
+                      className="border-b border-neutral-200"
                     >
-                      <FiTrash2 />
-                    </button>
-                    <button
-                      onClick={() => setPreviewOpen(true)}
-                      className="size-8 md:size-10 bg-neutral-100 hover:bg-neutral-300 rounded-lg flex items-center justify-center transition-all duration-300"
-                    >
-                      <FileSearch />
-                    </button>
-                  </td>
-                  <td className="py-4 w-[30%] pr-2">
-                    <p className="text-xs text-success">Business Card</p>
-                    <p className="text-sm text-neutral-600 font-semibold whitespace-nowrap">
-                      350 Gsm Matt Lamination
-                    </p>
-                  </td>
-                  <td className="py-4 w-[20%] pr-2">
-                    <p className="text-[13px]/[19px] text-neutral-500 uppercase">
-                      02 SEP 2023
-                    </p>
-                    <p className="text-[13px]/[19px] text-neutral-500 font-semibold uppercase">
-                      21:13
-                    </p>
-                  </td>
-                  <td className="py-4 text-neutral-500 text-sm w-[10%] pr-2">
-                    1000
-                  </td>
-                  <td className="py-4 text-neutral-500 text-sm w-[10%] pr-2">
-                    150.00
-                  </td>
-                </tr>
-              ))}
+                      <td className="py-4 pl-6 w-[10%] pr-2">
+                        <CheckBox
+                          checked={isAllChecked || selected.includes(i)}
+                          onChange={(checked) => handleChecked(i)}
+                        />
+                      </td>
+                      <td className="py-4 flex pr-2 items-center gap-x-2">
+                        <button
+                          onClick={() => handleDelete(i)}
+                          className="size-8 md:size-10 bg-neutral-100 text-[#475467] transition-all duration-300 hover:bg-red-100 hover:text-red-600 rounded-lg flex items-center justify-center"
+                        >
+                          <FiTrash2 />
+                        </button>
+                        <button
+                          onClick={() => setPreviewOpen(true)}
+                          className="size-8 md:size-10 bg-neutral-100 hover:bg-neutral-300 rounded-lg flex items-center justify-center transition-all duration-300"
+                        >
+                          <FileSearch />
+                        </button>
+                      </td>
+                      <td className="py-4 w-[30%] overflow-hidden pr-2">
+                        <div className="max-w-[200px] overflow-hidden">
+                          <p className="text-xs text-success">Business Card</p>
+                          <p className="text-sm text-neutral-600 font-semibold whitespace-nowrap overflow-hidden text-ellipsis">
+                            {pd?.flash_product?.title}
+                          </p>
+                        </div>
+                      </td>
+                      <td className="py-4 w-[20%] pr-2">
+                        <p className="text-[13px]/[19px] text-neutral-500 uppercase">
+                          02 SEP 2023
+                        </p>
+                        <p className="text-[13px]/[19px] text-neutral-500 font-semibold uppercase">
+                          21:13
+                        </p>
+                      </td>
+                      <td className="py-4 text-neutral-500 text-sm w-[10%] pr-2">
+                        {pd?.quantity}
+                      </td>
+                      <td className="py-4 text-neutral-500 text-sm w-[10%] pr-2">
+                        {pd?.flash_product?.offered *
+                          Number(pd?.quantity ?? '0')}
+                      </td>
+                    </tr>
+                  ))}
             </tbody>
           </table>
         </div>

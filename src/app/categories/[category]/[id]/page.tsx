@@ -13,6 +13,9 @@ import { FaAngleDown } from 'react-icons/fa6';
 import { useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { getProduct } from '@/utils/api';
+import { api } from '@/utils/fetcher';
+import Cookies from 'js-cookie';
+import { toast } from 'react-toastify';
 
 type CategoryProps = {
   params: {
@@ -122,10 +125,11 @@ const ProductDeatils: React.FC<CategoryProps> = ({ params }) => {
   const [selectedTimeline, setTimeline] = useState('');
   const [quantity, setQuantity] = useState(100);
   const [selectedImage, setImage] = useState(0);
+  const [isSubmitLoading, setSubmitLoading] = useState(false);
 
   const { data: product, isLoading } = useQuery({
     queryKey: ['product', params.id],
-    queryFn: () => getProduct({ categoryId: params.category, id: params.id }),
+    queryFn: () => getProduct(params.id),
   });
 
   const handleQuantity = (type: 'minus' | 'plus' | number) => {
@@ -140,6 +144,45 @@ const ProductDeatils: React.FC<CategoryProps> = ({ params }) => {
 
   console.log('product =>', product);
 
+  const addToCart = async () => {
+    const token = Cookies.get('token');
+    setSubmitLoading(true);
+    try {
+      const res = await api.post('/cart/action', {
+        product_id: product?.id,
+        inventory_id: product?.inventory[0]?.id,
+        quantity,
+        user_token: 'Giverise123456@',
+      });
+      if (res?.data?.data?.form) {
+        toast.error(res?.data?.data?.form[0]);
+      } else {
+        toast.success('Product add Successfully');
+        // await router.push('/order');
+      }
+      console.log('add cart res =>', res);
+    } catch (err) {
+      console.log(err);
+    }
+    setSubmitLoading(false);
+  };
+
+  if (isLoading) {
+    return (
+      <div className="w-full h-screen">
+        <div className="w-full h-20 bg-gray-200 animate-pulse" />
+        <div className="flex gap-x-10 container mx-auto mt-10">
+          <div className="lg:w-5/12 h-[70vh]">
+            <div className="w-ful h-[50vh] bg-gray-200 animate-pulse rounded-lg" />
+            <div className="w-ful h-[8vh] bg-gray-200 animate-pulse rounded-lg mt-5" />
+            <div className="w-ful h-[8vh] bg-gray-200 animate-pulse rounded-lg mt-5" />
+          </div>
+          <div className="flex-1 h-[70vh] bg-gray-200 animate-pulse rounded-lg" />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <>
       <Header />
@@ -149,9 +192,9 @@ const ProductDeatils: React.FC<CategoryProps> = ({ params }) => {
           <div className="lg:w-5/12">
             <div className="w-full h-60 xs:h-[300px] sm:h-[396px] rounded-lg overflow-hidden relative bg-secondary">
               <Image
-                src={'/categories/paper-bags.png'}
+                src={`https://printcraft.ae/${product?.image}`}
                 fill
-                alt="product image"
+                alt={product?.image ?? 'product image'}
                 // className="object-cover"
               />
             </div>
@@ -224,10 +267,10 @@ const ProductDeatils: React.FC<CategoryProps> = ({ params }) => {
           {/* right side */}
           <div className="flex-1">
             <p className="font-medium text-success text-sm lg:text-base">
-              Business Card
+              {product?.category_data?.[0]?.title}
             </p>
             <h2 className="text-xl lg:text-2xl text-black font-semibold mt-1">
-              350 Gsm Matt Lamination
+              {product?.title}
             </h2>
             <div className="flex-1 flex flex-wrap items-center gap-2 xl:gap-3 py-4 border-b border-[#E6E6E6]">
               {cardCategoryData.map((type, i) => (
@@ -272,7 +315,7 @@ const ProductDeatils: React.FC<CategoryProps> = ({ params }) => {
               </div>
               <div className="px-4 sm:px-6 py-2 rounded-lg bg-[#F8F9FC]">
                 <h4 className="md:text-lg lg:text-xl text-[#4E5BA6] font-bold">
-                  00 AED
+                  {(product?.offered ?? 0) * quantity} AED
                 </h4>
                 <p className="text-tiny sm:text-xs lg:text-sm text-neutral-500">
                   Estimated Total (Exc. Vat)
@@ -295,7 +338,7 @@ const ProductDeatils: React.FC<CategoryProps> = ({ params }) => {
                     {pkg.quantity}
                   </h6>
                   <p className="text-tiny lg:text-xs text-primary">
-                    {pkg.price.toFixed()} (AED)
+                    {pkg.quantity * (product?.offered ?? 0)} (AED)
                   </p>
                 </button>
               ))}
@@ -387,7 +430,8 @@ const ProductDeatils: React.FC<CategoryProps> = ({ params }) => {
             </div>
             <div className="flex justify-end mt-8">
               <Button
-                onClick={() => router.push('/order')}
+                loading={isSubmitLoading}
+                onClick={addToCart}
                 className="h-11 w-[167px]"
               >
                 Yalla Let&apos;s Go
@@ -410,17 +454,10 @@ const ProductDeatils: React.FC<CategoryProps> = ({ params }) => {
               </div>
             </DisclosureButton>
             <DisclosurePanel className="pt-4 lg:pt-5 text-sm lg:text-base bg-white text-neutral-500 px-4 lg:px-5 transition-all duration-0 pb-5">
-              Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-              Consequuntur explicabo earum quo labore, qui a? Error nulla, id
-              temporibus quos a dignissimos voluptatibus vel quis quidem, non
-              earum alias? Ipsam. Lorem ipsum dolor sit amet consectetur
-              adipisicing elit. Odio quae amet delectus quos autem quaerat
-              eveniet mollitia, commodi fugiat earum. Nihil ipsum est tempore
-              perspiciatis officia rerum cumque labore ab. Lorem ipsum dolor sit
-              amet consectetur adipisicing elit. Ad deleniti quia modi dolorem
-              asperiores qui. Perferendis dolore obcaecati laboriosam corrupti
-              sit autem, velit cupiditate aspernatur aliquam, eius corporis
-              explicabo magnam.
+              <div
+                className="space-y-2"
+                dangerouslySetInnerHTML={{ __html: product?.description || '' }}
+              />
             </DisclosurePanel>
           </Disclosure>
         </div>
