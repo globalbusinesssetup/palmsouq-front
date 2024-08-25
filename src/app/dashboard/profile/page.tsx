@@ -14,6 +14,8 @@ import {
 import { BiEnvelope } from 'react-icons/bi';
 import { useGetUser } from '@/utils/api';
 import { useQuery } from '@tanstack/react-query';
+import { api } from '@/utils/fetcher';
+import { toast } from 'react-toastify';
 
 type FormInputs = {
   first_name: string;
@@ -27,7 +29,13 @@ const Profile = () => {
     queryKey: ['user'],
     queryFn: useGetUser,
   });
-  const { control, handleSubmit, setError, clearErrors } = useForm<FormInputs>({
+  const {
+    control,
+    handleSubmit,
+    setError,
+    clearErrors,
+    formState: { isDirty },
+  } = useForm<FormInputs>({
     defaultValues: {
       first_name: user?.data.first_name ?? '',
       last_name: user?.data.last_name ?? '',
@@ -61,6 +69,20 @@ const Profile = () => {
   const sentOtp = () => {
     setOtpSent(true);
     reset();
+  };
+
+  const handleUpdate = async (data: FormInputs) => {
+    try {
+      const res = await api.post('/user/update-profile', {
+        first_name: data?.first_name,
+        last_name: data?.last_name,
+        name: `${data?.first_name} ${data?.last_name}`,
+      });
+      toast.success('Profile updated Successfully.');
+      console.log(res);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
@@ -103,12 +125,12 @@ const Profile = () => {
         <h5 className="md:text-lg font-semibold text-neutral-900">
           Personal Information
         </h5>
-        <div className="mt-6 flex flex-col md:flex-row md:items-center gap-x-4 max-w-[720px]">
+        <div className="mt-6 flex flex-col md:flex-row md:items-center gap-x-4">
           <Input
             control={control}
             name="first_name"
             defaultValue={user?.data.first_name}
-            disabled
+            // disabled
             label="First name"
             wrapClassName="flex-1"
           />
@@ -116,10 +138,17 @@ const Profile = () => {
             control={control}
             name="last_name"
             defaultValue={user?.data.last_name}
-            disabled
+            // disabled
             label="Last name"
             wrapClassName="flex-1"
           />
+          <button
+            disabled={!isDirty}
+            onClick={() => handleSubmit(handleUpdate)()}
+            className="h-8 sm:h-11 w-12 sm:w-16 md:w-[94px] text-primary hover:text-primary/80 text-xs sm:text-sm font-semibold mt-1.5 sm:mt-0.5"
+          >
+            Update
+          </button>
         </div>
         <div className="flex items-center gap-x-1.5 mt-3 lg:mt-7">
           <InputPhoneNumber
