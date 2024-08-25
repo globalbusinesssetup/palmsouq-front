@@ -112,17 +112,21 @@ const Category: React.FC<CategoryProps> = ({ params }) => {
           </div>
           <div className="grid xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-6 pt-4 pb-10">
             {isLoading ? (
-              <div className="w-full h-[60vh] flex items-center justify-center xs:col-span-2 md:col-span-3 lg:col-span-4">
+              <div className="w-full h-[40vh] flex items-center justify-center xs:col-span-2 md:col-span-3 lg:col-span-4">
                 <AiOutlineLoading size={40} className=" animate-spin" />
               </div>
-            ) : (
-              products?.data.map((product: ProductData, i: number) => (
+            ) : products?.data?.length ? (
+              products?.data?.map((product: ProductData, i: number) => (
                 <ProductCard
                   key={`product_${i}`}
                   data={product}
                   category={params.category}
                 />
               ))
+            ) : (
+              <div className="col-span-full h-[40vh] flex items-center justify-center text-center">
+                No products found
+              </div>
             )}
           </div>
         </div>

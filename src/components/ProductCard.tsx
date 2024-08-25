@@ -49,7 +49,7 @@ const ProductCard = ({
         <div className="flex-1 flex items-center justify-center gap-x-1 h-7 py-1 rounded-full text-center bg-secondary text-xs xl:text-sm text-[#344054] font-medium">
           Price:{' '}
           <span className="font-semibold">
-            {data?.offered.toFixed() ?? 50.0}
+            {data?.offered ? Number(data?.offered).toFixed() : 50.0}
           </span>
         </div>
       </div>

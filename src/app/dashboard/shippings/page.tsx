@@ -4,14 +4,15 @@ import { Field, Label, Radio, RadioGroup } from '@headlessui/react';
 import { FiEdit, FiTrash2 } from 'react-icons/fi';
 import { Input, Button, Select } from '@/components';
 import { useForm } from 'react-hook-form';
-import { getCountries, getCountryCallingCode } from 'libphonenumber-js';
+import { getCountryCallingCode } from 'libphonenumber-js';
 import { getCountryData } from '@/utils/helper';
 import { FaAngleDown } from 'react-icons/fa6';
-import { getAddress, useGetUser } from '@/utils/api';
-import { QueryClient, useQuery } from '@tanstack/react-query';
+import { getAddress, getCountries, useGetUser } from '@/utils/api';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/utils/fetcher';
 import Cookies from 'js-cookie';
 import { toast } from 'react-toastify';
+import Head from 'next/head';
 
 type Country = {
   code2: string;
@@ -43,6 +44,10 @@ const Shippings = () => {
     queryKey: ['address'],
     queryFn: () => getAddress(),
   });
+  // const { data: countries, isLoading: isCountriesLoading } = useQuery({
+  //   queryKey: ['countries'],
+  //   queryFn: getCountries,
+  // });
   const [isSubmitLoading, setSubmitLoading] = useState(false);
   const [defaultAddress, setDefaultAddress] = useState(addresses?.data[0]?.id);
   const {
@@ -64,7 +69,7 @@ const Shippings = () => {
   const [selectedState, setSelectedState] = useState('');
   const [selectedCities, setCities] = useState<City>([]);
   const [selectedCity, setSelectedCity] = useState('');
-  const queryClient = new QueryClient();
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     async function loadData() {
@@ -152,8 +157,9 @@ const Shippings = () => {
         toast.error(res?.data?.data?.form[0]);
         return;
       } else {
-        toast.success(res?.data?.data?.message);
+        toast.success('Address added Successfully');
         queryClient.invalidateQueries({ queryKey: ['address'] });
+        reset();
       }
     } catch (err) {
       console.log(err);
@@ -161,8 +167,24 @@ const Shippings = () => {
     setSubmitLoading(false);
   };
 
+  const deleteAddress = async (id: number) => {
+    const token = Cookies.get('token');
+    try {
+      const { data } = await api.delete(
+        `/user/address/delete/${id}?user_token=${token}`
+      );
+      queryClient.invalidateQueries({ queryKey: ['address'] });
+      toast.success(data?.message);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
     <div className="bg-white border border-neutral-200 rounded-xl py-[18px] px-4 xs:px-5 lg:px-8">
+      <Head>
+        <title>Dasboard | Shipping Address</title>
+      </Head>
       <h4 className="text-lg text-neutral-900 font-semibold">
         Shipping Address
       </h4>
@@ -219,7 +241,13 @@ const Shippings = () => {
                         <FiEdit />
                       </button>
                       {defaultAddress !== address.id && (
-                        <button className="text-neutral-500 text-base">
+                        <button
+                          onClick={(e) => {
+                            e.preventDefault();
+                            deleteAddress(address.id);
+                          }}
+                          className="text-neutral-500 text-base"
+                        >
                           <FiTrash2 />
                         </button>
                       )}
@@ -273,6 +301,7 @@ const Shippings = () => {
           </div>
           <div className="flex-1">
             <Input
+              prefix="+971"
               name="phone"
               control={control}
               rules={{

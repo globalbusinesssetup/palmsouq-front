@@ -1,13 +1,14 @@
 'use client';
-import { AuthContextTypes, LoginForm } from '@/types';
+import { AuthContextTypes, Categorydata, LoginForm } from '@/types';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
-import React, { ReactNode, createContext, useState } from 'react';
+import React, { ReactNode, createContext, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import Cookies from 'js-cookie';
 import { api } from '@/utils/fetcher';
 import dayjs from 'dayjs';
-import { QueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { getCommon } from '@/utils/api';
 
 export const AuthContext = createContext<AuthContextTypes>({
   isLoggedIn: false,
@@ -15,13 +16,44 @@ export const AuthContext = createContext<AuthContextTypes>({
   login: () => {},
   logOut: () => {},
   isLoading: false,
+  categories: [],
+  languages: [],
+  payment: [],
+  social: [],
+  default_language: {
+    name: '',
+    code: '',
+  },
 });
 
 const AuthProvider = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
-  const queryClient = new QueryClient();
+  const queryClient = useQueryClient();
   const [user, setUser] = useState({});
   const [isLoading, setLoading] = useState(false);
+  const { data: common, isLoading: isCommonLoading } = useQuery({
+    queryKey: ['common'],
+    queryFn: getCommon,
+  });
+  const [languages, setLanguages] = useState<[]>([]);
+  const [categories, setCategories] = useState<Categorydata[]>([]);
+  const [payment, setPayment] = useState<[]>([]);
+  const [social, setSocial] = useState<[]>([]);
+  const [defaultLanguage, setDefaultLanguage] = useState<{
+    name: string;
+    code: string;
+  }>({ name: 'English', code: 'en' });
+
+  useEffect(() => {
+    if (!isCommonLoading) {
+      setLanguages(common?.languages ?? []);
+      setCategories(common?.categories ?? []);
+      setPayment(common?.payment ?? []);
+      setSocial(common?.social ?? []);
+      if (common?.default_language)
+        setDefaultLanguage(common?.default_language);
+    }
+  });
 
   async function login(arg: LoginForm) {
     setLoading(true);
@@ -63,6 +95,11 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         login,
         logOut,
         isLoading,
+        categories,
+        languages,
+        payment,
+        social,
+        default_language: defaultLanguage,
       }}
     >
       {children}

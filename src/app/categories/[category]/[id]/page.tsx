@@ -12,9 +12,8 @@ import {
 import { FaAngleDown } from 'react-icons/fa6';
 import { useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
-import { getProduct } from '@/utils/api';
+import { getProduct, useGetUser } from '@/utils/api';
 import { api } from '@/utils/fetcher';
-import Cookies from 'js-cookie';
 import { toast } from 'react-toastify';
 
 type CategoryProps = {
@@ -121,6 +120,10 @@ const timelines = [
 
 const ProductDeatils: React.FC<CategoryProps> = ({ params }) => {
   const router = useRouter();
+  const { data: user, isFetching } = useQuery({
+    queryKey: ['user'],
+    queryFn: useGetUser,
+  });
   const [selectedType, setType] = useState('');
   const [selectedTimeline, setTimeline] = useState('');
   const [quantity, setQuantity] = useState(100);
@@ -145,14 +148,13 @@ const ProductDeatils: React.FC<CategoryProps> = ({ params }) => {
   console.log('product =>', product);
 
   const addToCart = async () => {
-    const token = Cookies.get('token');
     setSubmitLoading(true);
     try {
       const res = await api.post('/cart/action', {
         product_id: product?.id,
         inventory_id: product?.inventory[0]?.id,
         quantity,
-        user_token: 'Giverise123456@',
+        user_token: user?.data?.email,
       });
       if (res?.data?.data?.form) {
         toast.error(res?.data?.data?.form[0]);

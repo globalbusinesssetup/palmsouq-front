@@ -4,17 +4,16 @@ import { TopBar } from '@/components';
 import Image from 'next/image';
 import Link from 'next/link';
 import { FaArrowRightLong } from 'react-icons/fa6';
-import { categories, features, orderSteps } from '@/constants';
+import { features, orderSteps } from '@/constants';
 import { HiArrowLeft, HiArrowRight, HiOutlineMail } from 'react-icons/hi';
 import { GrLocation } from 'react-icons/gr';
 import { IoCallOutline } from 'react-icons/io5';
 import StarRatings from 'react-star-ratings';
 import { useEffect, useState } from 'react';
 import { register } from 'swiper/element/bundle';
-import { useMount, useResponsiveSlides, useWindoWidth } from '@/hooks';
-import { LuLoader2 } from 'react-icons/lu';
+import { useResponsiveSlides } from '@/hooks';
 import { useQuery } from '@tanstack/react-query';
-import { getCategories, getCommons } from '@/utils/api';
+import { getCategories, getHome } from '@/utils/api';
 
 type SwiperElement = Element & {
   swiper?: {
@@ -61,22 +60,20 @@ const companyDetails = [
 ];
 
 export default function Home() {
-  const windowWidth = useWindoWidth();
   const getCatSlide = useResponsiveSlides(catBreakpoints, 2);
   const getTestimonialSlide = useResponsiveSlides(testimonialBreakpoints);
   const [rating, setRating] = useState<number>(3.5);
   const [swiperEl, setSwiperEl] = useState<NodeListOf<SwiperElement> | null>(
     null
   );
-  const isMount = useMount();
-  const { data, isLoading } = useQuery({
+  const { data, isLoading: isCatLoading } = useQuery({
     queryKey: ['categories'],
     queryFn: getCategories,
   });
-  // const { data: common } = useQuery({
-  //   queryKey: ['common'],
-  //   queryFn: getCommons,
-  // });
+  const { data: home, isLoading } = useQuery({
+    queryKey: ['home'],
+    queryFn: getHome,
+  });
 
   useEffect(() => {
     setSwiperEl(document.querySelectorAll('swiper-container'));
@@ -89,6 +86,40 @@ export default function Home() {
   const onPrev = (id: number) => {
     swiperEl?.[id]?.swiper?.slidePrev();
   };
+
+  if (isLoading || isCatLoading) {
+    return (
+      <main>
+        <div className="w-screen h-screen bg-white space-y-2 container mx-auto">
+          <div className="w-full h-9 bg-gray-300 animate-pulse rounded" />
+          <div className="w-full h-24 bg-gray-300 animate-pulse rounded" />
+          <div className="w-full h-16 bg-gray-300 animate-pulse rounded" />
+          <div className="">
+            <div className="flex gap-x-5">
+              <div className="w-3/5 h-[30vh] bg-gray-300 animate-pulse rounded" />
+              <div className="flex-1 h-[30vh] bg-gray-300 animate-pulse rounded" />
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-7 gap-x-5 mt-5">
+              {Array(getCatSlide)
+                .fill(' ')
+                .map((_, i) => (
+                  <div
+                    key={i}
+                    className="flex-1 h-[20vh] bg-gray-300 animate-pulse rounded"
+                  />
+                ))}
+            </div>
+            <div className="flex gap-x-5 mt-5">
+              <div className="flex-1 h-[15vh] bg-gray-300 animate-pulse rounded" />
+              <div className="flex-1 h-[15vh] bg-gray-300 animate-pulse rounded" />
+            </div>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
+  console.log('home', home);
 
   return (
     <main>
@@ -106,15 +137,17 @@ export default function Home() {
               space-between={10}
               autoplay
             >
-              {Array(3)
-                .fill('')
-                .map((_, i) => (
-                  <swiper-slide key={`banner_${i}`} style={{ width: '100%' }}>
-                    <div className="w-full h-[200px] sm:h-[250px] xl:h-[304px] relative overflow-hidden rounded-[10px]">
-                      <Image src={'/banners/banner.jpeg'} fill alt={'banner'} />
-                    </div>
-                  </swiper-slide>
-                ))}
+              {home?.slider.main.map((s: { image: string }, i) => (
+                <swiper-slide key={`banner_${i}`} style={{ width: '100%' }}>
+                  <div className="w-full h-[200px] sm:h-[250px] xl:h-[304px] relative overflow-hidden rounded-[10px]">
+                    <Image
+                      src={`http://printcraft.ae/uploads/${s?.image}`}
+                      fill
+                      alt={'banner'}
+                    />
+                  </div>
+                </swiper-slide>
+              ))}
             </swiper-container>
           </div>
           <Link
@@ -161,7 +194,9 @@ export default function Home() {
                       />
                     </div>
                     <div className="px-3 xs:px-5 py-3 text-xs font-semibold text-neutral-600 transition-all duration-300 hover:text-primary/70 flex items-center justify-center gap-x-2 whitespace-nowrap">
-                      <p className="flex-1 overflow-hidden">{cat.title}</p>
+                      <p className="flex-1 overflow-hidden text-ellipsis">
+                        {cat.title}
+                      </p>
                       <FaArrowRightLong className="text-base" />
                     </div>
                   </Link>
@@ -170,167 +205,181 @@ export default function Home() {
             </swiper-container>
           </div>
         </section>
-        <section className="flex items-center gap-x-4 mt-5 md:mt-8">
-          <div className="flex-1 h-[108px] bg-[#F5F5F7] relative rounded overflow-hidden">
-            <Image
-              src={
-                'https://plus.unsplash.com/premium_photo-1682126556008-d6ac9170c9fa?q=80&w=1558&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
-              }
-              fill
-              alt="banner"
-              className=" object-cover"
-            />
-          </div>
-          <div className="hidden md:block flex-1 h-[108px] bg-[#F5F5F7] relative rounded overflow-hidden">
-            <Image
-              src={
-                'https://plus.unsplash.com/premium_photo-1682145481505-80614272c426?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
-              }
-              fill
-              alt="banner"
-              className="object-cover object-[left_60%]"
-            />
-          </div>
-        </section>
         {/* in demand products */}
-        <section className="mt-7 bg-[#F9FAFB] rounded-[10px] px-2 lg:px-5 py-4">
-          <div className="pb-4">
-            <h3 className="text-lg md:text-2xl text-primary font-semibold">
-              In-demand Products
-            </h3>
-            <p className="text-xs sm:text-sm lg:text-base text-neutral-600 mt-1">
-              Discover the Best Selling Products on the Market Today.
-            </p>
-          </div>
-          <div className="grid xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-6">
-            {Array(8)
-              .fill(' ')
-              .map((product, i) => (
-                <ProductCard key={`product_${i}`} />
+        <>
+          <section className="flex items-center gap-x-4 mt-5 md:mt-8">
+            <div className="flex-1 h-[108px] bg-[#F5F5F7] relative rounded overflow-hidden">
+              <Image
+                src={
+                  'https://plus.unsplash.com/premium_photo-1682126556008-d6ac9170c9fa?q=80&w=1558&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+                }
+                fill
+                alt="banner"
+                className=" object-cover"
+              />
+            </div>
+            <div className="hidden md:block flex-1 h-[108px] bg-[#F5F5F7] relative rounded overflow-hidden">
+              <Image
+                src={
+                  'https://plus.unsplash.com/premium_photo-1682145481505-80614272c426?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+                }
+                fill
+                alt="banner"
+                className="object-cover object-[left_60%]"
+              />
+            </div>
+          </section>
+          <section className="mt-7 bg-[#F9FAFB] rounded-[10px] px-2 lg:px-5 py-4">
+            <div className="pb-4">
+              <h3 className="text-lg md:text-2xl text-primary font-semibold">
+                {home?.collections[0].title}
+              </h3>
+              <p className="text-xs sm:text-sm lg:text-base text-neutral-600 mt-1">
+                Discover the Best Selling Products on the Market Today.
+              </p>
+            </div>
+            <div className="grid xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-6">
+              {home?.collections[0]?.product_collections?.map((product, i) => (
+                <ProductCard
+                  data={product}
+                  category={home?.collections[0]?.slug}
+                  key={`product_${i}`}
+                />
               ))}
-          </div>
-        </section>
-        <div className="w-full h-[180px] lg:h-[240px] bg-secondary mt-8 lg:mt-10 rounded-md overflow-hidden relative">
-          <Image
-            src={
-              'https://images.unsplash.com/photo-1565688842882-e0b2693d349a?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
-            }
-            fill
-            alt="banner"
-            className="object-cover"
-          />
-        </div>
+            </div>
+          </section>
+        </>
         {/* popular business cards  */}
-        <section className="mt-5 md:mt-8 lg:mt-10 bg-[#F9FAFB] rounded-[10px] px-2 lg:px-5 py-4">
-          <div className="pb-4 flex lg:items-center justify-between">
-            <div className="max-w-[70%] sm:max-w-none">
-              <h3 className="text-lg md:text-xl lg:text-2xl text-primary font-semibold">
-                Popular Business Cards
-              </h3>
-              <p className="text-xs sm:text-base text-neutral-600 mt-1">
-                Personalized Business Cards Printing for all your networking
-                needs
-              </p>
+        <>
+          <div className="w-full h-[180px] lg:h-[240px] bg-secondary mt-8 lg:mt-10 rounded-md overflow-hidden relative">
+            <Image
+              src={
+                'https://images.unsplash.com/photo-1565688842882-e0b2693d349a?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+              }
+              fill
+              alt="banner"
+              className="object-cover"
+            />
+          </div>
+          <section className="mt-5 md:mt-8 lg:mt-10 bg-[#F9FAFB] rounded-[10px] px-2 lg:px-5 py-4">
+            <div className="pb-4 flex lg:items-center justify-between">
+              <div className="max-w-[70%] sm:max-w-none">
+                <h3 className="text-lg md:text-xl lg:text-2xl text-primary font-semibold">
+                  {home?.collections[1].title}
+                </h3>
+                <p className="text-xs sm:text-base text-neutral-600 mt-1">
+                  Personalized Business Cards Printing for all your networking
+                  needs
+                </p>
+              </div>
+              <Link
+                href={`/categories/${home?.collections[1]?.slug}`}
+                className="sm:w-[115px] px-2 h-8 sm:h-10 flex text-xs sm:text-base items-center justify-center gap-x-2 rounded-full transition-all duration-300 text-[#6835B1] border border-[#6835B1] hover:scale-95"
+              >
+                View All <HiArrowRight />
+              </Link>
             </div>
-            <Link
-              href={'#'}
-              className="sm:w-[115px] px-2 h-8 sm:h-10 flex text-xs sm:text-base items-center justify-center gap-x-2 rounded-full transition-all duration-300 text-[#6835B1] border border-[#6835B1] hover:scale-95"
-            >
-              View All <HiArrowRight />
-            </Link>
-          </div>
-          <div className="grid xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-6">
-            {Array(8)
-              .fill(' ')
-              .map((product, i) => (
-                <ProductCard key={`p_product_${i}`} />
+            <div className="grid xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-6">
+              {home?.collections[1]?.product_collections?.map((product, i) => (
+                <ProductCard
+                  data={product}
+                  category={home?.collections[1]?.slug}
+                  key={`p_product_${i}`}
+                />
               ))}
-          </div>
-        </section>
-        <section className="flex items-center gap-x-4 mt-5 md:mt-8">
-          <div className="flex-1 h-[150px] sm:h-[180px] lg:h-[240px] bg-[#F5F5F7] relative rounded-md overflow-hidden">
-            <Image
-              src={
-                'https://images.unsplash.com/photo-1563097013-a1df1d1fd1c7?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
-              }
-              fill
-              alt="banner"
-              className="object-cover"
-            />
-          </div>
-          <div className="hidden md:block flex-1 h-[180px] lg:h-[240px] bg-[#F5F5F7] relative rounded-md overflow-hidden">
-            <Image
-              src={
-                'https://plus.unsplash.com/premium_photo-1661274103468-71e91f7ea517?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
-              }
-              fill
-              alt="banner"
-              className="object-cover"
-            />
-          </div>
-        </section>
+            </div>
+          </section>
+        </>
         {/* High demand flyers  */}
-        <section className="mt-5 md:mt-8 lg:mt-10 bg-[#F9FAFB] rounded-[10px] px-2 lg:px-5 py-4">
-          <div className="pb-4 flex lg:items-center justify-between">
-            <div className="max-w-[70%] sm:max-w-none">
-              <h3 className="text-lg md:text-xl lg:text-2xl text-primary font-semibold">
-                High Demand Flyers
-              </h3>
-              <p className="text-sm sm:text-base text-neutral-600 mt-1">
-                Elevate Your Brand with our Quality Flyers Printing
-              </p>
+        <>
+          <section className="flex items-center gap-x-4 mt-5 md:mt-8">
+            <div className="flex-1 h-[150px] sm:h-[180px] lg:h-[240px] bg-[#F5F5F7] relative rounded-md overflow-hidden">
+              <Image
+                src={
+                  'https://images.unsplash.com/photo-1563097013-a1df1d1fd1c7?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+                }
+                fill
+                alt="banner"
+                className="object-cover"
+              />
             </div>
-            <Link
-              href={'#'}
-              className="sm:w-[115px] px-2 h-8 sm:h-10 flex text-xs sm:text-base items-center justify-center gap-x-2 rounded-full transition-all duration-300 text-[#6835B1] border border-[#6835B1] hover:scale-95"
-            >
-              View All <HiArrowRight />
-            </Link>
-          </div>
-          <div className="grid xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-6">
-            {Array(8)
-              .fill(' ')
-              .map((product, i) => (
-                <ProductCard key={`h_product_${i}`} />
+            <div className="hidden md:block flex-1 h-[180px] lg:h-[240px] bg-[#F5F5F7] relative rounded-md overflow-hidden">
+              <Image
+                src={
+                  'https://plus.unsplash.com/premium_photo-1661274103468-71e91f7ea517?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+                }
+                fill
+                alt="banner"
+                className="object-cover"
+              />
+            </div>
+          </section>
+          <section className="mt-5 md:mt-8 lg:mt-10 bg-[#F9FAFB] rounded-[10px] px-2 lg:px-5 py-4">
+            <div className="pb-4 flex lg:items-center justify-between">
+              <div className="max-w-[70%] sm:max-w-none">
+                <h3 className="text-lg md:text-xl lg:text-2xl text-primary font-semibold">
+                  {home?.collections[2].title}
+                </h3>
+                <p className="text-sm sm:text-base text-neutral-600 mt-1">
+                  Elevate Your Brand with our Quality Flyers Printing
+                </p>
+              </div>
+              <Link
+                href={'#'}
+                className="sm:w-[115px] px-2 h-8 sm:h-10 flex text-xs sm:text-base items-center justify-center gap-x-2 rounded-full transition-all duration-300 text-[#6835B1] border border-[#6835B1] hover:scale-95"
+              >
+                View All <HiArrowRight />
+              </Link>
+            </div>
+            <div className="grid xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-6">
+              {home?.collections[2]?.product_collections?.map((product, i) => (
+                <ProductCard
+                  data={product}
+                  category={home?.collections[2]?.slug}
+                  key={`h_product_${i}`}
+                />
               ))}
-          </div>
-        </section>
-        <div className="w-full h-[180px] lg:h-[240px] bg-secondary mt-8 lg:mt-10 rounded-md overflow-hidden relative">
-          <Image
-            src={
-              'https://images.unsplash.com/photo-1513884923967-4b182ef167ab?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
-            }
-            fill
-            alt="banner"
-            className="object-cover"
-          />
-        </div>
+            </div>
+          </section>
+        </>
         {/* best selling paper bags  */}
-        <section className="mt-5 md:mt-8 lg:mt-10 bg-[#F9FAFB] rounded-[10px] px-2 lg:px-5 py-4">
-          <div className="pb-4 flex items-center justify-between">
-            <div className="max-w-[70%] sm:max-w-none">
-              <h3 className="text-lg md:text-xl lg:text-2xl text-primary font-semibold">
-                Best Selling Paper Bags
-              </h3>
-              <p className="text-sm sm:text-base text-neutral-600 mt-1">
-                Maximize Reach with Custom Paper Bags Printing
-              </p>
+        <>
+          <div className="w-full h-[180px] lg:h-[240px] bg-secondary mt-8 lg:mt-10 rounded-md overflow-hidden relative">
+            <Image
+              src={
+                'https://images.unsplash.com/photo-1513884923967-4b182ef167ab?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+              }
+              fill
+              alt="banner"
+              className="object-cover"
+            />
+          </div>
+          <section className="mt-5 md:mt-8 lg:mt-10 bg-[#F9FAFB] rounded-[10px] px-2 lg:px-5 py-4">
+            <div className="pb-4 flex items-center justify-between">
+              <div className="max-w-[70%] sm:max-w-none">
+                <h3 className="text-lg md:text-xl lg:text-2xl text-primary font-semibold">
+                  Best Selling Paper Bags
+                </h3>
+                <p className="text-sm sm:text-base text-neutral-600 mt-1">
+                  Maximize Reach with Custom Paper Bags Printing
+                </p>
+              </div>
+              <Link
+                href={'#'}
+                className="sm:w-[115px] px-2 h-8 sm:h-10 flex text-xs sm:text-base items-center justify-center gap-x-2 rounded-full transition-all duration-300 text-[#6835B1] border border-[#6835B1] hover:scale-95"
+              >
+                View All <HiArrowRight />
+              </Link>
             </div>
-            <Link
-              href={'#'}
-              className="sm:w-[115px] px-2 h-8 sm:h-10 flex text-xs sm:text-base items-center justify-center gap-x-2 rounded-full transition-all duration-300 text-[#6835B1] border border-[#6835B1] hover:scale-95"
-            >
-              View All <HiArrowRight />
-            </Link>
-          </div>
-          <div className="grid xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-6">
-            {Array(8)
-              .fill(' ')
-              .map((product, i) => (
-                <ProductCard key={`b_product_${i}`} />
-              ))}
-          </div>
-        </section>
+            <div className="grid xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-6">
+              {Array(8)
+                .fill(' ')
+                .map((product, i) => (
+                  <ProductCard key={`b_product_${i}`} />
+                ))}
+            </div>
+          </section>
+        </>
         {/* features */}
         <section className="mt-5 md:mt-8 lg:mt-10 p-4 flex flex-wrap items-center gap-[18px]">
           {features.map((feature, i) => (

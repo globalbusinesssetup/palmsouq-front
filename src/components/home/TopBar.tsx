@@ -2,8 +2,10 @@ import React from 'react';
 import { Select } from '@headlessui/react';
 import Link from 'next/link';
 import { FiPhoneForwarded } from 'react-icons/fi';
+import useAuth from '@/hooks/useAuth';
 
 const TopBar = () => {
+  const { languages, default_language } = useAuth();
   return (
     <div className="bg-primary px-auto py-2 hidden lg:block">
       <div className="container mx-auto flex items-center justify-between px-4">
@@ -21,19 +23,15 @@ const TopBar = () => {
           <div className="w-[1px] h-3.5 bg-neutral-400" />
           <Select
             // name="language"
-            defaultValue={'english'}
+            defaultValue={default_language.code}
             className="w-20 bg-transparent focus-visible:outline-none text-white text-xs font-semibold"
           >
-            <option value="english" className="text-primary">
-              {/* <Image src={'/us.svg'} width={20} height={18} alt="us" />{' '} */}
-              English
-            </option>
-            <option value="arabic" className="text-primary">
-              Arabic
-            </option>
-            <option value="active" className="text-primary">
-              English
-            </option>
+            {languages.map((lang: { name: string; code: string }, i) => (
+              <option key={i} value={lang?.code} className="text-primary">
+                {/* <Image src={'/us.svg'} width={20} height={18} alt="us" />{' '} */}
+                {lang?.name}
+              </option>
+            ))}
           </Select>
           <div className="w-[1px] h-3.5 bg-neutral-400" />
           <Select
@@ -46,9 +44,6 @@ const TopBar = () => {
             </option>
             <option value="usd" className="text-primary">
               USD
-            </option>
-            <option value="bdt" className="text-primary">
-              BDT
             </option>
           </Select>
         </div>

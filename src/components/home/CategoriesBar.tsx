@@ -3,8 +3,11 @@ import Link from 'next/link';
 import React from 'react';
 import { HiArrowNarrowRight, HiOutlineMenuAlt2 } from 'react-icons/hi';
 import { IoChevronDown } from 'react-icons/io5';
-import { categories, topBarCategories } from '@/constants';
+import { topBarCategories } from '@/constants';
+import useAuth from '@/hooks/useAuth';
 const CategoriesBar = () => {
+  const { categories } = useAuth();
+
   return (
     <div className="py-2 border-b">
       <div className="container mx-auto flex items-center gap-x-4 xl:gap-x-[30px] px-4">
@@ -24,7 +27,7 @@ const CategoriesBar = () => {
               <MenuItem key={i}>
                 <Link
                   className="block text-white text-sm xl:text-base data-[focus]:bg-[#F5F5F7]/30 py-2 px-5 border-t-[1px] last:border-y border-[#F5F5F7]/30"
-                  href={cat.link}
+                  href={`/categories/${cat.slug}`}
                 >
                   {cat.title}
                 </Link>

@@ -15,6 +15,14 @@ export type AuthContextTypes = {
   login: (loginData: any) => void;
   logOut: () => void;
   isLoading: boolean;
+  categories: Categorydata[];
+  languages: [];
+  payment: [];
+  social: [];
+  default_language: {
+    name: string;
+    code: string;
+  };
 };
 
 type UserType = 'personal' | 'business';
@@ -55,12 +63,11 @@ export type ProductData = {
   badge: string;
   title: string;
   slug: string;
-  selling: number;
-  offered: number;
+  selling: number | string;
+  offered: number | string;
   image: string;
   review_count: number;
   rating: number;
-  price: number;
 };
 
 export type ProductsApiResponse = {
@@ -269,4 +276,11 @@ export type Address = {
   user_token: string | null;
   email: string;
   created: string;
+};
+
+export type Collection = {
+  id: number;
+  title: string;
+  slug: string;
+  product_collections: ProductData[];
 };

@@ -32,6 +32,10 @@ const Header = ({
     queryKey: ['user'],
     queryFn: useGetUser,
   });
+  // const { data: common, isLoading: isCommonLoading } = useQuery({
+  //   queryKey: ['common'],
+  //   queryFn: getCommon,
+  // });
 
   return (
     <>

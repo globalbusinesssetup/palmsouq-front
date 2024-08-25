@@ -19,6 +19,8 @@ import { IoMdClose } from 'react-icons/io';
 import Image from 'next/image';
 import { StatusTypes } from '@/components/common/Tag';
 import OrderStep from '@/app/order/OrderStep';
+import { useQuery } from '@tanstack/react-query';
+import { getOrders } from '@/utils/api';
 
 const checkoutData = [
   {
@@ -55,6 +57,10 @@ const uploadedFiles = [
 ];
 
 const Orders = () => {
+  const { data: orders, isLoading: isOrdersLoading } = useQuery({
+    queryKey: ['orders'],
+    queryFn: getOrders,
+  });
   const { control } = useForm();
   const [isOpen, setOpen] = useState(false);
   const [isFilePreviewOpen, setFilePreviewOpen] = useState(false);
@@ -68,8 +74,10 @@ const Orders = () => {
     { title: 'Received', icon: '/icons/check.svg' },
   ];
 
+  console.log('orders =>', orders);
+
   return (
-    <div className="border border-neutral-200 bg-white rounded-xl overflow-hidden max-w-[912px]">
+    <div className="border border-neutral-200 bg-white rounded-xl overflow-hidden max-w-7xl">
       <div className="py-3 lg:py-3.5 px-4 lg:px-6 flex items-center justify-between gap-x-2">
         <h5 className="text-sm sm:text-base lg:text-lg whitespace-nowrap font-semibold text-neutral-700">
           My Order&apos;s
@@ -117,64 +125,97 @@ const Orders = () => {
                 </th>
               </tr>
             </thead>
-            <tbody>
-              {Array(5)
-                .fill(' ')
-                .map((_, i) => (
-                  <tr
-                    key={`table_${i}`}
-                    className="border-b border-neutral-200"
-                  >
-                    <td className="py-4 pl-6">
-                      <button onClick={() => setOpen(true)}>
-                        <File varient="FileClock" />
-                      </button>
-                    </td>
-                    <td className="py-4 text-neutral-500 text-xs lg:text-sm">
-                      {10021348 - i}
-                    </td>
-                    <td className="py-4 w-[30%]">
-                      <p className="text-tiny lg:text-xs text-success">
-                        Business Card
-                      </p>
-                      <p className="text-xs lg:text-sm text-neutral-600 font-semibold">
-                        350 Gsm Matt Lamination
-                      </p>
-                    </td>
-                    <td className="py-4 w-[20%]">
-                      <p className="text-xs lg:text-[13px]/[19px] text-neutral-500 uppercase">
-                        02 JUN 2023
-                      </p>
-                      <p className="text-xs lg:text-[13px]/[19px] text-neutral-500 font-semibold uppercase">
-                        21:13
-                      </p>
-                    </td>
-                    <td className="py-4 text-neutral-500 text-xs lg:text-sm">
-                      1000
-                    </td>
-                    <td className="py-4 text-neutral-500 text-xs lg:text-sm">
-                      {'300.00'}
-                    </td>
-                    <td className="py-4">
-                      <Tag status={i === 1 ? 'failed' : 'success'} />
-                    </td>
-                  </tr>
-                ))}
-            </tbody>
+            {isOrdersLoading
+              ? Array(5)
+                  .fill(' ')
+                  .map((_, i) => (
+                    <tr
+                      key={i}
+                      className="bg-gray-200 animate-pulse border-b border-white"
+                    >
+                      {Array(7)
+                        .fill(' ')
+                        .map((_, i) => (
+                          <td key={i} className="h-10 tab " />
+                        ))}
+                    </tr>
+                  ))
+              : orders?.data?.data?.length! > 0 && (
+                  <tbody>
+                    {orders?.data?.data.map((order: any, i: number) => (
+                      <tr
+                        key={`table_${i}`}
+                        className="border-b border-neutral-200"
+                      >
+                        <td className="py-4 pl-6">
+                          <button onClick={() => setOpen(true)}>
+                            <File varient="FileClock" />
+                          </button>
+                        </td>
+                        <td className="py-4 text-neutral-500 text-xs lg:text-sm">
+                          {10021348 - i}
+                        </td>
+                        <td className="py-4 w-[30%]">
+                          <div className="max-w-[150px] overflow-hidden">
+                            <p className="text-tiny lg:text-xs text-success">
+                              Business Card
+                            </p>
+                            <p className="text-xs lg:text-sm text-neutral-600 font-semibold whitespace-nowrap overflow-hidden text-ellipsis">
+                              {order?.ordered_products[0]?.product?.title}
+                            </p>
+                          </div>
+                        </td>
+                        <td className="py-4 w-[20%]">
+                          <p className="text-xs lg:text-[13px]/[19px] text-neutral-500 uppercase">
+                            {order?.created.slice(10)}
+                          </p>
+                          <p className="text-xs lg:text-[13px]/[19px] text-neutral-500 font-semibold uppercase">
+                            {order?.created.slice(0, 5)}
+                          </p>
+                        </td>
+                        <td className="py-4 text-neutral-500 text-xs lg:text-sm">
+                          {order?.ordered_products[0]?.quantity}
+                        </td>
+                        <td className="py-4 text-neutral-500 text-xs lg:text-sm">
+                          {order?.total_amount}
+                        </td>
+                        <td className="py-4">
+                          <Tag
+                            status={
+                              order?.cancelled === 1 ? 'failed' : 'success'
+                            }
+                          />
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                )}
           </table>
         </div>
+        {!isOrdersLoading && !orders?.data?.data?.length && (
+          <p className="text-center py-3 h-[20vh] flex items-center justify-center">
+            No Order found
+          </p>
+        )}
         <div className="flex items-center justify-between py-3.5 px-6">
           <p className="text-xs text-neutral-500 flex-1">
-            Total Items: <span className="font-semibold">{'02'}</span>
+            Total Items:{' '}
+            <span className="font-semibold">{orders?.data?.data.length}</span>
           </p>
           <div className="flex items-center justify-between gap-x-3 xs:w-6/12 lg:w-4/12">
-            <button className="size-6 sm:size-8 lg:size-10 rounded-lg border border-[#EAECF0] text-[#EAECF0] transition-all duration-300 hover:text-primary/70 hover:border-primary/70 flex items-center justify-center">
+            <button
+              disabled={isOrdersLoading || !orders?.data?.data?.length}
+              className="size-6 sm:size-8 lg:size-10 rounded-lg border border-[#EAECF0] text-[#EAECF0] transition-all duration-300 hover:text-primary/70 hover:border-primary/70 flex items-center justify-center"
+            >
               <FaAngleLeft className="text-sm sm:text-lg" />
             </button>
             <p className="text-xs sm:text-sm text-center text-neutral-500">
               Page 1 of 1
             </p>
-            <button className="size-6 sm:size-8 lg:size-10 rounded-lg border border-[#EAECF0] text-[#EAECF0] transition-all duration-300 hover:text-primary/70 hover:border-primary/70 flex items-center justify-center">
+            <button
+              disabled={isOrdersLoading || !orders?.data?.data?.length}
+              className="size-6 sm:size-8 lg:size-10 rounded-lg border border-[#EAECF0] text-[#EAECF0] transition-all duration-300 hover:text-primary/70 hover:border-primary/70 flex items-center justify-center"
+            >
               <FaAngleRight className="text-sm sm:text-lg" />
             </button>
           </div>
