@@ -190,6 +190,7 @@ const Cart = () => {
                     ))
                 : cart?.data?.map((pd: any) => (
                     <Row
+                      key={pd.id}
                       isAllChecked={isAllChecked}
                       selected={selected}
                       loading={isDeleteLoading}
