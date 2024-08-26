@@ -1,14 +1,44 @@
 'use client';
 import { Button, Input } from '@/components';
-import React from 'react';
+import { api } from '@/utils/fetcher';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { toast } from 'react-toastify';
 
 const Password = () => {
-  const { control, handleSubmit, reset } = useForm();
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({
+    mode: 'onChange',
+    defaultValues: {
+      password: '',
+      new_password: '',
+      cnfm_password: '',
+    },
+  });
+  const [isLoading, setLoading] = useState(false);
 
-  const onPasswordChange = (data: any) => {
-    console.log(data);
-    reset();
+  const onPasswordChange = async (data: any) => {
+    setLoading(true);
+    try {
+      const res = await api.post('/user/update-user-password', {
+        current_password: data?.password,
+        new_password: data?.new_password,
+      });
+      if (res.data?.data?.form?.length > 0) {
+        toast.error(res?.data?.message);
+        setLoading(false);
+        return;
+      }
+      toast.success(res?.data?.message);
+      reset();
+    } catch (err) {
+      console.log(err);
+    }
+    setLoading(false);
   };
 
   return (
@@ -30,6 +60,7 @@ const Password = () => {
           wrapClassName="w-full"
           label="Current password"
           placeholder="Current password"
+          error={errors.password}
         />
         <div className="flex flex-col md:flex-row md:items-center gap-x-4 mt-1">
           <Input
@@ -47,24 +78,30 @@ const Password = () => {
             wrapClassName="w-full"
             label="New password"
             placeholder="New password"
+            error={errors.new_password}
           />
           <Input
             control={control}
             rules={{
               required: 'Confirm password is required',
               validate: (value: string, formValues: any) =>
-                value === formValues.password || 'Passwords do not match',
+                value === formValues.new_password || 'Passwords do not match',
             }}
             type="password"
             name="cnfm_password"
             wrapClassName="w-full"
             label="Confirm password"
             placeholder="Confirm password"
+            error={errors.cnfm_password}
           />
         </div>
       </div>
       <div className="md:flex justify-end mt-4">
-        <Button type="submit" className="md:w-[155px] text-sm">
+        <Button
+          loading={isLoading}
+          type="submit"
+          className="md:w-[155px] text-sm"
+        >
           Change password
         </Button>
       </div>

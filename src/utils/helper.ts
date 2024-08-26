@@ -12,3 +12,5 @@ export async function getCountryData() {
   const data = await response.json();
   return data;
 }
+
+export const imageBase = 'http://printcraft.ae/uploads/';

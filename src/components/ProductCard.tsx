@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { HiArrowRight } from 'react-icons/hi';
 import { ProductData } from '@/types';
+import { imageBase } from '@/utils/helper';
 
 const ProductCard = ({
   data,
@@ -11,6 +12,10 @@ const ProductCard = ({
   data?: ProductData;
   category?: string | number;
 }) => {
+  const [image, setImage] = useState(imageBase + data?.image);
+  const handleError = () => {
+    setImage('/categories/paper-bags.png'); // fallback image path
+  };
   return (
     <div className="border border-neutral-200 rounded-lg bg-white p-2 sm:p-3">
       <Link
@@ -18,14 +23,11 @@ const ProductCard = ({
         className="block w-full h-[228px] xs:h-[180px] sm:h-[220px] md:h-[200px] xl:h-[228px] rounded overflow-hidden bg-secondary relative"
       >
         <Image
-          src={
-            data?.image
-              ? `http://printcraft.ae/uploads/${data?.image}`
-              : '/categories/paper-bags.png'
-          }
+          src={image}
           fill
           alt={data?.image ?? 'product image'}
           className="object-fill"
+          onError={handleError}
         />
       </Link>
       <div className="mt-2 py-2.5">

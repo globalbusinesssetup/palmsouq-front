@@ -53,7 +53,8 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (common?.default_language)
         setDefaultLanguage(common?.default_language);
     }
-  });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   async function login(arg: LoginForm) {
     setLoading(true);

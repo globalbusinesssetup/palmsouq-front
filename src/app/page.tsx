@@ -14,6 +14,7 @@ import { register } from 'swiper/element/bundle';
 import { useResponsiveSlides } from '@/hooks';
 import { useQuery } from '@tanstack/react-query';
 import { getCategories, getHome } from '@/utils/api';
+import { imageBase } from '@/utils/helper';
 
 type SwiperElement = Element & {
   swiper?: {
@@ -119,8 +120,6 @@ export default function Home() {
     );
   }
 
-  console.log('home', home);
-
   return (
     <main>
       <TopBar />
@@ -151,10 +150,17 @@ export default function Home() {
             </swiper-container>
           </div>
           <Link
-            href={'#'}
+            href={home?.slider?.right_bottom?.url ?? '#'}
             className="lg:w-5/12 h-[250px] xl:h-[304px] hidden lg:block relative overflow-hidden sm:rounded-[10px] mt-4 lg:mt-0"
           >
-            <Image src={'/banners/weekly-offer.jpeg'} fill alt={'banner'} />
+            <Image
+              src={
+                imageBase + home?.slider?.right_bottom.image ??
+                '/banners/weekly-offer.jpeg'
+              }
+              fill
+              alt={home?.slider?.right_bottom.title ?? 'Banner'}
+            />
           </Link>
         </section>
         {/* explore by categories */}
@@ -210,22 +216,18 @@ export default function Home() {
           <section className="flex items-center gap-x-4 mt-5 md:mt-8">
             <div className="flex-1 h-[108px] bg-[#F5F5F7] relative rounded overflow-hidden">
               <Image
-                src={
-                  'https://plus.unsplash.com/premium_photo-1682126556008-d6ac9170c9fa?q=80&w=1558&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
-                }
+                src={imageBase + home?.banners[0].image}
                 fill
                 alt="banner"
-                className=" object-cover"
+                className="object-cover"
               />
             </div>
             <div className="hidden md:block flex-1 h-[108px] bg-[#F5F5F7] relative rounded overflow-hidden">
               <Image
-                src={
-                  'https://plus.unsplash.com/premium_photo-1682145481505-80614272c426?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
-                }
+                src={imageBase + home?.banners[1].image}
                 fill
                 alt="banner"
-                className="object-cover object-[left_60%]"
+                className="object-cover"
               />
             </div>
           </section>
@@ -253,9 +255,7 @@ export default function Home() {
         <>
           <div className="w-full h-[180px] lg:h-[240px] bg-secondary mt-8 lg:mt-10 rounded-md overflow-hidden relative">
             <Image
-              src={
-                'https://images.unsplash.com/photo-1565688842882-e0b2693d349a?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
-              }
+              src={imageBase + home?.banners[2].image}
               fill
               alt="banner"
               className="object-cover"
@@ -295,9 +295,7 @@ export default function Home() {
           <section className="flex items-center gap-x-4 mt-5 md:mt-8">
             <div className="flex-1 h-[150px] sm:h-[180px] lg:h-[240px] bg-[#F5F5F7] relative rounded-md overflow-hidden">
               <Image
-                src={
-                  'https://images.unsplash.com/photo-1563097013-a1df1d1fd1c7?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
-                }
+                src={imageBase + home?.banners[3].image}
                 fill
                 alt="banner"
                 className="object-cover"
@@ -305,9 +303,7 @@ export default function Home() {
             </div>
             <div className="hidden md:block flex-1 h-[180px] lg:h-[240px] bg-[#F5F5F7] relative rounded-md overflow-hidden">
               <Image
-                src={
-                  'https://plus.unsplash.com/premium_photo-1661274103468-71e91f7ea517?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
-                }
+                src={imageBase + home?.banners[4].image}
                 fill
                 alt="banner"
                 className="object-cover"
@@ -343,12 +339,10 @@ export default function Home() {
           </section>
         </>
         {/* best selling paper bags  */}
-        <>
+        {/* <>
           <div className="w-full h-[180px] lg:h-[240px] bg-secondary mt-8 lg:mt-10 rounded-md overflow-hidden relative">
             <Image
-              src={
-                'https://images.unsplash.com/photo-1513884923967-4b182ef167ab?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
-              }
+              src={imageBase + home?.banners[5].image}
               fill
               alt="banner"
               className="object-cover"
@@ -379,7 +373,7 @@ export default function Home() {
                 ))}
             </div>
           </section>
-        </>
+        </> */}
         {/* features */}
         <section className="mt-5 md:mt-8 lg:mt-10 p-4 flex flex-wrap items-center gap-[18px]">
           {features.map((feature, i) => (

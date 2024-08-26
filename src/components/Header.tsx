@@ -49,7 +49,13 @@ const Header = ({
               <Image src="/logo.svg" fill alt="logo" />
             </Link>
             <div className="py-1 px-2 items-center gap-x-3 hidden lg:flex">
-              <Link href={'#'}>
+              <Link
+                target="_blank"
+                href={
+                  'https://wa.me/+971066265479?text=Hello%20there!'
+                  // 'https://web.whatsapp.com/send?phone=+8801965921314&text=Hello%20there!'
+                }
+              >
                 <RiWhatsappFill className="text-[28px] text-[#1FAF38]" />
               </Link>
               <div className="">

@@ -1,5 +1,6 @@
 import {
   Address,
+  Banner,
   Categorydata,
   Collection,
   ProductData,
@@ -18,12 +19,11 @@ export const useGetUser = async () => {
     console.error(err);
   }
 };
-
 export const getHome = async () => {
   try {
     const { data } = await fetcher<{
       data: {
-        banners: [];
+        banners: Banner[];
         collections: Collection[];
         featured_brands: [];
         featured_categories: [];
@@ -31,7 +31,11 @@ export const getHome = async () => {
         site_features: [];
         slider: {
           main: [];
-          right_bottom: [];
+          right_bottom: Banner & {
+            title: string;
+            slug: string;
+            url: string | undefined;
+          };
         };
       };
     }>('/home');

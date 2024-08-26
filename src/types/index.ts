@@ -284,3 +284,8 @@ export type Collection = {
   slug: string;
   product_collections: ProductData[];
 };
+
+export type Banner = {
+  id: number;
+  image: string;
+};

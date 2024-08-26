@@ -12,6 +12,11 @@ import { FiEdit, FiEye, FiLoader, FiTrash2 } from 'react-icons/fi';
 import { IoMdClose } from 'react-icons/io';
 import { IoCheckmark } from 'react-icons/io5';
 import { toast } from 'react-toastify';
+import type { Metadata } from 'next';
+
+// export const metadata: Metadata = {
+//   title: 'Next.js',
+// };
 
 const checkoutData = [
   {
@@ -97,7 +102,7 @@ const Cart = () => {
   const handleDelete = async (id: number) => {
     setDeleteLoading(true);
     try {
-      const { data } = await api.delete(`/cart/delete/${id}`);
+      await api.delete(`/cart/delete/${id}`);
       toast.success('Cart Remove SuccessfullY');
       await queryClient.invalidateQueries({ queryKey: ['cart'] });
       if (selected.includes(id)) {
@@ -193,7 +198,6 @@ const Cart = () => {
                       key={pd.id}
                       isAllChecked={isAllChecked}
                       selected={selected}
-                      loading={isDeleteLoading}
                       onChange={() => handleChecked(pd?.id)}
                       onDelete={() => handleDelete(pd.id)}
                       pd={pd}
@@ -314,17 +318,28 @@ const Row = ({
   onChange,
   onDelete,
   pd,
-  loading,
 }: {
   isAllChecked: boolean;
   selected: number[];
   onChange: () => void;
   onDelete: () => void;
   pd: any;
-  loading: boolean;
 }) => {
   const [isPreviewOpen, setPreviewOpen] = useState(false);
   const [isFilePreviewOpen, setFilePreviewOpen] = useState(false);
+  const [isDeleteLoading, setDeleteLoading] = useState(false);
+
+  const handleDelete = async () => {
+    setDeleteLoading(true);
+    try {
+      await onDelete();
+    } catch (error) {
+      console.error('Error deleting item:', error);
+    } finally {
+      setDeleteLoading(false);
+    }
+  };
+
   return (
     <>
       <tr className="border-b border-neutral-200">
@@ -336,11 +351,15 @@ const Row = ({
         </td>
         <td className="py-4 flex pr-2 items-center gap-x-2">
           <button
-            disabled={loading}
-            onClick={onDelete}
+            disabled={isDeleteLoading}
+            onClick={handleDelete}
             className="size-8 md:size-10 bg-neutral-100 text-[#475467] transition-all duration-300 hover:bg-red-100 hover:text-red-600 rounded-lg flex items-center justify-center"
           >
-            {!loading ? <FiTrash2 /> : <FiLoader className="animate-spin" />}
+            {!isDeleteLoading ? (
+              <FiTrash2 />
+            ) : (
+              <FiLoader className="animate-spin" />
+            )}
           </button>
           <button
             onClick={() => setPreviewOpen(true)}
