@@ -14,26 +14,26 @@ import Cookies from 'js-cookie';
 import { toast } from 'react-toastify';
 import Head from 'next/head';
 
-type Country = {
+export type Country = {
   code2: string;
   name: string;
   states: { [key: string]: { code: string; name: string; cities: any } };
 };
 
-type State = {
+export type State = {
   code: string;
   name: string;
   cities: any;
 }[];
-type City = {
+export type City = {
   code: string;
   name: string;
 }[];
 
-const addresses = [
-  { title: 'Sharjah', value: 'sharjah', isDefault: true },
-  { title: 'Dubai', value: 'dubai', isDefault: false },
-];
+// const addresses = [
+//   { title: 'Sharjah', value: 'sharjah', isDefault: true },
+//   { title: 'Dubai', value: 'dubai', isDefault: false },
+// ];
 
 const Shippings = () => {
   const { data: user } = useQuery({

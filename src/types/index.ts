@@ -14,11 +14,13 @@ export type AuthContextTypes = {
   user: Record<string, any> | null;
   login: (loginData: any) => void;
   logOut: () => void;
+  addOrders: (products: ProductData[]) => void;
   isLoading: boolean;
   categories: Categorydata[];
   languages: [];
   payment: [];
   social: [];
+  ordersData: ProductData[] | [];
   default_language: {
     name: string;
     code: string;

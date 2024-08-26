@@ -12,7 +12,10 @@ import { FiEdit, FiEye, FiLoader, FiTrash2 } from 'react-icons/fi';
 import { IoMdClose } from 'react-icons/io';
 import { IoCheckmark } from 'react-icons/io5';
 import { toast } from 'react-toastify';
-import type { Metadata } from 'next';
+// import type { Metadata } from 'next';
+import { useRouter } from 'next/navigation';
+import { ProductData } from '@/types';
+import useAuth from '@/hooks/useAuth';
 
 // export const metadata: Metadata = {
 //   title: 'Next.js',
@@ -52,27 +55,28 @@ const uploadedFiles = [
   },
 ];
 
-const initialProducts = [
-  {
-    id: 0o1,
-    title: '',
-    name: '',
-    quantity: 1000,
-    amount: '150.00',
-  },
-  {
-    id: 0o2,
-    title: '',
-    name: '',
-    quantity: 1000,
-    amount: '150.00',
-  },
-];
+// const initialProducts = [
+//   {
+//     id: 0o1,
+//     title: '',
+//     name: '',
+//     quantity: 1000,
+//     amount: '150.00',
+//   },
+//   {
+//     id: 0o2,
+//     title: '',
+//     name: '',
+//     quantity: 1000,
+//     amount: '150.00',
+//   },
+// ];
 
 const Cart = () => {
-  const [products, setProducts] = useState(initialProducts);
+  const router = useRouter();
+  const { addOrders } = useAuth();
   const [isAllChecked, setAllChecked] = useState(false);
-  const [selected, setSelected] = useState<number[]>([]);
+  const [selectedProducts, setSelectedProducts] = useState<ProductData[]>([]);
   const [isCheckoutOpen, setCheckoutOpen] = useState(false);
   const [isDeleteLoading, setDeleteLoading] = useState(false);
   const queryClient = useQueryClient();
@@ -85,28 +89,29 @@ const Cart = () => {
     queryFn: () => getCart(user?.data.email!),
   });
 
-  const handleChecked = (i: number) => {
-    const newSelected = selected.includes(i)
-      ? selected.filter((item) => item !== i)
-      : [...selected, i];
-
-    setSelected(newSelected);
-    setAllChecked(newSelected.length === products.length);
+  const handleChecked = (i: number, pd: ProductData) => {
+    const newSelectedPd = selectedProducts.includes(pd)
+      ? selectedProducts.filter((p) => p !== pd)
+      : [...selectedProducts, pd];
+    setSelectedProducts(newSelectedPd);
+    setAllChecked(newSelectedPd.length === cart?.data?.length);
   };
 
   const handleSelectAll = (checked: boolean) => {
     setAllChecked(checked);
-    setSelected(checked ? products.map((_, index) => index) : []);
+    setSelectedProducts(checked ? cart?.data! : []);
   };
 
-  const handleDelete = async (id: number) => {
+  const handleDelete = async (pd: ProductData) => {
     setDeleteLoading(true);
     try {
-      await api.delete(`/cart/delete/${id}`);
+      await api.delete(`/cart/delete/${pd?.id}`);
       toast.success('Cart Remove SuccessfullY');
       await queryClient.invalidateQueries({ queryKey: ['cart'] });
-      if (selected.includes(id)) {
-        setSelected(selected.filter((item) => item !== id));
+      if (selectedProducts.includes(pd)) {
+        setSelectedProducts(
+          selectedProducts.filter((item) => item.id !== pd.id)
+        );
       }
     } catch (err) {
       console.log(err);
@@ -115,12 +120,13 @@ const Cart = () => {
   };
 
   const handleDeleteSelected = () => {
-    const filteredProducts = products.filter(
-      (_, index) => !selected.includes(index)
-    );
-    setProducts(filteredProducts);
-    setSelected([]);
+    setSelectedProducts([]);
     setAllChecked(false);
+  };
+
+  const handleCheckout = () => {
+    addOrders(selectedProducts);
+    router.push('/checkout');
   };
 
   return (
@@ -131,16 +137,16 @@ const Cart = () => {
         </h5>
         <div className="flex items-center gap-x-2 xs:gap-x-3">
           <Button
-            disabled={selected.length < 1}
+            disabled
             outlined
-            onClick={handleDeleteSelected}
+            // onClick={handleDeleteSelected}
             className="h-8 sm:h-9 w-20 sm:w-[90px] md:w-[100px] py-0 flex items-center gap-x-2.5 border-[#EAECF0] text-xs md:!text-sm font-semibold"
           >
             <FiTrash2 className="text-lg md:text-xl" /> Delete
           </Button>
           <Button
-            onClick={() => setCheckoutOpen(true)}
-            disabled={selected.length < 1}
+            onClick={handleCheckout}
+            disabled={selectedProducts.length < 1}
             className="h-8 md:h-10 w-28 xs:w-32 sm:w-[140px] md:w-[169px] py-0 flex gap-x-1 sm:gap-x-2 px-0 items-center justify-center text-xs md:!text-sm"
           >
             <IoCheckmark className="hidden xs:block text-base" /> Proceed
@@ -156,7 +162,10 @@ const Cart = () => {
               <tr className="px-6 bg-[#F9FAFB] py-3.5 text-left">
                 <th className="pl-6 py-3.5 w-[10%] pr-2">
                   <CheckBox
-                    checked={isAllChecked}
+                    checked={
+                      isAllChecked ||
+                      cart?.data?.length === selectedProducts.length
+                    }
                     onChange={(checked) => handleSelectAll(checked)}
                   />
                 </th>
@@ -197,9 +206,9 @@ const Cart = () => {
                     <Row
                       key={pd.id}
                       isAllChecked={isAllChecked}
-                      selected={selected}
-                      onChange={() => handleChecked(pd?.id)}
-                      onDelete={() => handleDelete(pd.id)}
+                      selectedProducts={selectedProducts}
+                      onChange={() => handleChecked(pd?.id, pd)}
+                      onDelete={() => handleDelete(pd)}
                       pd={pd}
                     />
                   ))}
@@ -299,7 +308,10 @@ const Cart = () => {
             </h5>
           </div>
           <Button
-            onClick={() => setCheckoutOpen(false)}
+            onClick={() => {
+              setCheckoutOpen(false);
+              router.push('/checkout');
+            }}
             className="h-9 lg:h-11 flex-1 xs:max-w-48 flex gap-x-1 md:gap-x-2 px-0 items-center justify-center text-xs md:text-sm lg:text-sm"
           >
             <IoCheckmark className="text-base" /> Proceed to Checkout
@@ -314,17 +326,19 @@ export default Cart;
 
 const Row = ({
   isAllChecked,
-  selected,
+  selectedProducts,
   onChange,
   onDelete,
   pd,
 }: {
   isAllChecked: boolean;
-  selected: number[];
+  selectedProducts: ProductData[];
   onChange: () => void;
   onDelete: () => void;
   pd: any;
 }) => {
+  const router = useRouter();
+  const { addOrders } = useAuth();
   const [isPreviewOpen, setPreviewOpen] = useState(false);
   const [isFilePreviewOpen, setFilePreviewOpen] = useState(false);
   const [isDeleteLoading, setDeleteLoading] = useState(false);
@@ -340,12 +354,17 @@ const Row = ({
     }
   };
 
+  const handleCheckout = (pd: ProductData) => {
+    addOrders([pd]);
+    router.push('/checkout');
+  };
+
   return (
     <>
       <tr className="border-b border-neutral-200">
         <td className="py-4 pl-6 w-[10%] pr-2">
           <CheckBox
-            checked={isAllChecked || selected.includes(pd.id)}
+            checked={isAllChecked || selectedProducts.includes(pd)}
             onChange={onChange}
           />
         </td>
