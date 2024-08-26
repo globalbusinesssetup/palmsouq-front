@@ -1,5 +1,10 @@
 'use client';
-import { AuthContextTypes, Categorydata, LoginForm } from '@/types';
+import {
+  AuthContextTypes,
+  Categorydata,
+  LoginForm,
+  ProductData,
+} from '@/types';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import React, { ReactNode, createContext, useEffect, useState } from 'react';
@@ -15,6 +20,7 @@ export const AuthContext = createContext<AuthContextTypes>({
   user: {},
   login: () => {},
   logOut: () => {},
+  addOrders: () => {},
   isLoading: false,
   categories: [],
   languages: [],
@@ -24,6 +30,7 @@ export const AuthContext = createContext<AuthContextTypes>({
     name: '',
     code: '',
   },
+  ordersData: [],
 });
 
 const AuthProvider = ({ children }: { children: ReactNode }) => {
@@ -36,6 +43,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     queryFn: getCommon,
   });
   const [languages, setLanguages] = useState<[]>([]);
+  const [ordersData, setOrders] = useState<ProductData[] | []>([]);
   const [categories, setCategories] = useState<Categorydata[]>([]);
   const [payment, setPayment] = useState<[]>([]);
   const [social, setSocial] = useState<[]>([]);
@@ -82,6 +90,10 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     setLoading(false);
   }
 
+  const addOrders = (products: ProductData[]) => {
+    setOrders(products);
+  };
+
   const logOut = () => {
     Cookies.remove('token');
     toast.warn('Logged out!');
@@ -101,6 +113,8 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         payment,
         social,
         default_language: defaultLanguage,
+        ordersData,
+        addOrders,
       }}
     >
       {children}

@@ -1,5 +1,5 @@
 'use client';
-import { Avatar, Button, Step } from '@/components';
+import { Avatar, Button, Modal, Step } from '@/components';
 import React, { ReactNode, useEffect, useState } from 'react';
 import { TbTruckDelivery } from 'react-icons/tb';
 import { Field, Label, Radio, RadioGroup } from '@headlessui/react';
@@ -12,6 +12,9 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { FaCheck } from 'react-icons/fa6';
 import { BiCheckCircle } from 'react-icons/bi';
+import useAuth from '@/hooks/useAuth';
+import { getAddress } from '@/utils/api';
+import { useQuery } from '@tanstack/react-query';
 
 const steps = [
   {
@@ -65,21 +68,30 @@ const deliveryOptions = [
 
 const Checkout = () => {
   const router = useRouter();
+  const { ordersData } = useAuth();
+  const { data: addresses, isLoading: isAddressLoading } = useQuery({
+    queryKey: ['address'],
+    queryFn: () => getAddress(),
+  });
+  console.log('addresses', addresses);
   const [currentStep, setStep] = useState(0);
-  const [defaultAddress, setDefaultAddress] = useState(addresses[0].value);
+  const [defaultAddress, setDefaultAddress] = useState(
+    addresses?.data[0].state!
+  );
   const [deliveryOption, setDeliveryOption] = useState(
     deliveryOptions[0].value
   );
+  const [isOpen, setOpen] = useState(false);
 
   useEffect(() => {
-    const supportedAreas = ['dubai', 'sharjah', 'ajman'];
+    const supportedAreas = ['FU'];
     if (!supportedAreas.includes(defaultAddress)) {
       setDeliveryOption(deliveryOptions[1].value);
     }
   }, [defaultAddress]);
 
   const isDisabled = (val: any) => {
-    const supportedAreas = ['dubai', 'sharjah', 'ajman'];
+    const supportedAreas = ['FU'];
     if (val === 'standard') {
       return !supportedAreas.includes(defaultAddress);
     }
@@ -124,17 +136,17 @@ const Checkout = () => {
                       'flex-1 sm:max-w-[calc(50%-16px)] flex items-center gap-4'
                     }
                   >
-                    {addresses.map((address) => (
+                    {addresses?.data?.map((address) => (
                       <Field
-                        key={address.value}
+                        key={address.id}
                         className={`flex-1 flex items-start gap-2 p-3 xl:p-4 border rounded-lg transition-all duration-300 cursor-pointer ${
-                          defaultAddress === address.value
+                          defaultAddress === address.state
                             ? 'bg-neutral-50 border-[#9B9DFD]'
                             : ''
                         }`}
                       >
                         <Radio
-                          value={address.value}
+                          value={address.state}
                           className="group flex size-3 sm:size-4 xl:size-5 items-center justify-center rounded-full border bg-white data-[checked]:border-primary duration-300 transition-all"
                         >
                           <span className="invisible size-1 sm:size-1.5 xl:size-2 rounded-full bg-primary group-data-[checked]:visible" />
@@ -144,13 +156,13 @@ const Checkout = () => {
                         >
                           <div className="flex-1">
                             <p className="text-xs md:text-sm xl:text-base text-[#344054] font-semibold">
-                              {address.title}
+                              {address.state}
                             </p>
                             <p className="text-tiny md:text-xs xl:text-sm text-neutral-400 mt-0.5">
-                              {address.location}
+                              {address.state}, {address.country}
                             </p>
                             <p className="text-tiny md:text-xs xl:text-sm text-neutral-400 mt-0.5">
-                              {address.street}
+                              {address.address_1}
                             </p>
                             <p className="text-tiny md:text-xs xl:text-sm text-neutral-600 mt-0.5">
                               {address.phone}
