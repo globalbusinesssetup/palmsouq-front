@@ -19,6 +19,7 @@ export const useGetUser = async () => {
     console.error(err);
   }
 };
+
 export const getHome = async () => {
   try {
     const { data } = await fetcher<{

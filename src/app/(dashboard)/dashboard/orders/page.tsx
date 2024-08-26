@@ -18,7 +18,7 @@ import { FiEdit, FiEye } from 'react-icons/fi';
 import { IoMdClose } from 'react-icons/io';
 import Image from 'next/image';
 import { StatusTypes } from '@/components/common/Tag';
-import OrderStep from '@/app/order/OrderStep';
+import OrderStep from '@/app/(default)/order/OrderStep';
 import { useQuery } from '@tanstack/react-query';
 import { getOrders } from '@/utils/api';
 
