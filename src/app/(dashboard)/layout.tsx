@@ -19,7 +19,7 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }>) {
   const router = useRouter();
-  const { data: user, isLoading } = useQuery({
+  const { data: user, isLoading } = useQuery<any>({
     queryKey: ['user'],
     queryFn: useGetUser,
   });
@@ -46,11 +46,11 @@ export default function DashboardLayout({
 
   return (
     <>
-      <div className="fixed left-0 top-0 w-full bg-white">
+      {/* <div className="fixed left-0 top-0 w-full bg-white">
         <Header />
-      </div>
-      <main className="bg-neutral-50 min-h-screen pt-20 md:pt-28">
-        <div className="flex items-end px-4 pl-[72px] xs:pl-20 sm:pl-[170px] md:pl-[220px] lg:pl-[300px]">
+      </div> */}
+      <main className="bg-neutral-50 min-h-screen pt-20 md:pt-16">
+        <div className="relative flex items-end justify-center px-4 pl-[72px] xs:pl-20 sm:pl-[170px] md:pl-[220px] lg:pl-[300px]">
           <LeftBar user={user?.data} />
           <section className="flex-1 w-full pb-5 2xl:pr-44">
             <div className="flex py-4 xs:py-6 mb-4 bg-gradient-to-l to-[#002169] from-[#002169B5] md:hidden flex-row items-center justify-between rounded-lg px-4 xs:px-6 sm:px-8">

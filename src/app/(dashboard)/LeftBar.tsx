@@ -67,7 +67,7 @@ const LeftBar = ({ user }: { user: UserData | undefined }) => {
   return (
     <>
       <aside
-        className={`w-14 sm:w-[150px] md:w-[200px] lg:w-[264px] fixed left-2 top-20 md:top-28 lg:left-5 lg:top-28 z-50 h-[calc(100vh-90px)] md:h-[calc(100vh-130px)] bg-white rounded md:rounded-xl border border-neutral-200 overflow-hidden mb-2 transition-all duration-300 ${
+        className={`w-14 sm:w-[150px] md:w-[200px] lg:w-[264px] fixed left-2 top-20 md:top-28 lg:left-5 lg:top-16 z-50 h-[calc(100vh-90px)] md:h-[calc(100vh-130px)] bg-white rounded md:rounded-xl border border-neutral-200 overflow-hidden mb-2 transition-all duration-300 ${
           isExpand && 'w-[150px]'
         }`}
       >

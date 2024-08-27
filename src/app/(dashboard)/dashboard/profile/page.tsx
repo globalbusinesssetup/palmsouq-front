@@ -1,7 +1,7 @@
 'use client';
 import Image from 'next/image';
 import React, { useState, useRef } from 'react';
-import { avatar } from '../LeftBar';
+import { avatar } from '../../LeftBar';
 import { useForm } from 'react-hook-form';
 import {
   Input,

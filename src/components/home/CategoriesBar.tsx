@@ -35,7 +35,7 @@ const CategoriesBar = () => {
             ))}
           </MenuItems>
         </Menu>
-        <div className="w-[1px] h-[26px] bg-[#E1E1E1] hidden sm:block" />
+        {/* <div className="w-[1px] h-[26px] bg-[#E1E1E1] hidden sm:block" />
         <div className="hidden lg:flex items-center gap-x-4 xl:gap-x-[30px]">
           {topBarCategories.map((cat, i) => (
             <Link
@@ -47,14 +47,14 @@ const CategoriesBar = () => {
               <IoChevronDown className="text-lg xl:text-xl mt-0.5" />
             </Link>
           ))}
-        </div>
-        <div className="flex-1 hidden sm:flex items-center justify-end lg:justify-between gap-x-5">
-          <Link
+        </div> */}
+        <div className="flex-1 hidden sm:flex items-center justify-end lg:justify-end gap-x-5">
+          {/* <Link
             href={'#'}
             className="text-[#6B7280] hover:text-primary/90 text-sm xl:text-base font-medium xl:font-semibold block"
           >
             New Arrival
-          </Link>
+          </Link> */}
           <Link
             href={'#'}
             className="text-sm xl:text-base font-medium xl:font-semibold flex items-center gap-x-1 text-[#16A34A] hover:text-[#16A34A]/70"

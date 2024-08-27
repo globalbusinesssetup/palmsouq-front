@@ -69,7 +69,6 @@ const Category: React.FC<CategoryProps> = ({ params }) => {
 
   return (
     <>
-      <Header />
       <main className="bg-[#FCFCFD]">
         <div className="container mx-auto px-4">
           <div className="w-full h-[150px] md:h-[180px] lg:h-[200px] bg-secondary rounded-md mt-6 relative overflow-hidden">

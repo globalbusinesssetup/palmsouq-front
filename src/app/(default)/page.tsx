@@ -121,9 +121,7 @@ export default function Home() {
   }
 
   return (
-    <main>
-      <TopBar />
-      <Header showSearch />
+    <>
       <CategoriesBar />
       <div className="container mx-auto min-h-[55vh] mt-5 lg:mt-8 xl:mt-10 pb-7 px-4">
         {/* Banner  */}
@@ -538,6 +536,6 @@ export default function Home() {
         </div>
       </section>
       <Footer />
-    </main>
+    </>
   );
 }
