@@ -27,15 +27,8 @@ const Header = ({
 }) => {
   const { control } = useForm<any>();
   const [isOpen, setIsOpen] = React.useState(false);
-  const { isLoggedIn } = useAuth();
-  const { data, isLoading } = useQuery({
-    queryKey: ['user'],
-    queryFn: useGetUser,
-  });
-  // const { data: common, isLoading: isCommonLoading } = useQuery({
-  //   queryKey: ['common'],
-  //   queryFn: getCommon,
-  // });
+  const { isLoggedIn, isLoading, user:profile } = useAuth();
+  const {user} = useAuth();
 
   return (
     <>
@@ -114,7 +107,7 @@ const Header = ({
                   <p className="text-tiny lg:text-xs">
                     Hi,{' '}
                     <span className=" capitalize">
-                      {data?.data?.first_name}
+                      {profile?.first_name}
                     </span>
                   </p>
                   <Link
@@ -137,7 +130,8 @@ const Header = ({
                     className="flex items-center gap-x-1"
                   >
                     <p className="text-xs lg:text-sm font-medium xl:font-semibold uppercase">
-                      0.00 AED
+                      {profile?.cart_count} 
+                      {/* AED */}
                     </p>
                     <IoIosArrowDown className="xl:text-lg" />
                   </Link>

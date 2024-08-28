@@ -11,7 +11,7 @@ export type RegisterForm = {
 
 export type AuthContextTypes = {
   isLoggedIn: boolean;
-  user: Record<string, any> | null;
+  user?: Record<string, any>;
   login: (loginData: any) => void;
   logOut: () => void;
   addOrders: (products: ProductData[]) => void;

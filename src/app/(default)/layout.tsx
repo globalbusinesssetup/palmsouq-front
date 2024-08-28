@@ -9,11 +9,10 @@ export default function MainLayout({children}:{children:React.ReactNode}) {
     console.log("path_name: ", pathname);
     return (
         <main>
-            <TopBar />
             {
-                !pathname.includes('dashboard') &&
-                <Header showSearch />
+                pathname == '/' ? <TopBar />  : null
             }
+            <Header showSearch />
             {children}
         </main>
     )

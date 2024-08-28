@@ -13,11 +13,10 @@ import Cookies from 'js-cookie';
 import { api } from '@/utils/fetcher';
 import dayjs from 'dayjs';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { getCommon } from '@/utils/api';
+import { getCommon, useGetUser } from '@/utils/api';
 
 export const AuthContext = createContext<AuthContextTypes>({
   isLoggedIn: false,
-  user: {},
   login: () => {},
   logOut: () => {},
   addOrders: () => {},
@@ -36,12 +35,15 @@ export const AuthContext = createContext<AuthContextTypes>({
 const AuthProvider = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const [user, setUser] = useState({});
+  const [token, setToken] = useState<string | null>(null);
   const [isLoading, setLoading] = useState(false);
-  const { data: common, isLoading: isCommonLoading } = useQuery({
+  const { data: common, isLoading: isCommonLoading, isSuccess } = useQuery({
     queryKey: ['common'],
     queryFn: getCommon,
   });
+  const {data:user, isLoading:userLoading, isError:userError, isSuccess:userSuccess} = useQuery({
+    queryKey: ['user', token],
+    queryFn: useGetUser  });
   const [languages, setLanguages] = useState<[]>([]);
   const [ordersData, setOrders] = useState<ProductData[] | []>([]);
   const [categories, setCategories] = useState<Categorydata[]>([]);
@@ -53,7 +55,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   }>({ name: 'English', code: 'en' });
 
   useEffect(() => {
-    if (!isCommonLoading) {
+    if (isSuccess) {
       setLanguages(common?.languages ?? []);
       setCategories(common?.categories ?? []);
       setPayment(common?.payment ?? []);
@@ -68,12 +70,14 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     setLoading(true);
     try {
       const res = await api.post('/user/signin', { ...arg });
-      if (res.data?.data?.token) {
-        Cookies.set('token', res.data?.data.token as string, {
+      const token = res.data?.data?.token;
+      if (token) {
+        Cookies.set('token', token as string, {
           secure: true,
           sameSite: 'lax',
           expires: dayjs(res.data?.data.expires_in).toDate(),
         });
+        setToken(token);
         queryClient.invalidateQueries({ queryKey: ['user'] });
         router.push('/dashboard/profile');
         toast.success('Login succesfully');
@@ -104,10 +108,10 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     <AuthContext.Provider
       value={{
         isLoggedIn: Cookies.get('token') ? true : false,
-        user: user,
+        user: user?.data,
         login,
         logOut,
-        isLoading,
+        isLoading: userLoading || isLoading,
         categories,
         languages,
         payment,
