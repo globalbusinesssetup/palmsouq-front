@@ -1,10 +1,5 @@
 'use client';
-import {
-  AuthContextTypes,
-  Categorydata,
-  LoginForm,
-  ProductData,
-} from '@/types';
+import { AuthContextTypes, CartItem, Categorydata, LoginForm } from '@/types';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import React, { ReactNode, createContext, useEffect, useState } from 'react';
@@ -20,6 +15,7 @@ export const AuthContext = createContext<AuthContextTypes>({
   login: () => {},
   logOut: () => {},
   addOrders: () => {},
+  removeOrders: () => {},
   isLoading: false,
   categories: [],
   languages: [],
@@ -45,7 +41,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     queryKey: ['user', token],
     queryFn: useGetUser  });
   const [languages, setLanguages] = useState<[]>([]);
-  const [ordersData, setOrders] = useState<ProductData[] | []>([]);
+  const [ordersData, setOrders] = useState<CartItem[] | []>([]);
   const [categories, setCategories] = useState<Categorydata[]>([]);
   const [payment, setPayment] = useState<[]>([]);
   const [social, setSocial] = useState<[]>([]);
@@ -55,6 +51,10 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   }>({ name: 'English', code: 'en' });
 
   useEffect(() => {
+    const storedOrders = localStorage.getItem('orders');
+    if (storedOrders && ordersData.length < 1) {
+      setOrders(JSON.parse(storedOrders));
+    }
     if (isSuccess) {
       setLanguages(common?.languages ?? []);
       setCategories(common?.categories ?? []);
@@ -63,8 +63,10 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (common?.default_language)
         setDefaultLanguage(common?.default_language);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    if (!isUserLoading) {
+      setUser(userData?.data ?? {});
+    }
+  }, [isUserLoading, isCommonLoading, common, userData]);
 
   async function login(arg: LoginForm) {
     setLoading(true);
@@ -94,8 +96,14 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     setLoading(false);
   }
 
-  const addOrders = (products: ProductData[]) => {
+  const addOrders = (products: CartItem[]) => {
     setOrders(products);
+    localStorage.setItem('orders', JSON.stringify(products));
+  };
+
+  const removeOrders = () => {
+    setOrders([]);
+    localStorage.removeItem('orders');
   };
 
   const logOut = () => {
@@ -119,6 +127,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         default_language: defaultLanguage,
         ordersData,
         addOrders,
+        removeOrders,
       }}
     >
       {children}
