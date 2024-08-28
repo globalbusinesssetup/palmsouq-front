@@ -14,6 +14,7 @@ export const AuthContext = createContext<AuthContextTypes>({
   isLoggedIn: false,
   login: () => {},
   logOut: () => {},
+  refetchProfile: () => {},
   addOrders: () => {},
   removeOrders: () => {},
   isLoading: false,
@@ -37,7 +38,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     queryKey: ['common'],
     queryFn: getCommon,
   });
-  const {data:user, isLoading:userLoading, isError:userError, isSuccess:userSuccess} = useQuery({
+  const {data:user, isLoading:userLoading, isError:userError, isSuccess:userSuccess, refetch:refetchProfile} = useQuery({
     queryKey: ['user', token],
     queryFn: useGetUser  });
   const [languages, setLanguages] = useState<[]>([]);
@@ -63,10 +64,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (common?.default_language)
         setDefaultLanguage(common?.default_language);
     }
-    if (!isUserLoading) {
-      setUser(userData?.data ?? {});
-    }
-  }, [isUserLoading, isCommonLoading, common, userData]);
+  }, [isCommonLoading, common]);
 
   async function login(arg: LoginForm) {
     setLoading(true);
@@ -108,9 +106,12 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const logOut = () => {
     Cookies.remove('token');
+    queryClient.removeQueries();
     toast.warn('Logged out!');
     router.push('/auth/sign-in');
   };
+
+  console.log("common data: ",common);
 
   return (
     <AuthContext.Provider
@@ -119,7 +120,8 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         user: user?.data,
         login,
         logOut,
-        isLoading: userLoading || isLoading,
+        refetchProfile,
+        isLoading: userLoading || isLoading || isCommonLoading,
         categories,
         languages,
         payment,

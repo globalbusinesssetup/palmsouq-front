@@ -14,6 +14,7 @@ export type AuthContextTypes = {
   user?: Record<string, any>;
   login: (loginData: any) => void;
   logOut: () => void;
+  refetchProfile: () => void;
   removeOrders: () => void;
   addOrders: (products: CartItem[]) => void;
   isLoading: boolean;

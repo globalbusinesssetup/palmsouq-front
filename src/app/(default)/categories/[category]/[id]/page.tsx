@@ -11,10 +11,12 @@ import {
 } from '@headlessui/react';
 import { FaAngleDown } from 'react-icons/fa6';
 import { useRouter } from 'next/navigation';
-import { useQuery } from '@tanstack/react-query';
+import { QueryClient, useQuery } from '@tanstack/react-query';
 import { getProduct, useGetUser } from '@/utils/api';
 import { api } from '@/utils/fetcher';
 import { toast } from 'react-toastify';
+import useAuth from '@/hooks/useAuth';
+import config from '@/configs';
 
 type CategoryProps = {
   params: {
@@ -120,10 +122,7 @@ const timelines = [
 
 const ProductDeatils: React.FC<CategoryProps> = ({ params }) => {
   const router = useRouter();
-  const { data: user, isFetching } = useQuery({
-    queryKey: ['user'],
-    queryFn: useGetUser,
-  });
+  const {user, refetchProfile} = useAuth();
   const [selectedType, setType] = useState('');
   const [selectedTimeline, setTimeline] = useState('');
   const [quantity, setQuantity] = useState(100);
@@ -154,11 +153,12 @@ const ProductDeatils: React.FC<CategoryProps> = ({ params }) => {
         product_id: product?.id,
         inventory_id: product?.inventory[0]?.id,
         quantity,
-        user_token: user?.data?.email,
+        user_token: user?.email,
       });
       if (res?.data?.data?.form) {
         toast.error(res?.data?.data?.form[0]);
       } else {
+        refetchProfile();
         toast.success('Product add Successfully');
         // await router.push('/order');
       }
@@ -193,7 +193,7 @@ const ProductDeatils: React.FC<CategoryProps> = ({ params }) => {
           <div className="lg:w-5/12">
             <div className="w-full h-60 xs:h-[300px] sm:h-[396px] rounded-lg overflow-hidden relative bg-secondary">
               <Image
-                src={`https://printcraft.ae/${product?.image}`}
+                src={config.imgUri + product?.image}
                 fill
                 alt={product?.image ?? 'product image'}
                 // className="object-cover"

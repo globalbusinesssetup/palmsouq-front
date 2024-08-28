@@ -6,9 +6,10 @@ import axios, {
 } from 'axios';
 import { toast } from 'react-toastify';
 import Cookies from 'js-cookie';
+import config from '@/configs';
 
 export const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL,
+  baseURL: config.baseApi,
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
