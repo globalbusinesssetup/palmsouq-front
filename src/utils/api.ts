@@ -10,6 +10,7 @@ import {
 } from '@/types';
 import fetcher, { api } from '@/utils/fetcher';
 import Cookies from 'js-cookie';
+import { timezone } from './helper';
 
 export const useGetUser = async () => {
   try {
@@ -70,6 +71,21 @@ export const getCommon = async () => {
     console.error(err);
   }
 };
+export const getPayMethods = async () => {
+  try {
+    const { data } = await fetcher<{
+      data: {
+        stripe_key: string;
+        stripe_secret: string;
+        stripe: number;
+      };
+    }>('/payment-gateway');
+    return data;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 export const getCategories = async () => {
   try {
     const res = await fetcher<{
@@ -141,7 +157,7 @@ export const getOrders = async () => {
         data: [];
       };
     }>(`/order/by-user`, {
-      time_zone: '',
+      time_zone: timezone,
       order_by: 'created_at',
       page: 1,
       q: null,

@@ -1,3 +1,5 @@
+import CryptoJS from 'crypto-js';
+
 export const formatFileSize = (sizeInBytes: number): string => {
   const sizeInKB = sizeInBytes / 1024;
   if (sizeInKB < 1024) {
@@ -14,3 +16,19 @@ export async function getCountryData() {
 }
 
 export const imageBase = 'http://printcraft.ae/uploads/';
+
+export const orderEncrypt = (data: {
+  user_token: string;
+  order_method: string | number;
+  voucher: any;
+  time_zone: any;
+}) => {
+  let key = CryptoJS.enc.Hex.parse('0123456470abcdef0123456789abcdef');
+  let iv = CryptoJS.enc.Hex.parse('abcdef1876343516abcdef9876543210');
+  return CryptoJS.AES.encrypt(JSON.stringify(data), key, {
+    iv,
+    padding: CryptoJS.pad.ZeroPadding,
+  }).toString();
+};
+
+export const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;

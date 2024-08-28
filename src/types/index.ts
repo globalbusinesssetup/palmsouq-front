@@ -14,13 +14,14 @@ export type AuthContextTypes = {
   user: Record<string, any> | null;
   login: (loginData: any) => void;
   logOut: () => void;
-  addOrders: (products: ProductData[]) => void;
+  removeOrders: () => void;
+  addOrders: (products: CartItem[]) => void;
   isLoading: boolean;
   categories: Categorydata[];
   languages: [];
   payment: [];
   social: [];
-  ordersData: ProductData[] | [];
+  ordersData: CartItem[] | [];
   default_language: {
     name: string;
     code: string;
@@ -290,4 +291,21 @@ export type Collection = {
 export type Banner = {
   id: number;
   image: string;
+};
+
+type Place = {
+  id: number;
+  country: string;
+};
+
+export type CartItem = {
+  id: number;
+  flash_product: {
+    offered: number;
+    selling: number;
+    shipping_rule: {
+      shipping_places: Place[];
+    };
+  };
+  quantity: string;
 };

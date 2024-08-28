@@ -14,7 +14,7 @@ import { IoCheckmark } from 'react-icons/io5';
 import { toast } from 'react-toastify';
 // import type { Metadata } from 'next';
 import { useRouter } from 'next/navigation';
-import { ProductData } from '@/types';
+import { CartItem, ProductData } from '@/types';
 import useAuth from '@/hooks/useAuth';
 
 // export const metadata: Metadata = {
@@ -76,7 +76,7 @@ const Cart = () => {
   const router = useRouter();
   const { addOrders } = useAuth();
   const [isAllChecked, setAllChecked] = useState(false);
-  const [selectedProducts, setSelectedProducts] = useState<ProductData[]>([]);
+  const [selectedProducts, setSelectedProducts] = useState<CartItem[]>([]);
   const [isCheckoutOpen, setCheckoutOpen] = useState(false);
   const [isDeleteLoading, setDeleteLoading] = useState(false);
   const queryClient = useQueryClient();
@@ -89,7 +89,7 @@ const Cart = () => {
     queryFn: () => getCart(user?.data.email!),
   });
 
-  const handleChecked = (i: number, pd: ProductData) => {
+  const handleChecked = (i: number, pd: CartItem) => {
     const newSelectedPd = selectedProducts.includes(pd)
       ? selectedProducts.filter((p) => p !== pd)
       : [...selectedProducts, pd];
@@ -102,7 +102,7 @@ const Cart = () => {
     setSelectedProducts(checked ? cart?.data! : []);
   };
 
-  const handleDelete = async (pd: ProductData) => {
+  const handleDelete = async (pd: CartItem) => {
     setDeleteLoading(true);
     try {
       await api.delete(`/cart/delete/${pd?.id}`);
@@ -332,7 +332,7 @@ const Row = ({
   pd,
 }: {
   isAllChecked: boolean;
-  selectedProducts: ProductData[];
+  selectedProducts: CartItem[];
   onChange: () => void;
   onDelete: () => void;
   pd: any;
@@ -354,7 +354,7 @@ const Row = ({
     }
   };
 
-  const handleCheckout = (pd: ProductData) => {
+  const handleCheckout = (pd: CartItem) => {
     addOrders([pd]);
     router.push('/checkout');
   };

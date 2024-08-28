@@ -56,25 +56,20 @@ const uploadedFiles = [
   // },
 ];
 
+const steps = [
+  { title: 'Order received', icon: '/icons/check.svg' },
+  { title: 'Details Review', icon: '/icons/check.svg' },
+  { title: 'Production', icon: '/icons/check.svg' },
+  { title: 'Ready', icon: '/icons/check.svg' },
+  { title: 'Received', icon: '/icons/check.svg' },
+];
+
 const Orders = () => {
   const { data: orders, isLoading: isOrdersLoading } = useQuery({
     queryKey: ['orders'],
     queryFn: getOrders,
   });
   const { control } = useForm();
-  const [isOpen, setOpen] = useState(false);
-  const [isFilePreviewOpen, setFilePreviewOpen] = useState(false);
-  const [status, setStatus] = useState<StatusTypes>('review');
-
-  const steps = [
-    { title: 'Order received', icon: '/icons/check.svg' },
-    { title: 'Details Review', icon: '/icons/check.svg' },
-    { title: 'Production', icon: '/icons/check.svg' },
-    { title: 'Ready', icon: '/icons/check.svg' },
-    { title: 'Received', icon: '/icons/check.svg' },
-  ];
-
-  console.log('orders =>', orders);
 
   return (
     <div className="border border-neutral-200 bg-white rounded-xl overflow-hidden max-w-7xl">
@@ -143,50 +138,7 @@ const Orders = () => {
               : orders?.data?.data?.length! > 0 && (
                   <tbody>
                     {orders?.data?.data.map((order: any, i: number) => (
-                      <tr
-                        key={`table_${i}`}
-                        className="border-b border-neutral-200"
-                      >
-                        <td className="py-4 pl-6">
-                          <button onClick={() => setOpen(true)}>
-                            <File varient="FileClock" />
-                          </button>
-                        </td>
-                        <td className="py-4 text-neutral-500 text-xs lg:text-sm">
-                          {10021348 - i}
-                        </td>
-                        <td className="py-4 w-[30%]">
-                          <div className="max-w-[150px] overflow-hidden">
-                            <p className="text-tiny lg:text-xs text-success">
-                              Business Card
-                            </p>
-                            <p className="text-xs lg:text-sm text-neutral-600 font-semibold whitespace-nowrap overflow-hidden text-ellipsis">
-                              {order?.ordered_products[0]?.product?.title}
-                            </p>
-                          </div>
-                        </td>
-                        <td className="py-4 w-[20%]">
-                          <p className="text-xs lg:text-[13px]/[19px] text-neutral-500 uppercase">
-                            {order?.created.slice(10)}
-                          </p>
-                          <p className="text-xs lg:text-[13px]/[19px] text-neutral-500 font-semibold uppercase">
-                            {order?.created.slice(0, 5)}
-                          </p>
-                        </td>
-                        <td className="py-4 text-neutral-500 text-xs lg:text-sm">
-                          {order?.ordered_products[0]?.quantity}
-                        </td>
-                        <td className="py-4 text-neutral-500 text-xs lg:text-sm">
-                          {order?.total_amount}
-                        </td>
-                        <td className="py-4">
-                          <Tag
-                            status={
-                              order?.cancelled === 1 ? 'failed' : 'success'
-                            }
-                          />
-                        </td>
-                      </tr>
+                      <Row key={order?.id} order={order} i={i} />
                     ))}
                   </tbody>
                 )}
@@ -221,6 +173,54 @@ const Orders = () => {
           </div>
         </div>
       </div>
+    </div>
+  );
+};
+
+export default Orders;
+
+const Row = ({ order, i }: { order: any; i: number }) => {
+  const [isOpen, setOpen] = useState(false);
+  const [isFilePreviewOpen, setFilePreviewOpen] = useState(false);
+  const [status, setStatus] = useState<StatusTypes>('success');
+  return (
+    <>
+      <tr key={`table_${i}`} className="border-b border-neutral-200">
+        <td className="py-4 pl-6">
+          <button onClick={() => setOpen(true)}>
+            <File varient="FileClock" />
+          </button>
+        </td>
+        <td className="py-4 text-neutral-500 text-xs lg:text-sm">
+          {order?.order?.slice(0, 10)}...
+        </td>
+        <td className="py-4 w-[30%]">
+          <div className="max-w-[150px] overflow-hidden">
+            <p className="text-tiny lg:text-xs text-success">Business Card</p>
+            <p className="text-xs lg:text-sm text-neutral-600 font-semibold whitespace-nowrap overflow-hidden text-ellipsis">
+              {order?.ordered_products[0]?.product?.title}
+            </p>
+          </div>
+        </td>
+        <td className="py-4 w-[20%]">
+          <p className="text-xs lg:text-[13px]/[19px] text-neutral-500 uppercase">
+            {order?.created.slice(10)}
+          </p>
+          <p className="text-xs lg:text-[13px]/[19px] text-neutral-500 font-semibold uppercase">
+            {order?.created.slice(0, 5)}
+          </p>
+        </td>
+        <td className="py-4 text-neutral-500 text-xs lg:text-sm">
+          {order?.ordered_products[0]?.quantity}
+        </td>
+        <td className="py-4 text-neutral-500 text-xs lg:text-sm">
+          {order?.total_amount}
+        </td>
+        <td className="py-4">
+          <Tag status={order?.cancelled === 1 ? 'failed' : 'success'} />
+        </td>
+      </tr>
+
       <Modal show={isOpen} onClose={() => setOpen(false)}>
         <div className="flex md:hidden items-center justify-end pb-3 -mt-1">
           <button onClick={() => setOpen(false)}>
@@ -240,13 +240,13 @@ const Orders = () => {
                 <div className="flex items-center gap-x-2.5">
                   <File />
                   <p className="text-tiny sm:text-xs font-light text-neutral-500">
-                    10021348
+                    {order?.order?.slice(0, 7)}...
                   </p>
                 </div>
                 <div className="flex items-center gap-x-2.5">
                   <FiCalendar className="text-base text-neutral-400" />
                   <p className="text-tiny sm:text-xs font-light text-neutral-500">
-                    22 September 2023, 22:13
+                    {order?.created}
                   </p>
                 </div>
               </div>
@@ -302,8 +302,8 @@ const Orders = () => {
                   <p className="text-xs font-medium text-success">
                     Business Card
                   </p>
-                  <h4 className="text-black font-semibold text-sm md:text-base">
-                    350 Gsm Matt Lamination
+                  <h4 className="max-w-[330px] text-black font-semibold text-sm md:text-base whitespace-nowrap overflow-hidden text-ellipsis">
+                    {order?.ordered_products[0]?.product?.title}
                   </h4>
                 </div>
               </div>
@@ -317,7 +317,9 @@ const Orders = () => {
                       {data.title}
                     </p>
                     <p className="text-sm font-medium text-neutral-600">
-                      {data.value}
+                      {data.title === 'Quantity'
+                        ? order?.ordered_products[0]?.quantity
+                        : data.value}
                     </p>
                   </div>
                 ))}
@@ -366,7 +368,7 @@ const Orders = () => {
                   Total (Exc. Vat)
                 </h6>
                 <h4 className="text-sm sm:text-base md:text-xl font-bold text-primary">
-                  150.00 AED
+                  {order?.total_amount} AED
                 </h4>
               </div>
             </div>
@@ -396,8 +398,6 @@ const Orders = () => {
           </div>
         </div>
       </Modal>
-    </div>
+    </>
   );
 };
-
-export default Orders;
