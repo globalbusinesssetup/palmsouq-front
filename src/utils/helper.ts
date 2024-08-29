@@ -1,3 +1,4 @@
+import { Country } from '@/types';
 import CryptoJS from 'crypto-js';
 
 export const formatFileSize = (sizeInBytes: number): string => {
@@ -32,3 +33,13 @@ export const orderEncrypt = (data: {
 };
 
 export const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+export const getCountryTitle = (
+  countries: { [key: string]: Country },
+  country: string
+) => Object.values(countries[country].name);
+export const getStateTitle = (
+  countries: { [key: string]: Country },
+  country: string,
+  setate: string
+) => Object.values(countries[country].states[setate].name);

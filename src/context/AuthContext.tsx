@@ -1,5 +1,11 @@
 'use client';
-import { AuthContextTypes, CartItem, Categorydata, LoginForm } from '@/types';
+import {
+  AuthContextTypes,
+  CartItem,
+  Categorydata,
+  Country,
+  LoginForm,
+} from '@/types';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import React, { ReactNode, createContext, useEffect, useState } from 'react';
@@ -8,7 +14,7 @@ import Cookies from 'js-cookie';
 import { api } from '@/utils/fetcher';
 import dayjs from 'dayjs';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { getCommon, useGetUser } from '@/utils/api';
+import { getCommon, getCountries, useGetUser } from '@/utils/api';
 
 export const AuthContext = createContext<AuthContextTypes>({
   isLoggedIn: false,
@@ -27,6 +33,7 @@ export const AuthContext = createContext<AuthContextTypes>({
     code: '',
   },
   ordersData: [],
+  countries: {},
 });
 
 const AuthProvider = ({ children }: { children: ReactNode }) => {
@@ -34,13 +41,29 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   const queryClient = useQueryClient();
   const [token, setToken] = useState<string | null>(null);
   const [isLoading, setLoading] = useState(false);
-  const { data: common, isLoading: isCommonLoading, isSuccess } = useQuery({
+  const {
+    data: common,
+    isLoading: isCommonLoading,
+    isSuccess,
+  } = useQuery({
     queryKey: ['common'],
     queryFn: getCommon,
   });
-  const {data:user, isLoading:userLoading, isError:userError, isSuccess:userSuccess, refetch:refetchProfile} = useQuery({
+  const {
+    data: user,
+    isLoading: userLoading,
+    isError: userError,
+    isSuccess: userSuccess,
+    refetch: refetchProfile,
+  } = useQuery({
     queryKey: ['user', token],
-    queryFn: useGetUser  });
+    queryFn: useGetUser,
+  });
+  const { data: countriesPhones, isLoading: isCountriesLoading } = useQuery({
+    queryKey: ['countries-phones'],
+    queryFn: getCountries,
+  });
+  const [countries, setCountries] = useState<{ [key: string]: Country }>({});
   const [languages, setLanguages] = useState<[]>([]);
   const [ordersData, setOrders] = useState<CartItem[] | []>([]);
   const [categories, setCategories] = useState<Categorydata[]>([]);
@@ -63,6 +86,9 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       setSocial(common?.social ?? []);
       if (common?.default_language)
         setDefaultLanguage(common?.default_language);
+    }
+    if (!isCountriesLoading) {
+      setCountries(countriesPhones?.countries!);
     }
   }, [isCommonLoading, common]);
 
@@ -111,7 +137,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     router.push('/auth/sign-in');
   };
 
-  console.log("common data: ",common);
+  console.log('common data: ', common);
 
   return (
     <AuthContext.Provider
@@ -130,6 +156,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         ordersData,
         addOrders,
         removeOrders,
+        countries,
       }}
     >
       {children}
