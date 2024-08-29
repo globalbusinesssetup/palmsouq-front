@@ -7,6 +7,7 @@ import {
   ProductResponse,
   ProductsApiResponse,
   ProfileApiResponse,
+  Country,
 } from '@/types';
 import fetcher, { api } from '@/utils/fetcher';
 import Cookies from 'js-cookie';
@@ -142,7 +143,12 @@ export const getCart = async (token: string) => {
 
 export const getCountries = async () => {
   try {
-    const data = await fetcher(`/countries-phones`);
+    const { data } = await fetcher<{
+      data: {
+        countries: { [key: string]: Country };
+        phones: { [key: string]: string };
+      };
+    }>(`/countries-phones`);
     return data;
   } catch (err) {
     console.error(err);

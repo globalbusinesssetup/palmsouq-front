@@ -27,6 +27,7 @@ export type AuthContextTypes = {
     name: string;
     code: string;
   };
+  countries: { [key: string]: Country };
 };
 
 type UserType = 'personal' | 'business';
@@ -60,7 +61,7 @@ export type ProfileApiResponse = {
   message: string;
 };
 
-// Profil
+// Profile
 
 export type ProductData = {
   id: number;
@@ -263,6 +264,22 @@ export type Categorydata = {
 };
 
 // Address
+
+export type Country = {
+  code2: string;
+  name: string;
+  states: { [key: string]: { code: string; name: string; cities: any } };
+};
+
+export type State = {
+  code: string;
+  name: string;
+  cities: any;
+}[];
+export type City = {
+  code: string;
+  name: string;
+}[];
 
 export type Address = {
   id: number;
