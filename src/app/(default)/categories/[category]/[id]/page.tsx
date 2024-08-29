@@ -120,9 +120,21 @@ const timelines = [
   { label: 'Urgent', value: 'urgent' },
 ];
 
+// export async function generateStaticParams() {
+//   // Fetch or define the paths that should be generated at build time
+//   const categories = ['flyers', 'brochures', 'bill-books']; // Example categories
+//   const ids = ['1', '2', '3']; // Example ids
+
+//   // Generate all combinations of categories and ids
+//   return categories.flatMap(category => 
+//     ids.map(id => ({ category, id }))
+//   );
+// }
+
+
 const ProductDeatils: React.FC<CategoryProps> = ({ params }) => {
   const router = useRouter();
-  const {user, refetchProfile} = useAuth();
+  const {user, isLoggedIn, refetchProfile} = useAuth();
   const [selectedType, setType] = useState('');
   const [selectedTimeline, setTimeline] = useState('');
   const [quantity, setQuantity] = useState(100);
@@ -147,6 +159,10 @@ const ProductDeatils: React.FC<CategoryProps> = ({ params }) => {
   console.log('product =>', product);
 
   const addToCart = async () => {
+    if(!isLoggedIn){
+      toast.warn('Unauthorized! sign in first.');
+      return;
+    };
     setSubmitLoading(true);
     try {
       const res = await api.post('/cart/action', {
