@@ -4,9 +4,10 @@ import CategoryClient from './category-client';
 
 export async function generateStaticParams() {
   const categories = await getCategories(); 
+  // Ensure that an empty array is returned if categories are undefined or empty
   return categories?.data?.categories?.map((cat) => ({
     category: cat.id.toString(),
-  }));
+  })) || [];
 }
 
 export default async function CategoryPage({ params }:any) {

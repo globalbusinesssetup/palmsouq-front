@@ -1,19 +1,20 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // output: "out",
+  output: "export",
   images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: '*',
-        port: '',
-      },
-      {
-        protocol: 'http',
-        hostname: '*',
-        port: '',
-      },
-    ],
+    unoptimized: true
+    // remotePatterns: [
+    //   {
+    //     protocol: 'https',
+    //     hostname: '*',
+    //     port: '',
+    //   },
+    //   {
+    //     protocol: 'http',
+    //     hostname: '*',
+    //     port: '',
+    //   },
+    // ],
   },
 };
 
