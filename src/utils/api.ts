@@ -94,7 +94,7 @@ export const getCategories = async () => {
         categories: Categorydata[];
       };
     }>('/common');
-    console.log('categories =>', res);
+    console.log('categories =>', res.data.categories);
     return res ?? [];
   } catch (err) {
     console.error(err);

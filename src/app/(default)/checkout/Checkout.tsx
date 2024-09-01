@@ -171,7 +171,7 @@ const Checkout = () => {
     );
   }
 
-  const stripePromise = loadStripe(payData?.stripe_key! ?? '');
+  const stripePromise = loadStripe('pk_test_51KSxxsLPva6t8Wj1SbcnYQnGvroMwctxhcqlKuslVnix4eJzxNZlA2QjtIaXLyY5Ay8pzEdtN3PHUlnXonpd10Vs00jntUNba6');
   const isDisabled = (val: any) => {
     const supportedAreas = ['AE'];
     if (val === 'standard') {

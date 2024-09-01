@@ -28,6 +28,7 @@ const StripePay = ({ payData }: any) => {
     }
 
     const clientSecret = payData?.stripe_secret!;
+    
     try {
       const res = await stripe?.confirmPayment({
         elements,

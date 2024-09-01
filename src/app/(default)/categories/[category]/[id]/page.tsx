@@ -11,7 +11,7 @@ import {
 import { FaAngleDown } from 'react-icons/fa6';
 import { useRouter } from 'next/navigation';
 import {  useQuery } from '@tanstack/react-query';
-import { getProduct, useGetUser } from '@/utils/api';
+import { getCategories, getProduct, getProducts, useGetUser } from '@/utils/api';
 import { api } from '@/utils/fetcher';
 import { toast } from 'react-toastify';
 import useAuth from '@/hooks/useAuth';
@@ -122,13 +122,15 @@ const timelines = [
 
 export async function generateStaticParams() {
   // Fetch or define the paths that should be generated at build time
-  const categories = ['flyers', 'brochures', 'bill-books']; // Example categories
+  const catData = await getCategories();
   const ids = ['1', '2', '3']; // Example ids
 
   // Generate all combinations of categories and ids
-  return categories.flatMap(category => 
-    ids.map(id => ({ category, id }))
-  );
+  return catData?.data.categories.flatMap( async (category) => {
+    const products = await getProducts(category.slug)
+    return products?.data.map(id => ({ category, id }))
+  }
+  ) || [];
 }
 
 
