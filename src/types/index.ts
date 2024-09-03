@@ -12,7 +12,7 @@ export type RegisterForm = {
 export type AuthContextTypes = {
   isLoggedIn: boolean;
   user?: Record<string, any>;
-  login: (loginData: any) => void;
+  login: (loginData: any) => Promise<{ isSuccess: boolean }>;
   logOut: () => void;
   refetchProfile: () => void;
   removeOrders: () => void;

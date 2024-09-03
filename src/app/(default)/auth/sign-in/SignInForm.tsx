@@ -1,5 +1,12 @@
 'use client';
-import { Input, InputPhoneNumber, Button, CheckBox } from '@/components';
+import {
+  Input,
+  InputPhoneNumber,
+  Button,
+  CheckBox,
+  OtpVerify,
+  Modal,
+} from '@/components';
 import { Metadata } from 'next';
 import Link from 'next/link';
 import React, { useState } from 'react';
@@ -7,12 +14,15 @@ import { FaArrowRightLong } from 'react-icons/fa6';
 import { IoMdLogIn } from 'react-icons/io';
 import { useForm } from 'react-hook-form';
 import useAuth from '@/hooks/useAuth';
+import { FcGoogle } from 'react-icons/fc';
+import { useRouter } from 'next/navigation';
 
 // export const metadata: Metadata = {
 //   title: 'Sign In | Printcraft',
 // };
 
 const SignInForm = ({ onSignIn }: { onSignIn?: () => void }) => {
+  const router = useRouter();
   const {
     control,
     handleSubmit,
@@ -20,16 +30,23 @@ const SignInForm = ({ onSignIn }: { onSignIn?: () => void }) => {
     setError,
     clearErrors,
     formState: { errors },
+    reset,
   } = useForm();
   const { login } = useAuth();
   const [enabled, setEnabled] = useState(false);
   const [phone, setPhone] = useState<any>();
   const [isLoading, setLoading] = useState(false);
+  const [isPhoneModalOpen, setPhoneModalOpen] = useState(false);
 
   const onFormSubmit = async (data: any) => {
     setLoading(true);
     try {
-      await login(data);
+      const res = await login(data);
+      if (res.isSuccess) {
+        setPhoneModalOpen(true);
+        reset();
+      }
+      console.log(res?.isSuccess);
     } catch (err) {
       console.log('Err Login ==>', err);
     }
@@ -51,7 +68,7 @@ const SignInForm = ({ onSignIn }: { onSignIn?: () => void }) => {
         </div>
       </div>
       <form onSubmit={handleSubmit(onFormSubmit)} className="mt-8">
-        <Input
+        {/* <Input
           control={control}
           rules={{
             required: 'Email Address is required',
@@ -65,6 +82,16 @@ const SignInForm = ({ onSignIn }: { onSignIn?: () => void }) => {
           placeholder="Enter email address"
           wrapClassName="flex-1 mt-4 sm:mt-6"
           error={errors.email}
+        /> */}
+        <InputPhoneNumber
+          label="Mobile Number"
+          control={control}
+          rules={{ required: 'mobile number is required' }}
+          // setError={setError}
+          clearErrors={clearErrors}
+          name="phone"
+          error={errors?.phone}
+          wrapClassName="mt-8"
         />
         <Input
           control={control}
@@ -98,6 +125,20 @@ const SignInForm = ({ onSignIn }: { onSignIn?: () => void }) => {
           <Button loading={isLoading} type="submit">
             Sign in
           </Button>
+          <Button
+            outlined
+            disabled={isLoading}
+            onClick={() =>
+              router.push(
+                `${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/social-login/redirect/google`
+              )
+            }
+            type="button"
+            className="mt-2 flex items-center justify-center gap-x-2"
+          >
+            <FcGoogle size={18} />
+            Log in with google
+          </Button>
           <Link
             href={'/auth/register'}
             className="mt-3 text-base font-semibold text-neutral-600 hover:text-neutral-400 duration-200 w-full text-center inline-flex items-center justify-center gap-2"
@@ -107,6 +148,19 @@ const SignInForm = ({ onSignIn }: { onSignIn?: () => void }) => {
           </Link>
         </div>
       </form>
+      <Modal
+        show={isPhoneModalOpen}
+        onClose={() => setPhoneModalOpen(false)}
+        panelClassName={'w-[400px] p-6 lg:p-8'}
+      >
+        <OtpVerify
+          title="Verify"
+          onVerify={() => {
+            setPhoneModalOpen(false);
+            // setOtpSent(false);
+          }}
+        />
+      </Modal>
     </>
   );
 };

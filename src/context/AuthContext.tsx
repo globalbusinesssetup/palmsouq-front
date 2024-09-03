@@ -18,7 +18,7 @@ import { getCommon, getCountries, useGetUser } from '@/utils/api';
 
 export const AuthContext = createContext<AuthContextTypes>({
   isLoggedIn: false,
-  login: () => {},
+  login: async () => ({ isSuccess: false }),
   logOut: () => {},
   refetchProfile: () => {},
   addOrders: () => {},
@@ -92,7 +92,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [isCommonLoading, common]);
 
-  async function login(arg: LoginForm) {
+  async function login(arg: LoginForm): Promise<{ isSuccess: boolean }> {
     setLoading(true);
     try {
       const res = await api.post('/user/signin', { ...arg });
@@ -107,8 +107,10 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         queryClient.invalidateQueries({ queryKey: ['user'] });
         router.push('/dashboard/profile');
         toast.success('Login succesfully');
+        return { isSuccess: true };
       } else {
-        toast.error(res?.data?.message);
+        toast.error(res.data.data.form[0]);
+        return { isSuccess: false };
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -116,8 +118,9 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       } else {
         throw 'An unexpected error occurred';
       }
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   }
 
   const addOrders = (products: CartItem[]) => {

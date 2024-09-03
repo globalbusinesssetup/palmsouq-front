@@ -1,23 +1,14 @@
-'use client';
 import Link from 'next/link';
 import React, { useState } from 'react';
 import { FaArrowLeftLong } from 'react-icons/fa6';
 import { IoMdLogIn } from 'react-icons/io';
 import PersonalForm from './PersonalForm';
-import { Field, Label, Radio, RadioGroup } from '@headlessui/react';
-import CorporateForm from './CorporateForm';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { OtpVerify } from '@/components';
 import { api } from '@/utils/fetcher';
 import { toast } from 'react-toastify';
 
-const accountTypes = [
-  { title: 'Personal Account', value: 'personal' },
-  { title: 'Corporate Account', value: 'corporate' },
-];
-
 const Register = () => {
-  const [selectedType, setSelectedType] = useState(accountTypes[0].value);
   const params = useSearchParams();
   const router = useRouter();
   const [isLoading, setLoading] = useState(false);
@@ -59,36 +50,7 @@ const Register = () => {
                 </p>
               </div>
             </div>
-            <div className="mt-6">
-              <RadioGroup
-                value={selectedType}
-                onChange={setSelectedType}
-                aria-label="Server size"
-                className={'flex items-center gap-3 sm:gap-4'}
-              >
-                {accountTypes.map((account) => (
-                  <Field
-                    key={account.value}
-                    className={`flex-1 flex items-center gap-2 p-2 sm:p-4 border rounded-lg transition-all duration-300 cursor-pointer ${
-                      selectedType === account.value
-                        ? 'bg-neutral-50 border-[#9B9DFD]'
-                        : ''
-                    }`}
-                  >
-                    <Radio
-                      value={account.value}
-                      className="group flex size-4 sm:size-5 items-center justify-center rounded-full border bg-white data-[checked]:border-primary duration-300 transition-all"
-                    >
-                      <span className="invisible size-1.5 sm:size-2 rounded-full bg-primary group-data-[checked]:visible" />
-                    </Radio>
-                    <Label className="text-xs sm:text-base text-[#344054] font-medium sm:font-semibold whitespace-nowrap">
-                      {account.title}
-                    </Label>
-                  </Field>
-                ))}
-              </RadioGroup>
-            </div>
-            {selectedType === 'personal' ? <PersonalForm /> : <CorporateForm />}
+            <PersonalForm />
             <>
               <p className="text-xs text-center mt-3 text-neutral-700">
                 By creating an account you agree to our{' '}

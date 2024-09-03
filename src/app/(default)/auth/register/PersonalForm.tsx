@@ -27,6 +27,7 @@ const PersonalForm = () => {
       toast.success('Account has been created successfully!');
     } catch (err) {
       console.log(err);
+      toast.error(err?.data?.message);
     }
     setLoading(false);
   };
@@ -53,21 +54,32 @@ const PersonalForm = () => {
           error={errors.last_name}
         />
       </div>
-      <Input
-        control={control}
-        rules={{
-          required: 'Email Address is required',
-          pattern: {
-            value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/i,
-            message: 'Invalid email address',
-          },
-        }}
-        name="email"
-        label="Email Address *"
-        placeholder="Enter email address"
-        wrapClassName="flex-1 mt-4 sm:mt-6"
-        error={errors.email}
-      />
+      <div className="sm:flex flex-row items-center gap-4 mt-4 sm:mt-6">
+        <Input
+          control={control}
+          rules={{
+            required: 'Email Address is required',
+            pattern: {
+              value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/i,
+              message: 'Invalid email address',
+            },
+          }}
+          name="email"
+          label="Email Address *"
+          placeholder="Enter email address"
+          wrapClassName="flex-1"
+          error={errors.email}
+        />
+        <Input
+          control={control}
+          rules={{ required: 'Phone is required' }}
+          name="phone"
+          label="Phone *"
+          placeholder="Enter Phone number"
+          wrapClassName="flex-1"
+          error={errors.phone}
+        />
+      </div>
       <div className="sm:flex flex-row items-center gap-4 mt-6">
         <Input
           control={control}
