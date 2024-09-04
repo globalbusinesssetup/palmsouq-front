@@ -94,7 +94,6 @@ export const getCategories = async () => {
         categories: Categorydata[];
       };
     }>('/common');
-    console.log('categories =>', res.data.categories);
     return res ?? [];
   } catch (err) {
     console.error(err);
@@ -103,10 +102,10 @@ export const getCategories = async () => {
 
 export const getProducts = async (categorySlug: number | string) => {
   try {
-    const { data } = await fetcher<ProductsApiResponse>(
-      `/all?category=${categorySlug}`
+    const res = await fetcher<ProductsApiResponse>(
+      `/all?category=${categorySlug}&sortby=&shipping=&brand=&collection=&rating=0&max=0&min=0&page=&sidebar_data=false`
     );
-    return data?.result ?? [];
+    return res.data ?? {};
   } catch (err) {
     console.error(err);
   }

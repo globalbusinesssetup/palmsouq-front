@@ -75,11 +75,21 @@ export type ProductData = {
   rating: number;
 };
 
+export type ProductsCommonType = {
+  id: number;
+  title: string;
+};
+
 export type ProductsApiResponse = {
   data: {
     result: {
       data: ProductData[];
     };
+    all_categories: { id: number; title: string; slug: string }[];
+    brands: ProductsCommonType[];
+    collections: ProductsCommonType[];
+    shipping: ProductsCommonType[];
+    category: { title: string; slug: string };
   };
 };
 

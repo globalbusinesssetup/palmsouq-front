@@ -10,8 +10,13 @@ import {
 } from '@headlessui/react';
 import { FaAngleDown } from 'react-icons/fa6';
 import { useRouter } from 'next/navigation';
-import {  useQuery } from '@tanstack/react-query';
-import { getCategories, getProduct, getProducts, useGetUser } from '@/utils/api';
+import { useQuery } from '@tanstack/react-query';
+import {
+  getCategories,
+  getProduct,
+  getProducts,
+  useGetUser,
+} from '@/utils/api';
 import { api } from '@/utils/fetcher';
 import { toast } from 'react-toastify';
 import useAuth from '@/hooks/useAuth';
@@ -126,15 +131,14 @@ export async function generateStaticParams() {
   const ids = ['1', '2', '3']; // Example ids
 
   // Generate all combinations of categories and ids
-  return catData?.data.categories.flatMap( async (category) => {
-    const products = await getProducts(category.slug)
-    return products?.data.map(id => ({ category, id }))
-  }
-  ) || [];
+  return (
+    catData?.data.categories.flatMap(async (category) => {
+      const products = await getProducts(category.slug);
+      return products?.result?.data.map((id) => ({ category, id }));
+    }) || []
+  );
 }
 
-
-export default function ProductPage({params}:any) {
-  
-  return <ProductDeatils params={params} />
-};
+export default function ProductPage({ params }: any) {
+  return <ProductDeatils params={params} />;
+}

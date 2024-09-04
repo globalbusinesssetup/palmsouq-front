@@ -63,7 +63,7 @@ const ProductCard = ({
     <div
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
-      className="border border-neutral-200 rounded-lg bg-white p-2 sm:p-3"
+      className="border border-neutral-200 rounded-lg bg-white p-2 sm:p-3 max-h-[382px]"
     >
       <Link
         href={`/categories/${category ?? 'sticker'}/${data?.id ?? 123}`}
@@ -106,7 +106,7 @@ const ProductCard = ({
           href={`/categories/${category ?? 'sticker'}/${data?.id ?? 123}`}
           className="mt-1 flex items-center justify-between gap-x-3"
         >
-          <h5 className="text-sm font-bold text-neutral-800 whitespace-nowrap overflow-hidden flex-1">
+          <h5 className="text-sm font-bold text-neutral-800 whitespace-nowrap overflow-hidden flex-1 text-ellipsis">
             {data?.title ?? 'Product Title goes here'}
           </h5>
           <HiArrowRight className="text-base text-success" />
