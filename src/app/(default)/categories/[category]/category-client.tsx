@@ -20,6 +20,8 @@ import Link from 'next/link';
 import { IoMdStarOutline } from 'react-icons/io';
 import { IoMdStar } from 'react-icons/io';
 import { ProductsCommonType } from '@/types';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { debounce } from '@/utils/helper';
 
 type CategoryClientProps = {
   products: any; // Replace `any` with your product type
@@ -31,6 +33,12 @@ type CategoryClientProps = {
   categoryData: { title: string; slug: string };
 };
 
+type HandleOnChangeArgs = {
+  brand?: number;
+  shipping?: number;
+  collection?: number;
+};
+
 const CategoryClient: React.FC<CategoryClientProps> = ({
   products,
   category,
@@ -39,8 +47,19 @@ const CategoryClient: React.FC<CategoryClientProps> = ({
   shipping,
   collections,
 }) => {
+  const router = useRouter();
+  const path = usePathname();
+  const params = useSearchParams();
   const [selectedCat, setCat] = useState('all');
   const [categoryData, setCategoryData] = useState<any[]>([]);
+  const [selectedBrands, setBrands] = useState<number[]>([]);
+  const [selectedShipping, setShipping] = useState<number[]>([]);
+  const [selectedCollections, setCollections] = useState<number[]>([]);
+  const [selectedRating, setRating] = useState<number>(0);
+  const [selectedPrice, setPrice] = useState({
+    min: params.get('min') ?? '0',
+    max: params.get('max') ?? '0',
+  });
 
   useEffect(() => {
     const fetchCategoryData = () => {
@@ -65,6 +84,52 @@ const CategoryClient: React.FC<CategoryClientProps> = ({
     };
     setCategoryData(fetchCategoryData());
   }, [category]);
+
+  const handleFilters = () => {
+    router.push(
+      `${path}/sortby=&shipping=${selectedShipping ?? ''}&brand=${
+        selectedBrands ?? ''
+      }&collection=${selectedCollections ?? ''}&rating=${selectedRating}&max=${
+        selectedPrice.max
+      }&min=${selectedPrice.min}&page=`
+    );
+  };
+
+  const handleOnChange = ({
+    brand,
+    shipping,
+    collection,
+  }: HandleOnChangeArgs) => {
+    if (brand) {
+      if (selectedBrands.includes(brand)) {
+        const f = selectedBrands.filter((b) => b !== brand);
+        setBrands(f);
+      } else {
+        setBrands((prev) => [...prev, brand]);
+      }
+    } else if (shipping) {
+      if (selectedShipping.includes(shipping)) {
+        const f = selectedShipping.filter((s) => s !== shipping);
+        setShipping(f);
+      } else {
+        setShipping((prev) => [...prev, shipping]);
+      }
+    } else if (collection) {
+      if (selectedCollections.includes(collection)) {
+        const f = selectedCollections.filter((c) => c !== collection);
+        setCollections(f);
+      } else {
+        setCollections((prev) => [...prev, collection]);
+      }
+    }
+    if (brand || shipping || collection) {
+      handleFilters();
+    }
+  };
+
+  const debouncedHandleFilters = debounce(() => {
+    handleFilters();
+  }, 300);
 
   return (
     <>
@@ -124,7 +189,15 @@ const CategoryClient: React.FC<CategoryClientProps> = ({
               </div>
               <div className="">
                 <h3 className="text-gray-700 text-xl font-bold mt-3">Price</h3>
-                <button className="px-2 py-2 mt-4 text-xs">Any price</button>
+                <button
+                  onClick={() => {
+                    setPrice({ min: '', max: '' });
+                    debouncedHandleFilters();
+                  }}
+                  className="px-2 py-2 mt-4 text-xs"
+                >
+                  Any price
+                </button>
                 <div className="flex gap-x-2 mt-2">
                   <div className="flex gap-x-3">
                     <div className="flex items-center border border-gray-200 rounded-lg px-2 py-1 divide-x">
@@ -134,6 +207,9 @@ const CategoryClient: React.FC<CategoryClientProps> = ({
                       <input
                         type="number"
                         placeholder="Min"
+                        onChange={(e) =>
+                          setPrice((prev) => ({ ...prev, min: e.target.value }))
+                        }
                         className="px-2 py-1 w-full text-xs focus-visible:outline-none"
                       />
                     </div>
@@ -144,12 +220,20 @@ const CategoryClient: React.FC<CategoryClientProps> = ({
                       <input
                         type="number"
                         placeholder="Max"
+                        onChange={(e) =>
+                          setPrice((prev) => ({ ...prev, max: e.target.value }))
+                        }
                         className="px-2 py-1 w-full text-xs focus-visible:outline-none"
                       />
                     </div>
                   </div>
                 </div>
-                <Button className="mt-4 h-8 py-0 !text-xs">Go</Button>
+                <Button
+                  onClick={debouncedHandleFilters}
+                  className="mt-4 h-8 py-0 !text-xs"
+                >
+                  Go
+                </Button>
               </div>
               <div className="mt-4">
                 <h3 className="text-gray-700 text-xl font-bold mt-3">
@@ -157,7 +241,13 @@ const CategoryClient: React.FC<CategoryClientProps> = ({
                 </h3>
                 <button className="px-2 py-2 mt-4 text-xs">Clear </button>
                 <div className="mt-2 space-y-2">
-                  <button className="flex items-center gap-x-1">
+                  <button
+                    onClick={() => {
+                      setRating(1);
+                      debouncedHandleFilters();
+                    }}
+                    className="flex items-center gap-x-1"
+                  >
                     <IoMdStar size={20} className="text-orange-400" />
                     <IoMdStarOutline size={20} className="text-orange-400" />
                     <IoMdStarOutline size={20} className="text-orange-400" />
@@ -168,9 +258,15 @@ const CategoryClient: React.FC<CategoryClientProps> = ({
                     />{' '}
                     <span className="text-sm">&up</span>
                   </button>
-                  <button className="flex items-center gap-x-1">
+                  <button
+                    onClick={() => {
+                      setRating(2);
+                      debouncedHandleFilters();
+                    }}
+                    className="flex items-center gap-x-1"
+                  >
                     <IoMdStar size={20} className="text-orange-400" />
-                    <IoMdStarOutline size={20} className="text-orange-400" />
+                    <IoMdStar size={20} className="text-orange-400" />
                     <IoMdStarOutline size={20} className="text-orange-400" />
                     <IoMdStarOutline size={20} className="text-orange-400" />
                     <IoMdStarOutline
@@ -179,10 +275,16 @@ const CategoryClient: React.FC<CategoryClientProps> = ({
                     />{' '}
                     <span className="text-sm">&up</span>
                   </button>
-                  <button className="flex items-center gap-x-1">
+                  <button
+                    onClick={() => {
+                      setRating(3);
+                      debouncedHandleFilters();
+                    }}
+                    className="flex items-center gap-x-1"
+                  >
                     <IoMdStar size={20} className="text-orange-400" />
-                    <IoMdStarOutline size={20} className="text-orange-400" />
-                    <IoMdStarOutline size={20} className="text-orange-400" />
+                    <IoMdStar size={20} className="text-orange-400" />
+                    <IoMdStar size={20} className="text-orange-400" />
                     <IoMdStarOutline size={20} className="text-orange-400" />
                     <IoMdStarOutline
                       size={20}
@@ -190,11 +292,17 @@ const CategoryClient: React.FC<CategoryClientProps> = ({
                     />{' '}
                     <span className="text-sm">&up</span>
                   </button>
-                  <button className="flex items-center gap-x-1">
+                  <button
+                    onClick={() => {
+                      setRating(4);
+                      debouncedHandleFilters();
+                    }}
+                    className="flex items-center gap-x-1"
+                  >
                     <IoMdStar size={20} className="text-orange-400" />
-                    <IoMdStarOutline size={20} className="text-orange-400" />
-                    <IoMdStarOutline size={20} className="text-orange-400" />
-                    <IoMdStarOutline size={20} className="text-orange-400" />
+                    <IoMdStar size={20} className="text-orange-400" />
+                    <IoMdStar size={20} className="text-orange-400" />
+                    <IoMdStar size={20} className="text-orange-400" />
                     <IoMdStarOutline
                       size={20}
                       className="text-orange-400"
@@ -214,7 +322,10 @@ const CategoryClient: React.FC<CategoryClientProps> = ({
                         key={`brand_${i}`}
                         className="flex items-center gap-x-2"
                       >
-                        <CheckBox checked onChange={(e) => console.log(e)} />
+                        <CheckBox
+                          checked={selectedBrands.includes(b.id)}
+                          onChange={(e) => handleOnChange({ brand: b.id })}
+                        />
                         {b.title}
                       </div>
                     ))}
@@ -232,7 +343,10 @@ const CategoryClient: React.FC<CategoryClientProps> = ({
                         key={`collections_${i}`}
                         className="flex items-center gap-x-2"
                       >
-                        <CheckBox checked onChange={(e) => console.log(e)} />
+                        <CheckBox
+                          checked={selectedCollections.includes(c.id)}
+                          onChange={(e) => handleOnChange({ collection: c.id })}
+                        />
                         {c.title}
                       </div>
                     ))}
@@ -250,7 +364,10 @@ const CategoryClient: React.FC<CategoryClientProps> = ({
                         key={`shipping_${i}`}
                         className="flex items-center gap-x-2"
                       >
-                        <CheckBox checked onChange={(e) => console.log(e)} />
+                        <CheckBox
+                          checked={selectedShipping.includes(s.id)}
+                          onChange={() => handleOnChange({ shipping: s.id })}
+                        />
                         {s.title}
                       </div>
                     ))}
