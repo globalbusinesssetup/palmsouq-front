@@ -3,7 +3,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Button, CheckBox, Footer, ProductCard } from '@/components';
+import { Button, CheckBox, Footer, Loader, ProductCard } from '@/components';
 import Image from 'next/image';
 import { Select } from '@headlessui/react';
 import { FiChevronDown } from 'react-icons/fi';
@@ -22,15 +22,11 @@ import { IoMdStar } from 'react-icons/io';
 import { ProductsCommonType } from '@/types';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { debounce } from '@/utils/helper';
+import { getProducts } from '@/utils/api';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 type CategoryClientProps = {
-  products: any; // Replace `any` with your product type
   category: string;
-  categories: { id: number; title: string; slug: string }[];
-  brands: ProductsCommonType[];
-  shipping: ProductsCommonType[];
-  collections: ProductsCommonType[];
-  categoryData: { title: string; slug: string };
 };
 
 type HandleOnChangeArgs = {
@@ -39,14 +35,7 @@ type HandleOnChangeArgs = {
   collection?: number;
 };
 
-const CategoryClient: React.FC<CategoryClientProps> = ({
-  products,
-  category,
-  categories,
-  brands,
-  shipping,
-  collections,
-}) => {
+const CategoryClient: React.FC<CategoryClientProps> = ({ category }) => {
   const router = useRouter();
   const path = usePathname();
   const params = useSearchParams();
@@ -59,6 +48,18 @@ const CategoryClient: React.FC<CategoryClientProps> = ({
   const [selectedPrice, setPrice] = useState({
     min: params.get('min') ?? '0',
     max: params.get('max') ?? '0',
+  });
+  const [selectedSort, setSort] = useState('');
+  const min = params.get('min') ?? selectedPrice.min;
+  const max = params.get('max') ?? selectedPrice.max;
+  const Qrating = params.get('rating') ?? selectedRating;
+  const brands = params.get('brands') ?? selectedBrands;
+  const collections = params.get('collections') ?? selectedCollections;
+  const shippings = params.get('shipping') ?? selectedShipping;
+  const { data, isLoading, refetch } = useQuery({
+    queryKey: ['Allproducts'],
+    queryFn: () =>
+      getProducts(category, min, max, Qrating, brands, collections, shippings),
   });
 
   useEffect(() => {
@@ -85,13 +86,29 @@ const CategoryClient: React.FC<CategoryClientProps> = ({
     setCategoryData(fetchCategoryData());
   }, [category]);
 
-  const handleFilters = () => {
-    router.push(
-      `${path}/sortby=&shipping=${selectedShipping ?? ''}&brand=${
-        selectedBrands ?? ''
-      }&collection=${selectedCollections ?? ''}&rating=${selectedRating}&max=${
-        selectedPrice.max
-      }&min=${selectedPrice.min}&page=`
+  const handleFilters = async ({
+    shipping,
+    brand,
+    collection,
+    rating,
+    minPrice,
+    maxPrice,
+  }: {
+    shipping?: string | number | number[];
+    brand?: string | number | number[];
+    collection?: string | number | number[];
+    rating?: string | number;
+    minPrice?: string | number;
+    maxPrice?: string | number;
+  }) => {
+    await router.push(
+      `${path}?sortby=&shipping=${shipping ?? selectedShipping}&brand=${
+        brand ?? selectedBrands
+      }&collection=${collection ?? selectedCollections}&rating=${
+        rating ?? selectedRating
+      }&max=${maxPrice ?? selectedPrice.max}&min=${
+        minPrice ?? selectedPrice.min
+      }&page=`
     );
   };
 
@@ -104,32 +121,35 @@ const CategoryClient: React.FC<CategoryClientProps> = ({
       if (selectedBrands.includes(brand)) {
         const f = selectedBrands.filter((b) => b !== brand);
         setBrands(f);
+        handleFilters({ brand: f });
       } else {
         setBrands((prev) => [...prev, brand]);
+        handleFilters({ brand: [...selectedBrands, brand] });
       }
     } else if (shipping) {
       if (selectedShipping.includes(shipping)) {
         const f = selectedShipping.filter((s) => s !== shipping);
         setShipping(f);
+        handleFilters({ shipping: f });
       } else {
         setShipping((prev) => [...prev, shipping]);
+        handleFilters({ shipping: [...selectedShipping, shipping] });
       }
     } else if (collection) {
       if (selectedCollections.includes(collection)) {
         const f = selectedCollections.filter((c) => c !== collection);
         setCollections(f);
+        handleFilters({ collection: f });
       } else {
         setCollections((prev) => [...prev, collection]);
+        handleFilters({ collection: [...selectedCollections, collection] });
       }
-    }
-    if (brand || shipping || collection) {
-      handleFilters();
     }
   };
 
-  const debouncedHandleFilters = debounce(() => {
-    handleFilters();
-  }, 300);
+  useEffect(() => {
+    refetch();
+  }, [params]);
 
   return (
     <>
@@ -162,10 +182,13 @@ const CategoryClient: React.FC<CategoryClientProps> = ({
               ))}
             </div>
             <div className="relative">
-              <Select className="w-[90px] sm:min-w-[118px] lg:min-w-[128px] text-xs sm:text-sm lg:text-base h-8 xs:h-9 lg:h-10 px-4 lg:px-6 py-1 border rounded-full bg-white text-[#344054] focus-visible:outline-none appearance-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-white/25">
-                <option value="recent">Recent</option>
-                <option value="lowest">Lowest</option>
-                <option value="highest">Highest</option>
+              <Select
+                onChange={(e) => setSort(e.target.value)}
+                className="w-[90px] sm:min-w-[118px] lg:min-w-[128px] text-xs sm:text-sm lg:text-base h-8 xs:h-9 lg:h-10 px-4 lg:px-6 py-1 border rounded-full bg-white text-[#344054] focus-visible:outline-none appearance-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-white/25"
+              >
+                <option value="">Recent</option>
+                <option value="price_low_to_high">Lowest</option>
+                <option value="price_high_to_low">Highest</option>
               </Select>
               <FiChevronDown
                 className="group pointer-events-none absolute top-2.5 sm:top-2 lg:top-2.5 right-2.5 sm:text-[22px] text-[#344054]"
@@ -176,8 +199,8 @@ const CategoryClient: React.FC<CategoryClientProps> = ({
           <div className="flex gap-x-5 divide-x">
             <div className="w-[200px] pb-5">
               <div className="space-y-2">
-                {categories &&
-                  categories.map((cat, i) => (
+                {data?.all_categories &&
+                  data?.all_categories.map((cat, i) => (
                     <Link
                       href={`/categories/${cat.slug}`}
                       key={i}
@@ -192,7 +215,7 @@ const CategoryClient: React.FC<CategoryClientProps> = ({
                 <button
                   onClick={() => {
                     setPrice({ min: '', max: '' });
-                    debouncedHandleFilters();
+                    handleFilters({ minPrice: '', maxPrice: '' });
                   }}
                   className="px-2 py-2 mt-4 text-xs"
                 >
@@ -207,6 +230,7 @@ const CategoryClient: React.FC<CategoryClientProps> = ({
                       <input
                         type="number"
                         placeholder="Min"
+                        value={selectedPrice.min}
                         onChange={(e) =>
                           setPrice((prev) => ({ ...prev, min: e.target.value }))
                         }
@@ -220,6 +244,7 @@ const CategoryClient: React.FC<CategoryClientProps> = ({
                       <input
                         type="number"
                         placeholder="Max"
+                        value={selectedPrice.max}
                         onChange={(e) =>
                           setPrice((prev) => ({ ...prev, max: e.target.value }))
                         }
@@ -229,7 +254,12 @@ const CategoryClient: React.FC<CategoryClientProps> = ({
                   </div>
                 </div>
                 <Button
-                  onClick={debouncedHandleFilters}
+                  onClick={() =>
+                    handleFilters({
+                      minPrice: selectedPrice.min,
+                      maxPrice: selectedPrice.max,
+                    })
+                  }
                   className="mt-4 h-8 py-0 !text-xs"
                 >
                   Go
@@ -239,12 +269,20 @@ const CategoryClient: React.FC<CategoryClientProps> = ({
                 <h3 className="text-gray-700 text-xl font-bold mt-3">
                   Customer reviews
                 </h3>
-                <button className="px-2 py-2 mt-4 text-xs">Clear </button>
+                <button
+                  onClick={() => {
+                    setRating(0);
+                    handleFilters({ rating: 0 });
+                  }}
+                  className="px-2 py-2 mt-4 text-xs"
+                >
+                  Clear{' '}
+                </button>
                 <div className="mt-2 space-y-2">
                   <button
                     onClick={() => {
                       setRating(1);
-                      debouncedHandleFilters();
+                      handleFilters({ rating: 1 });
                     }}
                     className="flex items-center gap-x-1"
                   >
@@ -261,7 +299,7 @@ const CategoryClient: React.FC<CategoryClientProps> = ({
                   <button
                     onClick={() => {
                       setRating(2);
-                      debouncedHandleFilters();
+                      handleFilters({ rating: 2 });
                     }}
                     className="flex items-center gap-x-1"
                   >
@@ -278,7 +316,7 @@ const CategoryClient: React.FC<CategoryClientProps> = ({
                   <button
                     onClick={() => {
                       setRating(3);
-                      debouncedHandleFilters();
+                      handleFilters({ rating: 3 });
                     }}
                     className="flex items-center gap-x-1"
                   >
@@ -295,7 +333,7 @@ const CategoryClient: React.FC<CategoryClientProps> = ({
                   <button
                     onClick={() => {
                       setRating(4);
-                      debouncedHandleFilters();
+                      handleFilters({ rating: 4 });
                     }}
                     className="flex items-center gap-x-1"
                   >
@@ -311,13 +349,13 @@ const CategoryClient: React.FC<CategoryClientProps> = ({
                   </button>
                 </div>
               </div>
-              {brands && (
+              {data?.brands && (
                 <div className="mt-4">
                   <h3 className="text-gray-700 text-xl font-bold mt-3">
                     Brands
                   </h3>
                   <div className="mt-3">
-                    {brands.map((b, i) => (
+                    {data?.brands.map((b, i) => (
                       <div
                         key={`brand_${i}`}
                         className="flex items-center gap-x-2"
@@ -325,20 +363,21 @@ const CategoryClient: React.FC<CategoryClientProps> = ({
                         <CheckBox
                           checked={selectedBrands.includes(b.id)}
                           onChange={(e) => handleOnChange({ brand: b.id })}
+                          id={`brand_${b.id}`}
                         />
-                        {b.title}
+                        <label htmlFor={`brand_${b.id}`}>{b.title}</label>
                       </div>
                     ))}
                   </div>
                 </div>
               )}
-              {collections && (
+              {data?.collections && (
                 <div className="mt-4">
                   <h3 className="text-gray-700 text-xl font-bold">
                     Collections
                   </h3>
                   <div className="mt-3 space-y-1.5">
-                    {collections.map((c, i) => (
+                    {data?.collections.map((c, i) => (
                       <div
                         key={`collections_${i}`}
                         className="flex items-center gap-x-2"
@@ -353,13 +392,13 @@ const CategoryClient: React.FC<CategoryClientProps> = ({
                   </div>
                 </div>
               )}
-              {shipping && (
+              {data?.shipping && (
                 <div className="mt-4">
                   <h3 className="text-gray-700 text-xl font-bold">
                     Shipping Options
                   </h3>
                   <div className="mt-3 space-y-1.5">
-                    {shipping.map((s, i) => (
+                    {data?.shipping.map((s, i) => (
                       <div
                         key={`shipping_${i}`}
                         className="flex items-center gap-x-2"
@@ -376,8 +415,18 @@ const CategoryClient: React.FC<CategoryClientProps> = ({
               )}
             </div>
             <div className="pl-5 flex-1 grid xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-6 pt-4 pb-10">
-              {products?.data?.length ? (
-                products?.data?.map((product: any, i: number) => (
+              {isLoading ? (
+                Array(8)
+                  .fill('')
+                  .map((_,i) => (
+                    <div key={`sk_${i}`} className="max-h-[382px]">
+                      <div className="w-full rounded-md h-[228px] xs:h-[180px] sm:h-[220px] md:h-[200px] xl:h-[228px] bg-gray-200 animate-pulse" />
+                      <div className="h-5 w-full bg-gray-200 rounded-md mt-4" />
+                      <div className="h-5 w-full bg-gray-200 rounded-md mt-4" />
+                    </div>
+                  ))
+              ) : data?.result.data.length ? (
+                data?.result.data.map((product: any, i: number) => (
                   <ProductCard
                     key={`product_${i}`}
                     data={product}

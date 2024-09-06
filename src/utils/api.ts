@@ -100,10 +100,22 @@ export const getCategories = async () => {
   }
 };
 
-export const getProducts = async (categorySlug: number | string) => {
+export const getProducts = async (
+  categorySlug: number | string,
+  min?: any,
+  max?: any,
+  rating?: any,
+  brands?: any,
+  collections?: any,
+  shipping?: any
+) => {
   try {
     const res = await fetcher<ProductsApiResponse>(
-      `/all?category=${categorySlug}&sortby=&shipping=&brand=&collection=&rating=0&max=0&min=0&page=&sidebar_data=false`
+      `/all?category=${categorySlug ?? ''}&sortby=&shipping=${
+        shipping ?? ''
+      }&brand=${brands ?? ''}&collection=${collections ?? ''}&rating=${
+        rating ?? ''
+      }&max=${max ?? ''}&min=${min ?? ''}&page=&sidebar_data=true`
     );
     return res.data ?? {};
   } catch (err) {

@@ -1,4 +1,4 @@
-import { getCategories, getProducts } from '@/utils/api';
+import { getCategories } from '@/utils/api';
 import CategoryClient from './category-client';
 import { Metadata } from 'next';
 
@@ -13,22 +13,10 @@ export async function generateStaticParams() {
 }
 
 export const metadata: Metadata = {
-  title: 'Buy products',
+  title: 'Buy products | Palmsouq',
   description: 'Products list | Palmsouq',
-}
+};
 
 export default async function CategoryPage({ params }: any) {
-  const res = await getProducts(params.category);
-
-  return (
-    <CategoryClient
-      products={res?.result}
-      categories={res?.all_categories!}
-      category={params.category}
-      brands={res?.brands!}
-      shipping={res?.shipping!}
-      collections={res?.collections!}
-      categoryData={res?.category!}
-    />
-  );
+  return <CategoryClient category={params.category} />;
 }
