@@ -1,12 +1,11 @@
 'use client';
 import Image from 'next/image';
 import Link from 'next/link';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { RiUserSharedLine, RiWhatsappFill } from 'react-icons/ri';
 import { useForm } from 'react-hook-form';
-import CustomInput from './common/CustomInput';
 import { IoIosArrowDown } from 'react-icons/io';
-import { FiPlus, FiShoppingBag, FiUser } from 'react-icons/fi';
+import { FiPlus, FiSearch, FiShoppingBag, FiUser } from 'react-icons/fi';
 import { useRouter } from 'next/navigation';
 import Drawer from 'react-modern-drawer';
 import 'react-modern-drawer/dist/index.css';
@@ -15,20 +14,33 @@ import { IoChevronDown } from 'react-icons/io5';
 import { topBarCategories } from '@/constants';
 import { FaBars } from 'react-icons/fa6';
 import useAuth from '@/hooks/useAuth';
-import { useGetUser } from '@/utils/api';
+import { getSearchData, useGetUser } from '@/utils/api';
 import { useQuery } from '@tanstack/react-query';
+import { Input } from '@headlessui/react';
+import { imageBase } from '@/utils/helper';
 
-const Header = ({
-  showSearch = false,
-  onChange,
-}: {
-  showSearch?: boolean;
-  onChange?: (val: any) => void;
-}) => {
-  const { control } = useForm<any>();
+const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
+  const { control, watch } = useForm<any>();
   const [isOpen, setIsOpen] = React.useState(false);
-  const { isLoggedIn, isLoading, user:profile } = useAuth();
-  const {user} = useAuth();
+  const { isLoggedIn, isLoading, user: profile } = useAuth();
+  const { user } = useAuth();
+  const [query, setQuery] = useState('');
+  const [isFocus, setFocus] = useState(true);
+  const {
+    data,
+    isRefetching: isSearchLoading,
+    refetch,
+  } = useQuery({
+    queryKey: ['search_data'],
+    queryFn: () => getSearchData(query),
+    enabled: false,
+  });
+
+  useEffect(() => {
+    if (query && isFocus) {
+      refetch();
+    }
+  }, [query, isFocus]);
 
   return (
     <>
@@ -60,15 +72,119 @@ const Header = ({
             </div>
           </div>
           {showSearch && (
-            <div className="hidden md:block flex-1">
-              <CustomInput
-                control={control}
-                onChange={onChange}
-                wrapClassName="w-full"
-                type="search"
-                name={'search'}
-                placeholder="Search your favorite product .."
-              />
+            <div className="hidden md:block flex-1 relative">
+              <div className="relative">
+                <Input
+                  onChange={(e) => setQuery(e.target.value)}
+                  value={query}
+                  name={'search'}
+                  type="search"
+                  onBlur={() => setFocus(false)}
+                  onClick={() => setFocus(true)}
+                  placeholder="Search your favorite product .."
+                  className="rounded-lg bg-neutral-50 h-10 sm:h-11 w-full focus-visible:outline-neutral-300 pr-3.5 pl-10 py-2 sm:py-2.5 text-[#667085]"
+                />
+                <button
+                  type="button"
+                  className="absolute top-1/2 left-3.5 -translate-y-1/2 text-base text-[#98A2B3]"
+                >
+                  <FiSearch className="text-lg lg:text-xl" />
+                </button>
+              </div>
+              {isFocus && query && (
+                <div className="absolute top-12 shadow-xl left-0 z-50 border-t border-gray-50 bg-white rounded-2xl w-full min-h-[400px] p-6">
+                  {isSearchLoading ? (
+                    <>
+                      <div className="grid grid-cols-8 gap-4">
+                        {Array(8)
+                          .fill(' ')
+                          .map((_, i) => (
+                            <div key={`l_${i}`} className="">
+                              <div className=" size-24 bg-gray-200 rounded-lg animate-pulse" />
+                            </div>
+                          ))}
+                      </div>
+                      <div className="grid grid-cols-3 gap-4 mt-6">
+                        {Array(6)
+                          .fill(' ')
+                          .map((_, i) => (
+                            <div key={`l_${i}`} className="">
+                              <div className="w-full h-24 bg-gray-200 rounded-lg animate-pulse" />
+                            </div>
+                          ))}
+                      </div>
+                    </>
+                  ) : !data?.category.length && !data?.product.length ? (
+                    <div className="">
+                      <p className="text-lg">
+                        Noting found for{' '}
+                        <span className="text-primary">
+                          &quot;{query}&quot;
+                        </span>
+                      </p>
+                    </div>
+                  ) : (
+                    <>
+                      {data?.category.length! > 0 && (
+                        <>
+                          <h4 className="text-gray-700 text-xl font-semibold">
+                            Categories
+                          </h4>
+                          <div className="pt-6 grid grid-cols-8 gap-4 px-4">
+                            {data?.category?.map((cat, i) => (
+                              <div key={`cat_${i}`} className="">
+                                <div className="relative size-24 overflow-hidden rounded-lg px-2">
+                                  <Image
+                                    src={imageBase + cat.image}
+                                    fill
+                                    className="object-cover bg-gray-200 text-sm"
+                                    alt="category"
+                                  />
+                                </div>
+                                <p className="font-medium uppercase text-xs mt-2 text-center whitespace-nowrap max-w-[95px] overflow-hidden text-ellipsis">
+                                  {cat.title}
+                                </p>
+                              </div>
+                            ))}
+                          </div>
+                        </>
+                      )}
+                      {data?.product.length! > 0 && (
+                        <>
+                          <h4 className="text-gray-700 text-xl font-semibold mt-5">
+                            Products
+                          </h4>
+                          <div className="pt-6 grid grid-cols-3 gap-4 px-4">
+                            {data?.product?.map((pd, i) => (
+                              <div
+                                key={`cat_${i}`}
+                                className="border border-gray-200 flex gap-x-4 px-3 py-2 rounded-md"
+                              >
+                                <div className="relative size-14 overflow-hidden rounded-lg px-2">
+                                  <Image
+                                    src={imageBase + pd.image}
+                                    fill
+                                    className="object-cover bg-gray-200 text-xs"
+                                    alt="product"
+                                  />
+                                </div>
+                                <div className="flex-1">
+                                  <p className="font-medium uppercase text-xs mt-2 text-ellipsis max-w-[180px] overflow-hidden whitespace-nowrap">
+                                    {pd.title}
+                                  </p>
+                                  <p className="font-medium uppercase text-xs mt-2">
+                                    {pd?.offered ?? pd.selling} AED
+                                  </p>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </>
+                      )}
+                    </>
+                  )}
+                </div>
+              )}
             </div>
           )}
           <button className=" md:hidden" onClick={() => setIsOpen(true)}>
@@ -106,9 +222,7 @@ const Header = ({
                 <div className="text-[#1A1E5E] hidden md:block">
                   <p className="text-tiny lg:text-xs">
                     Hi,{' '}
-                    <span className=" capitalize">
-                      {profile?.first_name}
-                    </span>
+                    <span className=" capitalize">{profile?.first_name}</span>
                   </p>
                   <Link
                     href={'/dashboard/profile'}
@@ -130,7 +244,7 @@ const Header = ({
                     className="flex items-center gap-x-1"
                   >
                     <p className="text-xs lg:text-sm font-medium xl:font-semibold uppercase">
-                      {profile?.cart_count} 
+                      {profile?.cart_count}
                       {/* AED */}
                     </p>
                     <IoIosArrowDown className="xl:text-lg" />

@@ -107,11 +107,12 @@ export const getProducts = async (
   rating?: any,
   brands?: any,
   collections?: any,
-  shipping?: any
+  shipping?: any,
+  sortby?: any
 ) => {
   try {
     const res = await fetcher<ProductsApiResponse>(
-      `/all?category=${categorySlug ?? ''}&sortby=&shipping=${
+      `/all?category=${categorySlug ?? ''}&sortby=${sortby ?? ''}&shipping=${
         shipping ?? ''
       }&brand=${brands ?? ''}&collection=${collections ?? ''}&rating=${
         rating ?? ''
@@ -125,6 +126,25 @@ export const getProducts = async (
 export const getProduct = async (id: string | number) => {
   try {
     const { data } = await fetcher<ProductResponse>(`/product/${id}`);
+    return data;
+  } catch (err) {
+    console.error(err);
+  }
+};
+export const getSearchData = async (query: string) => {
+  try {
+    const { data } = await fetcher<{
+      data: {
+        category: {
+          id: number;
+          slug: string;
+          image: string;
+          title: string;
+        }[];
+        product: ProductData[];
+        suggested: any[];
+      };
+    }>(`/search?q=${query}`);
     return data;
   } catch (err) {
     console.error(err);

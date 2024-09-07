@@ -89,7 +89,14 @@ export type ProductsApiResponse = {
     brands: ProductsCommonType[];
     collections: ProductsCommonType[];
     shipping: ProductsCommonType[];
-    category: { title: string; slug: string };
+    category: {
+      title: string;
+      slug: string;
+      image: string;
+      meta_title: string;
+      meta_description: string;
+      child: any;
+    };
   };
 };
 

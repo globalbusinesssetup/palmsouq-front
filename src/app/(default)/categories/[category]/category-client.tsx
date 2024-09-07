@@ -21,7 +21,7 @@ import { IoMdStarOutline } from 'react-icons/io';
 import { IoMdStar } from 'react-icons/io';
 import { ProductsCommonType } from '@/types';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { debounce } from '@/utils/helper';
+import { debounce, imageBase } from '@/utils/helper';
 import { getProducts } from '@/utils/api';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 
@@ -33,7 +33,21 @@ type HandleOnChangeArgs = {
   brand?: number;
   shipping?: number;
   collection?: number;
+  sort?: string;
 };
+
+type Filters = {
+  shipping?: string | number | number[];
+  brand?: string | number | number[];
+  collection?: string | number | number[];
+  rating?: string | number;
+  minPrice?: string | number;
+  maxPrice?: string | number;
+  sort?: string;
+};
+
+const banner =
+  'https://images.unsplash.com/photo-1565688842882-e0b2693d349a?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D';
 
 const CategoryClient: React.FC<CategoryClientProps> = ({ category }) => {
   const router = useRouter();
@@ -56,11 +70,22 @@ const CategoryClient: React.FC<CategoryClientProps> = ({ category }) => {
   const brands = params.get('brands') ?? selectedBrands;
   const collections = params.get('collections') ?? selectedCollections;
   const shippings = params.get('shipping') ?? selectedShipping;
+  const sortby = params.get('sortby');
   const { data, isLoading, refetch } = useQuery({
     queryKey: ['Allproducts'],
     queryFn: () =>
-      getProducts(category, min, max, Qrating, brands, collections, shippings),
+      getProducts(
+        category,
+        min,
+        max,
+        Qrating,
+        brands,
+        collections,
+        shippings,
+        sortby
+      ),
   });
+  const [bannerError, setBannerError] = useState(false);
 
   useEffect(() => {
     const fetchCategoryData = () => {
@@ -93,16 +118,10 @@ const CategoryClient: React.FC<CategoryClientProps> = ({ category }) => {
     rating,
     minPrice,
     maxPrice,
-  }: {
-    shipping?: string | number | number[];
-    brand?: string | number | number[];
-    collection?: string | number | number[];
-    rating?: string | number;
-    minPrice?: string | number;
-    maxPrice?: string | number;
-  }) => {
+    sort,
+  }: Filters) => {
     await router.push(
-      `${path}?sortby=&shipping=${shipping ?? selectedShipping}&brand=${
+      `${path}?sortby=${sort}&shipping=${shipping ?? selectedShipping}&brand=${
         brand ?? selectedBrands
       }&collection=${collection ?? selectedCollections}&rating=${
         rating ?? selectedRating
@@ -116,6 +135,7 @@ const CategoryClient: React.FC<CategoryClientProps> = ({ category }) => {
     brand,
     shipping,
     collection,
+    sort,
   }: HandleOnChangeArgs) => {
     if (brand) {
       if (selectedBrands.includes(brand)) {
@@ -144,6 +164,9 @@ const CategoryClient: React.FC<CategoryClientProps> = ({ category }) => {
         setCollections((prev) => [...prev, collection]);
         handleFilters({ collection: [...selectedCollections, collection] });
       }
+    } else if (sort) {
+      handleFilters({ sort });
+      setSort(sort);
     }
   };
 
@@ -157,12 +180,12 @@ const CategoryClient: React.FC<CategoryClientProps> = ({ category }) => {
         <div className="container mx-auto px-4">
           <div className="w-full h-[150px] md:h-[180px] lg:h-[200px] bg-secondary rounded-md mt-6 relative overflow-hidden">
             <Image
-              src={
-                'https://images.unsplash.com/photo-1565688842882-e0b2693d349a?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
-              }
+              src={bannerError ? banner : imageBase + data?.category.image!}
               fill
-              alt="banner"
+              alt={data?.category?.title!}
+              onError={() => setBannerError(true)}
               className="object-cover"
+              loading="lazy"
             />
           </div>
           <div className="mt-4 py-5 sm:px-2 flex items-center justify-between">
@@ -183,10 +206,10 @@ const CategoryClient: React.FC<CategoryClientProps> = ({ category }) => {
             </div>
             <div className="relative">
               <Select
-                onChange={(e) => setSort(e.target.value)}
+                onChange={(e) => handleOnChange({ sort: e.target.value })}
                 className="w-[90px] sm:min-w-[118px] lg:min-w-[128px] text-xs sm:text-sm lg:text-base h-8 xs:h-9 lg:h-10 px-4 lg:px-6 py-1 border rounded-full bg-white text-[#344054] focus-visible:outline-none appearance-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-white/25"
               >
-                <option value="">Recent</option>
+                <option value="recent">Recent</option>
                 <option value="price_low_to_high">Lowest</option>
                 <option value="price_high_to_low">Highest</option>
               </Select>
@@ -199,8 +222,8 @@ const CategoryClient: React.FC<CategoryClientProps> = ({ category }) => {
           <div className="flex gap-x-5 divide-x">
             <div className="w-[200px] pb-5">
               <div className="space-y-2">
-                {data?.all_categories &&
-                  data?.all_categories.map((cat, i) => (
+                {data?.category &&
+                  data?.category?.child.map((cat, i) => (
                     <Link
                       href={`/categories/${cat.slug}`}
                       key={i}
@@ -418,7 +441,7 @@ const CategoryClient: React.FC<CategoryClientProps> = ({ category }) => {
               {isLoading ? (
                 Array(8)
                   .fill('')
-                  .map((_,i) => (
+                  .map((_, i) => (
                     <div key={`sk_${i}`} className="max-h-[382px]">
                       <div className="w-full rounded-md h-[228px] xs:h-[180px] sm:h-[220px] md:h-[200px] xl:h-[228px] bg-gray-200 animate-pulse" />
                       <div className="h-5 w-full bg-gray-200 rounded-md mt-4" />

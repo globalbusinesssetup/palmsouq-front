@@ -9,8 +9,8 @@ import { useRouter } from 'next/navigation';
 import { Header } from '@/components';
 
 // export const metadata: Metadata = {
-//   title: 'Dashboard | Printcraft',
-//   description: 'printcraft user dashboard',
+//   title: 'Dashboard | Palmsouq',
+//   description: 'Palmsouq user dashboard',
 // };
 
 export default function DashboardLayout({
