@@ -121,13 +121,13 @@ const CategoryClient: React.FC<CategoryClientProps> = ({ category }) => {
     sort,
   }: Filters) => {
     await router.push(
-      `${path}?sortby=${sort}&shipping=${shipping ?? selectedShipping}&brand=${
-        brand ?? selectedBrands
-      }&collection=${collection ?? selectedCollections}&rating=${
-        rating ?? selectedRating
-      }&max=${maxPrice ?? selectedPrice.max}&min=${
-        minPrice ?? selectedPrice.min
-      }&page=`
+      `${path}?sortby=${sort ?? ''}&shipping=${
+        shipping ?? selectedShipping
+      }&brand=${brand ?? selectedBrands}&collection=${
+        collection ?? selectedCollections
+      }&rating=${rating ?? selectedRating}&max=${
+        maxPrice ?? selectedPrice.max
+      }&min=${minPrice ?? selectedPrice.min}&page=`
     );
   };
 

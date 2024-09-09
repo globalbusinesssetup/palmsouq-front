@@ -28,7 +28,7 @@ const StripePay = ({ payData }: any) => {
     }
 
     const clientSecret = payData?.stripe_secret!;
-    
+
     try {
       const res = await stripe?.confirmPayment({
         elements,
@@ -54,7 +54,7 @@ const StripePay = ({ payData }: any) => {
       <div className="min-h-[230px]">
         <PaymentElement
           options={{
-            business: { name: 'Printcraft' },
+            business: { name: 'Palmsouq' },
           }}
         />
       </div>

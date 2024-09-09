@@ -22,6 +22,8 @@ import { toast } from 'react-toastify';
 import useAuth from '@/hooks/useAuth';
 import config from '@/configs';
 import ProductDeatils from './product-client';
+import { Metadata, ResolvingMetadata } from 'next';
+import { imageBase } from '@/utils/helper';
 
 type CategoryProps = {
   params: {
@@ -137,6 +139,24 @@ export async function generateStaticParams() {
       return products?.result?.data.map((id) => ({ category, id }));
     }) || []
   );
+}
+
+export async function generateMetadata(
+  { params }: any,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  // fetch data
+  const product = await getProduct(params.id);
+
+  const previousImages = (await parent).openGraph?.images || [];
+
+  return {
+    title: product?.meta_title,
+    description: product?.meta_description,
+    openGraph: {
+      images: [imageBase + product?.image, ...previousImages],
+    },
+  };
 }
 
 export default function ProductPage({ params }: any) {

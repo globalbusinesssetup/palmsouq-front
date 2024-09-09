@@ -394,11 +394,11 @@ export const footerLinks = [
     title: 'Company',
     links: [
       {
-        title: 'About Printcraft',
+        title: 'About Palmsouq',
         url: '#',
       },
       {
-        title: 'Printcraft Blog',
+        title: 'Palmsouq Blog',
         url: '#',
       },
       {

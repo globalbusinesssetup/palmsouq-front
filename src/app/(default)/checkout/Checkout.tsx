@@ -34,7 +34,7 @@ import {
   timezone,
 } from '@/utils/helper';
 import AddAddress from './AddAddress';
-import { Address as AddressType, Country } from '@/types';
+import { Address as AddressType, CartItem, Country } from '@/types';
 import UpdateAddress from './UpdateAddress';
 
 const steps = [
@@ -171,7 +171,9 @@ const Checkout = () => {
     );
   }
 
-  const stripePromise = loadStripe('pk_test_51KSxxsLPva6t8Wj1SbcnYQnGvroMwctxhcqlKuslVnix4eJzxNZlA2QjtIaXLyY5Ay8pzEdtN3PHUlnXonpd10Vs00jntUNba6');
+  const stripePromise = loadStripe(
+    'pk_test_51KSxxsLPva6t8Wj1SbcnYQnGvroMwctxhcqlKuslVnix4eJzxNZlA2QjtIaXLyY5Ay8pzEdtN3PHUlnXonpd10Vs00jntUNba6'
+  );
   const isDisabled = (val: any) => {
     const supportedAreas = ['AE'];
     if (val === 'standard') {
@@ -183,13 +185,16 @@ const Checkout = () => {
     return false;
   };
 
-  const totalPrice = ordersData.reduce((total: number, item) => {
-    const price =
-      item?.flash_product?.offered > 0
-        ? item?.flash_product?.offered
-        : item?.flash_product?.selling;
-    return total + price * Number(item.quantity);
-  }, 0);
+  const totalPrice = (ordersData as CartItem[]).reduce(
+    (total: number, item) => {
+      const price =
+        item?.flash_product?.offered > 0
+          ? item?.flash_product?.offered
+          : item?.flash_product?.selling;
+      return total + price * Number(item.quantity);
+    },
+    0
+  );
 
   const totalPriceWithDelivery =
     totalPrice! + (deliveryOption === 'paid' ? 50 : 0);

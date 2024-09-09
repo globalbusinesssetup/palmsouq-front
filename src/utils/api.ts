@@ -8,6 +8,7 @@ import {
   ProductsApiResponse,
   ProfileApiResponse,
   Country,
+  Setting,
 } from '@/types';
 import fetcher, { api } from '@/utils/fetcher';
 import Cookies from 'js-cookie';
@@ -55,12 +56,7 @@ export const getCommon = async () => {
         languages: [];
         payment: [];
         social: [];
-        setting: {
-          default_country: string;
-          default_state: string;
-          email: string;
-          phone: number;
-        };
+        setting: Setting;
         default_language: {
           name: string;
           code: string;

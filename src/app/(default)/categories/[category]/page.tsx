@@ -1,6 +1,7 @@
-import { getCategories } from '@/utils/api';
+import { getCategories, getProducts } from '@/utils/api';
 import CategoryClient from './category-client';
-import { Metadata } from 'next';
+import { Metadata, ResolvingMetadata } from 'next';
+import { imageBase } from '@/utils/helper';
 
 export async function generateStaticParams() {
   const categories = await getCategories();
@@ -12,11 +13,33 @@ export async function generateStaticParams() {
   );
 }
 
-export const metadata: Metadata = {
-  title: 'Buy products | Palmsouq',
-  description: 'Products list | Palmsouq',
-};
+export async function generateMetadata(
+  { params, searchParams }: any,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  // fetch data
+  const cat = await getProducts(
+    params.category ?? '',
+    searchParams.min ?? '',
+    searchParams.max ?? '',
+    searchParams.Qrating ?? '',
+    searchParams.brands ?? '',
+    searchParams.collections ?? '',
+    searchParams.shippings ?? '',
+    searchParams.sortby ?? ''
+  );
 
-export default async function CategoryPage({ params }: any) {
+  const previousImages = (await parent).openGraph?.images || [];
+
+  return {
+    title: cat?.category?.meta_title,
+    description: cat?.category?.meta_description,
+    openGraph: {
+      images: [imageBase + cat?.category.image, ...previousImages],
+    },
+  };
+}
+
+export default async function CategoryPage({ params, searchParams }: any) {
   return <CategoryClient category={params.category} />;
 }

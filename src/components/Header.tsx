@@ -51,7 +51,12 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
               href={'/'}
               className="w-[90px] sm:w-[110px] md:w-[136px] lg:w-[156px] xl:w-[176px] h-7 sm:h-[31px] relative"
             >
-              <Image src="/logo.svg" fill alt="logo" />
+              <Image
+                src="/header_logo.png"
+                fill
+                alt="logo"
+                objectFit="contain"
+              />
             </Link>
             <div className="py-1 px-2 items-center gap-x-3 hidden lg:flex">
               <Link
