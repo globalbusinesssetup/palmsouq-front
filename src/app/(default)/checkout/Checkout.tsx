@@ -34,7 +34,7 @@ import {
   timezone,
 } from '@/utils/helper';
 import AddAddress from './AddAddress';
-import { Address as AddressType, Country } from '@/types';
+import { Address as AddressType, CartItem, Country } from '@/types';
 import UpdateAddress from './UpdateAddress';
 
 const steps = [
@@ -183,7 +183,7 @@ const Checkout = () => {
     return false;
   };
 
-  const totalPrice = ordersData.reduce((total: number, item) => {
+  const totalPrice = (ordersData as CartItem[]).reduce((total: number, item) => {
     const price =
       item?.flash_product?.offered > 0
         ? item?.flash_product?.offered
