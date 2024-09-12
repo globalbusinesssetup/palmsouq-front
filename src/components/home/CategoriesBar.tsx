@@ -6,9 +6,8 @@ import { IoChevronDown } from 'react-icons/io5';
 import { topBarCategories } from '@/constants';
 import useAuth from '@/hooks/useAuth';
 const CategoriesBar = () => {
-
   const { categories } = useAuth();
-  
+
   console.log(categories);
 
   return (

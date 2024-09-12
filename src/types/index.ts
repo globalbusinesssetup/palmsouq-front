@@ -280,6 +280,7 @@ export type Categorydata = {
   title: string;
   slug: string;
   in_footer_child: SubCategory[];
+  image: string;
 };
 
 // Address

@@ -35,7 +35,7 @@ export async function generateMetadata(
     title: cat?.category?.meta_title,
     description: cat?.category?.meta_description,
     openGraph: {
-      images: [imageBase + cat?.category.image, ...previousImages],
+      images: [imageBase + cat?.category?.image, ...previousImages],
     },
   };
 }

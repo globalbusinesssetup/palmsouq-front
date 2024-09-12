@@ -44,12 +44,12 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
 
   return (
     <>
-      <header className="py-3 sm:py-4 md:py-5 border-b">
+      <header className="py-3 lg:py-5 border-b">
         <div className="lg:container mx-auto flex items-center justify-between gap-x-6 px-4">
           <div className="flex items-center gap-6">
             <Link
               href={'/'}
-              className="w-[90px] sm:w-[110px] md:w-[136px] lg:w-[156px] xl:w-[176px] h-7 sm:h-[31px] relative"
+              className="w-[90px] sm:w-[110px] md:w-[136px] lg:w-[156px] xl:w-[176px] h-10 sm:h-14 relative"
             >
               <Image
                 src="/header_logo.png"

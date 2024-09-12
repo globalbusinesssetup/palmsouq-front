@@ -16,6 +16,7 @@ import { useQuery } from '@tanstack/react-query';
 import { getCategories, getHome } from '@/utils/api';
 import { imageBase } from '@/utils/helper';
 import useAuth from '@/hooks/useAuth';
+import config from '@/configs';
 
 type SwiperElement = Element & {
   swiper?: {
@@ -187,28 +188,31 @@ export default function HomeClient() {
           </div>
           <div className="mt-5 max-h-[172px] overflow-hidden">
             <swiper-container slides-per-view={getCatSlide} space-between={16}>
-              {data?.data?.categories.map((cat, i) => (
-                <swiper-slide key={`cat_${i}`} className="">
-                  <Link
-                    href={`/categories/${cat.slug}`}
-                    className="block rounded-lg bg-[#F5F5F7] xs:min-w-[155px] flex-1 pt-4"
-                  >
-                    <div className="w-full h-[100px] relative mx-1 mb-4">
-                      <Image
-                        src={'/categories/cards.png'}
-                        fill
-                        alt="cat image"
-                      />
-                    </div>
-                    <div className="px-3 xs:px-5 py-3 text-xs font-semibold text-neutral-600 transition-all duration-300 hover:text-primary/70 flex items-center justify-center gap-x-2 whitespace-nowrap">
-                      <p className="flex-1 overflow-hidden text-ellipsis">
-                        {cat.title}
-                      </p>
-                      <FaArrowRightLong className="text-base" />
-                    </div>
-                  </Link>
-                </swiper-slide>
-              ))}
+              {home?.featured_categories?.map(
+                (cat: { slug: string; title: string; image: string }, i) => (
+                  <swiper-slide key={`cat_${i}`} className="">
+                    <Link
+                      href={`/categories/${cat.slug}`}
+                      className="block rounded-lg bg-[#F5F5F7] xs:min-w-[155px] flex-1 pt-4"
+                    >
+                      <div className="w-full h-[100px] relative mx-1 mb-4 overflow-hidden">
+                        <Image
+                          src={config.imgUri + cat?.image}
+                          fill
+                          alt="cat image"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div className="px-3 xs:px-5 py-3 text-xs font-semibold text-neutral-600 transition-all duration-300 hover:text-primary/70 flex items-center justify-center gap-x-2 whitespace-nowrap">
+                        <p className="flex-1 overflow-hidden text-ellipsis">
+                          {cat.title}
+                        </p>
+                        <FaArrowRightLong className="text-base" />
+                      </div>
+                    </Link>
+                  </swiper-slide>
+                )
+              )}
             </swiper-container>
           </div>
         </section>

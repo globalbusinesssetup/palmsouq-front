@@ -180,7 +180,7 @@ const CategoryClient: React.FC<CategoryClientProps> = ({ category }) => {
         <div className="container mx-auto px-4">
           <div className="w-full h-[150px] md:h-[180px] lg:h-[200px] bg-secondary rounded-md mt-6 relative overflow-hidden">
             <Image
-              src={bannerError ? banner : imageBase + data?.category.image!}
+              src={bannerError ? banner : imageBase + data?.category?.image!}
               fill
               alt={data?.category?.title!}
               onError={() => setBannerError(true)}

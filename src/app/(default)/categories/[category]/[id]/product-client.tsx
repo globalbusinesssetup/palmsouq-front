@@ -191,7 +191,7 @@ export default function ProductDeatils({ params }: Record<string, any>) {
 
   return (
     <>
-      <main className="container mx-auto mt-6 sm:mt-8 bg-[#FCFCFD] px-4">
+      <div className="container mx-auto mt-6 sm:mt-8 bg-[#FCFCFD] px-4">
         <div className="p-3 sm:p-4 md:p-5 xl:p-6 border border-neutral-200 bg-white rounded-xl lg:flex gap-x-6 xl:gap-x-8 space-y-6 lg:space-y-0">
           {/* Left side  */}
           <div className="lg:w-5/12">
@@ -473,7 +473,7 @@ export default function ProductDeatils({ params }: Record<string, any>) {
             </DisclosurePanel>
           </Disclosure>
         </div>
-      </main>
+      </div>
     </>
   );
 }

@@ -9,10 +9,11 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        primary: '#002169',
+        primary: '#181818',
         secondary: '#F2F4F7',
         success: '#16A34A',
         error: '#B42318',
+        green: '#006f2e',
       },
       dropShadow: {
         '3xl': [
