@@ -28,6 +28,7 @@ export type AuthContextTypes = {
     code: string;
   };
   countries: { [key: string]: Country };
+  setting?: Setting;
 };
 
 type UserType = 'personal' | 'business';
@@ -89,7 +90,14 @@ export type ProductsApiResponse = {
     brands: ProductsCommonType[];
     collections: ProductsCommonType[];
     shipping: ProductsCommonType[];
-    category: { title: string; slug: string };
+    category: {
+      title: string;
+      slug: string;
+      image: string;
+      meta_title: string;
+      meta_description: string;
+      child: any;
+    };
   };
 };
 
@@ -336,4 +344,15 @@ export type CartItem = {
     };
   };
   quantity: string;
+};
+
+export type Setting = {
+  default_country: string;
+  default_state: string;
+  address_1: string;
+  city: string;
+  state: string;
+  zip: string;
+  email: string;
+  phone: number;
 };

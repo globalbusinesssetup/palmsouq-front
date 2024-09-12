@@ -5,6 +5,7 @@ import {
   Categorydata,
   Country,
   LoginForm,
+  Setting,
 } from '@/types';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
@@ -73,6 +74,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     name: string;
     code: string;
   }>({ name: 'English', code: 'en' });
+  const [setting, setSetting] = useState<Setting>();
 
   useEffect(() => {
     const storedOrders = localStorage.getItem('orders');
@@ -84,6 +86,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       setCategories(common?.categories ?? []);
       setPayment(common?.payment ?? []);
       setSocial(common?.social ?? []);
+      setSetting(common?.setting);
       if (common?.default_language)
         setDefaultLanguage(common?.default_language);
     }
@@ -140,8 +143,6 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     router.push('/auth/sign-in');
   };
 
-  console.log('common data: ', common);
-
   return (
     <AuthContext.Provider
       value={{
@@ -160,6 +161,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         addOrders,
         removeOrders,
         countries,
+        setting,
       }}
     >
       {children}

@@ -125,6 +125,11 @@ const SignInForm = ({ onSignIn }: { onSignIn?: () => void }) => {
           <Button loading={isLoading} type="submit">
             Sign in
           </Button>
+          <div className="flex items-center gap-x-3 py-2">
+            <div className="flex-1 h-[1px] bg-gray-700" />
+            <p className="uppercase">or</p>
+            <div className="flex-1 h-[1px] bg-gray-700" />
+          </div>
           <Button
             outlined
             disabled={isLoading}
@@ -134,7 +139,7 @@ const SignInForm = ({ onSignIn }: { onSignIn?: () => void }) => {
               )
             }
             type="button"
-            className="mt-2 flex items-center justify-center gap-x-2"
+            className="mt-1 flex items-center justify-center gap-x-2"
           >
             <FcGoogle size={18} />
             Log in with google

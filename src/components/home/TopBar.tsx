@@ -5,19 +5,22 @@ import { FiPhoneForwarded } from 'react-icons/fi';
 import useAuth from '@/hooks/useAuth';
 
 const TopBar = () => {
-  const { languages, default_language } = useAuth();
+  const { languages, default_language, setting } = useAuth();
   return (
     <div className="bg-primary px-auto py-2 hidden lg:block">
       <div className="container mx-auto flex items-center justify-between px-4">
         <p className="text-neutral-50 text-sm">
-          Era of Endless Printing Solutions, Printcraft welcomes you
+          Outdoor & Adventure solution, Palmsouq welcomes you
         </p>
         <div className="flex items-center justify-end gap-2">
           <p className="text-neutral-50 text-xs flex items-center gap-x-2">
             <FiPhoneForwarded className="text-sm text-white" />
             Support:
-            <Link href={'tel:+971066265479'} className="text-xs font-semibold">
-              +971066265479
+            <Link
+              href={`tel:${setting?.phone ?? '4534345656'}`}
+              className="text-xs font-semibold"
+            >
+              {setting?.phone ?? '4534345656'}
             </Link>
           </p>
           <div className="w-[1px] h-3.5 bg-neutral-400" />

@@ -1,16 +1,19 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import SignInForm from './SignInForm';
 import { FaArrowLeftLong } from 'react-icons/fa6';
 import { useRouter } from 'next/navigation';
 import { OtpVerify, SendOtp } from '@/components';
-
-// export const metadata: Metadata = {
-//   title: 'Sign In | Printcraft',
-// };
+import useAuth from '@/hooks/useAuth';
 
 const SignIn = () => {
   const router = useRouter();
+  const { isLoggedIn } = useAuth();
+  useEffect(() => {
+    if (isLoggedIn) {
+      router.push('/');
+    }
+  });
   const [flow, setFlow] = useState('sign-in');
 
   return (

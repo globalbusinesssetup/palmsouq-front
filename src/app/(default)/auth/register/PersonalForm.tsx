@@ -4,6 +4,7 @@ import { api } from '@/utils/fetcher';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import { FieldError, useForm } from 'react-hook-form';
+import { FcGoogle } from 'react-icons/fc';
 import { toast } from 'react-toastify';
 
 const PersonalForm = () => {
@@ -122,6 +123,25 @@ const PersonalForm = () => {
       </p>
       <Button loading={isLoading} type={'submit'} className="mt-4">
         Register
+      </Button>
+      <div className="flex items-center gap-x-3 py-2">
+        <div className="flex-1 h-[1px] bg-gray-700" />
+        <p className="uppercase">or</p>
+        <div className="flex-1 h-[1px] bg-gray-700" />
+      </div>
+      <Button
+        outlined
+        disabled={isLoading}
+        onClick={() =>
+          router.push(
+            `${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/social-login/redirect/google`
+          )
+        }
+        type="button"
+        className="mt-1 flex items-center justify-center gap-x-2"
+      >
+        <FcGoogle size={18} />
+        Log in with google
       </Button>
     </form>
   );
