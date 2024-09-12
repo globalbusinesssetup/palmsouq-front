@@ -16,7 +16,7 @@ export async function getCountryData() {
   return data;
 }
 
-export const imageBase = 'http://printcraft.ae/uploads/';
+export const imageBase = 'http://palmsouq.com/uploads/';
 
 export const orderEncrypt = (data: {
   user_token: string;

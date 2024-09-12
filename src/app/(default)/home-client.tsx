@@ -140,9 +140,10 @@ export default function HomeClient() {
                 <swiper-slide key={`banner_${i}`} style={{ width: '100%' }}>
                   <div className="w-full h-[200px] sm:h-[250px] xl:h-[304px] relative overflow-hidden rounded-[10px]">
                     <Image
-                      src={`http://printcraft.ae/uploads/${s?.image}`}
+                      src={`${imageBase}/${s?.image}`}
                       fill
                       alt={'banner'}
+                      className="object-cover"
                     />
                   </div>
                 </swiper-slide>
@@ -212,132 +213,145 @@ export default function HomeClient() {
           </div>
         </section>
         {/* in demand products */}
-        <>
-          <section className="flex items-center gap-x-4 mt-5 md:mt-8">
-            <div className="flex-1 h-[108px] bg-[#F5F5F7] relative rounded overflow-hidden">
-              <Image
-                src={imageBase + home?.banners[0].image}
-                fill
-                alt="banner"
-                className="object-cover"
-              />
-            </div>
-            <div className="hidden md:block flex-1 h-[108px] bg-[#F5F5F7] relative rounded overflow-hidden">
-              <Image
-                src={imageBase + home?.banners[1].image}
-                fill
-                alt="banner"
-                className="object-cover"
-              />
-            </div>
-          </section>
-          <section className="mt-7 bg-[#F9FAFB] rounded-[10px] px-2 lg:px-5 py-4">
-            <div className="pb-4">
-              <h3 className="text-lg md:text-2xl text-primary font-semibold">
-                {home?.collections[0].title}
-              </h3>
-              <p className="text-xs sm:text-sm lg:text-base text-neutral-600 mt-1">
-                Discover the Best Selling Products on the Market Today.
-              </p>
-            </div>
-            <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-6">
-              {home?.collections[0]?.product_collections?.map((product, i) => (
-                <ProductCard
-                  data={product}
-                  category={home?.collections[0]?.slug}
-                  key={`product_${i}`}
+        {home?.collections?.[0]?.product_collections?.length! > 0 && (
+          <>
+            <section className="flex items-center gap-x-4 mt-5 md:mt-8">
+              <div className="flex-1 h-[108px] bg-[#F5F5F7] relative rounded overflow-hidden">
+                <Image
+                  src={imageBase + home?.banners[0].image}
+                  fill
+                  alt="banner"
+                  className="object-cover"
                 />
-              ))}
-            </div>
-          </section>
-        </>
+              </div>
+              <div className="hidden md:block flex-1 h-[108px] bg-[#F5F5F7] relative rounded overflow-hidden">
+                <Image
+                  src={imageBase + home?.banners[1].image}
+                  fill
+                  alt="banner"
+                  className="object-cover"
+                />
+              </div>
+            </section>
+
+            <section className="mt-7 bg-[#F9FAFB] rounded-[10px] px-2 lg:px-5 py-4">
+              <div className="pb-4">
+                <h3 className="text-lg md:text-2xl text-primary font-semibold">
+                  {home?.collections[0].title}
+                </h3>
+                <p className="text-xs sm:text-sm lg:text-base text-neutral-600 mt-1">
+                  Discover the Best Selling Products on the Market Today.
+                </p>
+              </div>
+              <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-6">
+                {home?.collections[0]?.product_collections?.map(
+                  (product, i) => (
+                    <ProductCard
+                      data={product}
+                      category={home?.collections[0]?.slug}
+                      key={`product_${i}`}
+                    />
+                  )
+                )}
+              </div>
+            </section>
+          </>
+        )}
         {/* popular business cards  */}
-        <>
-          <div className="w-full h-[180px] lg:h-[240px] bg-secondary mt-8 lg:mt-10 rounded-md overflow-hidden relative">
-            <Image
-              src={imageBase + home?.banners[2].image}
-              fill
-              alt="banner"
-              className="object-cover"
-            />
-          </div>
-          <section className="mt-5 md:mt-8 lg:mt-10 bg-[#F9FAFB] rounded-[10px] px-2 lg:px-5 py-4">
-            <div className="pb-4 flex lg:items-center justify-between">
-              <div className="max-w-[70%] sm:max-w-none">
-                <h3 className="text-lg md:text-xl lg:text-2xl text-primary font-semibold">
-                  {home?.collections[1].title}
-                </h3>
-                <p className="text-xs sm:text-base text-neutral-600 mt-1">
-                  Personalized Business Cards Printing for all your networking
-                  needs
-                </p>
+        {home?.collections?.[1]?.product_collections?.length! > 0 && (
+          <>
+            <div className="w-full h-[180px] lg:h-[240px] bg-secondary mt-8 lg:mt-10 rounded-md overflow-hidden relative">
+              <Image
+                src={imageBase + home?.banners[2].image}
+                fill
+                alt="banner"
+                className="object-cover"
+              />
+            </div>
+            <section className="mt-5 md:mt-8 lg:mt-10 bg-[#F9FAFB] rounded-[10px] px-2 lg:px-5 py-4">
+              <div className="pb-4 flex lg:items-center justify-between">
+                <div className="max-w-[70%] sm:max-w-none">
+                  <h3 className="text-lg md:text-xl lg:text-2xl text-primary font-semibold">
+                    {home?.collections[1].title}
+                  </h3>
+                  <p className="text-xs sm:text-base text-neutral-600 mt-1">
+                    Personalized Business Cards Printing for all your networking
+                    needs
+                  </p>
+                </div>
+                <Link
+                  href={`/categories/${home?.collections[1]?.slug}`}
+                  className="sm:w-[115px] px-2 h-8 sm:h-10 flex text-xs sm:text-base items-center justify-center gap-x-2 rounded-full transition-all duration-300 text-[#6835B1] border border-[#6835B1] hover:scale-95"
+                >
+                  View All <HiArrowRight />
+                </Link>
               </div>
-              <Link
-                href={`/categories/${home?.collections[1]?.slug}`}
-                className="sm:w-[115px] px-2 h-8 sm:h-10 flex text-xs sm:text-base items-center justify-center gap-x-2 rounded-full transition-all duration-300 text-[#6835B1] border border-[#6835B1] hover:scale-95"
-              >
-                View All <HiArrowRight />
-              </Link>
-            </div>
-            <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-6">
-              {home?.collections[1]?.product_collections?.map((product, i) => (
-                <ProductCard
-                  data={product}
-                  category={home?.collections[1]?.slug}
-                  key={`p_product_${i}`}
-                />
-              ))}
-            </div>
-          </section>
-        </>
+              <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-6">
+                {home?.collections[1]?.product_collections?.map(
+                  (product, i) => (
+                    <ProductCard
+                      data={product}
+                      category={home?.collections[1]?.slug}
+                      key={`p_product_${i}`}
+                    />
+                  )
+                )}
+              </div>
+            </section>
+          </>
+        )}
         {/* High demand flyers  */}
-        <>
-          <section className="flex items-center gap-x-4 mt-5 md:mt-8">
-            <div className="flex-1 h-[150px] sm:h-[180px] lg:h-[240px] bg-[#F5F5F7] relative rounded-md overflow-hidden">
-              <Image
-                src={imageBase + home?.banners[3].image}
-                fill
-                alt="banner"
-                className="object-cover"
-              />
-            </div>
-            <div className="hidden md:block flex-1 h-[180px] lg:h-[240px] bg-[#F5F5F7] relative rounded-md overflow-hidden">
-              <Image
-                src={imageBase + home?.banners[4].image}
-                fill
-                alt="banner"
-                className="object-cover"
-              />
-            </div>
-          </section>
-          <section className="mt-5 md:mt-8 lg:mt-10 bg-[#F9FAFB] rounded-[10px] px-2 lg:px-5 py-4">
-            <div className="pb-4 flex lg:items-center justify-between">
-              <div className="max-w-[70%] sm:max-w-none">
-                <h3 className="text-lg md:text-xl lg:text-2xl text-primary font-semibold">
-                  {home?.collections[2].title}
-                </h3>
-                <p className="text-sm sm:text-base text-neutral-600 mt-1">
-                  Elevate Your Brand with our Quality Flyers Printing
-                </p>
-              </div>
-              <Link
-                href={'#'}
-                className="sm:w-[115px] px-2 h-8 sm:h-10 flex text-xs sm:text-base items-center justify-center gap-x-2 rounded-full transition-all duration-300 text-[#6835B1] border border-[#6835B1] hover:scale-95"
-              >
-                View All <HiArrowRight />
-              </Link>
-            </div>
-            <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-6">
-              {home?.collections[2]?.product_collections?.map((product, i) => (
-                <ProductCard
-                  data={product}
-                  category={home?.collections[2]?.slug}
-                  key={`h_product_${i}`}
+        {home?.collections?.[2]?.product_collections?.length! > 0 && (
+          <>
+            <section className="flex items-center gap-x-4 mt-5 md:mt-8">
+              <div className="flex-1 h-[150px] sm:h-[180px] lg:h-[240px] bg-[#F5F5F7] relative rounded-md overflow-hidden">
+                <Image
+                  src={imageBase + home?.banners[3].image}
+                  fill
+                  alt="banner"
+                  className="object-cover"
                 />
-              ))}
-            </div>
-          </section>
-        </>
+              </div>
+              <div className="hidden md:block flex-1 h-[180px] lg:h-[240px] bg-[#F5F5F7] relative rounded-md overflow-hidden">
+                <Image
+                  src={imageBase + home?.banners[4].image}
+                  fill
+                  alt="banner"
+                  className="object-cover"
+                />
+              </div>
+            </section>
+            <section className="mt-5 md:mt-8 lg:mt-10 bg-[#F9FAFB] rounded-[10px] px-2 lg:px-5 py-4">
+              <div className="pb-4 flex lg:items-center justify-between">
+                <div className="max-w-[70%] sm:max-w-none">
+                  <h3 className="text-lg md:text-xl lg:text-2xl text-primary font-semibold">
+                    {home?.collections[2].title}
+                  </h3>
+                  <p className="text-sm sm:text-base text-neutral-600 mt-1">
+                    Elevate Your Brand with our Quality Flyers Printing
+                  </p>
+                </div>
+                <Link
+                  href={'#'}
+                  className="sm:w-[115px] px-2 h-8 sm:h-10 flex text-xs sm:text-base items-center justify-center gap-x-2 rounded-full transition-all duration-300 text-[#6835B1] border border-[#6835B1] hover:scale-95"
+                >
+                  View All <HiArrowRight />
+                </Link>
+              </div>
+              <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-6">
+                {home?.collections[2]?.product_collections?.map(
+                  (product, i) => (
+                    <ProductCard
+                      data={product}
+                      category={home?.collections[2]?.slug}
+                      key={`h_product_${i}`}
+                    />
+                  )
+                )}
+              </div>
+            </section>
+          </>
+        )}
         {/* best selling paper bags  */}
         {/* <>
           <div className="w-full h-[180px] lg:h-[240px] bg-secondary mt-8 lg:mt-10 rounded-md overflow-hidden relative">

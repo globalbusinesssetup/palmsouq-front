@@ -223,7 +223,7 @@ const CategoryClient: React.FC<CategoryClientProps> = ({ category }) => {
             <div className="w-[200px] pb-5">
               <div className="space-y-2">
                 {data?.category &&
-                  data?.category?.child.map((cat, i) => (
+                  data?.category?.child?.map((cat, i) => (
                     <Link
                       href={`/categories/${cat.slug}`}
                       key={i}

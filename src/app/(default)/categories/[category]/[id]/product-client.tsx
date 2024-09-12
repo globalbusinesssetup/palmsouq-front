@@ -1,4 +1,4 @@
-'use client'
+'use client';
 import { Button, Header } from '@/components';
 import Image from 'next/image';
 import React, { useState } from 'react';
@@ -120,13 +120,13 @@ const timelines = [
   { label: 'Urgent', value: 'urgent' },
 ];
 
-export default function ProductDeatils({params}:Record<string,any>) {
+export default function ProductDeatils({ params }: Record<string, any>) {
   const router = useRouter();
-  const {user, isLoggedIn, refetchProfile} = useAuth();
+  const { user, isLoggedIn, refetchProfile } = useAuth();
   const [selectedType, setType] = useState('');
   const [selectedTimeline, setTimeline] = useState('');
   const [quantity, setQuantity] = useState(100);
-  const [selectedImage, setImage] = useState(0);
+  const [selectedImage, setImage] = useState('');
   const [isSubmitLoading, setSubmitLoading] = useState(false);
 
   const { data: product, isLoading } = useQuery({
@@ -147,10 +147,10 @@ export default function ProductDeatils({params}:Record<string,any>) {
   console.log('product =>', product);
 
   const addToCart = async () => {
-    if(!isLoggedIn){
+    if (!isLoggedIn) {
       toast.warn('Unauthorized! sign in first.');
       return;
-    };
+    }
     setSubmitLoading(true);
     try {
       const res = await api.post('/cart/action', {
@@ -197,32 +197,39 @@ export default function ProductDeatils({params}:Record<string,any>) {
           <div className="lg:w-5/12">
             <div className="w-full h-60 xs:h-[300px] sm:h-[396px] rounded-lg overflow-hidden relative bg-secondary">
               <Image
-                src={config.imgUri + product?.image}
+                src={
+                  selectedImage
+                    ? `${config.imgUri + selectedImage}`
+                    : `${config.imgUri + product?.image}`
+                }
                 fill
                 alt={product?.image ?? 'product image'}
                 // className="object-cover"
               />
             </div>
             <div className="flex items-center gap-x-2 xs:gap-x-3 xl:gap-x-4 mt-4">
-              {Array(3)
-                .fill(' ')
-                .map((_, i) => (
-                  <div
-                    onClick={() => setImage(i)}
-                    key={`image_${i}`}
-                    className={`w-full max-w-[156px] h-20 xs:h-24 lg:h-20 xl:h-[101px] rounded-lg overflow-hidden border relative cursor-pointer bg-secondary transition-all duration-200 ${
-                      selectedImage === i
-                        ? 'border-primary/50'
-                        : 'border-transparent'
-                    }`}
-                  >
-                    <Image
-                      src={'/categories/paper-bags.png'}
-                      fill
-                      alt="product image"
-                    />
-                  </div>
-                ))}
+              {product?.images?.map((pd, i) => (
+                <div
+                  onClick={() => {
+                    pd?.image === selectedImage
+                      ? setImage('')
+                      : setImage(pd?.image);
+                  }}
+                  key={`image_${i}`}
+                  className={`w-full max-w-[156px] p-2 h-20 xs:h-24 lg:h-20 xl:h-[101px] rounded-lg overflow-hidden border relative cursor-pointer bg-secondary transition-all duration-200 ${
+                    selectedImage === pd?.image
+                      ? 'border-primary/50'
+                      : 'border-transparent'
+                  }`}
+                >
+                  <Image
+                    src={config.imgUri + pd?.image}
+                    fill
+                    alt="product image"
+                    className=""
+                  />
+                </div>
+              ))}
             </div>
             <div className="mt-4 py-4 px-[30px] flex items-center justify-center gap-x-4 border border-neutral-100 bg-neutral-100 rounded-lg">
               <Image
@@ -469,4 +476,4 @@ export default function ProductDeatils({params}:Record<string,any>) {
       </main>
     </>
   );
-};
+}

@@ -147,6 +147,7 @@ interface SingleProductData {
   bundle_deal: BundleDeal;
   product_image_names: string[];
   shipping_rule: ShippingRule;
+  images: any[];
 }
 
 interface Category {
