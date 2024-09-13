@@ -193,7 +193,7 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
             </div>
           )}
           <button className=" md:hidden" onClick={() => setIsOpen(true)}>
-            <FaBars className="text-xl sm:text-2xl text-[#1A1E5E]" />
+            <FaBars className="text-xl sm:text-2xl text-green" />
           </button>
           {isLoading ? (
             <div className="hidden md:flex items-center gap-x-2 md:gap-x-4">
@@ -222,9 +222,9 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
             <div className="hidden md:flex items-center gap-x-2 md:gap-x-4">
               <div className="hidden md:flex items-center gap-x-3 p-2">
                 <Link href={'/dashboard/profile'}>
-                  <FiUser className="text-2xl xl:text-[28px] text-[#1A1E5E]" />
+                  <FiUser className="text-2xl xl:text-[28px] text-green" />
                 </Link>
-                <div className="text-[#1A1E5E] hidden md:block">
+                <div className="text-green hidden md:block">
                   <p className="text-tiny lg:text-xs">
                     Hi,{' '}
                     <span className=" capitalize">{profile?.first_name}</span>
@@ -241,8 +241,8 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
                 </div>
               </div>
               <div className="hidden md:flex items-center gap-x-3 p-2">
-                <FiShoppingBag className="text-2xl xl:text-[26px] text-[#1A1E5E]" />
-                <div className="text-[#1A1E5E] hidden md:block">
+                <FiShoppingBag className="text-2xl xl:text-[26px] text-green" />
+                <div className="text-green hidden md:block">
                   <p className="text-tiny lg:text-xs">My Cart</p>
                   <Link
                     href={'/dashboard/cart'}
@@ -262,11 +262,11 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
               href={'/auth/sign-in'}
               className="py-2 px-3 md:px-7 hidden md:flex items-center gap-x-3 md:border rounded-lg"
             >
-              <RiUserSharedLine className="text-2xl lg:text-[28px] text-[#1A1E5E]" />
+              <RiUserSharedLine className="text-2xl lg:text-[28px] text-green" />
 
               <div className="hidden md:block">
-                <p className="text-xs text-[#1A1E5E] font-light">Login</p>
-                <p className="text-sm text-[#1A1E5E] font-semibold">Register</p>
+                <p className="text-xs text-green font-light">Login</p>
+                <p className="text-sm text-green font-semibold">Register</p>
               </div>
             </Link>
           )}

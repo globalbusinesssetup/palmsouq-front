@@ -5,6 +5,7 @@ import { HiArrowNarrowRight, HiOutlineMenuAlt2 } from 'react-icons/hi';
 import { IoChevronDown } from 'react-icons/io5';
 import { topBarCategories } from '@/constants';
 import useAuth from '@/hooks/useAuth';
+import Image from 'next/image';
 const CategoriesBar = () => {
   const { categories } = useAuth();
 
@@ -57,12 +58,13 @@ const CategoriesBar = () => {
           >
             New Arrival
           </Link> */}
-          <Link
-            href={'#'}
-            className="text-sm xl:text-base font-medium xl:font-semibold flex items-center gap-x-1 text-[#16A34A] hover:text-[#16A34A]/70"
-          >
-            Get A Quote
-            <HiArrowNarrowRight className="text-lg xl:text-xl" />
+          <Link href={'#'} className="w-[140px] h-12 relative">
+            <Image
+              fill
+              src={'/banners/offer.jpeg'}
+              alt="special offer"
+              className="object-contain"
+            />
           </Link>
         </div>
       </div>

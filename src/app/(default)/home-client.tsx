@@ -137,7 +137,7 @@ export default function HomeClient() {
               space-between={10}
               autoplay
             >
-              {home?.slider.main.map((s: { image: string }, i) => (
+              {home?.slider?.main.map((s: { image: string }, i) => (
                 <swiper-slide key={`banner_${i}`} style={{ width: '100%' }}>
                   <div className="w-full h-[200px] sm:h-[250px] xl:h-[304px] relative overflow-hidden rounded-[10px]">
                     <Image
@@ -157,11 +157,12 @@ export default function HomeClient() {
           >
             <Image
               src={
-                imageBase + home?.slider?.right_bottom.image ??
+                imageBase + home?.slider?.right_bottom?.image ??
                 '/banners/weekly-offer.jpeg'
               }
               fill
-              alt={home?.slider?.right_bottom.title ?? 'Banner'}
+              alt={home?.slider?.right_bottom?.title ?? 'Weekly offer Banner'}
+              className="bg-gray-100"
             />
           </Link>
         </section>
@@ -193,9 +194,9 @@ export default function HomeClient() {
                   <swiper-slide key={`cat_${i}`} className="">
                     <Link
                       href={`/categories/${cat.slug}`}
-                      className="block rounded-lg bg-[#F5F5F7] xs:min-w-[155px] flex-1 pt-4"
+                      className="block rounded-lg bg-[#F5F5F7] xs:min-w-[155px] flex-1 pt-4 overflow-hidden"
                     >
-                      <div className="w-full h-[100px] relative mx-1 mb-4 overflow-hidden">
+                      <div className="h-[100px] relative mx-1 mb-4 overflow-hidden rounded-md">
                         <Image
                           src={config.imgUri + cat?.image}
                           fill
@@ -205,7 +206,58 @@ export default function HomeClient() {
                       </div>
                       <div className="px-3 xs:px-5 py-3 text-xs font-semibold text-neutral-600 transition-all duration-300 hover:text-primary/70 flex items-center justify-center gap-x-2 whitespace-nowrap">
                         <p className="flex-1 overflow-hidden text-ellipsis">
-                          {cat.title}
+                          {cat?.title}
+                        </p>
+                        <FaArrowRightLong className="text-base" />
+                      </div>
+                    </Link>
+                  </swiper-slide>
+                )
+              )}
+            </swiper-container>
+          </div>
+        </section>
+        {/* explore by brand */}
+        <section className="mt-7 p-4 rounded-[10px] border border-neutral-200">
+          <div className="flex items-center justify-between">
+            <h3 className="text-lg sm:text-xl lg:text-2xl text-primary font-semibold">
+              Explore by brands
+            </h3>
+            <div className="flex items-center gap-x-2">
+              <button
+                onClick={() => onPrev(2)}
+                className="size-8 lg:size-10 rounded-full flex items-center justify-center bg-[#F5F5F7] hover:bg-[#F5F5F7]/70 hover:scale-95 active:scale-90"
+              >
+                <HiArrowLeft className="lg:text-2xl text-neutral-500" />
+              </button>
+              <button
+                onClick={() => onNext(2)}
+                className="size-8 lg:size-10 rounded-full flex items-center justify-center bg-[#F5F5F7] hover:bg-[#F5F5F7]/70 hover:scale-95 active:scale-90"
+              >
+                <HiArrowRight className="lg:text-2xl text-neutral-500" />
+              </button>
+            </div>
+          </div>
+          <div className="mt-5 max-h-[172px] overflow-hidden">
+            <swiper-container slides-per-view={getCatSlide} space-between={16}>
+              {home?.featured_brands?.map(
+                (cat: { slug: string; title: string; image: string }, i) => (
+                  <swiper-slide key={`cat_${i}`} className="">
+                    <Link
+                      href={`/categories/${cat.slug}`}
+                      className="block rounded-lg bg-[#F5F5F7] xs:min-w-[155px] flex-1 pt-4 overflow-hidden"
+                    >
+                      <div className="h-[100px] relative mx-1 mb-4 overflow-hidden rounded-md">
+                        <Image
+                          src={config.imgUri + cat?.image}
+                          fill
+                          alt="cat image"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div className="px-3 xs:px-5 py-3 text-xs font-semibold text-neutral-600 transition-all duration-300 hover:text-primary/70 flex items-center justify-center gap-x-2 whitespace-nowrap">
+                        <p className="flex-1 overflow-hidden text-ellipsis">
+                          {cat?.title}
                         </p>
                         <FaArrowRightLong className="text-base" />
                       </div>
@@ -432,13 +484,13 @@ export default function HomeClient() {
             </div>
             <div className="hidden md:flex items-center gap-x-2">
               <button
-                onClick={() => onPrev(2)}
+                onClick={() => onPrev(3)}
                 className="size-8 lg:size-10 rounded-full flex items-center justify-center bg-white hover:bg-white/70 hover:scale-95 active:scale-90"
               >
                 <HiArrowLeft className="lg:text-2xl text-neutral-500" />
               </button>
               <button
-                onClick={() => onNext(2)}
+                onClick={() => onNext(3)}
                 className="size-8 lg:size-10 rounded-full flex items-center justify-center bg-white hover:bg-white/70 hover:scale-95 active:scale-90"
               >
                 <HiArrowRight className="lg:text-2xl text-neutral-500" />
@@ -491,18 +543,18 @@ export default function HomeClient() {
           </div>
           <div className="flex-1 mt-5 md:mt-0">
             <p className=" xl:text-lg font-medium text-success/80">
-              Fastest and Cheapest Printing in UAE{' '}
+              Fastest and Cheapest Store in UAE{' '}
             </p>
             <h3 className="text-lg lg:text-xl xl:text-3xl font-semibold text-neutral-800 mt-2">
-              Palmsouq is Revolutionizing the Online Printing Industry.
+              Palmsouq is Revolutionizing the Online Outdoor & Adventure Store.
             </h3>
             <p className="mt-4 text-sm lg:text-base xl:text-lg text-neutral-600">
-              Delivering top-quality Design and Printing in UAE with a wide
-              range of high-quality printing products at the best prices in the
-              UAE. Our easy-to-use website makes it a breeze to order the
-              printed materials you need simply select your desired product,
-              choose your quantity, and upload your design. Our team of expert
-              printers will take it from there.
+              Delivering top-quality Tools and Products in UAE with a wide range
+              of high-quality Tools products at the best prices in the UAE. Our
+              easy-to-use website makes it a breeze to order the printed
+              materials you need simply select your desired product, choose your
+              quantity, and upload your design. Our team of expert printers will
+              take it from there.
             </p>
           </div>
         </section>

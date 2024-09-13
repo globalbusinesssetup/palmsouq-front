@@ -69,7 +69,7 @@ const Footer = () => {
         <div className="w-full h-[1px] bg-gradient-to-l to-[#FDDE5C] from-[#70DB96]" />
         <div className="flex flex-col lg:flex-row items-center justify-between pt-4 gap-y-4">
           <div className="flex flex-col lg:flex-row items-center lg:items-end gap-2">
-            <Image src="/header_logo.png" width={127} height={32} alt="logo" />
+            <Image src="/footer_logo.png" width={127} height={32} alt="logo" />
             <p className="text-sm md:text-base text-neutral-200">
               Copywrite {currentYear}, All right reserved.
             </p>
