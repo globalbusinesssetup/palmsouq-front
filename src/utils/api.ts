@@ -108,11 +108,13 @@ export const getProducts = async (
 ) => {
   try {
     const res = await fetcher<ProductsApiResponse>(
-      `/all?category=${categorySlug ?? ''}&sortby=${sortby ?? ''}&shipping=${
-        shipping ?? ''
-      }&brand=${brands ?? ''}&collection=${collections ?? ''}&rating=${
-        rating ?? ''
-      }&max=${max ?? ''}&min=${min ?? ''}&page=&sidebar_data=true`
+      `/all?category=${
+        !categorySlug ? '' : categorySlug === 'brand' ? '' : categorySlug
+      }&sortby=${sortby ?? ''}&shipping=${shipping ?? ''}&brand=${
+        brands ?? ''
+      }&collection=${collections ?? ''}&rating=${rating ?? ''}&max=${
+        max ?? ''
+      }&min=${min ?? ''}&page=&sidebar_data=true`
     );
     return res.data ?? {};
   } catch (err) {

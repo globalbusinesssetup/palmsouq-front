@@ -32,8 +32,10 @@ export async function generateMetadata(
   const previousImages = (await parent).openGraph?.images || [];
 
   return {
-    title: cat?.category?.meta_title,
-    description: cat?.category?.meta_description,
+    title: cat?.category?.meta_title ?? 'Outdoor & Adventure Store | Palmsouq',
+    description:
+      cat?.category?.meta_description ??
+      'Palmsouq online shopping Outdoor & Adventure Store | Palmsouq',
     openGraph: {
       images: [imageBase + cat?.category?.image, ...previousImages],
     },

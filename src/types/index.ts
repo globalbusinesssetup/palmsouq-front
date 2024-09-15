@@ -279,7 +279,7 @@ export type Categorydata = {
   id: number;
   title: string;
   slug: string;
-  in_footer_child: SubCategory[];
+  public_sub_categories: SubCategory[];
   image: string;
 };
 

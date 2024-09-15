@@ -24,6 +24,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { debounce, imageBase } from '@/utils/helper';
 import { getProducts } from '@/utils/api';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMount } from '@/hooks';
 
 type CategoryClientProps = {
   category: string;
@@ -67,11 +68,11 @@ const CategoryClient: React.FC<CategoryClientProps> = ({ category }) => {
   const min = params.get('min') ?? selectedPrice.min;
   const max = params.get('max') ?? selectedPrice.max;
   const Qrating = params.get('rating') ?? selectedRating;
-  const brands = params.get('brands') ?? selectedBrands;
-  const collections = params.get('collections') ?? selectedCollections;
+  const brands = params.get('brand') ?? selectedBrands;
+  const collections = params.get('collection') ?? selectedCollections;
   const shippings = params.get('shipping') ?? selectedShipping;
   const sortby = params.get('sortby');
-  const { data, isLoading, refetch } = useQuery({
+  const { data, isLoading, refetch, isRefetching } = useQuery({
     queryKey: ['Allproducts'],
     queryFn: () =>
       getProducts(
@@ -171,8 +172,20 @@ const CategoryClient: React.FC<CategoryClientProps> = ({ category }) => {
   };
 
   useEffect(() => {
+    if (typeof brands === 'string') {
+      const brandNumbers = brands.split(',').map(Number);
+      setBrands(brandNumbers);
+    }
+    if (typeof collections === 'string') {
+      const collectionNumbers = collections.split(',').map(Number);
+      setCollections(collectionNumbers);
+    }
+    if (typeof shippings === 'string') {
+      const shippingNumbers = shippings.split(',').map(Number);
+      setShipping(shippingNumbers);
+    }
     refetch();
-  }, [params]);
+  }, [params, refetch]);
 
   return (
     <>
@@ -182,7 +195,7 @@ const CategoryClient: React.FC<CategoryClientProps> = ({ category }) => {
             <Image
               src={bannerError ? banner : imageBase + data?.category?.image!}
               fill
-              alt={data?.category?.title!}
+              alt={data?.category?.title! ?? 'Category banner'}
               onError={() => setBannerError(true)}
               className="object-cover"
               loading="lazy"
@@ -307,6 +320,7 @@ const CategoryClient: React.FC<CategoryClientProps> = ({ category }) => {
                       setRating(1);
                       handleFilters({ rating: 1 });
                     }}
+                    disabled={Number(Qrating) === 1}
                     className="flex items-center gap-x-1"
                   >
                     <IoMdStar size={20} className="text-orange-400" />
@@ -324,6 +338,7 @@ const CategoryClient: React.FC<CategoryClientProps> = ({ category }) => {
                       setRating(2);
                       handleFilters({ rating: 2 });
                     }}
+                    disabled={Number(Qrating) === 2}
                     className="flex items-center gap-x-1"
                   >
                     <IoMdStar size={20} className="text-orange-400" />
@@ -341,6 +356,7 @@ const CategoryClient: React.FC<CategoryClientProps> = ({ category }) => {
                       setRating(3);
                       handleFilters({ rating: 3 });
                     }}
+                    disabled={Number(Qrating) === 3}
                     className="flex items-center gap-x-1"
                   >
                     <IoMdStar size={20} className="text-orange-400" />
@@ -358,6 +374,7 @@ const CategoryClient: React.FC<CategoryClientProps> = ({ category }) => {
                       setRating(4);
                       handleFilters({ rating: 4 });
                     }}
+                    disabled={Number(Qrating) === 4}
                     className="flex items-center gap-x-1"
                   >
                     <IoMdStar size={20} className="text-orange-400" />
@@ -377,7 +394,7 @@ const CategoryClient: React.FC<CategoryClientProps> = ({ category }) => {
                   <h3 className="text-gray-700 text-xl font-bold mt-3">
                     Brands
                   </h3>
-                  <div className="mt-3">
+                  <div className="mt-3 space-y-1">
                     {data?.brands.map((b, i) => (
                       <div
                         key={`brand_${i}`}
@@ -386,9 +403,15 @@ const CategoryClient: React.FC<CategoryClientProps> = ({ category }) => {
                         <CheckBox
                           checked={selectedBrands.includes(b.id)}
                           onChange={(e) => handleOnChange({ brand: b.id })}
-                          id={`brand_${b.id}`}
+                          id={`b_${b.id}`}
                         />
-                        <label htmlFor={`brand_${b.id}`}>{b.title}</label>
+                        <label
+                          onClick={() => handleOnChange({ brand: b.id })}
+                          htmlFor={`b_${b.id}`}
+                          className=" cursor-pointer"
+                        >
+                          {b.title}
+                        </label>
                       </div>
                     ))}
                   </div>
@@ -409,7 +432,13 @@ const CategoryClient: React.FC<CategoryClientProps> = ({ category }) => {
                           checked={selectedCollections.includes(c.id)}
                           onChange={(e) => handleOnChange({ collection: c.id })}
                         />
-                        {c.title}
+                        <label
+                          onClick={() => handleOnChange({ collection: c.id })}
+                          htmlFor={`collections_${i}`}
+                          className="cursor-pointer"
+                        >
+                          {c.title}
+                        </label>
                       </div>
                     ))}
                   </div>
@@ -430,7 +459,13 @@ const CategoryClient: React.FC<CategoryClientProps> = ({ category }) => {
                           checked={selectedShipping.includes(s.id)}
                           onChange={() => handleOnChange({ shipping: s.id })}
                         />
-                        {s.title}
+                        <label
+                          onClick={() => handleOnChange({ shipping: s.id })}
+                          htmlFor={`shipping_${i}`}
+                          className="cursor-pointer"
+                        >
+                          {s.title}
+                        </label>
                       </div>
                     ))}
                   </div>
@@ -438,7 +473,7 @@ const CategoryClient: React.FC<CategoryClientProps> = ({ category }) => {
               )}
             </div>
             <div className="pl-5 flex-1 grid xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-6 pt-4 pb-10">
-              {isLoading ? (
+              {isLoading || isRefetching ? (
                 Array(8)
                   .fill('')
                   .map((_, i) => (

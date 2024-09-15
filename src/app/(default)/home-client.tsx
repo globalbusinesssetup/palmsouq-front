@@ -241,10 +241,18 @@ export default function HomeClient() {
           <div className="mt-5 max-h-[172px] overflow-hidden">
             <swiper-container slides-per-view={getCatSlide} space-between={16}>
               {home?.featured_brands?.map(
-                (cat: { slug: string; title: string; image: string }, i) => (
+                (
+                  cat: {
+                    slug: string;
+                    title: string;
+                    image: string;
+                    id: number;
+                  },
+                  i
+                ) => (
                   <swiper-slide key={`cat_${i}`} className="">
                     <Link
-                      href={`/categories/${cat.slug}`}
+                      href={`/categories/brand?sortby=&shipping=&brand=${cat.id}&collection=&rating=0&max=0&min=0&page=`}
                       className="block rounded-lg bg-[#F5F5F7] xs:min-w-[155px] flex-1 pt-4 overflow-hidden"
                     >
                       <div className="h-[100px] relative mx-1 mb-4 overflow-hidden rounded-md">
