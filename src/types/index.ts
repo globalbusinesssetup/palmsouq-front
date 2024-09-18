@@ -142,12 +142,13 @@ interface SingleProductData {
   time_zone: string;
   in_stock: boolean;
   attribute: Attribute[];
-  brand: string | null;
+  brand: { id: number; title: string };
   store: Store;
   bundle_deal: BundleDeal;
   product_image_names: string[];
   shipping_rule: ShippingRule;
   images: any[];
+  category: { id: number; slug: string; title: string };
 }
 
 interface Category {

@@ -31,7 +31,17 @@ export const getHome = async () => {
         collections: Collection[];
         featured_brands: [];
         featured_categories: [];
-        flash_sales: [];
+        flash_sales: {
+          id: number;
+          public_products: {
+            id: number;
+            image: string;
+            offered: string;
+            product_id: number;
+            selling: string;
+          }[];
+          title: string;
+        }[];
         site_features: [];
         slider: {
           main: [];
@@ -93,6 +103,21 @@ export const getCategories = async () => {
     return res ?? [];
   } catch (err) {
     console.error(err);
+  }
+};
+type Brand = { id: number; image: string; slug: string; title: string };
+export const getBrands = async () => {
+  try {
+    const res = await fetcher<{
+      data: { data: Brand[] };
+      current_page: number;
+      last_page: number;
+      total: number;
+    }>('/brands');
+    return res?.data?.data ?? []; // Return the data array directly
+  } catch (err) {
+    console.error('Failed to fetch brands:', err);
+    return []; // Ensure a fallback return in case of failure
   }
 };
 

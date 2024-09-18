@@ -32,6 +32,13 @@ const catBreakpoints = [
   { width: 639, slide: 3 },
   { width: 0, slide: 2 },
 ];
+const brandBreakpoints = [
+  { width: 1279, slide: 10 },
+  { width: 1023, slide: 7 },
+  { width: 767, slide: 6 },
+  { width: 639, slide: 4 },
+  { width: 0, slide: 3 },
+];
 
 const testimonialBreakpoints = [
   { width: 1023, slide: 3 },
@@ -42,6 +49,7 @@ const testimonialBreakpoints = [
 export default function HomeClient() {
   const { setting } = useAuth();
   const getCatSlide = useResponsiveSlides(catBreakpoints, 2);
+  const getBrandSlide = useResponsiveSlides(brandBreakpoints, 3);
   const getTestimonialSlide = useResponsiveSlides(testimonialBreakpoints);
   const [rating, setRating] = useState<number>(3.5);
   const [swiperEl, setSwiperEl] = useState<NodeListOf<SwiperElement> | null>(
@@ -167,63 +175,71 @@ export default function HomeClient() {
           </Link>
         </section>
         {/* explore by categories */}
-        <section className="mt-7 p-4 rounded-[10px] border border-neutral-200">
-          <div className="flex items-center justify-between">
-            <h3 className="text-lg sm:text-xl lg:text-2xl text-primary font-semibold">
-              Explore by categories
-            </h3>
-            <div className="flex items-center gap-x-2">
-              <button
-                onClick={() => onPrev(1)}
-                className="size-8 lg:size-10 rounded-full flex items-center justify-center bg-[#F5F5F7] hover:bg-[#F5F5F7]/70 hover:scale-95 active:scale-90"
-              >
-                <HiArrowLeft className="lg:text-2xl text-neutral-500" />
-              </button>
-              <button
-                onClick={() => onNext(1)}
-                className="size-8 lg:size-10 rounded-full flex items-center justify-center bg-[#F5F5F7] hover:bg-[#F5F5F7]/70 hover:scale-95 active:scale-90"
-              >
-                <HiArrowRight className="lg:text-2xl text-neutral-500" />
-              </button>
+        {home?.featured_categories?.length! > 0 && (
+          <section className="mt-7 p-4 rounded-[10px] border border-neutral-200">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg sm:text-xl lg:text-2xl text-primary font-semibold">
+                Explore by categories
+              </h3>
+              <div className="flex items-center gap-x-2">
+                <button
+                  onClick={() => onPrev(1)}
+                  className="size-8 lg:size-10 rounded-full flex items-center justify-center bg-[#F5F5F7] hover:bg-[#F5F5F7]/70 hover:scale-95 active:scale-90"
+                >
+                  <HiArrowLeft className="lg:text-2xl text-neutral-500" />
+                </button>
+                <button
+                  onClick={() => onNext(1)}
+                  className="size-8 lg:size-10 rounded-full flex items-center justify-center bg-[#F5F5F7] hover:bg-[#F5F5F7]/70 hover:scale-95 active:scale-90"
+                >
+                  <HiArrowRight className="lg:text-2xl text-neutral-500" />
+                </button>
+              </div>
             </div>
-          </div>
-          <div className="mt-5 max-h-[172px] overflow-hidden">
-            <swiper-container slides-per-view={getCatSlide} space-between={16}>
-              {home?.featured_categories?.map(
-                (cat: { slug: string; title: string; image: string }, i) => (
-                  <swiper-slide key={`cat_${i}`} className="">
-                    <Link
-                      href={`/categories/${cat.slug}`}
-                      className="block rounded-lg bg-[#F5F5F7] xs:min-w-[155px] flex-1 pt-4 overflow-hidden"
-                    >
-                      <div className="h-[100px] relative mx-1 mb-4 overflow-hidden rounded-md">
-                        <Image
-                          src={config.imgUri + cat?.image}
-                          fill
-                          alt="cat image"
-                          loading="lazy"
-                        />
-                      </div>
-                      <div className="px-3 xs:px-5 py-3 text-xs font-semibold text-neutral-600 transition-all duration-300 hover:text-primary/70 flex items-center justify-center gap-x-2 whitespace-nowrap">
-                        <p className="flex-1 overflow-hidden text-ellipsis">
-                          {cat?.title}
-                        </p>
-                        <FaArrowRightLong className="text-base" />
-                      </div>
-                    </Link>
-                  </swiper-slide>
-                )
-              )}
-            </swiper-container>
-          </div>
-        </section>
+            <div className="mt-5 max-h-[172px] overflow-hidden">
+              <swiper-container
+                slides-per-view={getCatSlide}
+                space-between={16}
+              >
+                {home?.featured_categories?.map(
+                  (cat: { slug: string; title: string; image: string }, i) => (
+                    <swiper-slide key={`cat_${i}`} className="">
+                      <Link
+                        href={`/categories/${cat.slug}`}
+                        className="block rounded-lg bg-[#F5F5F7] xs:min-w-[155px] flex-1 pt-4 overflow-hidden"
+                      >
+                        <div className="h-[100px] relative mx-1 mb-4 overflow-hidden rounded-md">
+                          <Image
+                            src={config.imgUri + cat?.image}
+                            fill
+                            alt="cat image"
+                            loading="lazy"
+                          />
+                        </div>
+                        <div className="px-3 xs:px-5 py-3 text-xs font-semibold text-neutral-600 transition-all duration-300 hover:text-primary/70 flex items-center justify-center gap-x-2 whitespace-nowrap">
+                          <p className="flex-1 overflow-hidden text-ellipsis">
+                            {cat?.title}
+                          </p>
+                          <FaArrowRightLong className="text-base" />
+                        </div>
+                      </Link>
+                    </swiper-slide>
+                  )
+                )}
+              </swiper-container>
+            </div>
+          </section>
+        )}
         {/* explore by brand */}
         <section className="mt-7 p-4 rounded-[10px] border border-neutral-200">
           <div className="flex items-center justify-between">
-            <h3 className="text-lg sm:text-xl lg:text-2xl text-primary font-semibold">
-              Explore by brands
-            </h3>
-            <div className="flex items-center gap-x-2">
+            <Link href={'/brands'}>
+              <h3 className="text-lg sm:text-xl text-primary font-semibold flex gap-x-2 items-center">
+                Explore all brands{' '}
+                <HiArrowRight className="text-neutral-600 text-base sm:text-lg" />
+              </h3>
+            </Link>
+            {/* <div className="flex items-center gap-x-2">
               <button
                 onClick={() => onPrev(2)}
                 className="size-8 lg:size-10 rounded-full flex items-center justify-center bg-[#F5F5F7] hover:bg-[#F5F5F7]/70 hover:scale-95 active:scale-90"
@@ -236,10 +252,13 @@ export default function HomeClient() {
               >
                 <HiArrowRight className="lg:text-2xl text-neutral-500" />
               </button>
-            </div>
+            </div> */}
           </div>
-          <div className="mt-5 max-h-[172px] overflow-hidden">
-            <swiper-container slides-per-view={getCatSlide} space-between={16}>
+          <div className="mt-1 max-h-[172px] overflow-hidden">
+            <swiper-container
+              slides-per-view={getBrandSlide}
+              space-between={16}
+            >
               {home?.featured_brands?.map(
                 (
                   cat: {
@@ -253,22 +272,24 @@ export default function HomeClient() {
                   <swiper-slide key={`cat_${i}`} className="">
                     <Link
                       href={`/categories/brand?sortby=&shipping=&brand=${cat.id}&collection=&rating=0&max=0&min=0&page=`}
-                      className="block rounded-lg bg-[#F5F5F7] xs:min-w-[155px] flex-1 pt-4 overflow-hidden"
+                      className="block rounded-lg xs:min-w-[155px] flex-1 pt-4 overflow-hidden"
                     >
                       <div className="h-[100px] relative mx-1 mb-4 overflow-hidden rounded-md">
                         <Image
                           src={config.imgUri + cat?.image}
-                          fill
+                          width={100}
+                          height={100}
                           alt="cat image"
                           loading="lazy"
+                          className="rounded-full mx-auto object-contain"
                         />
                       </div>
-                      <div className="px-3 xs:px-5 py-3 text-xs font-semibold text-neutral-600 transition-all duration-300 hover:text-primary/70 flex items-center justify-center gap-x-2 whitespace-nowrap">
+                      {/* <div className="px-3 xs:px-5 py-3 text-xs font-semibold text-neutral-600 transition-all duration-300 hover:text-primary/70 flex items-center justify-center gap-x-2 whitespace-nowrap">
                         <p className="flex-1 overflow-hidden text-ellipsis">
                           {cat?.title}
                         </p>
                         <FaArrowRightLong className="text-base" />
-                      </div>
+                      </div> */}
                     </Link>
                   </swiper-slide>
                 )
@@ -417,23 +438,15 @@ export default function HomeClient() {
           </>
         )}
         {/* best selling paper bags  */}
-        {/* <>
-          <div className="w-full h-[180px] lg:h-[240px] bg-secondary mt-8 lg:mt-10 rounded-md overflow-hidden relative">
-            <Image
-              src={imageBase + home?.banners[5].image}
-              fill
-              alt="banner"
-              className="object-cover"
-            />
-          </div>
+        <>
           <section className="mt-5 md:mt-8 lg:mt-10 bg-[#F9FAFB] rounded-[10px] px-2 lg:px-5 py-4">
             <div className="pb-4 flex items-center justify-between">
               <div className="max-w-[70%] sm:max-w-none">
                 <h3 className="text-lg md:text-xl lg:text-2xl text-primary font-semibold">
-                  Best Selling Paper Bags
+                  Flash sale
                 </h3>
                 <p className="text-sm sm:text-base text-neutral-600 mt-1">
-                  Maximize Reach with Custom Paper Bags Printing
+                  {home?.flash_sales?.[0]?.title}
                 </p>
               </div>
               <Link
@@ -444,14 +457,26 @@ export default function HomeClient() {
               </Link>
             </div>
             <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-6">
-              {Array(8)
-                .fill(' ')
-                .map((product, i) => (
-                  <ProductCard key={`b_product_${i}`} />
-                ))}
+              {home?.flash_sales?.[0].public_products?.map(
+                (product: any, i) => (
+                  <ProductCard
+                    data={product}
+                    category={'flash-sale'}
+                    key={`b_product_${i}`}
+                  />
+                )
+              )}
             </div>
           </section>
-        </> */}
+          <div className="w-full h-[180px] lg:h-[240px] bg-secondary mt-8 lg:mt-10 rounded-md overflow-hidden relative">
+            <Image
+              src={imageBase + home?.banners[5].image}
+              fill
+              alt="banner"
+              className="object-cover"
+            />
+          </div>
+        </>
         {/* features */}
         <section className="mt-5 md:mt-8 lg:mt-10 p-4 flex flex-wrap items-center gap-[18px]">
           {features.map((feature, i) => (
