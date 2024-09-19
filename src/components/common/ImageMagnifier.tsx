@@ -1,48 +1,87 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
+import Image from 'next/image';
+import config from '@/configs';
 
-const ProductImageMagnifier = ({ src, alt }: { src: string; alt: string }) => {
-  const [isZoomed, setIsZoomed] = useState(false);
-  const [backgroundPosition, setBackgroundPosition] = useState('0% 0%');
+const ImageMagnifier: React.FC<{ product: any; selectedImage?: string }> = ({
+  product,
+  selectedImage,
+}) => {
+  const [magnifierPosition, setMagnifierPosition] = useState({ x: 0, y: 0 });
+  const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
+  const [showMagnifier, setShowMagnifier] = useState(false);
 
-  // Define the ref with the correct type
-  const imgRef = useRef<HTMLImageElement | null>(null);
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const { left, top, width, height } =
+      e.currentTarget.getBoundingClientRect();
+    const x = ((e.clientX - left) / width) * 100; // percentage position
+    const y = ((e.clientY - top) / height) * 100;
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    // Ensure imgRef.current is not null before accessing it
-    if (imgRef.current) {
-      const { left, top, width, height } =
-        imgRef.current.getBoundingClientRect();
-      const x = ((e.pageX - left) / width) * 100;
-      const y = ((e.pageY - top) / height) * 100;
-      setBackgroundPosition(`${x}% ${y}%`);
-    }
+    // Set both magnifier position and image dimensions
+    setMagnifierPosition({ x, y });
+    setDimensions({ width, height });
   };
 
+  const handleMouseEnter = () => setShowMagnifier(true);
+  const handleMouseLeave = () => setShowMagnifier(false);
+
   return (
-    <div
-      className="relative"
-      onMouseEnter={() => setIsZoomed(true)}
-      onMouseLeave={() => setIsZoomed(false)}
-      onMouseMove={handleMouseMove}
-    >
-      <img
-        ref={imgRef} // Attach the ref to the image
-        src={src}
-        alt={alt}
-        className="object-cover w-full h-auto"
-      />
-      {isZoomed && (
-        <div
-          className="absolute inset-0 bg-no-repeat"
-          style={{
-            backgroundImage: `url(${src})`,
-            backgroundSize: '200%', // adjust as per your zoom preference
-            backgroundPosition: backgroundPosition,
-          }}
+    <div className="hidden lg:block w-full h-60 xs:h-[300px] sm:h-[396px] rounded-lg relative bg-secondary">
+      {/* Original Image Section */}
+      <div
+        className="w-full h-full relative"
+        onMouseMove={handleMouseMove}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
+        <Image
+          src={
+            selectedImage
+              ? `${config.imgUri + selectedImage}`
+              : `${config.imgUri + product?.image}`
+          }
+          fill
+          alt={product?.image ?? 'product image'}
         />
-      )}
+        {showMagnifier && (
+          <div
+            className="absolute pointer-events-none border-2 border-white rounded-full"
+            style={{
+              width: '100px',
+              height: '100px',
+              top: `calc(${magnifierPosition.y}% - 50px)`, // dynamically center the magnifier
+              left: `calc(${magnifierPosition.x}% - 50px)`,
+              background: `url(${
+                selectedImage
+                  ? `${config.imgUri + selectedImage}`
+                  : `${config.imgUri + product?.image}`
+              })`,
+              backgroundSize: '200%', // Magnified size
+              backgroundPosition: `${magnifierPosition.x}% ${magnifierPosition.y}%`,
+              transform: 'scale(1.5)', // Optional: to make the zoom more pronounced
+            }}
+          />
+        )}
+      </div>
+
+      {/* Magnified Image Section */}
+      <div className="size-[500px] max-h-[500px] h-full overflow-hidden absolute -top-2 -right-[520px] rounded-lg">
+        {showMagnifier && (
+          <div
+            className="absolute inset-0"
+            style={{
+              backgroundImage: `url(${
+                selectedImage
+                  ? `${config.imgUri + selectedImage}`
+                  : `${config.imgUri + product?.image}`
+              })`,
+              backgroundSize: '200%', // Increase the size for magnification effect
+              backgroundPosition: `${magnifierPosition.x}% ${magnifierPosition.y}%`,
+            }}
+          />
+        )}
+      </div>
     </div>
   );
 };
 
-export default ProductImageMagnifier;
+export default ImageMagnifier;

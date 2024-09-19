@@ -1,6 +1,7 @@
 'use client';
 import { Button, Header } from '@/components';
 import Image from 'next/image';
+import Link from 'next/link';
 import React, { useState } from 'react';
 import { FiMinus, FiPlus } from 'react-icons/fi';
 import { features, cardCategoryData } from '@/constants';
@@ -17,6 +18,8 @@ import { api } from '@/utils/fetcher';
 import { toast } from 'react-toastify';
 import useAuth from '@/hooks/useAuth';
 import config from '@/configs';
+import { FaAngleRight } from 'react-icons/fa6';
+import ImageMagnifier from '@/components/common/ImageMagnifier';
 
 type CategoryProps = {
   params: {
@@ -39,7 +42,7 @@ export default function ProductDeatils({ params }: Record<string, any>) {
   });
 
   const handleQuantity = (type: 'minus' | 'plus' | number) => {
-    if (quantity > 9) {
+    if (quantity > 9 && type === 'plus') {
       toast.warn('Maximum quantity exceeds.!!');
       return;
     }
@@ -100,42 +103,69 @@ export default function ProductDeatils({ params }: Record<string, any>) {
   return (
     <>
       <div className="container mx-auto mt-6 sm:mt-8 bg-[#FCFCFD] px-4">
+        <nav aria-label="breadcrumb" className="pb-6">
+          <div className="flex flex-wrap space-x-1">
+            {/* Home link */}
+            <div>
+              <Link href="/">
+                <span className="text-primary hover:underline">Home</span>
+              </Link>
+            </div>
+            <div key={'/'} className="flex items-center">
+              <FaAngleRight size={12} />
+              <Link href={`/categories/${product?.category.slug}`}>
+                <span className="text-primary hover:underline px-1">
+                  {product?.category.title}
+                </span>
+              </Link>
+              <FaAngleRight size={12} />
+            </div>
+            <div className="!ml-0">
+              <span className="text-gray-500">{product?.title}</span>
+            </div>
+          </div>
+        </nav>
         <div className="p-3 sm:p-4 md:p-5 xl:p-6 border border-neutral-200 bg-white rounded-xl lg:flex gap-x-6 xl:gap-x-8 space-y-6 lg:space-y-0">
           {/* Left side  */}
           <div className="lg:w-5/12">
-            <div className="w-full h-60 xs:h-[300px] sm:h-[396px] rounded-lg overflow-hidden relative bg-secondary">
-              <Image
-                src={
-                  selectedImage
-                    ? `${config.imgUri + selectedImage}`
-                    : `${config.imgUri + product?.image}`
-                }
-                fill
-                alt={product?.image ?? 'product image'}
-                // className="object-cover"
-              />
+            <div className="p-3">
+              <div className="w-full h-60 xs:h-[300px] sm:h-[396px] lg:hidden rounded-lg overflow-hidden relative bg-secondary">
+                <Image
+                  src={
+                    selectedImage
+                      ? `${config.imgUri + selectedImage}`
+                      : `${config.imgUri + product?.image}`
+                  }
+                  fill
+                  alt={product?.image ?? 'product image'}
+                  // className="object-cover"
+                />
+              </div>
+              <ImageMagnifier product={product} selectedImage={selectedImage} />
             </div>
             <div className="flex items-center gap-x-2 xs:gap-x-3 xl:gap-x-4 mt-4">
               {product?.images?.map((pd, i) => (
                 <div
+                  key={`image_${i}`}
                   onClick={() => {
                     pd?.image === selectedImage
                       ? setImage('')
                       : setImage(pd?.image);
                   }}
-                  key={`image_${i}`}
-                  className={`w-full max-w-[156px] p-2 h-20 xs:h-24 lg:h-20 xl:h-[101px] rounded-lg overflow-hidden border relative cursor-pointer bg-secondary transition-all duration-200 ${
+                  className={`w-full max-w-[156px] p-2 h-20 xs:h-24 lg:h-20 xl:h-[101px] rounded-lg overflow-hidden border cursor-pointer transition-all duration-200 ${
                     selectedImage === pd?.image
                       ? 'border-primary/50'
                       : 'border-transparent'
                   }`}
                 >
-                  <Image
-                    src={config.imgUri + pd?.image}
-                    fill
-                    alt="product image"
-                    className=""
-                  />
+                  <div className="p-2 w-full h-full relative">
+                    <Image
+                      src={config.imgUri + pd?.image}
+                      fill
+                      alt="product image"
+                      className=""
+                    />
+                  </div>
                 </div>
               ))}
             </div>
@@ -263,6 +293,7 @@ export default function ProductDeatils({ params }: Record<string, any>) {
               </div>
               <div className="flex justify-end mt-8">
                 <Button
+                  disabled={!product?.in_stock}
                   loading={isSubmitLoading}
                   onClick={addToCart}
                   className="h-11 w-[167px]"

@@ -151,7 +151,7 @@ export async function generateMetadata(
   const previousImages = (await parent).openGraph?.images || [];
 
   return {
-    title: product?.meta_title,
+    title: product?.meta_title ?? product?.title,
     description: product?.meta_description,
     openGraph: {
       images: [imageBase + product?.image, ...previousImages],
