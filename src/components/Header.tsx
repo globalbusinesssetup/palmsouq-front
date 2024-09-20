@@ -12,12 +12,13 @@ import 'react-modern-drawer/dist/index.css';
 import { HiArrowNarrowRight } from 'react-icons/hi';
 import { IoChevronDown } from 'react-icons/io5';
 import { topBarCategories } from '@/constants';
-import { FaBars } from 'react-icons/fa6';
+import { FaBars, FaGifts } from 'react-icons/fa6';
 import useAuth from '@/hooks/useAuth';
 import { getSearchData, useGetUser } from '@/utils/api';
 import { useQuery } from '@tanstack/react-query';
 import { Input } from '@headlessui/react';
 import { imageBase } from '@/utils/helper';
+import { BsBookmarkStar } from 'react-icons/bs';
 
 const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
   const { control, watch } = useForm<any>();
@@ -275,8 +276,8 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
       <Drawer open={isOpen} onClose={() => setIsOpen(false)} direction="left">
         <div className="p-4">
           <div className="flex items-center justify-between">
-            <Link href={'/'} className="w-24 h-8 block relative">
-              <Image src="/logo.svg" fill alt="logo" />
+            <Link href={'/'} className="w-24 h-10 block relative">
+              <Image src="/header_logo.png" fill alt="logo" />
             </Link>
             <button
               onClick={() => setIsOpen(false)}
@@ -285,26 +286,30 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
               <FiPlus className="rotate-45" />
             </button>
           </div>
-          <ul className="space-y-3 mt-4">
-            <li>
-              <Link
-                href={'/dashboard/cart'}
-                className="flex items-center gap-x-1 text-[#6B7280] hover:text-primary/90 text-sm xl:text-base font-medium xl:font-semibold"
-              >
-                <FiShoppingBag className="text-lg" />
-                My Cart
-              </Link>
-            </li>
-            <li className="pb-2">
-              <Link
-                href={'/dashboard/cart'}
-                className="flex items-center gap-x-1 text-[#6B7280] hover:text-primary/90 text-sm xl:text-base font-medium xl:font-semibold"
-              >
-                <FiUser className="text-lg" />
-                My Account
-              </Link>
-            </li>
-            {topBarCategories.map((cat, i) => (
+          <ul className="space-y-1 pt-6">
+            {isLoggedIn && (
+              <>
+                <li className={``}>
+                  <Link
+                    href={'/dashboard/cart'}
+                    className="flex items-center gap-x-1 text-[#6B7280] hover:text-primary/90 py-2 text-sm xl:text-base font-medium xl:font-semibold"
+                  >
+                    <FiShoppingBag className="text-lg" />
+                    My Cart
+                  </Link>
+                </li>
+                <li className={``}>
+                  <Link
+                    href={'/dashboard/cart'}
+                    className="flex items-center gap-x-1 text-[#6B7280] hover:text-primary/90 py-2 text-sm xl:text-base font-medium xl:font-semibold"
+                  >
+                    <FiUser className="text-lg" />
+                    My Account
+                  </Link>
+                </li>
+              </>
+            )}
+            {/* {topBarCategories.map((cat, i) => (
               <li key={`cat_${i}`}>
                 <Link
                   href={'#'}
@@ -314,16 +319,18 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
                   <HiArrowNarrowRight className="text-lg mt-0.5" />
                 </Link>
               </li>
-            ))}
-            <li className="pt-2">
+            ))} */}
+            <li className="">
               <Link
                 href={'#'}
-                className="text-[#6B7280] hover:text-primary/90 text-sm xl:text-base font-medium xl:font-semibold block"
+                className="text-green hover:text-primary/90 pt-2 pb-3 uppercase items-center gap-x-2 text-sm xl:text-base font-medium xl:font-semibold flex"
               >
-                New Arrival
+                <BsBookmarkStar className="text-xl" />
+                Special offer
+                <HiArrowNarrowRight className="text-lg" />
               </Link>
             </li>
-            <li className="pb-2">
+            {/* <li className="pb-2">
               <Link
                 href={'#'}
                 className="text-sm xl:text-base font-medium xl:font-semibold flex items-center gap-x-1 text-[#16A34A] hover:text-[#16A34A]/70"
@@ -331,25 +338,29 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
                 Get A Quote
                 <HiArrowNarrowRight className="text-lg" />
               </Link>
-            </li>
-            <li>
-              <Link
-                href={'/auth/sign-in'}
-                className="text-sm xl:text-base font-medium xl:font-semibold flex items-center gap-x-1 text-primary"
-              >
-                Login
-                <HiArrowNarrowRight className="text-lg" />
-              </Link>
-            </li>
-            <li>
-              <Link
-                href={'/auth/register'}
-                className="text-sm xl:text-base font-medium xl:font-semibold flex items-center gap-x-1 text-primary"
-              >
-                Register
-                <HiArrowNarrowRight className="text-lg" />
-              </Link>
-            </li>
+            </li> */}
+            {!isLoggedIn && (
+              <>
+                <li className="pt-8">
+                  <Link
+                    href={'/auth/sign-in'}
+                    className="text-sm xl:text-base font-medium xl:font-semibold py-2 border border-primary rounded flex items-center justify-center gap-x-1 text-primary"
+                  >
+                    Login
+                    <HiArrowNarrowRight className="text-lg" />
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href={'/auth/register'}
+                    className="text-sm xl:text-base font-medium xl:font-semibold py-2 mt-3 border border-primary rounded flex items-center justify-center gap-x-1 text-primary"
+                  >
+                    Register
+                    <HiArrowNarrowRight className="text-lg" />
+                  </Link>
+                </li>
+              </>
+            )}
           </ul>
         </div>
       </Drawer>
