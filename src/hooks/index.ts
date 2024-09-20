@@ -1,5 +1,5 @@
-import useWindoWidth from './useWindowWidth';
+import useWindowWidth from './useWindowWidth';
 import useResponsiveSlides from './useResponsiveSlides';
 import useMount from './useMount';
 
-export { useWindoWidth, useResponsiveSlides, useMount };
+export { useWindowWidth, useResponsiveSlides, useMount };

@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
-import useWindoWidth from './useWindowWidth';
+import useWindowWidth from './useWindowWidth';
 
 const useResponsiveSlides = (
   breakpoints: { width: number; slide: number }[],
   defaultSlide?: number
 ) => {
-  const windowWidth = useWindoWidth();
+  const windowWidth = useWindowWidth();
   const [currentSlide, setCurrentSlide] = useState(defaultSlide ?? 1); // Default slide value
 
   useEffect(() => {

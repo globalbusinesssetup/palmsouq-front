@@ -12,6 +12,7 @@ import Link from 'next/link';
 import React, { useState } from 'react';
 import { FaArrowRightLong } from 'react-icons/fa6';
 import { IoMdLogIn } from 'react-icons/io';
+import { FiLogIn } from 'react-icons/fi';
 import { useForm } from 'react-hook-form';
 import useAuth from '@/hooks/useAuth';
 import { FcGoogle } from 'react-icons/fc';
@@ -122,8 +123,12 @@ const SignInForm = ({ onSignIn }: { onSignIn?: () => void }) => {
           </Link>
         </div>
         <div className="mt-8">
-          <Button loading={isLoading} type="submit">
-            Sign in
+          <Button
+            loading={isLoading}
+            type="submit"
+            className="flex justify-center"
+          >
+            <FiLogIn className="text-xl" />
           </Button>
           <div className="flex items-center gap-x-3 py-2">
             <div className="flex-1 h-[1px] bg-gray-700" />

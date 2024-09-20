@@ -1,3 +1,4 @@
+'use client';
 import {
   Disclosure,
   DisclosureButton,
@@ -8,12 +9,14 @@ import {
   MenuItems,
 } from '@headlessui/react';
 import Link from 'next/link';
-import React from 'react';
+import React, { useState } from 'react';
 import { HiArrowNarrowRight, HiOutlineMenuAlt2 } from 'react-icons/hi';
 import { IoChevronDown, IoChevronForward } from 'react-icons/io5';
 import { topBarCategories } from '@/constants';
 import useAuth from '@/hooks/useAuth';
 import Image from 'next/image';
+import { useWindowWidth } from '@/hooks';
+import { Categorydata } from '@/types';
 const CategoriesBar = () => {
   const { categories } = useAuth();
 
@@ -34,40 +37,7 @@ const CategoriesBar = () => {
 
           <MenuItems className="absolute mt-2 bg-primary w-[calc(100%)] lg:w-[200px] xl:w-[250px] py-3 rounded-lg z-10">
             {categories.map((cat, i) => (
-              <MenuItem
-                key={i}
-                as="div"
-                className={`relative group ${
-                  i === 0 && 'border-t border-[#F5F5F7]/30'
-                }`}
-              >
-                {/* Main Category */}
-                <Link
-                  className="flex items-center justify-between w-full hover:bg-white/10 transition-all duration-300 pl-5 pr-2 py-2 text-sm xl:text-base text-white border-b border-[#F5F5F7]/30"
-                  href={`/categories/${cat.slug}`}
-                >
-                  {cat.title}
-                  {/* Chevron for subcategories */}
-                  {cat?.public_sub_categories?.length > 0 && (
-                    <IoChevronForward className="text-lg" />
-                  )}
-                </Link>
-
-                {/* Subcategories - show on hover */}
-                {cat?.public_sub_categories?.length > 0 && (
-                  <div className="absolute bg-primary left-full top-0 hidden group-hover:block bg-primary-light w-[200px] xl:w-[250px] rounded z-10">
-                    {cat.public_sub_categories.map((subcat) => (
-                      <Link
-                        key={subcat.id}
-                        href={`/categories/${subcat.slug}`}
-                        className="block text-sm xl:text-base text-white hover:bg-white/10 transition-all duration-300 py-2 px-5 border-t-[1px] last:border-y border-[#F5F5F7]/30"
-                      >
-                        {subcat.title}
-                      </Link>
-                    ))}
-                  </div>
-                )}
-              </MenuItem>
+              <Item key={`item_${i}`} cat={cat} i={i} />
             ))}
           </MenuItems>
         </Menu>
@@ -107,3 +77,76 @@ const CategoriesBar = () => {
 };
 
 export default CategoriesBar;
+
+interface ItemProps {
+  cat: Categorydata;
+  i: number;
+}
+
+const Item: React.FC<ItemProps> = ({ cat, i }) => {
+  const [isActive, setActive] = useState(false);
+  const width = useWindowWidth();
+
+  const handleActive = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    if (width < 1024) {
+      setActive((prevState) => !prevState);
+    }
+  };
+
+  // Helper to render subcategories
+  const renderSubCategories = () => (
+    <div className="bg-primary lg:w-[200px] xl:w-[250px] rounded z-10">
+      {cat.public_sub_categories?.map((subcat) => (
+        <Link
+          key={subcat.id}
+          href={`/categories/${subcat.slug}`}
+          className="block text-sm xl:text-base text-white hover:bg-white/10 transition-all duration-300 py-2 lg:px-5 border-b lg:border-t-[1px] lg:last:border-y border-[#F5F5F7]/30 pl-10"
+        >
+          {subcat.title}
+        </Link>
+      ))}
+    </div>
+  );
+
+  return (
+    <MenuItem
+      as="div"
+      className={`relative group ${
+        i === 0 ? 'border-t border-[#F5F5F7]/30' : ''
+      }`}
+    >
+      {/* Main Category */}
+      <Link
+        className="flex items-center justify-between w-full hover:bg-white/10 transition-all duration-300 pl-5 text-sm xl:text-base text-white border-b border-[#F5F5F7]/30"
+        href={`/categories/${cat.slug}`}
+      >
+        <p className="py-2">{cat.title}</p>
+        {/* Chevron for subcategories */}
+        {cat.public_sub_categories?.length > 0 && (
+          <button onClick={handleActive} className="px-3 py-2 pr-2">
+            <IoChevronForward
+              className={`text-lg transition-all duration-300 ${
+                isActive ? 'rotate-90' : ''
+              }`}
+            />
+          </button>
+        )}
+      </Link>
+
+      {/* Show subcategories on small screens (active state) */}
+      {isActive && width < 1024 && cat.public_sub_categories?.length > 0 && (
+        <div className="bg-primary left-full top-0">
+          {renderSubCategories()}
+        </div>
+      )}
+
+      {/* Show subcategories on hover (large screens) */}
+      {cat.public_sub_categories?.length > 0 && (
+        <div className="lg:absolute hidden lg:group-hover:block left-full top-0">
+          {renderSubCategories()}
+        </div>
+      )}
+    </MenuItem>
+  );
+};

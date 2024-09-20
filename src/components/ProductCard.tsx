@@ -68,7 +68,7 @@ const ProductCard = ({
     >
       <Link
         href={`/categories/${category ?? 'sticker'}/${data?.id ?? 123}`}
-        className="block w-full h-[228px] xs:h-[180px] sm:h-[220px] md:h-[200px] xl:h-[228px] rounded overflow-hidden bg-secondary relative"
+        className="block w-full h-[120px] xs:h-[180px] sm:h-[220px] md:h-[200px] xl:h-[228px] rounded overflow-hidden bg-secondary relative"
       >
         <swiper-container
           className="w-full"
@@ -94,7 +94,7 @@ const ProductCard = ({
                   src={image}
                   fill
                   alt={data?.image ?? 'product image'}
-                  className="object-fill"
+                  className="object-contain py-2"
                   onError={handleError}
                 />
               </swiper-slide>
@@ -117,7 +117,7 @@ const ProductCard = ({
           {Number(data?.offered) > 0 ? offeredPercentage.toFixed() : 0}%
         </p>
       </div>
-      <div className="pt-3 flex items-center justify-between gap-x-2.5">
+      <div className=" sm:pt-3 flex items-center justify-between gap-x-2.5">
         <div className="flex-1 flex items-center justify-center gap-x-1 h-7 py-1 rounded-full text-center bg-secondary text-xs xl:text-sm text-[#344054] font-medium">
           Price:{' '}
           <span className="font-semibold">
@@ -127,7 +127,7 @@ const ProductCard = ({
         <button
           onClick={addToCart}
           disabled={isSubmitLoading}
-          className="flex-1 flex items-center justify-center gap-x-1 h-7 py-1 rounded-full text-center bg-secondary text-xs xl:text-sm text-[#344054] font-medium hover:bg-primary hover:text-white transition-all duration-300"
+          className="flex-1 hidden sm:flex items-center justify-center gap-x-1 h-7 py-1 rounded-full text-center bg-secondary text-xs xl:text-sm text-[#344054] font-medium hover:bg-primary hover:text-white transition-all duration-300"
         >
           {isSubmitLoading ? (
             <VscLoading size={12} className="animate-spin" />

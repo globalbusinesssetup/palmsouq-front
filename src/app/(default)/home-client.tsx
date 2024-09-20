@@ -456,7 +456,7 @@ export default function HomeClient() {
                 View All <HiArrowRight />
               </Link>
             </div>
-            <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-6">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 gap-x-4 gap-y-6">
               {home?.flash_sales?.[0].public_products?.map(
                 (product: any, i) => (
                   <ProductCard
