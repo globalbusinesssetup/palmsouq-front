@@ -22,7 +22,15 @@ const PersonalForm = () => {
     setLoading(true);
     delete data.cnfm_password;
     try {
-      const res = await api.post('/user/signup', data);
+      const res = await api.post('/user/signup', {
+        ...data,
+        name: `${data?.first_name} ${data?.last_name}`,
+      });
+      if (res?.data?.data?.form) {
+        toast.error(res?.data?.data?.form[0]);
+        setLoading(false);
+        return;
+      }
       reset();
       router.push(`/auth/register/?data=${res.data.data}`);
       toast.success('Account has been created successfully!');

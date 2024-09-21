@@ -126,9 +126,8 @@ const SignInForm = ({ onSignIn }: { onSignIn?: () => void }) => {
           <Button
             loading={isLoading}
             type="submit"
-            className="flex justify-center"
           >
-            <FiLogIn className="text-xl" />
+            Sign in
           </Button>
           <div className="flex items-center gap-x-3 py-2">
             <div className="flex-1 h-[1px] bg-gray-700" />
