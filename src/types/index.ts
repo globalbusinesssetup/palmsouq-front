@@ -98,6 +98,13 @@ export type ProductsApiResponse = {
       meta_description: string;
       child: any;
     };
+    brand: {
+      title: string;
+      slug: string;
+      image: string;
+      meta_title: string;
+      meta_description: string;
+    };
   };
 };
 

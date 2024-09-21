@@ -25,6 +25,7 @@ import { debounce, imageBase } from '@/utils/helper';
 import { getProducts } from '@/utils/api';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useMount } from '@/hooks';
+import { FaAngleRight } from 'react-icons/fa6';
 
 type CategoryClientProps = {
   category: string;
@@ -187,6 +188,8 @@ const CategoryClient: React.FC<CategoryClientProps> = ({ category }) => {
     refetch();
   }, [params, refetch]);
 
+  const brandTitle = data?.brands.filter((b) => b.id === Number(brands));
+
   return (
     <>
       <main className="bg-[#FCFCFD]">
@@ -202,7 +205,23 @@ const CategoryClient: React.FC<CategoryClientProps> = ({ category }) => {
             />
           </div>
           <div className="mt-4 py-5 sm:px-2 flex items-center justify-between">
-            <div className="flex-1 flex items-center gap-x-1 xs:gap-x-2 sm:gap-x-3">
+            <nav aria-label="breadcrumb" className="pb-6">
+              <div className="flex flex-wrap space-x-1">
+                {/* Home link */}
+                <div>
+                  <Link href="/">
+                    <span className="text-primary hover:underline">Home</span>
+                  </Link>
+                </div>
+                <div className="!ml-0 flex items-center">
+                  <FaAngleRight size={12} />
+                  <span className="text-gray-500">
+                    {data?.category?.title ?? data?.brand?.title}
+                  </span>
+                </div>
+              </div>
+            </nav>
+            {/* <div className="flex-1 flex items-center gap-x-1 xs:gap-x-2 sm:gap-x-3">
               {categoryData.map((type, i) => (
                 <button
                   key={`type_${i}`}
@@ -216,7 +235,7 @@ const CategoryClient: React.FC<CategoryClientProps> = ({ category }) => {
                   {type.label}
                 </button>
               ))}
-            </div>
+            </div> */}
             <div className="relative">
               <Select
                 onChange={(e) => handleOnChange({ sort: e.target.value })}
