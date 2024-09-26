@@ -37,7 +37,10 @@ export async function generateMetadata(
       cat?.category?.meta_description ??
       'Palmsouq online shopping Outdoor & Adventure Store | Palmsouq',
     openGraph: {
-      images: [imageBase + cat?.category?.image, ...previousImages],
+      images: [
+        imageBase + (cat?.category?.image ?? cat?.brand?.image),
+        ...previousImages,
+      ],
     },
   };
 }

@@ -44,7 +44,7 @@ const SignInForm = ({ onSignIn }: { onSignIn?: () => void }) => {
     try {
       const res = await login(data);
       if (res.isSuccess) {
-        setPhoneModalOpen(true);
+        // setPhoneModalOpen(true);
         reset();
       }
       console.log(res?.isSuccess);
@@ -69,7 +69,7 @@ const SignInForm = ({ onSignIn }: { onSignIn?: () => void }) => {
         </div>
       </div>
       <form onSubmit={handleSubmit(onFormSubmit)} className="mt-8">
-        {/* <Input
+        <Input
           control={control}
           rules={{
             required: 'Email Address is required',
@@ -83,8 +83,8 @@ const SignInForm = ({ onSignIn }: { onSignIn?: () => void }) => {
           placeholder="Enter email address"
           wrapClassName="flex-1 mt-4 sm:mt-6"
           error={errors.email}
-        /> */}
-        <InputPhoneNumber
+        />
+        {/* <InputPhoneNumber
           label="Mobile Number"
           control={control}
           rules={{ required: 'mobile number is required' }}
@@ -93,7 +93,7 @@ const SignInForm = ({ onSignIn }: { onSignIn?: () => void }) => {
           name="phone"
           error={errors?.phone}
           wrapClassName="mt-8"
-        />
+        /> */}
         <Input
           control={control}
           rules={{ required: 'password is required' }}
@@ -123,10 +123,7 @@ const SignInForm = ({ onSignIn }: { onSignIn?: () => void }) => {
           </Link>
         </div>
         <div className="mt-8">
-          <Button
-            loading={isLoading}
-            type="submit"
-          >
+          <Button loading={isLoading} type="submit">
             Sign in
           </Button>
           <div className="flex items-center gap-x-3 py-2">

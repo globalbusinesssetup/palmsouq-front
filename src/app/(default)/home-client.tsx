@@ -140,7 +140,7 @@ export default function HomeClient() {
           <div className="lg:w-7/12 h-[200px] sm:h-[250px] xl:h-[304px] rounded-[10px] overflow-hidden">
             <swiper-container
               className="w-full"
-              pagination={true}
+              pagination={{ clickable: true }}
               navigation={true}
               space-between={10}
               autoplay
@@ -258,6 +258,7 @@ export default function HomeClient() {
             <swiper-container
               slides-per-view={getBrandSlide}
               space-between={16}
+              pagination={{ clickable: true }}
             >
               {home?.featured_brands?.map(
                 (

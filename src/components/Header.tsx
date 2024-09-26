@@ -37,6 +37,12 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
     enabled: false,
   });
 
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   useEffect(() => {
     if (query && isFocus) {
       refetch();
@@ -259,17 +265,16 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
               </div>
             </div>
           ) : (
-            <Link
-              href={'/auth/sign-in'}
-              className="py-2 px-3 md:px-7 hidden md:flex items-center gap-x-3 md:border rounded-lg"
-            >
-              <RiUserSharedLine className="text-2xl lg:text-[28px] text-green" />
+            <div className="">
+              <Link href={'/auth/sign-in'} className="ml-4 hidden lg:inline">
+                <RiUserSharedLine className="text-2xl lg:text-[28px] text-green" />
 
-              <div className="hidden md:block">
+                {/* <div className="hidden md:block">
                 <p className="text-xs text-green font-light">Login</p>
                 <p className="text-sm text-green font-semibold">Register</p>
-              </div>
-            </Link>
+              </div> */}
+              </Link>
+            </div>
           )}
         </div>
       </header>

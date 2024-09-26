@@ -88,6 +88,7 @@ const CategoryClient: React.FC<CategoryClientProps> = ({ category }) => {
       ),
   });
   const [bannerError, setBannerError] = useState(false);
+  const [isShowAll, setShowAll] = useState(false);
 
   useEffect(() => {
     const fetchCategoryData = () => {
@@ -196,7 +197,11 @@ const CategoryClient: React.FC<CategoryClientProps> = ({ category }) => {
         <div className="container mx-auto px-4">
           <div className="w-full h-[150px] md:h-[180px] lg:h-[200px] bg-secondary rounded-md mt-6 relative overflow-hidden">
             <Image
-              src={bannerError ? banner : imageBase + data?.category?.image!}
+              src={
+                bannerError
+                  ? banner
+                  : imageBase + (data?.category?.image! ?? data?.brand.image)
+              }
               fill
               alt={data?.category?.title! ?? 'Category banner'}
               onError={() => setBannerError(true)}
@@ -251,8 +256,8 @@ const CategoryClient: React.FC<CategoryClientProps> = ({ category }) => {
               />
             </div>
           </div>
-          <div className="flex gap-x-5 divide-x">
-            <div className="w-[200px] pb-5">
+          <div className="lg:flex gap-x-5 lg:divide-x">
+            <div className="hidden lg:block w-[200px] pb-5">
               <div className="space-y-2">
                 {data?.category &&
                   data?.category?.child?.map((cat, i) => (
@@ -413,7 +418,11 @@ const CategoryClient: React.FC<CategoryClientProps> = ({ category }) => {
                   <h3 className="text-gray-700 text-xl font-bold mt-3">
                     Brands
                   </h3>
-                  <div className="mt-3 space-y-1">
+                  <div
+                    className={`mt-3 space-y-1 ${
+                      isShowAll ? '' : 'h-[150px] overflow-hidden'
+                    }`}
+                  >
                     {data?.brands.map((b, i) => (
                       <div
                         key={`brand_${i}`}
@@ -434,6 +443,12 @@ const CategoryClient: React.FC<CategoryClientProps> = ({ category }) => {
                       </div>
                     ))}
                   </div>
+                  <button
+                    onClick={() => setShowAll(!isShowAll)}
+                    className="mt-3 text-sm"
+                  >
+                    {isShowAll ? 'Hide all' : 'Show all'}
+                  </button>
                 </div>
               )}
               {data?.collections && (

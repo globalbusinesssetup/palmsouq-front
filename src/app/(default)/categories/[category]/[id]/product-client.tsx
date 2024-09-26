@@ -20,6 +20,7 @@ import useAuth from '@/hooks/useAuth';
 import config from '@/configs';
 import { FaAngleRight } from 'react-icons/fa6';
 import ImageMagnifier from '@/components/common/ImageMagnifier';
+import { imageBase } from '@/utils/helper';
 
 type CategoryProps = {
   params: {
@@ -35,6 +36,7 @@ export default function ProductDeatils({ params }: Record<string, any>) {
   const [quantity, setQuantity] = useState(1);
   const [selectedImage, setImage] = useState('');
   const [isSubmitLoading, setSubmitLoading] = useState(false);
+  const [bannerError, setBannerError] = useState(false);
 
   const { data: product, isLoading } = useQuery({
     queryKey: ['product', params.id],
@@ -113,9 +115,9 @@ export default function ProductDeatils({ params }: Record<string, any>) {
             </div>
             <div key={'/'} className="flex items-center">
               <FaAngleRight size={12} />
-              <Link href={`/categories/${product?.category.slug}`}>
+              <Link href={`/categories/${product?.category?.slug}`}>
                 <span className="text-primary hover:underline px-1">
-                  {product?.category.title}
+                  {product?.category?.title}
                 </span>
               </Link>
               <FaAngleRight size={12} />
@@ -232,7 +234,7 @@ export default function ProductDeatils({ params }: Record<string, any>) {
                 <p
                   className={`flex items-center justify-center text-xs xl:text-sm font-medium px-4 xl:px-5 h-8 xl:h-[34px] rounded-full text-neutral-600 bg-neutral-100`}
                 >
-                  {product?.category?.title}
+                  {product?.category_data?.[0]?.title}
                 </p>
                 <p
                   className={`flex items-center justify-center text-xs xl:text-sm font-medium px-4 xl:px-5 h-8 xl:h-[34px] rounded-full text-neutral-600 bg-neutral-100`}
@@ -325,6 +327,20 @@ export default function ProductDeatils({ params }: Record<string, any>) {
               />
             </DisclosurePanel>
           </Disclosure>
+        </div>
+        <div className="w-full h-[150px] md:h-[180px] lg:h-[200px] bg-secondary rounded-md mt-6 relative overflow-hidden mb-6">
+          {/* <Image
+              src={
+                bannerError
+                  ? banner
+                  : imageBase + (data?.category?.image! ?? data?.brand.image)
+              }
+              fill
+              alt={data?.category?.title! ?? 'Category banner'}
+              onError={() => setBannerError(true)}
+              className="object-cover"
+              loading="lazy"
+            /> */}
         </div>
       </div>
     </>
