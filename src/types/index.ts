@@ -268,7 +268,7 @@ interface ShippingPlace {
 }
 
 export interface ProductResponse {
-  data: SingleProductData;
+  data: SingleProductData & { banner: string };
   status: number;
   token: string | null;
   message: string;

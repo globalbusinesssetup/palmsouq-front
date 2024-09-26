@@ -104,7 +104,7 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
                 </button>
               </div>
               {isFocus && query && (
-                <div className="absolute top-12 shadow-xl left-0 z-50 border-t border-gray-50 bg-white rounded-2xl w-full min-h-[400px] p-6">
+                <div className="absolute top-12 shadow-xl left-0 z-50 border-t border-gray-50 bg-white rounded-2xl w-full min-h-[400px] p-4 2xl:p-6">
                   {isSearchLoading ? (
                     <>
                       <div className="grid grid-cols-8 gap-4">
@@ -142,10 +142,10 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
                           <h4 className="text-gray-700 text-xl font-semibold">
                             Categories
                           </h4>
-                          <div className="pt-6 grid grid-cols-8 gap-4 px-4">
+                          <div className="pt-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-8 gap-2 px-2 2xl:px-4">
                             {data?.category?.map((cat, i) => (
                               <div key={`cat_${i}`} className="">
-                                <div className="relative size-24 overflow-hidden rounded-lg px-2">
+                                <div className="relative h-20 2xl:h-24 overflow-hidden rounded-lg px-2">
                                   <Image
                                     src={imageBase + cat.image}
                                     fill
@@ -166,25 +166,25 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
                           <h4 className="text-gray-700 text-xl font-semibold mt-5">
                             Products
                           </h4>
-                          <div className="pt-6 grid grid-cols-3 gap-4 px-4">
+                          <div className="pt-6 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-2 2xl:gap-4 px-2 2xl:px-4">
                             {data?.product?.map((pd, i) => (
                               <div
                                 key={`cat_${i}`}
-                                className="border border-gray-200 flex gap-x-4 px-3 py-2 rounded-md"
+                                className="border border-gray-200 flex gap-x-4 px-3 py-2 rounded-md overflow-hidden"
                               >
-                                <div className="relative size-14 overflow-hidden rounded-lg px-2">
+                                <div className="relative size-10 2xl:size-14 overflow-hidden rounded-lg px-2">
                                   <Image
                                     src={imageBase + pd.image}
                                     fill
-                                    className="object-cover bg-gray-200 text-xs"
+                                    className="object-contain bg-gray-200 text-xs"
                                     alt="product"
                                   />
                                 </div>
-                                <div className="flex-1">
-                                  <p className="font-medium uppercase text-xs mt-2 text-ellipsis max-w-[180px] overflow-hidden whitespace-nowrap">
+                                <div className="flex-1 min-w-0">
+                                  <p className="font-medium uppercase text-[10px] 2xl:text-xs mt-2 text-ellipsis overflow-hidden whitespace-nowrap max-w-full">
                                     {pd.title}
                                   </p>
-                                  <p className="font-medium uppercase text-xs mt-2">
+                                  <p className="font-medium uppercase text-[10px] 2xl:text-xs mt-2">
                                     {pd?.offered ?? pd.selling} AED
                                   </p>
                                 </div>

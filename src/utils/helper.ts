@@ -56,3 +56,5 @@ export function debounce(fn: (...args: any[]) => void, delay: number) {
     }, delay);
   };
 }
+
+export const temp_banner = '/banners/temp_banner.jpeg';

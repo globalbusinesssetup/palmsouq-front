@@ -14,7 +14,7 @@ import { register } from 'swiper/element/bundle';
 import { useResponsiveSlides } from '@/hooks';
 import { useQuery } from '@tanstack/react-query';
 import { getCategories, getHome } from '@/utils/api';
-import { imageBase } from '@/utils/helper';
+import { imageBase, temp_banner } from '@/utils/helper';
 import useAuth from '@/hooks/useAuth';
 import config from '@/configs';
 
@@ -164,10 +164,7 @@ export default function HomeClient() {
             className="lg:w-5/12 h-[250px] xl:h-[304px] hidden lg:block relative overflow-hidden sm:rounded-[10px] mt-4 lg:mt-0"
           >
             <Image
-              src={
-                imageBase + home?.slider?.right_bottom?.image ??
-                '/banners/weekly-offer.jpeg'
-              }
+              src={imageBase + home?.slider?.right_bottom?.image ?? temp_banner}
               fill
               alt={home?.slider?.right_bottom?.title ?? 'Weekly offer Banner'}
               className="bg-gray-100"
