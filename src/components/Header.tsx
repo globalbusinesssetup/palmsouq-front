@@ -265,7 +265,6 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
               </div>
             </div>
           ) : (
-            <div className="">
               <Link href={'/auth/sign-in'} className="ml-4 hidden lg:inline">
                 <RiUserSharedLine className="text-2xl lg:text-[28px] text-green" />
 
@@ -274,7 +273,6 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
                 <p className="text-sm text-green font-semibold">Register</p>
               </div> */}
               </Link>
-            </div>
           )}
         </div>
       </header>
