@@ -19,11 +19,9 @@ import {
 import Link from 'next/link';
 import { IoMdStarOutline } from 'react-icons/io';
 import { IoMdStar } from 'react-icons/io';
-import { ProductsCommonType } from '@/types';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { getProducts } from '@/utils/api';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { useMount } from '@/hooks';
+import { useQuery } from '@tanstack/react-query';
 import { FaAngleRight } from 'react-icons/fa6';
 import config from '@/config';
 
