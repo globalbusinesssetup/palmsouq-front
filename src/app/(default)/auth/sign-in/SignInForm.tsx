@@ -7,7 +7,6 @@ import {
   OtpVerify,
   Modal,
 } from '@/components';
-import { Metadata } from 'next';
 import Link from 'next/link';
 import React, { useState } from 'react';
 import { FaArrowRightLong } from 'react-icons/fa6';
@@ -17,10 +16,6 @@ import { useForm } from 'react-hook-form';
 import useAuth from '@/hooks/useAuth';
 import { FcGoogle } from 'react-icons/fc';
 import { useRouter } from 'next/navigation';
-
-// export const metadata: Metadata = {
-//   title: 'Sign In | Printcraft',
-// };
 
 const SignInForm = ({ onSignIn }: { onSignIn?: () => void }) => {
   const router = useRouter();
@@ -101,10 +96,10 @@ const SignInForm = ({ onSignIn }: { onSignIn?: () => void }) => {
           label="Password"
           type="password"
           placeholder="••••••••"
-          wrapClassName="mt-4"
+          wrapClassName="mt-2"
           error={errors?.password}
         />
-        <div className="mt-5 flex items-center justify-between">
+        <div className="mt-2 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <CheckBox checked={enabled} onChange={setEnabled} />
             <label

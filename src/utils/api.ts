@@ -51,6 +51,11 @@ export const getHome = async () => {
             url: string | undefined;
           };
         };
+        testimonials: {
+          client_name: string;
+          testimonial: string;
+          rating: number;
+        }[];
       };
     }>('/home');
     return data;
