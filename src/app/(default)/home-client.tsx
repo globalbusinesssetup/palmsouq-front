@@ -455,7 +455,7 @@ export default function HomeClient() {
               </Link>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 gap-x-4 gap-y-6">
-              {home?.flash_sales?.[0].public_products?.map(
+              {home?.flash_sales?.[0]?.public_products?.map(
                 (product: any, i) => (
                   <ProductCard
                     data={product}
