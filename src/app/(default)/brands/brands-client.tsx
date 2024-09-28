@@ -3,8 +3,8 @@ import React from 'react';
 import Image from 'next/image';
 import { useQuery } from '@tanstack/react-query';
 import { getBrands, getCategories } from '@/utils/api';
-import { imageBase } from '@/utils/helper';
 import Link from 'next/link';
+import config from '@/config';
 
 const BrandsClient = () => {
   const { data, isLoading, isError } = useQuery({
@@ -33,7 +33,7 @@ const BrandsClient = () => {
           >
             <div className=" h-24 sm:h-[140px] mx-1 mb-4 overflow-hidden rounded-md bg-gray-200 flex items-center justify-center">
               <Image
-                src={imageBase + b.image}
+                src={config.imgUri + b.image}
                 width={100}
                 height={100}
                 alt="cat image"

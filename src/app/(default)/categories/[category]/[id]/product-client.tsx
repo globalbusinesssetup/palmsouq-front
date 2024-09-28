@@ -20,7 +20,7 @@ import useAuth from '@/hooks/useAuth';
 import config from '@/config';
 import { FaAngleRight } from 'react-icons/fa6';
 import ImageMagnifier from '@/components/common/ImageMagnifier';
-import { imageBase, temp_banner } from '@/utils/helper';
+import { temp_banner } from '@/utils/helper';
 
 type CategoryProps = {
   params: {
@@ -330,7 +330,7 @@ export default function ProductDeatils({ params }: Record<string, any>) {
         </div>
         <div className="w-full h-[150px] md:h-[180px] lg:h-[200px] bg-secondary rounded-md mt-6 relative overflow-hidden mb-6">
           <Image
-            src={bannerError ? temp_banner : imageBase + product?.banner}
+            src={bannerError ? temp_banner : config.imgUri + product?.banner}
             fill
             alt={'Product banner'}
             onError={() => setBannerError(true)}

@@ -23,7 +23,6 @@ import useAuth from '@/hooks/useAuth';
 import config from '@/config';
 import ProductDeatils from './product-client';
 import { Metadata, ResolvingMetadata } from 'next';
-import { imageBase } from '@/utils/helper';
 
 type CategoryProps = {
   params: {
@@ -154,7 +153,7 @@ export async function generateMetadata(
     title: product?.meta_title ?? product?.title,
     description: product?.meta_description,
     openGraph: {
-      images: [imageBase + product?.image, ...previousImages],
+      images: [config.imgUri + product?.image, ...previousImages],
     },
   };
 }
