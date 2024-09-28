@@ -17,7 +17,7 @@ import { getProduct, useGetUser } from '@/utils/api';
 import { api } from '@/utils/fetcher';
 import { toast } from 'react-toastify';
 import useAuth from '@/hooks/useAuth';
-import config from '@/configs';
+import config from '@/config';
 import { FaAngleRight } from 'react-icons/fa6';
 import ImageMagnifier from '@/components/common/ImageMagnifier';
 import { imageBase, temp_banner } from '@/utils/helper';

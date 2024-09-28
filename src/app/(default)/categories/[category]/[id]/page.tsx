@@ -20,7 +20,7 @@ import {
 import { api } from '@/utils/fetcher';
 import { toast } from 'react-toastify';
 import useAuth from '@/hooks/useAuth';
-import config from '@/configs';
+import config from '@/config';
 import ProductDeatils from './product-client';
 import { Metadata, ResolvingMetadata } from 'next';
 import { imageBase } from '@/utils/helper';

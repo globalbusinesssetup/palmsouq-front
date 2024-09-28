@@ -16,7 +16,7 @@ import { useQuery } from '@tanstack/react-query';
 import { getCategories, getHome } from '@/utils/api';
 import { imageBase, temp_banner } from '@/utils/helper';
 import useAuth from '@/hooks/useAuth';
-import config from '@/configs';
+import config from '@/config';
 
 type SwiperElement = Element & {
   swiper?: {

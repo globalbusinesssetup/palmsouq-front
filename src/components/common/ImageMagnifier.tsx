@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
-import config from '@/configs';
+import config from '@/config';
 
 const ImageMagnifier: React.FC<{ product: any; selectedImage?: string }> = ({
   product,
