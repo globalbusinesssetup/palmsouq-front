@@ -21,7 +21,7 @@ const ForgotPassword = () => {
     setLoading(true);
     try {
       const res = await api.post('/user/forgot-password', {
-        email: email,
+        email: email ?? params.get('data'),
       });
       if (res.data?.data?.form) {
         toast.error(res.data?.data?.form?.[0]);
@@ -74,6 +74,7 @@ const ForgotPassword = () => {
             />
           ) : currentFlow === 'otp' ? (
             <OtpVerify
+              onResend={() => onSend(undefined)}
               onVerify={(otp) => {
                 setOtp(otp);
                 setFlow('password');

@@ -14,7 +14,7 @@ import { register } from 'swiper/element/bundle';
 import { useResponsiveSlides } from '@/hooks';
 import { useQuery } from '@tanstack/react-query';
 import { getCategories, getHome } from '@/utils/api';
-import { imageBase, temp_banner } from '@/utils/helper';
+import { temp_banner } from '@/utils/helper';
 import useAuth from '@/hooks/useAuth';
 import config from '@/config';
 
@@ -149,7 +149,7 @@ export default function HomeClient() {
                 <swiper-slide key={`banner_${i}`} style={{ width: '100%' }}>
                   <div className="w-full h-[200px] sm:h-[250px] xl:h-[304px] relative overflow-hidden rounded-[10px]">
                     <Image
-                      src={`${imageBase}/${s?.image}`}
+                      src={`${config.imgUri}/${s?.image}`}
                       fill
                       alt={'banner'}
                       className="object-cover"
@@ -164,7 +164,7 @@ export default function HomeClient() {
             className="lg:w-5/12 h-[250px] xl:h-[304px] hidden lg:block relative overflow-hidden sm:rounded-[10px] mt-4 lg:mt-0"
           >
             <Image
-              src={imageBase + home?.slider?.right_bottom?.image ?? temp_banner}
+              src={config.imgUri + home?.slider?.right_bottom?.image ?? temp_banner}
               fill
               alt={home?.slider?.right_bottom?.title ?? 'Weekly offer Banner'}
               className="bg-gray-100"
@@ -301,7 +301,7 @@ export default function HomeClient() {
             <section className="flex items-center gap-x-4 mt-5 md:mt-8">
               <div className="flex-1 h-[108px] bg-[#F5F5F7] relative rounded overflow-hidden">
                 <Image
-                  src={imageBase + home?.banners[0].image}
+                  src={config.imgUri + home?.banners[0].image}
                   fill
                   alt="banner"
                   className="object-cover"
@@ -309,7 +309,7 @@ export default function HomeClient() {
               </div>
               <div className="hidden md:block flex-1 h-[108px] bg-[#F5F5F7] relative rounded overflow-hidden">
                 <Image
-                  src={imageBase + home?.banners[1].image}
+                  src={config.imgUri + home?.banners[1].image}
                   fill
                   alt="banner"
                   className="object-cover"
@@ -345,7 +345,7 @@ export default function HomeClient() {
           <>
             <div className="w-full h-[180px] lg:h-[240px] bg-secondary mt-8 lg:mt-10 rounded-md overflow-hidden relative">
               <Image
-                src={imageBase + home?.banners[2].image}
+                src={config.imgUri + home?.banners[2].image}
                 fill
                 alt="banner"
                 className="object-cover"
@@ -389,7 +389,7 @@ export default function HomeClient() {
             <section className="flex items-center gap-x-4 mt-5 md:mt-8">
               <div className="flex-1 h-[150px] sm:h-[180px] lg:h-[240px] bg-[#F5F5F7] relative rounded-md overflow-hidden">
                 <Image
-                  src={imageBase + home?.banners[3].image}
+                  src={config.imgUri + home?.banners[3].image}
                   fill
                   alt="banner"
                   className="object-cover"
@@ -397,7 +397,7 @@ export default function HomeClient() {
               </div>
               <div className="hidden md:block flex-1 h-[180px] lg:h-[240px] bg-[#F5F5F7] relative rounded-md overflow-hidden">
                 <Image
-                  src={imageBase + home?.banners[4].image}
+                  src={config.imgUri + home?.banners[4].image}
                   fill
                   alt="banner"
                   className="object-cover"
@@ -468,7 +468,7 @@ export default function HomeClient() {
           </section>
           <div className="w-full h-[180px] lg:h-[240px] bg-secondary mt-8 lg:mt-10 rounded-md overflow-hidden relative">
             <Image
-              src={imageBase + home?.banners[5].image}
+              src={config.imgUri + home?.banners[5].image}
               fill
               alt="banner"
               className="object-cover"

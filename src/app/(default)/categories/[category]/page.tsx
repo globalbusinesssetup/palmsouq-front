@@ -1,7 +1,7 @@
 import { getCategories, getProducts } from '@/utils/api';
 import CategoryClient from './category-client';
 import { Metadata, ResolvingMetadata } from 'next';
-import { imageBase } from '@/utils/helper';
+import config from '@/config'
 
 export async function generateStaticParams() {
   const categories = await getCategories();
@@ -38,7 +38,7 @@ export async function generateMetadata(
       'Palmsouq online shopping Outdoor & Adventure Store | Palmsouq',
     openGraph: {
       images: [
-        imageBase + (cat?.category?.image ?? cat?.brand?.image),
+        config.imgUri + (cat?.category?.image ?? cat?.brand?.image),
         ...previousImages,
       ],
     },
