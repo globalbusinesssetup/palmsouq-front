@@ -3,25 +3,22 @@ import Image from 'next/image';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import { RiUserSharedLine, RiWhatsappFill } from 'react-icons/ri';
-import { useForm } from 'react-hook-form';
 import { IoIosArrowDown } from 'react-icons/io';
 import { FiPlus, FiSearch, FiShoppingBag, FiUser } from 'react-icons/fi';
-import { useRouter } from 'next/navigation';
 import Drawer from 'react-modern-drawer';
 import 'react-modern-drawer/dist/index.css';
 import { HiArrowNarrowRight } from 'react-icons/hi';
-import { IoChevronDown } from 'react-icons/io5';
-import { topBarCategories } from '@/constants';
 import { FaBars, FaGifts } from 'react-icons/fa6';
 import useAuth from '@/hooks/useAuth';
 import { getSearchData, useGetUser } from '@/utils/api';
 import { useQuery } from '@tanstack/react-query';
 import { Input } from '@headlessui/react';
-import { imageBase } from '@/utils/helper';
 import { BsBookmarkStar } from 'react-icons/bs';
+import config from '@/config';
+import { usePathname } from 'next/navigation';
 
 const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
-  const { control, watch } = useForm<any>();
+  const path = usePathname();
   const [isOpen, setIsOpen] = React.useState(false);
   const { isLoggedIn, isLoading, user: profile } = useAuth();
   const { user } = useAuth();
@@ -83,7 +80,7 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
               </div>
             </div>
           </div>
-          {showSearch && (
+          {showSearch && path === '/' && (
             <div className="hidden md:block flex-1 relative">
               <div className="relative">
                 <Input
@@ -147,7 +144,7 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
                               <div key={`cat_${i}`} className="">
                                 <div className="relative h-20 2xl:h-24 overflow-hidden rounded-lg px-2">
                                   <Image
-                                    src={imageBase + cat.image}
+                                    src={config.imgUri + cat.image}
                                     fill
                                     className="object-cover bg-gray-200 text-sm"
                                     alt="category"
@@ -174,7 +171,7 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
                               >
                                 <div className="relative size-10 2xl:size-14 overflow-hidden rounded-lg px-2">
                                   <Image
-                                    src={imageBase + pd.image}
+                                    src={config.imgUri + pd.image}
                                     fill
                                     className="object-contain bg-gray-200 text-xs"
                                     alt="product"
@@ -265,14 +262,14 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
               </div>
             </div>
           ) : (
-              <Link href={'/auth/sign-in'} className="ml-4 hidden lg:inline">
-                <RiUserSharedLine className="text-2xl lg:text-[28px] text-green" />
+            <Link href={'/auth/sign-in'} className="ml-4 hidden lg:inline">
+              <RiUserSharedLine className="text-2xl lg:text-[28px] text-green" />
 
-                {/* <div className="hidden md:block">
+              {/* <div className="hidden md:block">
                 <p className="text-xs text-green font-light">Login</p>
                 <p className="text-sm text-green font-semibold">Register</p>
               </div> */}
-              </Link>
+            </Link>
           )}
         </div>
       </header>

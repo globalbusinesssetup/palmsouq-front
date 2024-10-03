@@ -4,11 +4,11 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { HiArrowRight } from 'react-icons/hi';
 import { ProductData } from '@/types';
-import { imageBase } from '@/utils/helper';
 import useAuth from '@/hooks/useAuth';
 import { toast } from 'react-toastify';
 import { api } from '@/utils/fetcher';
 import { VscLoading } from 'react-icons/vsc';
+import config from '@/config';
 
 const ProductCard = ({
   data,
@@ -18,7 +18,7 @@ const ProductCard = ({
   category?: string | number;
 }) => {
   const { isLoggedIn, user, refetchProfile } = useAuth();
-  const [image, setImage] = useState(imageBase + data?.image);
+  const [image, setImage] = useState(config.imgUri + data?.image);
   const [isSubmitLoading, setSubmitLoading] = useState(false);
   const [isHover, setHover] = useState(false);
 

@@ -14,9 +14,9 @@ import { register } from 'swiper/element/bundle';
 import { useResponsiveSlides } from '@/hooks';
 import { useQuery } from '@tanstack/react-query';
 import { getCategories, getHome } from '@/utils/api';
-import { imageBase, temp_banner } from '@/utils/helper';
+import { temp_banner } from '@/utils/helper';
 import useAuth from '@/hooks/useAuth';
-import config from '@/configs';
+import config from '@/config';
 
 type SwiperElement = Element & {
   swiper?: {
@@ -149,7 +149,7 @@ export default function HomeClient() {
                 <swiper-slide key={`banner_${i}`} style={{ width: '100%' }}>
                   <div className="w-full h-[200px] sm:h-[250px] xl:h-[304px] relative overflow-hidden rounded-[10px]">
                     <Image
-                      src={`${imageBase}/${s?.image}`}
+                      src={`${config.imgUri}/${s?.image}`}
                       fill
                       alt={'banner'}
                       className="object-cover"
@@ -164,7 +164,9 @@ export default function HomeClient() {
             className="lg:w-5/12 h-[250px] xl:h-[304px] hidden lg:block relative overflow-hidden sm:rounded-[10px] mt-4 lg:mt-0"
           >
             <Image
-              src={imageBase + home?.slider?.right_bottom?.image ?? temp_banner}
+              src={
+                config.imgUri + home?.slider?.right_bottom?.image ?? temp_banner
+              }
               fill
               alt={home?.slider?.right_bottom?.title ?? 'Weekly offer Banner'}
               className="bg-gray-100"
@@ -301,7 +303,7 @@ export default function HomeClient() {
             <section className="flex items-center gap-x-4 mt-5 md:mt-8">
               <div className="flex-1 h-[108px] bg-[#F5F5F7] relative rounded overflow-hidden">
                 <Image
-                  src={imageBase + home?.banners[0].image}
+                  src={config.imgUri + home?.banners[0].image}
                   fill
                   alt="banner"
                   className="object-cover"
@@ -309,7 +311,7 @@ export default function HomeClient() {
               </div>
               <div className="hidden md:block flex-1 h-[108px] bg-[#F5F5F7] relative rounded overflow-hidden">
                 <Image
-                  src={imageBase + home?.banners[1].image}
+                  src={config.imgUri + home?.banners[1].image}
                   fill
                   alt="banner"
                   className="object-cover"
@@ -345,7 +347,7 @@ export default function HomeClient() {
           <>
             <div className="w-full h-[180px] lg:h-[240px] bg-secondary mt-8 lg:mt-10 rounded-md overflow-hidden relative">
               <Image
-                src={imageBase + home?.banners[2].image}
+                src={config.imgUri + home?.banners[2].image}
                 fill
                 alt="banner"
                 className="object-cover"
@@ -389,7 +391,7 @@ export default function HomeClient() {
             <section className="flex items-center gap-x-4 mt-5 md:mt-8">
               <div className="flex-1 h-[150px] sm:h-[180px] lg:h-[240px] bg-[#F5F5F7] relative rounded-md overflow-hidden">
                 <Image
-                  src={imageBase + home?.banners[3].image}
+                  src={config.imgUri + home?.banners[3].image}
                   fill
                   alt="banner"
                   className="object-cover"
@@ -397,7 +399,7 @@ export default function HomeClient() {
               </div>
               <div className="hidden md:block flex-1 h-[180px] lg:h-[240px] bg-[#F5F5F7] relative rounded-md overflow-hidden">
                 <Image
-                  src={imageBase + home?.banners[4].image}
+                  src={config.imgUri + home?.banners[4].image}
                   fill
                   alt="banner"
                   className="object-cover"
@@ -468,7 +470,7 @@ export default function HomeClient() {
           </section>
           <div className="w-full h-[180px] lg:h-[240px] bg-secondary mt-8 lg:mt-10 rounded-md overflow-hidden relative">
             <Image
-              src={imageBase + home?.banners[5].image}
+              src={config.imgUri + home?.banners[5].image}
               fill
               alt="banner"
               className="object-cover"
@@ -477,73 +479,75 @@ export default function HomeClient() {
         </>
         {/* features */}
         <section className="mt-5 md:mt-8 lg:mt-10 p-4 flex flex-wrap items-center gap-[18px]">
-          {features.map((feature, i) => (
+          {home?.site_features?.map((feature: any, i) => (
             <div
               key={`feature_${i}`}
               className="flex-1 p-3 xl:p-4 border border-[#385f48bf] rounded-lg flex items-center gap-x-3 xl:gap-x-4"
             >
               <div className="size-10 lg:size-14 xl:size-[72px] rounded-full flex items-center justify-center bg-neutral-50">
                 <Image
-                  src={feature.icon}
+                  src={config.imgUri + feature?.image}
                   width={42}
                   height={42}
                   className="size-8 xl:size-[42px]"
                   alt="icon"
                 />
               </div>
-              <div className="flex-1">
-                <h6 className=" xl:text-lg font-semibold text-black whitespace-nowrap">
+              <div
+                dangerouslySetInnerHTML={{ __html: feature?.detail }}
+                className="flex-1"
+              >
+                {/* <h6 className=" xl:text-lg font-semibold text-black whitespace-nowrap">
                   {feature.title}
                 </h6>
                 <p className="text-xs xl:text-sm text-neutral-600 mt-1 whitespace-nowrap">
                   {feature.desc}
-                </p>
+                </p> */}
               </div>
             </div>
           ))}
         </section>
         {/* client testimonial  */}
-        <section className="p-4 lg:p-8 bg-[#A79F881A] mt-8 lg:mt-10">
-          <div className="flex items-center">
-            <div className="flex-1">
-              <p className="text-success text-lg md:text-xl lg:text-2xl">
-                Client, Testimonial
-              </p>
-              <p className="mt-1 text-lg md:text-xl lg:text-2xl text-primary font-semibold">
-                The preferred printing partner for over 2000+ professionals.
-              </p>
+        {home?.testimonials?.length! > 0 && (
+          <section className="p-4 lg:p-8 bg-[#A79F881A] mt-8 lg:mt-10">
+            <div className="flex items-center">
+              <div className="flex-1">
+                <p className="text-success text-lg md:text-xl lg:text-2xl">
+                  Client, Testimonial
+                </p>
+                <p className="mt-1 text-lg md:text-xl lg:text-2xl text-primary font-semibold">
+                  The preferred printing partner for over 2000+ professionals.
+                </p>
+              </div>
+              <div className="hidden md:flex items-center gap-x-2">
+                <button
+                  onClick={() => onPrev(3)}
+                  className="size-8 lg:size-10 rounded-full flex items-center justify-center bg-white hover:bg-white/70 hover:scale-95 active:scale-90"
+                >
+                  <HiArrowLeft className="lg:text-2xl text-neutral-500" />
+                </button>
+                <button
+                  onClick={() => onNext(3)}
+                  className="size-8 lg:size-10 rounded-full flex items-center justify-center bg-white hover:bg-white/70 hover:scale-95 active:scale-90"
+                >
+                  <HiArrowRight className="lg:text-2xl text-neutral-500" />
+                </button>
+              </div>
             </div>
-            <div className="hidden md:flex items-center gap-x-2">
-              <button
-                onClick={() => onPrev(3)}
-                className="size-8 lg:size-10 rounded-full flex items-center justify-center bg-white hover:bg-white/70 hover:scale-95 active:scale-90"
+            <div className="mt-6">
+              <swiper-container
+                slides-per-view={getTestimonialSlide}
+                space-between={16}
+                autoplay
               >
-                <HiArrowLeft className="lg:text-2xl text-neutral-500" />
-              </button>
-              <button
-                onClick={() => onNext(3)}
-                className="size-8 lg:size-10 rounded-full flex items-center justify-center bg-white hover:bg-white/70 hover:scale-95 active:scale-90"
-              >
-                <HiArrowRight className="lg:text-2xl text-neutral-500" />
-              </button>
-            </div>
-          </div>
-          <div className="mt-6">
-            <swiper-container
-              slides-per-view={getTestimonialSlide}
-              space-between={16}
-              autoplay
-            >
-              {Array(5)
-                .fill(' ')
-                .map((_, i) => (
+                {home?.testimonials?.map((t, i) => (
                   <swiper-slide key={`testimonial_${i}`}>
                     <div className="flex-1 bg-white border border-neutral-200 p-3 lg:p-6 space-y-3 rounded-lg">
                       <h5 className="text-neutral-700 font-medium md:text-lg lg:text-[21.31px] leading-[25.79px]">
-                        Floyd Miles
+                        {t?.client_name}
                       </h5>
                       <StarRatings
-                        rating={rating}
+                        rating={t?.rating}
                         starRatedColor="#F8A401"
                         starHoverColor="#F8A401"
                         numberOfStars={5}
@@ -552,17 +556,15 @@ export default function HomeClient() {
                         name="rating"
                       />
                       <p className="text-[#133240] text-sm lg:text-base">
-                        Amet minim mollit non deserunt ullamco est sit aliqua
-                        dolor do amet sint. Velit officia consequat duis enim
-                        velit mollit. Exercitation veniam consequat sunt nostrud
-                        amet.{' '}
+                        {t?.testimonial}
                       </p>
                     </div>
                   </swiper-slide>
                 ))}
-            </swiper-container>
-          </div>
-        </section>
+              </swiper-container>
+            </div>
+          </section>
+        )}
         {/* industry banner  */}
         <section className="mt-5 md:mt-8 lg:mt-10 p-4 sm:px-6 py-5 sm:py-[33px] border border-[#10182833] rounded-[10px] md:flex items-center gap-x-10 justify-between">
           <div className="flex-1 w-full h-[250px] xs:h-[293px] relative">

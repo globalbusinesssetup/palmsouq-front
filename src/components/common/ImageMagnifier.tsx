@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
-import config from '@/configs';
+import config from '@/config';
 
 const ImageMagnifier: React.FC<{ product: any; selectedImage?: string }> = ({
   product,
@@ -64,8 +64,8 @@ const ImageMagnifier: React.FC<{ product: any; selectedImage?: string }> = ({
       </div>
 
       {/* Magnified Image Section */}
-      <div className="size-[500px] max-h-[500px] h-full overflow-hidden absolute -top-2 -right-[520px] rounded-lg">
-        {showMagnifier && (
+      {showMagnifier && (
+        <div className="size-[500px] max-h-[500px] h-full overflow-hidden absolute -top-2 -right-[520px] rounded-lg">
           <div
             className="absolute inset-0"
             style={{
@@ -78,8 +78,8 @@ const ImageMagnifier: React.FC<{ product: any; selectedImage?: string }> = ({
               backgroundPosition: `${magnifierPosition.x}% ${magnifierPosition.y}%`,
             }}
           />
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 };

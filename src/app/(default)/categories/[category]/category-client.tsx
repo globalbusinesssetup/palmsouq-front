@@ -21,11 +21,12 @@ import { IoMdStarOutline } from 'react-icons/io';
 import { IoMdStar } from 'react-icons/io';
 import { ProductsCommonType } from '@/types';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { debounce, imageBase } from '@/utils/helper';
+import { debounce } from '@/utils/helper';
 import { getProducts } from '@/utils/api';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useMount } from '@/hooks';
 import { FaAngleRight } from 'react-icons/fa6';
+import config from '@/config';
 
 type CategoryClientProps = {
   category: string;
@@ -199,7 +200,12 @@ const CategoryClient: React.FC<CategoryClientProps> = ({ category }) => {
               src={
                 bannerError
                   ? banner
-                  : imageBase + (data?.category?.image! ?? data?.brand.image)
+                  : `${config.imgUri}${
+                      data?.category?.banner_image ??
+                      data?.brand?.banner_image ??
+                      data?.category?.image ??
+                      data?.brand?.image
+                    }`
               }
               fill
               alt={data?.category?.title! ?? 'Category banner'}

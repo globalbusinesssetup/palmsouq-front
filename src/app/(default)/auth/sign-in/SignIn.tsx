@@ -17,7 +17,7 @@ const SignIn = () => {
   const [flow, setFlow] = useState('sign-in');
 
   return (
-    <main className="bg-white min-h-screen flex items-center justify-center px-4">
+    <main className="bg-white min-h-[calc(100vh-97px)] flex items-center justify-center px-4 py-5">
       <div>
         <div className="sm:w-[400px] border border-[#D0D5DD] rounded-xl shadow-md p-5 sm:p-6 my-6">
           {flow === 'sign-in' ? (

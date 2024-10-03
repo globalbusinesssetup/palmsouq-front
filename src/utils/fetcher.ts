@@ -6,7 +6,7 @@ import axios, {
 } from 'axios';
 import { toast } from 'react-toastify';
 import Cookies from 'js-cookie';
-import config from '@/configs';
+import config from '@/config';
 
 export const api = axios.create({
   baseURL: config.baseApi,
