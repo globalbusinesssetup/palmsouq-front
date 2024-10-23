@@ -54,7 +54,9 @@ export default function DashboardClient({
                   />
                 </div>
                 <h6 className="text-xs xs:text-sm font-semibold text-white">
-                  {`${user?.data?.first_name} ${user?.data?.last_name}`}
+                  {`${user?.data?.first_name ?? user?.data?.name} ${
+                    user?.data?.last_name ?? ''
+                  }`}
                 </h6>
               </div>
               <div className="text-center">

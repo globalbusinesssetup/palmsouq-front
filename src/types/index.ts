@@ -94,6 +94,7 @@ export type ProductsApiResponse = {
       title: string;
       slug: string;
       image: string;
+      banner_image: string;
       meta_title: string;
       meta_description: string;
       child: any;
@@ -102,6 +103,7 @@ export type ProductsApiResponse = {
       title: string;
       slug: string;
       image: string;
+      banner_image: string;
       meta_title: string;
       meta_description: string;
     };

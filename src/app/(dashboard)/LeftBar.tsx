@@ -81,7 +81,9 @@ const LeftBar = ({ user }: { user: UserData | undefined }) => {
             />
           </div>
           <div className="text-center mt-3">
-            <h6 className="text-sm font-semibold text-white capitalize">{`${user?.first_name} ${user?.last_name}`}</h6>
+            <h6 className="text-sm font-semibold text-white capitalize">{`${
+              user?.first_name ?? user?.name
+            } ${user?.last_name ?? ''}`}</h6>
             <p className="text-sm text-white">{user?.email}</p>
             <p className="text-sm text-white">{user?.phone}</p>
           </div>

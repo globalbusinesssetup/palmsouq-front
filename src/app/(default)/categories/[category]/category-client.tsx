@@ -197,8 +197,12 @@ const CategoryClient: React.FC<CategoryClientProps> = ({ category }) => {
               src={
                 bannerError
                   ? banner
-                  : config.imgUri +
-                    (data?.category?.image! ?? data?.brand.image)
+                  : `${config.imgUri}${
+                      data?.category?.banner_image ??
+                      data?.brand?.banner_image ??
+                      data?.category?.image ??
+                      data?.brand?.image
+                    }`
               }
               fill
               alt={data?.category?.title! ?? 'Category banner'}

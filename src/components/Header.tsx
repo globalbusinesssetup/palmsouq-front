@@ -3,15 +3,11 @@ import Image from 'next/image';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import { RiUserSharedLine, RiWhatsappFill } from 'react-icons/ri';
-import { useForm } from 'react-hook-form';
 import { IoIosArrowDown } from 'react-icons/io';
 import { FiPlus, FiSearch, FiShoppingBag, FiUser } from 'react-icons/fi';
-import { useRouter } from 'next/navigation';
 import Drawer from 'react-modern-drawer';
 import 'react-modern-drawer/dist/index.css';
 import { HiArrowNarrowRight } from 'react-icons/hi';
-import { IoChevronDown } from 'react-icons/io5';
-import { topBarCategories } from '@/constants';
 import { FaBars, FaGifts } from 'react-icons/fa6';
 import useAuth from '@/hooks/useAuth';
 import { getSearchData, useGetUser } from '@/utils/api';
@@ -19,9 +15,10 @@ import { useQuery } from '@tanstack/react-query';
 import { Input } from '@headlessui/react';
 import { BsBookmarkStar } from 'react-icons/bs';
 import config from '@/config';
+import { usePathname } from 'next/navigation';
 
 const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
-  const { control, watch } = useForm<any>();
+  const path = usePathname();
   const [isOpen, setIsOpen] = React.useState(false);
   const { isLoggedIn, isLoading, user: profile } = useAuth();
   const { user } = useAuth();
@@ -83,7 +80,7 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
               </div>
             </div>
           </div>
-          {showSearch && (
+          {showSearch && path === '/' && (
             <div className="hidden md:block flex-1 relative">
               <div className="relative">
                 <Input
