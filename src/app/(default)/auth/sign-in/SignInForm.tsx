@@ -16,6 +16,7 @@ import { useForm } from 'react-hook-form';
 import useAuth from '@/hooks/useAuth';
 import { FcGoogle } from 'react-icons/fc';
 import { useRouter } from 'next/navigation';
+import config from '@/config';
 
 const SignInForm = ({ onSignIn }: { onSignIn?: () => void }) => {
   const router = useRouter();
@@ -131,7 +132,7 @@ const SignInForm = ({ onSignIn }: { onSignIn?: () => void }) => {
             disabled={isLoading}
             onClick={() =>
               router.push(
-                `${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/social-login/redirect/google`
+                `${config.baseApi}/user/social-login/redirect/google`
               )
             }
             type="button"

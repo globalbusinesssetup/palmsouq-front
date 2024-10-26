@@ -1,7 +1,5 @@
 'use client';
-import { CategoriesBar, Footer, Header, ProductCard } from '@/components';
-import { TopBar } from '@/components';
-import Image from 'next/image';
+import { CategoriesBar, Footer, Header, ProductCard, Image } from '@/components';
 import Link from 'next/link';
 import { FaArrowRightLong } from 'react-icons/fa6';
 import { features, orderSteps } from '@/constants';
@@ -149,7 +147,7 @@ export default function HomeClient() {
                 <swiper-slide key={`banner_${i}`} style={{ width: '100%' }}>
                   <div className="w-full h-[200px] sm:h-[250px] xl:h-[304px] relative overflow-hidden rounded-[10px]">
                     <Image
-                      src={`${config.imgUri}/${s?.image}`}
+                      src={s?.image}
                       fill
                       alt={'banner'}
                       className="object-cover"
@@ -165,7 +163,7 @@ export default function HomeClient() {
           >
             <Image
               src={
-                config.imgUri + home?.slider?.right_bottom?.image ?? temp_banner
+                config.imgUri + home?.slider?.right_bottom?.image
               }
               fill
               alt={home?.slider?.right_bottom?.title ?? 'Weekly offer Banner'}
@@ -209,7 +207,7 @@ export default function HomeClient() {
                       >
                         <div className="h-[100px] relative mx-1 mb-4 overflow-hidden rounded-md">
                           <Image
-                            src={config.imgUri + cat?.image}
+                            src={cat?.image}
                             fill
                             alt="cat image"
                             loading="lazy"
@@ -276,7 +274,7 @@ export default function HomeClient() {
                     >
                       <div className="h-[100px] relative mx-1 mb-4 overflow-hidden rounded-md">
                         <Image
-                          src={config.imgUri + cat?.image}
+                          src={cat?.image}
                           width={100}
                           height={100}
                           alt="cat image"
@@ -303,17 +301,17 @@ export default function HomeClient() {
             <section className="flex items-center gap-x-4 mt-5 md:mt-8">
               <div className="flex-1 h-[108px] bg-[#F5F5F7] relative rounded overflow-hidden">
                 <Image
-                  src={config.imgUri + home?.banners[0].image}
+                  src={home?.banners[0].image}
                   fill
-                  alt="banner"
+                  alt={home?.banners[0].title}
                   className="object-cover"
                 />
               </div>
               <div className="hidden md:block flex-1 h-[108px] bg-[#F5F5F7] relative rounded overflow-hidden">
                 <Image
-                  src={config.imgUri + home?.banners[1].image}
+                  src={home?.banners[1].image}
                   fill
-                  alt="banner"
+                  alt={home?.banners[0].title}
                   className="object-cover"
                 />
               </div>
@@ -347,9 +345,9 @@ export default function HomeClient() {
           <>
             <div className="w-full h-[180px] lg:h-[240px] bg-secondary mt-8 lg:mt-10 rounded-md overflow-hidden relative">
               <Image
-                src={config.imgUri + home?.banners[2].image}
+                src={home?.banners[2].image}
                 fill
-                alt="banner"
+                alt={home?.banners[2].title}
                 className="object-cover"
               />
             </div>
@@ -391,17 +389,17 @@ export default function HomeClient() {
             <section className="flex items-center gap-x-4 mt-5 md:mt-8">
               <div className="flex-1 h-[150px] sm:h-[180px] lg:h-[240px] bg-[#F5F5F7] relative rounded-md overflow-hidden">
                 <Image
-                  src={config.imgUri + home?.banners[3].image}
+                  src={home?.banners[3].image}
                   fill
-                  alt="banner"
+                  alt={home?.banners[3].title}
                   className="object-cover"
                 />
               </div>
               <div className="hidden md:block flex-1 h-[180px] lg:h-[240px] bg-[#F5F5F7] relative rounded-md overflow-hidden">
                 <Image
-                  src={config.imgUri + home?.banners[4].image}
+                  src={home?.banners[4].image}
                   fill
-                  alt="banner"
+                  alt={home?.banners[0].title}
                   className="object-cover"
                 />
               </div>
@@ -470,15 +468,15 @@ export default function HomeClient() {
           </section>
           <div className="w-full h-[180px] lg:h-[240px] bg-secondary mt-8 lg:mt-10 rounded-md overflow-hidden relative">
             <Image
-              src={config.imgUri + home?.banners[5].image}
+              src={home?.banners[5].image}
               fill
-              alt="banner"
+              alt={home?.banners[5].title}
               className="object-cover"
             />
           </div>
         </>
         {/* features */}
-        <section className="mt-5 md:mt-8 lg:mt-10 p-4 flex flex-wrap items-center gap-[18px]">
+        <section className="mt-5 md:mt-8 lg:mt-10 p-4 space-y-10 md:space-y-0 md:flex flex-wrap items-center gap-[18px]">
           {home?.site_features?.map((feature: any, i) => (
             <div
               key={`feature_${i}`}
@@ -486,11 +484,11 @@ export default function HomeClient() {
             >
               <div className="size-10 lg:size-14 xl:size-[72px] rounded-full flex items-center justify-center bg-neutral-50">
                 <Image
-                  src={config.imgUri + feature?.image}
+                  src={feature?.image}
                   width={42}
                   height={42}
                   className="size-8 xl:size-[42px]"
-                  alt="icon"
+                  alt={feature.title}
                 />
               </div>
               <div
@@ -570,6 +568,7 @@ export default function HomeClient() {
           <div className="flex-1 w-full h-[250px] xs:h-[293px] relative">
             <Image
               src={'/banners/industry-banner.png'}
+              isLocal
               fill
               alt="industry banner"
             />
@@ -599,7 +598,7 @@ export default function HomeClient() {
               className="flex-1 flex flex-col gap-y-4 items-center"
             >
               <div className="w-[83px] h-[78px] md:w-[93px] md:h-[88px] relative">
-                <Image src={step.icon} fill alt="icon" />
+                <Image src={step.icon} fill alt={step.title} />
               </div>
               <div className="text-center">
                 <h4 className="lg:text-lg xl:text-xl font-medium text-primary text-nowrap">

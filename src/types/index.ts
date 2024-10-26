@@ -339,6 +339,7 @@ export type Collection = {
 export type Banner = {
   id: number;
   image: string;
+  title: string;
 };
 
 type Place = {

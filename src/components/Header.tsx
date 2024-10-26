@@ -1,5 +1,5 @@
 'use client';
-import Image from 'next/image';
+import {Image} from '@/components';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import { RiUserSharedLine, RiWhatsappFill } from 'react-icons/ri';
@@ -57,9 +57,10 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
             >
               <Image
                 src="/header_logo.png"
+                isLocal
                 fill
                 alt="logo"
-                objectFit="contain"
+                className='object-fit'
               />
             </Link>
             <div className="py-1 px-2 items-center gap-x-3 hidden lg:flex">
@@ -144,10 +145,10 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
                               <div key={`cat_${i}`} className="">
                                 <div className="relative h-20 2xl:h-24 overflow-hidden rounded-lg px-2">
                                   <Image
-                                    src={config.imgUri + cat.image}
+                                    src={cat.image}
                                     fill
                                     className="object-cover bg-gray-200 text-sm"
-                                    alt="category"
+                                    alt={cat.title}
                                   />
                                 </div>
                                 <p className="font-medium uppercase text-xs mt-2 text-center whitespace-nowrap max-w-[95px] overflow-hidden text-ellipsis">
@@ -171,10 +172,10 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
                               >
                                 <div className="relative size-10 2xl:size-14 overflow-hidden rounded-lg px-2">
                                   <Image
-                                    src={config.imgUri + pd.image}
+                                    src={pd.image}
                                     fill
                                     className="object-contain bg-gray-200 text-xs"
-                                    alt="product"
+                                    alt={pd.title}
                                   />
                                 </div>
                                 <div className="flex-1 min-w-0">
