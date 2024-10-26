@@ -17,6 +17,7 @@
     "crypto-js": "^4.2.0",
     "dayjs": "^1.11.12",
     "js-cookie": "^3.0.5",
+    "jwt-decode": "^4.0.0",
     "libphonenumber-js": "^1.11.3",
     "next": "14.2.3",
     "razorpay": "^2.9.4",

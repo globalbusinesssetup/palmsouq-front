@@ -158,15 +158,15 @@ export default function HomeClient() {
             </swiper-container>
           </div>
           <Link
-            href={home?.slider?.right_bottom?.url ?? '#'}
+            href={home?.slider?.right_top?.url ?? '#'}
             className="lg:w-5/12 h-[250px] xl:h-[304px] hidden lg:block relative overflow-hidden sm:rounded-[10px] mt-4 lg:mt-0"
           >
             <Image
               src={
-                config.imgUri + home?.slider?.right_bottom?.image
+                home?.slider?.right_top?.image
               }
               fill
-              alt={home?.slider?.right_bottom?.title ?? 'Weekly offer Banner'}
+              alt={home?.slider?.right_top?.title ?? 'Weekly offer Banner'}
               className="bg-gray-100"
             />
           </Link>

@@ -45,7 +45,7 @@ export const getHome = async () => {
         site_features: [];
         slider: {
           main: [];
-          right_bottom: Banner & {
+          right_top: Banner & {
             title: string;
             slug: string;
             url: string | undefined;
