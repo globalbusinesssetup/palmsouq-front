@@ -31,7 +31,7 @@ const BrandsClient = () => {
             key={b?.id}
             className=""
           >
-            <div className=" h-24 sm:h-[140px] mx-1 mb-4 overflow-hidden rounded-md bg-gray-200 flex items-center justify-center">
+            <div className=" h-24 sm:h-[140px] mx-1 mb-4 overflow-hidden rounded-md border border-gray-200 flex items-center justify-center">
               <Image
                 src={config.imgUri + b.image}
                 width={100}
@@ -41,9 +41,9 @@ const BrandsClient = () => {
                 className="object-contain size-20 sm:size-[100px]"
               />
             </div>
-            <p className="flex-1 overflow-hidden text-ellipsis text-center mt-4 text-sm lg:text-base">
+            {/* <p className="flex-1 overflow-hidden text-ellipsis text-center mt-4 text-sm lg:text-base">
               {b?.title}
-            </p>
+            </p> */}
           </Link>
         ))
       )}

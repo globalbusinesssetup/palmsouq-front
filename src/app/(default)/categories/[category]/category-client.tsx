@@ -3,8 +3,8 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Button, CheckBox, Footer, Loader, ProductCard } from '@/components';
-import Image from 'next/image';
+import { Button, CheckBox, Footer, Loader, ProductCard, Image } from '@/components';
+// import Image from 'next/image';
 import { Select } from '@headlessui/react';
 import { FiChevronDown } from 'react-icons/fi';
 import {
@@ -192,24 +192,22 @@ const CategoryClient: React.FC<CategoryClientProps> = ({ category }) => {
     <>
       <main className="bg-[#FCFCFD]">
         <div className="container mx-auto px-4">
-          <div className="w-full h-[150px] md:h-[180px] lg:h-[200px] bg-secondary rounded-md mt-6 relative overflow-hidden">
-            <Image
-              src={
-                bannerError
-                  ? banner
-                  : `${config.imgUri}${
-                      data?.category?.banner_image ??
-                      data?.brand?.banner_image ??
-                      data?.category?.image ??
-                      data?.brand?.image
-                    }`
-              }
-              fill
-              alt={data?.category?.title! ?? 'Category banner'}
-              onError={() => setBannerError(true)}
-              className="object-cover"
-              loading="lazy"
-            />
+          <div className="w-full h-[150px] md:h-[180px] lg:h-[240px] bg-secondary rounded-md mt-6 relative overflow-hidden">
+            { isLoading ? 
+              <div className="animate-pulse" /> :
+              <Image
+                defaultSrc={banner}
+                isLocal
+                src={
+                        data?.category?.banner_image ??
+                        data?.brand?.banner_image 
+                }
+                fill
+                alt={data?.category?.title! ?? 'Category banner'}
+                className="object-fit"
+                loading="lazy"
+              />
+            }
           </div>
           <div className="mt-4 py-5 sm:px-2 flex items-center justify-between">
             <nav aria-label="breadcrumb" className="pb-6">

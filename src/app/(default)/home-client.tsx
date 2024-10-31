@@ -30,6 +30,7 @@ const catBreakpoints = [
   { width: 639, slide: 3 },
   { width: 0, slide: 2 },
 ];
+
 const brandBreakpoints = [
   { width: 1279, slide: 10 },
   { width: 1023, slide: 7 },
@@ -57,6 +58,7 @@ export default function HomeClient() {
     queryKey: ['categories'],
     queryFn: getCategories,
   });
+
   const { data: home, isLoading } = useQuery({
     queryKey: ['home'],
     queryFn: getHome,
@@ -70,6 +72,7 @@ export default function HomeClient() {
   const onNext = (id: number) => {
     swiperEl?.[id]?.swiper?.slideNext();
   };
+
   const onPrev = (id: number) => {
     swiperEl?.[id]?.swiper?.slidePrev();
   };
@@ -193,7 +196,7 @@ export default function HomeClient() {
                 </button>
               </div>
             </div>
-            <div className="mt-5 max-h-[172px] overflow-hidden">
+            <div className="mt-5 overflow-hidden">
               <swiper-container
                 slides-per-view={getCatSlide}
                 space-between={16}
@@ -203,9 +206,9 @@ export default function HomeClient() {
                     <swiper-slide key={`cat_${i}`} className="">
                       <Link
                         href={`/categories/${cat.slug}`}
-                        className="block rounded-lg bg-[#F5F5F7] xs:min-w-[155px] flex-1 pt-4 overflow-hidden"
+                        className="block rounded-lg border border-[#F5F5F7] xs:min-w-[155px] flex-1 pt-4 overflow-hidden"
                       >
-                        <div className="h-[100px] relative mx-1 mb-4 overflow-hidden rounded-md">
+                        <div className="h-[150px] relative mx-1 mb-4 overflow-hidden rounded-md">
                           <Image
                             src={cat?.image}
                             fill
@@ -341,47 +344,48 @@ export default function HomeClient() {
           </>
         )}
         {/* popular business cards  */}
-        {home?.collections?.[1]?.product_collections?.length! > 0 && (
-          <>
-            <div className="w-full h-[180px] lg:h-[240px] bg-secondary mt-8 lg:mt-10 rounded-md overflow-hidden relative">
-              <Image
-                src={home?.banners[2].image}
-                fill
-                alt={home?.banners[2].title}
-                className="object-cover"
-              />
-            </div>
-            <section className="mt-5 md:mt-8 lg:mt-10 bg-[#F9FAFB] rounded-[10px] px-2 lg:px-5 py-4">
-              <div className="pb-4 flex lg:items-center justify-between">
-                <div className="max-w-[70%] sm:max-w-none">
-                  <h3 className="text-lg md:text-xl lg:text-2xl text-primary font-semibold">
-                    {home?.collections[1].title}
-                  </h3>
-                  <p className="text-xs sm:text-base text-neutral-600 mt-1">
-                    Personalized Business Cards Printing for all your networking
-                    needs
-                  </p>
+        {
+          home?.collections?.[1]?.product_collections?.length! > 0 && (
+            <>
+              <div className="w-full h-[180px] lg:h-[240px] bg-secondary mt-8 lg:mt-10 rounded-md overflow-hidden relative">
+                <Image
+                  src={home?.banners[2].image}
+                  fill
+                  alt={home?.banners[2].title}
+                  className="object-cover"
+                />
+              </div>
+              <section className="mt-5 md:mt-8 lg:mt-10 bg-[#F9FAFB] rounded-[10px] px-2 lg:px-5 py-4">
+                <div className="pb-4 flex lg:items-center justify-between">
+                  <div className="max-w-[70%] sm:max-w-none">
+                    <h3 className="text-lg md:text-xl lg:text-2xl text-primary font-semibold">
+                      {home?.collections[1].title}
+                    </h3>
+                    <p className="text-xs sm:text-base text-neutral-600 mt-1">
+                      Personalized Business Cards Printing for all your networking
+                      needs
+                    </p>
+                  </div>
+                  <Link
+                    href={`/categories/${home?.collections[1]?.slug}`}
+                    className="sm:w-[115px] px-2 h-8 sm:h-10 flex text-xs sm:text-base items-center justify-center gap-x-2 rounded-full transition-all duration-300 text-[#6835B1] border border-[#6835B1] hover:scale-95"
+                  >
+                    View All <HiArrowRight />
+                  </Link>
                 </div>
-                <Link
-                  href={`/categories/${home?.collections[1]?.slug}`}
-                  className="sm:w-[115px] px-2 h-8 sm:h-10 flex text-xs sm:text-base items-center justify-center gap-x-2 rounded-full transition-all duration-300 text-[#6835B1] border border-[#6835B1] hover:scale-95"
-                >
-                  View All <HiArrowRight />
-                </Link>
-              </div>
-              <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-6">
-                {home?.collections[1]?.product_collections?.map(
-                  (product, i) => (
-                    <ProductCard
-                      data={product}
-                      category={home?.collections[1]?.slug}
-                      key={`p_product_${i}`}
-                    />
-                  )
-                )}
-              </div>
-            </section>
-          </>
+                <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-6">
+                  {home?.collections[1]?.product_collections?.map(
+                    (product, i) => (
+                      <ProductCard
+                        data={product}
+                        category={home?.collections[1]?.slug}
+                        key={`p_product_${i}`}
+                      />
+                    )
+                  )}
+                </div>
+              </section>
+            </>
         )}
         {/* High demand flyers  */}
         {home?.collections?.[2]?.product_collections?.length! > 0 && (
@@ -422,15 +426,17 @@ export default function HomeClient() {
                 </Link>
               </div>
               <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-6">
-                {home?.collections[2]?.product_collections?.map(
-                  (product, i) => (
-                    <ProductCard
-                      data={product}
-                      category={home?.collections[2]?.slug}
-                      key={`h_product_${i}`}
-                    />
+                {
+                  home?.collections[2]?.product_collections?.map(
+                    (product, i) => (
+                      <ProductCard
+                        data={product}
+                        category={home?.collections[2]?.slug}
+                        key={`h_product_${i}`}
+                      />
+                    )
                   )
-                )}
+                }
               </div>
             </section>
           </>
@@ -455,15 +461,17 @@ export default function HomeClient() {
               </Link>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 gap-x-4 gap-y-6">
-              {home?.flash_sales?.[0]?.public_products?.map(
-                (product: any, i) => (
-                  <ProductCard
-                    data={product}
-                    category={'flash-sale'}
-                    key={`b_product_${i}`}
-                  />
+              {
+                home?.flash_sales?.[0]?.public_products?.map(
+                  (product: any, i) => (
+                    <ProductCard
+                      data={product}
+                      category={'flash-sale'}
+                      key={`b_product_${i}`}
+                    />
+                  )
                 )
-              )}
+              }
             </div>
           </section>
           <div className="w-full h-[180px] lg:h-[240px] bg-secondary mt-8 lg:mt-10 rounded-md overflow-hidden relative">
@@ -567,7 +575,7 @@ export default function HomeClient() {
         <section className="mt-5 md:mt-8 lg:mt-10 p-4 sm:px-6 py-5 sm:py-[33px] border border-[#10182833] rounded-[10px] md:flex items-center gap-x-10 justify-between">
           <div className="flex-1 w-full h-[250px] xs:h-[293px] relative">
             <Image
-              src={'/banners/industry-banner.png'}
+              defaultSrc={'/banners/industry-banner.png'}
               isLocal
               fill
               alt="industry banner"
@@ -598,7 +606,7 @@ export default function HomeClient() {
               className="flex-1 flex flex-col gap-y-4 items-center"
             >
               <div className="w-[83px] h-[78px] md:w-[93px] md:h-[88px] relative">
-                <Image src={step.icon} fill alt={step.title} />
+                <Image defaultSrc={step.icon} isLocal fill alt={step.title} />
               </div>
               <div className="text-center">
                 <h4 className="lg:text-lg xl:text-xl font-medium text-primary text-nowrap">

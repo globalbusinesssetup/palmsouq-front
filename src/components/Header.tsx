@@ -56,7 +56,7 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
               className="w-[90px] sm:w-[110px] md:w-[136px] lg:w-[156px] xl:w-[176px] h-10 sm:h-14 relative"
             >
               <Image
-                src="/header_logo.png"
+                defaultSrc="/header_logo.png"
                 isLocal
                 fill
                 alt="logo"

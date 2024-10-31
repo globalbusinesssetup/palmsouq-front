@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import config from '@/config';
 import NextImage, { ImageProps as NextImageProps } from 'next/image';
 
@@ -38,13 +38,20 @@ interface ImageProps extends Omit<NextImageProps, 'src' | 'alt'> {
  * @param {ImageProps} props - Props for configuring the image source, alternative text, and error handling.
  * @returns A Next.js Image component with error handling capabilities.
  */
+
 const Image: React.FC<ImageProps> = ({ src, alt = '', defaultSrc, isLocal, ...props }) => {
-    const fallbackSrc = `${config.imgUri}${defaultSrc ?? config.defaultImage}`;
-    const [imgSrc, setImgSrc] = useState<string>(`${!isLocal ? config.imgUri : ''}${src}`);
+
+    const fallbackSrc = `${isLocal ? '' : config.imgUri}${defaultSrc ?? config.defaultImage}`;
+    const [imgSrc, setImgSrc] = useState<string>(`${config.imgUri}${src}`);
+
     /**
      * Handles image load errors by switching to a fallback image if the main image fails to load.
      */
 
+    useEffect(() => {
+        setImgSrc(src ? `${config.imgUri}${src}` : fallbackSrc);
+    }, [src, fallbackSrc]);
+    
     const handleError = () => {
         if (imgSrc !== fallbackSrc) {
             setImgSrc(fallbackSrc);
@@ -57,7 +64,7 @@ const Image: React.FC<ImageProps> = ({ src, alt = '', defaultSrc, isLocal, ...pr
             alt={alt}
             onError={handleError}
             {...props}
-        />
+          />
     );
 };
 
