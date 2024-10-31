@@ -67,7 +67,7 @@ const ProductCard = ({
       className="border border-neutral-200 rounded-lg bg-white p-2 sm:p-3 max-h-[382px]"
     >
       <Link
-        href={`/${category ?? 'sticker'}/${data?.id ?? 123}`}
+        href={`/${category}/${data?.slug}/${data?.id}`}
         className="block w-full h-[120px] xs:h-[180px] sm:h-[220px] md:h-[200px] xl:h-[228px] rounded overflow-hidden bg-secondary relative"
       >
         <swiper-container

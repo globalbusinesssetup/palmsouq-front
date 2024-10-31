@@ -1,5 +1,11 @@
 'use client';
-import { CategoriesBar, Footer, Header, ProductCard, Image } from '@/components';
+import {
+  CategoriesBar,
+  Footer,
+  Header,
+  ProductCard,
+  Image,
+} from '@/components';
 import Link from 'next/link';
 import { FaArrowRightLong } from 'react-icons/fa6';
 import { features, orderSteps } from '@/constants';
@@ -167,9 +173,7 @@ export default function HomeClient() {
             className="lg:w-5/12 h-[250px] xl:h-[304px] hidden lg:block relative overflow-hidden sm:rounded-[10px] mt-4 lg:mt-0"
           >
             <Image
-              src={
-                home?.slider?.right_top?.image
-              }
+              src={home?.slider?.right_top?.image}
               onError={() => setBannerError(true)}
               fill
               alt={home?.slider?.right_top?.title ?? 'Weekly offer Banner'}
@@ -265,11 +269,6 @@ export default function HomeClient() {
                           src={cat?.image}
                           width={100}
                           height={100}
-                          onError={(
-                            e: React.SyntheticEvent<HTMLImageElement, Event>
-                          ) => {
-                            e.currentTarget.src = `${config.imgUri}default-image.webp`;
-                          }}
                           alt="cat image"
                           loading="lazy"
                           className="rounded-full mx-auto object-contain"
@@ -334,48 +333,47 @@ export default function HomeClient() {
           </>
         )}
         {/* popular business cards  */}
-        {
-          home?.collections?.[1]?.product_collections?.length! > 0 && (
-            <>
-              <div className="w-full h-[180px] lg:h-[240px] bg-secondary mt-8 lg:mt-10 rounded-md overflow-hidden relative">
-                <Image
-                  src={home?.banners[2].image}
-                  fill
-                  alt={home?.banners[2].title}
-                  className="object-cover"
-                />
+        {home?.collections?.[1]?.product_collections?.length! > 0 && (
+          <>
+            <div className="w-full h-[180px] lg:h-[240px] bg-secondary mt-8 lg:mt-10 rounded-md overflow-hidden relative">
+              <Image
+                src={home?.banners[2].image}
+                fill
+                alt={home?.banners[2].title}
+                className="object-cover"
+              />
+            </div>
+            <section className="mt-5 md:mt-8 lg:mt-10 bg-[#F9FAFB] rounded-[10px] px-2 lg:px-5 py-4">
+              <div className="pb-4 flex lg:items-center justify-between">
+                <div className="max-w-[70%] sm:max-w-none">
+                  <h3 className="text-lg md:text-xl lg:text-2xl text-primary font-semibold">
+                    {home?.collections[1].title}
+                  </h3>
+                  <p className="text-xs sm:text-base text-neutral-600 mt-1">
+                    Personalized Business Cards Printing for all your networking
+                    needs
+                  </p>
+                </div>
+                <Link
+                  href={`/${home?.collections[1]?.slug}`}
+                  className="sm:w-[115px] px-2 h-8 sm:h-10 flex text-xs sm:text-base items-center justify-center gap-x-2 rounded-full transition-all duration-300 text-[#6835B1] border border-[#6835B1] hover:scale-95"
+                >
+                  View All <HiArrowRight />
+                </Link>
               </div>
-              <section className="mt-5 md:mt-8 lg:mt-10 bg-[#F9FAFB] rounded-[10px] px-2 lg:px-5 py-4">
-                <div className="pb-4 flex lg:items-center justify-between">
-                  <div className="max-w-[70%] sm:max-w-none">
-                    <h3 className="text-lg md:text-xl lg:text-2xl text-primary font-semibold">
-                      {home?.collections[1].title}
-                    </h3>
-                    <p className="text-xs sm:text-base text-neutral-600 mt-1">
-                      Personalized Business Cards Printing for all your networking
-                      needs
-                    </p>
-                  </div>
-                  <Link
-                    href={`/${home?.collections[1]?.slug}`}
-                    className="sm:w-[115px] px-2 h-8 sm:h-10 flex text-xs sm:text-base items-center justify-center gap-x-2 rounded-full transition-all duration-300 text-[#6835B1] border border-[#6835B1] hover:scale-95"
-                  >
-                    View All <HiArrowRight />
-                  </Link>
-                </div>
-                <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-6">
-                  {home?.collections[1]?.product_collections?.map(
-                    (product, i) => (
-                      <ProductCard
-                        data={product}
-                        category={home?.collections[1]?.slug}
-                        key={`p_product_${i}`}
-                      />
-                    )
-                  )}
-                </div>
-              </section>
-            </>
+              <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-6">
+                {home?.collections[1]?.product_collections?.map(
+                  (product, i) => (
+                    <ProductCard
+                      data={product}
+                      category={home?.collections[1]?.slug}
+                      key={`p_product_${i}`}
+                    />
+                  )
+                )}
+              </div>
+            </section>
+          </>
         )}
         {/* High demand flyers  */}
         {home?.collections?.[2]?.product_collections?.length! > 0 && (
@@ -416,17 +414,15 @@ export default function HomeClient() {
                 </Link>
               </div>
               <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-6">
-                {
-                  home?.collections[2]?.product_collections?.map(
-                    (product, i) => (
-                      <ProductCard
-                        data={product}
-                        category={home?.collections[2]?.slug}
-                        key={`h_product_${i}`}
-                      />
-                    )
+                {home?.collections[2]?.product_collections?.map(
+                  (product, i) => (
+                    <ProductCard
+                      data={product}
+                      category={home?.collections[2]?.slug}
+                      key={`h_product_${i}`}
+                    />
                   )
-                }
+                )}
               </div>
             </section>
           </>
@@ -451,17 +447,15 @@ export default function HomeClient() {
               </Link>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 gap-x-4 gap-y-6">
-              {
-                home?.flash_sales?.[0]?.public_products?.map(
-                  (product: any, i) => (
-                    <ProductCard
-                      data={product}
-                      category={'flash-sale'}
-                      key={`b_product_${i}`}
-                    />
-                  )
+              {home?.flash_sales?.[0]?.public_products?.map(
+                (product: any, i) => (
+                  <ProductCard
+                    data={product}
+                    category={'flash-sale'}
+                    key={`b_product_${i}`}
+                  />
                 )
-              }
+              )}
             </div>
           </section>
           <div className="w-full h-[180px] lg:h-[240px] bg-secondary mt-8 lg:mt-10 rounded-md overflow-hidden relative">
@@ -646,11 +640,7 @@ const CatCard = ({ cat }: any) => {
     >
       <div className="h-[100px] relative mx-1 mb-4 overflow-hidden rounded-md">
         <Image
-          src={
-            imageError
-              ? config.imgUri + 'default-image.webp'
-              : `${config.imgUri}${cat.image}`
-          }
+          src={imageError ? config.defaultImage : cat.image}
           onError={() => setImageError(true)}
           fill
           alt="cat image"

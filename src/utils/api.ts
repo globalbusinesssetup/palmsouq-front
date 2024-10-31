@@ -71,6 +71,7 @@ export const getCommon = async () => {
         languages: [];
         payment: [];
         social: [];
+        about: [];
         setting: Setting;
         default_language: {
           name: string;
@@ -105,6 +106,20 @@ export const getCategories = async () => {
         categories: Categorydata[];
       };
     }>('/common');
+    return res ?? [];
+  } catch (err) {
+    console.error(err);
+  }
+};
+export const getAbout = async (slug: string) => {
+  try {
+    const res = await fetcher<{
+      data: {
+        slug: string;
+        title: string;
+        description: string;
+      };
+    }>(`/page/${slug}`);
     return res ?? [];
   } catch (err) {
     console.error(err);

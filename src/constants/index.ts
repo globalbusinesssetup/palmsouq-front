@@ -370,7 +370,8 @@ export const footerLinks = [
     ],
   },
   {
-    title: 'Top Services',
+    title: 'About',
+    id: 'about',
     links: [
       {
         title: 'Next Day Delivery',

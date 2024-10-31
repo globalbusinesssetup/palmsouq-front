@@ -22,6 +22,7 @@ export type AuthContextTypes = {
   languages: [];
   payment: [];
   social: [];
+  about: { id: number; title: string; slug: string }[];
   ordersData: CartItem[] | [];
   default_language: {
     name: string;
