@@ -100,7 +100,7 @@ const Item: React.FC<ItemProps> = ({ cat, i }) => {
       {cat.public_sub_categories?.map((subcat) => (
         <Link
           key={subcat.id}
-          href={`/categories/${subcat.slug}`}
+          href={`/${subcat.slug}`}
           className="block text-sm xl:text-base text-white hover:bg-white/10 transition-all duration-300 py-2 lg:px-5 border-b lg:border-t-[1px] lg:last:border-y border-[#F5F5F7]/30 pl-10"
         >
           {subcat.title}
@@ -119,7 +119,7 @@ const Item: React.FC<ItemProps> = ({ cat, i }) => {
       {/* Main Category */}
       <Link
         className="flex items-center justify-between w-full hover:bg-white/10 transition-all duration-300 pl-5 text-sm xl:text-base text-white border-b border-[#F5F5F7]/30"
-        href={`/categories/${cat.slug}`}
+        href={`/${cat.slug}`}
       >
         <p className="py-2">{cat.title}</p>
         {/* Chevron for subcategories */}

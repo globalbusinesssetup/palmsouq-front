@@ -27,7 +27,7 @@ const BrandsClient = () => {
       ) : (
         data?.map((b, i) => (
           <Link
-            href={`/categories/brand?sortby=&shipping=&brand=${b?.id}&collection=&rating=0&max=0&min=0&page=`}
+            href={`/brand?sortby=&shipping=&brand=${b?.id}&collection=&rating=0&max=0&min=0&page=`}
             key={b?.id}
             className=""
           >

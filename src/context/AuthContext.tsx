@@ -40,7 +40,9 @@ export const AuthContext = createContext<AuthContextTypes>({
 const AuthProvider = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const [token, setToken] = useState<string | null>(null);
+  const [token, setToken] = useState<string | null>(
+    Cookies.get('token') || null
+  );
   const [isLoading, setLoading] = useState(false);
   const {
     data: common,
@@ -95,6 +97,13 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [isCommonLoading, common]);
 
+  useEffect(() => {
+    const tokenFromCookie = Cookies.get('token');
+    if (tokenFromCookie !== token) {
+      setToken(tokenFromCookie ?? null);
+    }
+  }, [Cookies.get('token')]);
+
   async function login(arg: LoginForm): Promise<{ isSuccess: boolean }> {
     setLoading(true);
     try {
@@ -136,17 +145,25 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     localStorage.removeItem('orders');
   };
 
-  const logOut = () => {
+  const logOut = async () => {
     Cookies.remove('token');
-    queryClient.removeQueries();
+    await queryClient.invalidateQueries({ queryKey: ['user'] });
+    setOrders([]);
+
+    try {
+      await api.post('/user/logout');
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
     toast.warn('Logged out!');
+    await queryClient.resetQueries();
     router.push('/auth/sign-in');
   };
 
   return (
     <AuthContext.Provider
       value={{
-        isLoggedIn: Cookies.get('token') ? true : false,
+        isLoggedIn: !!token,
         user: user?.data,
         login,
         logOut,

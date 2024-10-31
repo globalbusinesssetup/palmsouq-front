@@ -1,4 +1,4 @@
-// app/(default)/categories/[category]/CategoryClient.tsx
+// app/(default)/[category]/CategoryClient.tsx
 
 'use client';
 
@@ -267,7 +267,7 @@ const CategoryClient: React.FC<CategoryClientProps> = ({ category }) => {
                 {data?.category &&
                   data?.category?.child?.map((cat, i) => (
                     <Link
-                      href={`/categories/${cat.slug}`}
+                      href={`/${cat.slug}`}
                       key={i}
                       className="uppercase text-gray-700 inline-block"
                     >

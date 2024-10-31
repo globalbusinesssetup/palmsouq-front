@@ -2,7 +2,7 @@ export const currentYear = new Date().getFullYear();
 export const topBarCategories = [
   {
     title: 'Flyers & Brochures',
-    linke: '/categories/flyers',
+    linke: '/flyers',
   },
   {
     title: 'Paper Products',
@@ -21,38 +21,38 @@ export const topBarCategories = [
 export const categories = [
   {
     title: 'Business cards',
-    link: '/categories/business-card',
-    img: '/categories/cards.png',
+    link: '/business-card',
+    img: '/cards.png',
   },
   {
     title: 'Flyers',
-    link: '/categories/flyers',
-    img: '/categories/flyers.png',
+    link: '/flyers',
+    img: '/flyers.png',
   },
   {
     title: 'Brochures',
-    link: '/categories/brochures',
-    img: '/categories/brochures.png',
+    link: '/brochures',
+    img: '/brochures.png',
   },
   {
     title: 'Stickers',
-    link: '/categories/stickers',
-    img: '/categories/stickers.png',
+    link: '/stickers',
+    img: '/stickers.png',
   },
   {
     title: 'Paper Bags',
-    link: '/categories/paper-bags',
-    img: '/categories/paper-bags.png',
+    link: '/paper-bags',
+    img: '/paper-bags.png',
   },
   {
     title: 'Paper Cups',
-    link: '/categories/paper-cups',
-    img: '/categories/paper-cups.png',
+    link: '/paper-cups',
+    img: '/paper-cups.png',
   },
   {
     title: 'Bill Books',
-    link: '/categories/bill-books',
-    img: '/categories/bill-books.png',
+    link: '/bill-books',
+    img: '/bill-books.png',
   },
 ];
 

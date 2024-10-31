@@ -10,7 +10,7 @@ import {
   DisclosureButton,
   DisclosurePanel,
 } from '@headlessui/react';
-import { FaAngleDown } from 'react-icons/fa6';
+import { FaAngleDown, FaRegHeart } from 'react-icons/fa6';
 import { useRouter } from 'next/navigation';
 import { QueryClient, useQuery } from '@tanstack/react-query';
 import { getProduct, useGetUser } from '@/utils/api';
@@ -31,7 +31,7 @@ type CategoryProps = {
 
 export default function ProductDeatils({ params }: Record<string, any>) {
   const router = useRouter();
-  const { user, isLoggedIn, refetchProfile } = useAuth();
+  const { user, isLoggedIn, refetchProfile, addOrders } = useAuth();
   const [selectedType, setType] = useState('');
   const [quantity, setQuantity] = useState(1);
   const [selectedImage, setImage] = useState('');
@@ -56,8 +56,6 @@ export default function ProductDeatils({ params }: Record<string, any>) {
       setQuantity(type);
     }
   };
-
-  console.log('product =>', product);
 
   const addToCart = async () => {
     if (!isLoggedIn) {
@@ -84,6 +82,52 @@ export default function ProductDeatils({ params }: Record<string, any>) {
       console.log(err);
     }
     setSubmitLoading(false);
+  };
+  const buyNow = async () => {
+    if (!isLoggedIn) {
+      toast.warn('Unauthorized! sign in first.');
+      return;
+    }
+    setSubmitLoading(true);
+    try {
+      const res = await api.post('/cart/action', {
+        product_id: product?.id,
+        inventory_id: product?.inventory[0]?.id,
+        quantity,
+        user_token: user?.email,
+      });
+      if (res?.data?.data?.form) {
+        toast.error(res?.data?.data?.form[0]);
+      } else {
+        refetchProfile();
+        toast.success('Product add Successfully');
+        // addOrders(selectedProducts);
+        // router.push('/checkout');
+      }
+      console.log('add cart res =>', res);
+    } catch (err) {
+      console.log(err);
+    }
+    setSubmitLoading(false);
+  };
+  const addToWishlist = async () => {
+    if (!isLoggedIn) {
+      toast.warn('Unauthorized! sign in first.');
+      return;
+    }
+    try {
+      const res = await api.post('/user/wishlist/action', {
+        product_id: product?.id,
+      });
+      if (res?.data?.data?.form) {
+        toast.error(res?.data?.data?.form[0]);
+      } else {
+        toast.success(res.data?.message);
+      }
+      console.log('add wishlist res =>', res);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   if (isLoading) {
@@ -115,9 +159,9 @@ export default function ProductDeatils({ params }: Record<string, any>) {
             </div>
             <div key={'/'} className="flex items-center">
               <FaAngleRight size={12} />
-              <Link href={`/categories/${product?.category?.slug}`}>
+              <Link href={`/${product?.category_data[0]?.slug}`}>
                 <span className="text-primary hover:underline px-1">
-                  {product?.category?.title}
+                  {product?.category_data[0]?.title}
                 </span>
               </Link>
               <FaAngleRight size={12} />
@@ -225,27 +269,32 @@ export default function ProductDeatils({ params }: Record<string, any>) {
               <h2 className="text-xl lg:text-2xl text-black font-semibold mt-1">
                 {product?.title}
               </h2>
-              <div className="flex-1 flex flex-wrap items-center gap-2 xl:gap-3 py-4 border-b border-[#E6E6E6]">
-                <p
-                  className={`flex items-center justify-center text-xs xl:text-sm font-medium px-4 xl:px-5 h-8 xl:h-[34px] rounded-full text-neutral-600 bg-neutral-100`}
-                >
-                  {product?.id}
-                </p>
-                <p
-                  className={`flex items-center justify-center text-xs xl:text-sm font-medium px-4 xl:px-5 h-8 xl:h-[34px] rounded-full text-neutral-600 bg-neutral-100`}
-                >
-                  {product?.category_data?.[0]?.title}
-                </p>
-                <p
-                  className={`flex items-center justify-center text-xs xl:text-sm font-medium px-4 xl:px-5 h-8 xl:h-[34px] rounded-full text-neutral-600 bg-neutral-100`}
-                >
-                  {product?.brand?.title}
-                </p>
-                <p
-                  className={`flex items-center justify-center text-xs xl:text-sm font-medium px-4 xl:px-5 h-8 xl:h-[34px] rounded-full text-neutral-600 bg-neutral-100`}
-                >
-                  {product?.in_stock ? 'In Stock' : 'Stock out'}
-                </p>
+              <div className="flex flex-row items-center gap-x-3 border-b border-[#E6E6E6]">
+                <div className="flex-1 flex flex-wrap items-center gap-2 xl:gap-3 py-4">
+                  <p
+                    className={`flex items-center justify-center text-xs xl:text-sm font-medium px-4 xl:px-5 h-8 xl:h-[34px] rounded-full text-neutral-600 bg-neutral-100`}
+                  >
+                    {product?.id}
+                  </p>
+                  <p
+                    className={`flex items-center justify-center text-xs xl:text-sm font-medium px-4 xl:px-5 h-8 xl:h-[34px] rounded-full text-neutral-600 bg-neutral-100`}
+                  >
+                    {product?.category_data?.[0]?.title}
+                  </p>
+                  <p
+                    className={`flex items-center justify-center text-xs xl:text-sm font-medium px-4 xl:px-5 h-8 xl:h-[34px] rounded-full text-neutral-600 bg-neutral-100`}
+                  >
+                    {product?.brand?.title}
+                  </p>
+                  <p
+                    className={`flex items-center justify-center text-xs xl:text-sm font-medium px-4 xl:px-5 h-8 xl:h-[34px] rounded-full text-neutral-600 bg-neutral-100`}
+                  >
+                    {Number(product?.stock) > 0 ? 'In Stock' : 'Stock out'}
+                  </p>
+                </div>
+                <button disabled={!isLoggedIn} onClick={addToWishlist}>
+                  <FaRegHeart size={26} />
+                </button>
               </div>
               <div className="flex items-end justify-between pt-8 pb-4">
                 <div className="">
@@ -267,6 +316,7 @@ export default function ProductDeatils({ params }: Record<string, any>) {
                       className="w-8 sm:w-9 lg:w-11 focus-visible:outline-none pb-1 border-b text-[#344054] no-number-input-appearance m-0 text-center text-sm lg:text-base"
                     />
                     <button
+                      disabled={quantity === Number(product?.stock)}
                       onClick={() => handleQuantity('plus')}
                       className="size-5 lg:size-7 flex items-center justify-center rounded bg-neutral-100"
                     >
@@ -276,15 +326,37 @@ export default function ProductDeatils({ params }: Record<string, any>) {
                 </div>
                 <div className="px-4 sm:px-6 py-2 rounded-lg bg-[#F8F9FC]">
                   <h4 className="md:text-lg lg:text-xl text-[#4E5BA6] font-bold">
-                    {(product?.offered ?? 0) * quantity} AED
+                    {(product?.offered ?? product?.selling ?? 0) * quantity} AED
                   </h4>
                   <p className="text-tiny sm:text-xs lg:text-sm text-neutral-500">
                     Estimated Total (Exc. Vat)
                   </p>
                 </div>
               </div>
+              <div
+                className="py-2.5 lg:py-4"
+                dangerouslySetInnerHTML={{ __html: product?.overview || '' }}
+              />
             </div>
             <div className="">
+              <div className="flex justify-end gap-x-4 mt-8">
+                <Button
+                  disabled={Number(product?.stock) < 1}
+                  loading={isSubmitLoading}
+                  onClick={addToCart}
+                  className="h-11 w-[167px]"
+                >
+                  Add to Cart
+                </Button>
+                <Button
+                  disabled={Number(product?.stock) < 1}
+                  loading={isSubmitLoading}
+                  onClick={addToCart}
+                  className="h-11 w-[167px] bg-success border-success"
+                >
+                  Buy it Now
+                </Button>
+              </div>
               <div className="mt-5 sm:mt-8 px-3 sm:px-4 py-1 xs:py-2 sm:py-3 xl:py-3.5 border border-dashed border-neutral-400 rounded-lg xl:rounded-[10px] flex items-center justify-between">
                 <p className="text-tiny sm:text-xs xl:text-sm text-neutral-600 flex-1">
                   Based on selection, your order will be ready within next
@@ -292,16 +364,6 @@ export default function ProductDeatils({ params }: Record<string, any>) {
                 <span className="text-tiny sm:text-xs xl:text-sm text-[#3F206A] whitespace-nowrap font-medium py-1 px-2 sm:px-3 bg-neutral-100 border rounded-full border-[#EAECF0]">
                   24 Business Hours
                 </span>
-              </div>
-              <div className="flex justify-end mt-8">
-                <Button
-                  disabled={!product?.in_stock}
-                  loading={isSubmitLoading}
-                  onClick={addToCart}
-                  className="h-11 w-[167px]"
-                >
-                  Yalla Let&apos;s Go
-                </Button>
               </div>
             </div>
           </div>

@@ -80,122 +80,118 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
               </div>
             </div>
           </div>
-          {showSearch && path === '/' && (
-            <div className="hidden md:block flex-1 relative">
-              <div className="relative">
-                <Input
-                  onChange={(e) => setQuery(e.target.value)}
-                  value={query}
-                  name={'search'}
-                  type="search"
-                  onBlur={() => setFocus(false)}
-                  onClick={() => setFocus(true)}
-                  placeholder="Search your favorite product .."
-                  className="rounded-lg bg-neutral-50 h-10 sm:h-11 w-full focus-visible:outline-neutral-300 pr-3.5 pl-10 py-2 sm:py-2.5 text-[#667085]"
-                />
-                <button
-                  type="button"
-                  className="absolute top-1/2 left-3.5 -translate-y-1/2 text-base text-[#98A2B3]"
-                >
-                  <FiSearch className="text-lg lg:text-xl" />
-                </button>
-              </div>
-              {isFocus && query && (
-                <div className="absolute top-12 shadow-xl left-0 z-50 border-t border-gray-50 bg-white rounded-2xl w-full min-h-[400px] p-4 2xl:p-6">
-                  {isSearchLoading ? (
-                    <>
-                      <div className="grid grid-cols-8 gap-4">
-                        {Array(8)
-                          .fill(' ')
-                          .map((_, i) => (
-                            <div key={`l_${i}`} className="">
-                              <div className=" size-24 bg-gray-200 rounded-lg animate-pulse" />
-                            </div>
-                          ))}
-                      </div>
-                      <div className="grid grid-cols-3 gap-4 mt-6">
-                        {Array(6)
-                          .fill(' ')
-                          .map((_, i) => (
-                            <div key={`l_${i}`} className="">
-                              <div className="w-full h-24 bg-gray-200 rounded-lg animate-pulse" />
-                            </div>
-                          ))}
-                      </div>
-                    </>
-                  ) : !data?.category.length && !data?.product.length ? (
-                    <div className="">
-                      <p className="text-lg">
-                        Noting found for{' '}
-                        <span className="text-primary">
-                          &quot;{query}&quot;
-                        </span>
-                      </p>
+          <div className="hidden md:block flex-1 relative">
+            <div className="relative">
+              <Input
+                onChange={(e) => setQuery(e.target.value)}
+                value={query}
+                name={'search'}
+                type="search"
+                onBlur={() => setFocus(false)}
+                onClick={() => setFocus(true)}
+                placeholder="Search your favorite product .."
+                className="rounded-lg bg-neutral-50 h-10 sm:h-11 w-full focus-visible:outline-neutral-300 pr-3.5 pl-10 py-2 sm:py-2.5 text-[#667085]"
+              />
+              <button
+                type="button"
+                className="absolute top-1/2 left-3.5 -translate-y-1/2 text-base text-[#98A2B3]"
+              >
+                <FiSearch className="text-lg lg:text-xl" />
+              </button>
+            </div>
+            {isFocus && query && (
+              <div className="absolute top-12 shadow-xl left-0 z-50 border-t border-gray-50 bg-white rounded-2xl w-full min-h-[400px] p-4 2xl:p-6">
+                {isSearchLoading ? (
+                  <>
+                    <div className="grid grid-cols-8 gap-4">
+                      {Array(8)
+                        .fill(' ')
+                        .map((_, i) => (
+                          <div key={`l_${i}`} className="">
+                            <div className=" size-24 bg-gray-200 rounded-lg animate-pulse" />
+                          </div>
+                        ))}
                     </div>
-                  ) : (
-                    <>
-                      {data?.category.length! > 0 && (
-                        <>
-                          <h4 className="text-gray-700 text-xl font-semibold">
-                            Categories
-                          </h4>
-                          <div className="pt-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-8 gap-2 px-2 2xl:px-4">
-                            {data?.category?.map((cat, i) => (
-                              <div key={`cat_${i}`} className="">
-                                <div className="relative h-20 2xl:h-24 overflow-hidden rounded-lg px-2">
-                                  <Image
-                                    src={config.imgUri + cat.image}
-                                    fill
-                                    className="object-cover bg-gray-200 text-sm"
-                                    alt="category"
-                                  />
-                                </div>
-                                <p className="font-medium uppercase text-xs mt-2 text-center whitespace-nowrap max-w-[95px] overflow-hidden text-ellipsis">
-                                  {cat.title}
+                    <div className="grid grid-cols-3 gap-4 mt-6">
+                      {Array(6)
+                        .fill(' ')
+                        .map((_, i) => (
+                          <div key={`l_${i}`} className="">
+                            <div className="w-full h-24 bg-gray-200 rounded-lg animate-pulse" />
+                          </div>
+                        ))}
+                    </div>
+                  </>
+                ) : !data?.category.length && !data?.product.length ? (
+                  <div className="">
+                    <p className="text-lg">
+                      Noting found for{' '}
+                      <span className="text-primary">&quot;{query}&quot;</span>
+                    </p>
+                  </div>
+                ) : (
+                  <>
+                    {data?.category.length! > 0 && (
+                      <>
+                        <h4 className="text-gray-700 text-xl font-semibold">
+                          Categories
+                        </h4>
+                        <div className="pt-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-8 gap-2 px-2 2xl:px-4">
+                          {data?.category?.map((cat, i) => (
+                            <div key={`cat_${i}`} className="">
+                              <div className="relative h-20 2xl:h-24 overflow-hidden rounded-lg px-2">
+                                <Image
+                                  src={config.imgUri + cat.image}
+                                  fill
+                                  className="object-cover bg-gray-200 text-sm"
+                                  alt="category"
+                                />
+                              </div>
+                              <p className="font-medium uppercase text-xs mt-2 text-center whitespace-nowrap max-w-[95px] overflow-hidden text-ellipsis">
+                                {cat.title}
+                              </p>
+                            </div>
+                          ))}
+                        </div>
+                      </>
+                    )}
+                    {data?.product.length! > 0 && (
+                      <>
+                        <h4 className="text-gray-700 text-xl font-semibold mt-5">
+                          Products
+                        </h4>
+                        <div className="pt-6 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-2 2xl:gap-4 px-2 2xl:px-4">
+                          {data?.product?.map((pd, i) => (
+                            <div
+                              key={`cat_${i}`}
+                              className="border border-gray-200 flex gap-x-4 px-3 py-2 rounded-md overflow-hidden"
+                            >
+                              <div className="relative size-10 2xl:size-14 overflow-hidden rounded-lg px-2">
+                                <Image
+                                  src={config.imgUri + pd.image}
+                                  fill
+                                  className="object-contain bg-gray-200 text-xs"
+                                  alt="product"
+                                />
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <p className="font-medium uppercase text-[10px] 2xl:text-xs mt-2 text-ellipsis overflow-hidden whitespace-nowrap max-w-full">
+                                  {pd.title}
+                                </p>
+                                <p className="font-medium uppercase text-[10px] 2xl:text-xs mt-2">
+                                  {pd?.offered ?? pd.selling} AED
                                 </p>
                               </div>
-                            ))}
-                          </div>
-                        </>
-                      )}
-                      {data?.product.length! > 0 && (
-                        <>
-                          <h4 className="text-gray-700 text-xl font-semibold mt-5">
-                            Products
-                          </h4>
-                          <div className="pt-6 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-2 2xl:gap-4 px-2 2xl:px-4">
-                            {data?.product?.map((pd, i) => (
-                              <div
-                                key={`cat_${i}`}
-                                className="border border-gray-200 flex gap-x-4 px-3 py-2 rounded-md overflow-hidden"
-                              >
-                                <div className="relative size-10 2xl:size-14 overflow-hidden rounded-lg px-2">
-                                  <Image
-                                    src={config.imgUri + pd.image}
-                                    fill
-                                    className="object-contain bg-gray-200 text-xs"
-                                    alt="product"
-                                  />
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                  <p className="font-medium uppercase text-[10px] 2xl:text-xs mt-2 text-ellipsis overflow-hidden whitespace-nowrap max-w-full">
-                                    {pd.title}
-                                  </p>
-                                  <p className="font-medium uppercase text-[10px] 2xl:text-xs mt-2">
-                                    {pd?.offered ?? pd.selling} AED
-                                  </p>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </>
-                      )}
-                    </>
-                  )}
-                </div>
-              )}
-            </div>
-          )}
+                            </div>
+                          ))}
+                        </div>
+                      </>
+                    )}
+                  </>
+                )}
+              </div>
+            )}
+          </div>
           <button className=" md:hidden" onClick={() => setIsOpen(true)}>
             <FaBars className="text-xl sm:text-2xl text-green" />
           </button>
