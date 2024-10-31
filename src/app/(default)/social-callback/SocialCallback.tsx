@@ -27,7 +27,7 @@ const SocialCallback: React.FC = () => {
           throw new Error('Token has expired');
         }
 
-        Cookies.set('token', token, {
+        Cookies.set('token', token as string, {
           secure: true,
           sameSite: 'lax',
           expires: dayjs(decoded.exp).toDate(),
