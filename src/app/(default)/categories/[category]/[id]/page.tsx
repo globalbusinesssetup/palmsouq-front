@@ -60,3 +60,4 @@ import { Metadata, ResolvingMetadata } from 'next';
 export default function ProductPage({ params }: any) {
   return <ProductDeatils params={params} />;
 }
+

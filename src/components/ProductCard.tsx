@@ -23,7 +23,7 @@ const ProductCard = ({
   const [isHover, setHover] = useState(false);
 
   const handleError = () => {
-    setImage('/categories/paper-bags.png'); // fallback image path
+    setImage('/default-image.webp'); // fallback image path
   };
 
   const offeredPercentage = data?.selling
@@ -67,7 +67,7 @@ const ProductCard = ({
       className="border border-neutral-200 rounded-lg bg-white p-2 sm:p-3 max-h-[382px]"
     >
       <Link
-        href={`/categories/${category ?? 'sticker'}/${data?.id ?? 123}`}
+        href={`/${category ?? 'sticker'}/${data?.id ?? 123}`}
         className="block w-full h-[120px] xs:h-[180px] sm:h-[220px] md:h-[200px] xl:h-[228px] rounded overflow-hidden bg-secondary relative"
       >
         <swiper-container
@@ -104,7 +104,7 @@ const ProductCard = ({
       <div className="mt-2 py-2.5">
         <p className="text-xs text-success">Category name</p>
         <Link
-          href={`/categories/${category ?? 'sticker'}/${data?.id ?? 123}`}
+          href={`/${category}/${data?.slug}/${data?.id}`}
           className="mt-1 flex items-center justify-between gap-x-3"
         >
           <h5 className="text-sm font-bold text-neutral-800 whitespace-nowrap overflow-hidden flex-1 text-ellipsis">

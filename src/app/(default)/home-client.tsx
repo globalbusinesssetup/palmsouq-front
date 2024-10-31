@@ -15,6 +15,7 @@ import { getCategories, getHome } from '@/utils/api';
 import { temp_banner } from '@/utils/helper';
 import useAuth from '@/hooks/useAuth';
 import config from '@/config';
+import { set } from 'react-hook-form';
 
 type SwiperElement = Element & {
   swiper?: {
@@ -24,9 +25,9 @@ type SwiperElement = Element & {
 };
 
 const catBreakpoints = [
-  { width: 1279, slide: 7 },
-  { width: 1023, slide: 6 },
-  { width: 767, slide: 4 },
+  { width: 1279, slide: 12 },
+  { width: 1023, slide: 8 },
+  { width: 767, slide: 6 },
   { width: 639, slide: 3 },
   { width: 0, slide: 2 },
 ];
@@ -54,6 +55,7 @@ export default function HomeClient() {
   const [swiperEl, setSwiperEl] = useState<NodeListOf<SwiperElement> | null>(
     null
   );
+  const [bannerError, setBannerError] = useState(false);
   const { data, isLoading: isCatLoading } = useQuery({
     queryKey: ['categories'],
     queryFn: getCategories,
@@ -168,6 +170,7 @@ export default function HomeClient() {
               src={
                 home?.slider?.right_top?.image
               }
+              onError={() => setBannerError(true)}
               fill
               alt={home?.slider?.right_top?.title ?? 'Weekly offer Banner'}
               className="bg-gray-100"
@@ -204,25 +207,7 @@ export default function HomeClient() {
                 {home?.featured_categories?.map(
                   (cat: { slug: string; title: string; image: string }, i) => (
                     <swiper-slide key={`cat_${i}`} className="">
-                      <Link
-                        href={`/categories/${cat.slug}`}
-                        className="block rounded-lg border border-[#F5F5F7] xs:min-w-[155px] flex-1 pt-4 overflow-hidden"
-                      >
-                        <div className="h-[150px] relative mx-1 mb-4 overflow-hidden rounded-md">
-                          <Image
-                            src={cat?.image}
-                            fill
-                            alt="cat image"
-                            loading="lazy"
-                          />
-                        </div>
-                        <div className="px-3 xs:px-5 py-3 text-xs font-semibold text-neutral-600 transition-all duration-300 hover:text-primary/70 flex items-center justify-center gap-x-2 whitespace-nowrap">
-                          <p className="flex-1 overflow-hidden text-ellipsis">
-                            {cat?.title}
-                          </p>
-                          <FaArrowRightLong className="text-base" />
-                        </div>
-                      </Link>
+                      <CatCard cat={cat} />
                     </swiper-slide>
                   )
                 )}
@@ -272,7 +257,7 @@ export default function HomeClient() {
                 ) => (
                   <swiper-slide key={`cat_${i}`} className="">
                     <Link
-                      href={`/categories/brand?sortby=&shipping=&brand=${cat.id}&collection=&rating=0&max=0&min=0&page=`}
+                      href={`/brand?sortby=&shipping=&brand=${cat.id}&collection=&rating=0&max=0&min=0&page=`}
                       className="block rounded-lg xs:min-w-[155px] flex-1 pt-4 overflow-hidden"
                     >
                       <div className="h-[100px] relative mx-1 mb-4 overflow-hidden rounded-md">
@@ -280,6 +265,11 @@ export default function HomeClient() {
                           src={cat?.image}
                           width={100}
                           height={100}
+                          onError={(
+                            e: React.SyntheticEvent<HTMLImageElement, Event>
+                          ) => {
+                            e.currentTarget.src = `${config.imgUri}default-image.webp`;
+                          }}
                           alt="cat image"
                           loading="lazy"
                           className="rounded-full mx-auto object-contain"
@@ -367,7 +357,7 @@ export default function HomeClient() {
                     </p>
                   </div>
                   <Link
-                    href={`/categories/${home?.collections[1]?.slug}`}
+                    href={`/${home?.collections[1]?.slug}`}
                     className="sm:w-[115px] px-2 h-8 sm:h-10 flex text-xs sm:text-base items-center justify-center gap-x-2 rounded-full transition-all duration-300 text-[#6835B1] border border-[#6835B1] hover:scale-95"
                   >
                     View All <HiArrowRight />
@@ -646,3 +636,31 @@ export default function HomeClient() {
     </>
   );
 }
+
+const CatCard = ({ cat }: any) => {
+  const [imageError, setImageError] = useState(false);
+  return (
+    <Link
+      href={`/${cat.slug}`}
+      className="block rounded-lg bg-[#F5F5F7] xs:min-w-[107px] flex-1 pt-2 overflow-hidden"
+    >
+      <div className="h-[100px] relative mx-1 mb-4 overflow-hidden rounded-md">
+        <Image
+          src={
+            imageError
+              ? config.imgUri + 'default-image.webp'
+              : `${config.imgUri}${cat.image}`
+          }
+          onError={() => setImageError(true)}
+          fill
+          alt="cat image"
+          loading="lazy"
+        />
+      </div>
+      <div className="px-3 xs:px-5 py-3 text-xs font-semibold text-neutral-600 transition-all duration-300 hover:text-primary/70 flex items-center justify-center gap-x-2 whitespace-nowrap">
+        <p className="flex-1 overflow-hidden text-ellipsis">{cat?.title}</p>
+        <FaArrowRightLong className="text-base" />
+      </div>
+    </Link>
+  );
+};

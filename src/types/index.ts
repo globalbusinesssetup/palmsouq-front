@@ -141,6 +141,7 @@ interface SingleProductData {
   updated_at: string;
   admin_id: string;
   slug: string;
+  stock: string;
   price: string | null;
   end_time: string | null;
   wishlisted: string | null;
