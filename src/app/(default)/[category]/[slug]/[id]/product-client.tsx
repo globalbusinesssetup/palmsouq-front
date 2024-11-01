@@ -182,6 +182,7 @@ export default function ProductDeatils({ params }: Record<string, any>) {
                       ? `${config.imgUri + selectedImage}`
                       : `${config.imgUri + product?.image}`
                   }
+                  onError={() => setImage(config.imgUri + config.defaultImage)}
                   fill
                   alt={product?.image ?? 'product image'}
                   // className="object-cover"
