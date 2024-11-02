@@ -204,12 +204,23 @@ export const getAddress = async (page?: number) => {
   }
 };
 
-export const getCart = async (token: string) => {
+export const getCart = async () => {
+  const token = Cookies.get('user_token');
   try {
     const res = await fetcher<{ data: [] }>(
       `/cart/by-user?user_token=${token}`
     );
     return res ?? [];
+  } catch (err) {
+    console.error(err);
+  }
+};
+export const getWishList = async () => {
+  try {
+    const res = await fetcher<{ data: { data: [] } }>(
+      `/user/wishlist/all?order_by=created_at&type=desc&page=1`
+    );
+    return res?.data?.data ?? [];
   } catch (err) {
     console.error(err);
   }
@@ -241,7 +252,7 @@ export const getOrders = async () => {
       order_by: 'created_at',
       page: 1,
       q: null,
-      user_token: Cookies.get('token'),
+      user_token: Cookies.get('user_token'),
     });
     return data;
   } catch (err) {

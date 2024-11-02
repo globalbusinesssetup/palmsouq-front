@@ -12,7 +12,7 @@ import {
 } from '@headlessui/react';
 import { FaAngleDown, FaRegHeart } from 'react-icons/fa6';
 import { useRouter } from 'next/navigation';
-import { QueryClient, useQuery } from '@tanstack/react-query';
+import { QueryClient, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getProduct, useGetUser } from '@/utils/api';
 import { api } from '@/utils/fetcher';
 import { toast } from 'react-toastify';
@@ -21,6 +21,7 @@ import config from '@/config';
 import { FaAngleRight } from 'react-icons/fa6';
 import ImageMagnifier from '@/components/common/ImageMagnifier';
 import { temp_banner } from '@/utils/helper';
+import Cookies from 'js-cookie';
 
 type CategoryProps = {
   params: {
@@ -37,6 +38,7 @@ export default function ProductDeatils({ params }: Record<string, any>) {
   const [selectedImage, setImage] = useState('');
   const [isSubmitLoading, setSubmitLoading] = useState(false);
   const [bannerError, setBannerError] = useState(false);
+  const queryClient = useQueryClient();
 
   const { data: product, isLoading } = useQuery({
     queryKey: ['product', params.id],
@@ -58,17 +60,18 @@ export default function ProductDeatils({ params }: Record<string, any>) {
   };
 
   const addToCart = async () => {
-    if (!isLoggedIn) {
-      toast.warn('Unauthorized! sign in first.');
-      return;
-    }
+    // if (!isLoggedIn) {
+    //   toast.warn('Unauthorized! sign in first.');
+    //   return;
+    // }
+    const token = Cookies.get('user_token');
     setSubmitLoading(true);
     try {
       const res = await api.post('/cart/action', {
         product_id: product?.id,
         inventory_id: product?.inventory[0]?.id,
         quantity,
-        user_token: user?.email,
+        user_token: token,
       });
       if (res?.data?.data?.form) {
         toast.error(res?.data?.data?.form[0]);
@@ -84,17 +87,18 @@ export default function ProductDeatils({ params }: Record<string, any>) {
     setSubmitLoading(false);
   };
   const buyNow = async () => {
-    if (!isLoggedIn) {
-      toast.warn('Unauthorized! sign in first.');
-      return;
-    }
+    // if (!isLoggedIn) {
+    //   toast.warn('Unauthorized! sign in first.');
+    //   return;
+    // }
+    const token = Cookies.get('user_token');
     setSubmitLoading(true);
     try {
       const res = await api.post('/cart/action', {
         product_id: product?.id,
         inventory_id: product?.inventory[0]?.id,
         quantity,
-        user_token: user?.email,
+        user_token: token,
       });
       if (res?.data?.data?.form) {
         toast.error(res?.data?.data?.form[0]);
@@ -123,6 +127,7 @@ export default function ProductDeatils({ params }: Record<string, any>) {
         toast.error(res?.data?.data?.form[0]);
       } else {
         toast.success(res.data?.message);
+        queryClient.invalidateQueries({ queryKey: ['wishlist'] });
       }
       console.log('add wishlist res =>', res);
     } catch (err) {

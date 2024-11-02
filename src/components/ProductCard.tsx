@@ -9,13 +9,16 @@ import { toast } from 'react-toastify';
 import { api } from '@/utils/fetcher';
 import { VscLoading } from 'react-icons/vsc';
 import config from '@/config';
+import Cookies from 'js-cookie';
 
 const ProductCard = ({
   data,
   category,
+  isWishList = false,
 }: {
   data?: ProductData;
   category?: string | number;
+  isWishList?: boolean;
 }) => {
   const { isLoggedIn, user, refetchProfile } = useAuth();
   const [image, setImage] = useState(config.imgUri + data?.image);
@@ -37,13 +40,14 @@ const ProductCard = ({
       toast.warn('Unauthorized! sign in first.');
       return;
     }
+    const token = Cookies.get('user_token');
     setSubmitLoading(true);
     try {
       const res = await api.post('/cart/action', {
         product_id: data?.id,
         // inventory_id: data?.inventory[0]?.id,
         quantity: 1,
-        user_token: user?.email,
+        user_token: token,
       });
       if (res?.data?.data?.form) {
         toast.error(res?.data?.data?.form[0]);
@@ -117,25 +121,27 @@ const ProductCard = ({
           {Number(data?.offered) > 0 ? offeredPercentage.toFixed() : 0}%
         </p>
       </div>
-      <div className=" sm:pt-3 flex items-center justify-between gap-x-2.5">
-        <div className="flex-1 flex items-center justify-center gap-x-1 h-7 py-1 rounded-full text-center bg-secondary text-xs xl:text-sm text-[#344054] font-medium">
-          Price:{' '}
-          <span className="font-semibold">
-            {Number(data?.offered) > 0 ? data?.offered : data?.selling}
-          </span>
+      {!isWishList && (
+        <div className=" sm:pt-3 flex items-center justify-between gap-x-2.5">
+          <div className="flex-1 flex items-center justify-center gap-x-1 h-7 py-1 rounded-full text-center bg-secondary text-xs xl:text-sm text-[#344054] font-medium">
+            Price:{' '}
+            <span className="font-semibold">
+              {Number(data?.offered) > 0 ? data?.offered : data?.selling}
+            </span>
+          </div>
+          <button
+            onClick={addToCart}
+            disabled={isSubmitLoading}
+            className="flex-1 hidden sm:flex items-center justify-center gap-x-1 h-7 py-1 rounded-full text-center bg-secondary text-xs xl:text-sm text-[#344054] font-medium hover:bg-primary hover:text-white transition-all duration-300"
+          >
+            {isSubmitLoading ? (
+              <VscLoading size={12} className="animate-spin" />
+            ) : (
+              'Add to cart'
+            )}
+          </button>
         </div>
-        <button
-          onClick={addToCart}
-          disabled={isSubmitLoading}
-          className="flex-1 hidden sm:flex items-center justify-center gap-x-1 h-7 py-1 rounded-full text-center bg-secondary text-xs xl:text-sm text-[#344054] font-medium hover:bg-primary hover:text-white transition-all duration-300"
-        >
-          {isSubmitLoading ? (
-            <VscLoading size={12} className="animate-spin" />
-          ) : (
-            'Add to cart'
-          )}
-        </button>
-      </div>
+      )}
     </div>
   );
 };

@@ -36,6 +36,7 @@ import {
 import AddAddress from './AddAddress';
 import { Address as AddressType, CartItem, Country } from '@/types';
 import UpdateAddress from './UpdateAddress';
+import Cookies from 'js-cookie';
 
 const steps = [
   {
@@ -235,9 +236,10 @@ const Checkout = () => {
   };
 
   const handleOrder = async () => {
+    const token = Cookies.get('user_token');
     try {
       const order = orderEncrypt({
-        user_token: user?.data?.email!,
+        user_token: token!,
         order_method: 1,
         voucher: '',
         time_zone: timezone,
