@@ -272,7 +272,7 @@ interface ShippingPlace {
 }
 
 export interface ProductResponse {
-  data: SingleProductData & { banner: string };
+  data: SingleProductData & { banner: string; sku: string; barcode: string };
   status: number;
   token: string | null;
   message: string;

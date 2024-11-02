@@ -31,7 +31,8 @@ type SwiperElement = Element & {
 };
 
 const catBreakpoints = [
-  { width: 1279, slide: 12 },
+  { width: 1440, slide: 12 },
+  { width: 1279, slide: 10 },
   { width: 1023, slide: 8 },
   { width: 767, slide: 6 },
   { width: 639, slide: 3 },
@@ -636,7 +637,7 @@ const CatCard = ({ cat }: any) => {
   return (
     <Link
       href={`/${cat.slug}`}
-      className="block rounded-lg bg-[#F5F5F7] xs:min-w-[107px] flex-1 pt-2 overflow-hidden"
+      className="block rounded-lg bg-[#F5F5F7] xs:min-w-[95px] 2xl:min-w-[107px] flex-1 pt-2 overflow-hidden"
     >
       <div className="h-[100px] relative mx-1 mb-4 overflow-hidden rounded-md">
         <Image
