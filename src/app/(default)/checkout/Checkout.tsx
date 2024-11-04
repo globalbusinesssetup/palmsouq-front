@@ -10,7 +10,7 @@ import Image from 'next/image';
 import { IoCardOutline, IoWalletOutline } from 'react-icons/io5';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { FaCheck } from 'react-icons/fa6';
+import { FaCheck, FaHandshake } from 'react-icons/fa6';
 import { BiCheckCircle, BiLoaderAlt } from 'react-icons/bi';
 import useAuth from '@/hooks/useAuth';
 import {
@@ -110,6 +110,8 @@ const Checkout = () => {
   const [isUpdateLoding, setUpdateLoading] = useState(false);
   const isMounted = useMount();
   const [isAddAddressOpen, setAddAddressOpen] = useState(false);
+  const [orderMethod, setMethod] = useState(1);
+  const [isSubmitLoading, setSubmitLoading] = useState(false); //[isLoading]
 
   useEffect(() => {
     if (ordersData.length < 1 && isMounted) {
@@ -132,6 +134,12 @@ const Checkout = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentStep, params]);
+
+  useEffect(() => {
+    if (!isPayDataLoading) {
+      setMethod(payData?.default!);
+    }
+  }, [payData, isPayDataLoading]);
 
   // const handlePayment = useCallback(() => {
   //   const options: RazorpayOptions = {
@@ -229,28 +237,36 @@ const Checkout = () => {
       handleUpdateCart();
       setStep((prev) => prev + 1);
       router.push(`/checkout?currentStep=${currentStep + 1}`);
-      return;
+    } else {
+      if (orderMethod === 1) {
+        setOpen(true);
+      } else {
+        handleOrder();
+      }
     }
-    setOpen(true);
     console.log('Clicked!');
   };
 
   const handleOrder = async () => {
     const token = Cookies.get('user_token');
+    setSubmitLoading(true);
     try {
       const order = orderEncrypt({
         user_token: token!,
-        order_method: 1,
+        order_method: orderMethod,
         voucher: '',
         time_zone: timezone,
       });
       const res = await api.post('order/action', {
         data: order,
       });
-      // if (res?.data?.data.form[0]) {
-      //   console.log(res?.data?.data.form[0]);
-      //   return;
-      // }
+      if (res?.data?.message) {
+        console.log(res?.data?.data?.form[0]);
+        toast.error(res?.data?.data?.form[0]);
+        setSubmitLoading(false);
+        return;
+      }
+      setSubmitLoading(false);
       removeOrders();
       queryClient.invalidateQueries({ queryKey: ['cart', 'orders'] });
       toast.success('Order placed Successfully');
@@ -379,7 +395,15 @@ const Checkout = () => {
                 Select Payment Options
               </h4>
               <div className="mt-6 grid sm:grid-cols-2 gap-x-6 gap-y-5 sm:gap-y-0 sm:max-w-[506px]">
-                <div className="px-6 py-4 border rounded-lg border-[#4B4EFC] flex-1">
+                <button
+                  disabled={payData?.stripe! === 0}
+                  onClick={() => setMethod(1)}
+                  className={`cursor-pointer px-6 py-4 border rounded-lg flex-1 ${
+                    orderMethod === 1
+                      ? 'border-[#9B9DFD]'
+                      : 'border-neutral-300'
+                  }`}
+                >
                   <p className="text-sm font-semibold text-neutral-800">
                     Pay with Card
                   </p>
@@ -405,8 +429,8 @@ const Checkout = () => {
                     </span>
                     .
                   </p>
-                </div>
-                <div className="p-6 border rounded-lg border-neutral-300 flex-1 h-full flex flex-col items-center justify-center">
+                </button>
+                {/* <div className="p-6 border rounded-lg border-neutral-300 flex-1 h-full flex flex-col items-center justify-center">
                   <Avatar className="bg-neutral-50 mx-auto size-9">
                     <IoWalletOutline className="text-[#344054] text-lg" />
                   </Avatar>
@@ -417,7 +441,28 @@ const Checkout = () => {
                     Wallet Balance :{' '}
                     <span className="text-primary font-semibold">0.00 AED</span>
                   </p>
-                </div>
+                </div> */}
+                <button
+                  disabled={payData?.cash_on_delivery! === 0}
+                  onClick={() => setMethod(2)}
+                  className={`cursor-pointer p-6 border rounded-lg flex-1 h-full flex flex-col items-center justify-center ${
+                    orderMethod === 2
+                      ? 'border-[#9B9DFD]'
+                      : 'border-neutral-300'
+                  }`}
+                >
+                  <Avatar className="bg-neutral-50 mx-auto size-9">
+                    <FaHandshake className="text-[#344054] text-lg" />
+                  </Avatar>
+                  <h5 className="mt-2 text-sm font-semibold text-neutral-800">
+                    COD
+                  </h5>
+                  <p className="text-xs text-neutral-400 mt-6">
+                    <span className="text-primary font-semibold">
+                      Cash on delivery
+                    </span>
+                  </p>
+                </button>
               </div>
             </div>
           ) : (
@@ -463,7 +508,7 @@ const Checkout = () => {
               </button>
               <Button
                 // disabled={currentStep === 0}
-                loading={currentStep === 0 && isUpdateLoding}
+                loading={isUpdateLoding || isSubmitLoading}
                 onClick={handleNext}
                 className="flex items-center justify-center gap-x-2 w-[170px] sm:w-[227px] text-xs sm:text-sm py-2 sm:py-2.5"
               >

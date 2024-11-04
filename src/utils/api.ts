@@ -94,6 +94,8 @@ export const getPayMethods = async () => {
         stripe_key: string;
         stripe_secret: string;
         stripe: number;
+        cash_on_delivery: number;
+        default: number;
       };
     }>('/payment-gateway');
     return data;
