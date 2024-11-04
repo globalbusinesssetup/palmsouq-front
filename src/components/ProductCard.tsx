@@ -16,7 +16,7 @@ const ProductCard = ({
   category,
   isWishList = false,
 }: {
-  data?: ProductData & { inventory: any[] };
+  data?: ProductData;
   category?: string | number;
   isWishList?: boolean;
 }) => {
