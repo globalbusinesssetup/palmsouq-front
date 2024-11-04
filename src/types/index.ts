@@ -82,6 +82,7 @@ export type ProductData = {
   image: string;
   review_count: number;
   rating: number;
+  inventory?: any;
 };
 
 export type ProductsCommonType = {
