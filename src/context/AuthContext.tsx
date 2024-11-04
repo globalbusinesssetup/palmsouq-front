@@ -4,6 +4,7 @@ import {
   CartItem,
   Categorydata,
   Country,
+  GoogleLoginPayload,
   LoginForm,
   Setting,
 } from '@/types';
@@ -16,10 +17,18 @@ import { api } from '@/utils/fetcher';
 import dayjs from 'dayjs';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { getCommon, getCountries, useGetUser } from '@/utils/api';
+import { jwtDecode, JwtPayload } from 'jwt-decode';
+
+interface CustomJwtPayload extends JwtPayload {
+  exp: number;
+  iat: number;
+  aud: string;
+}
 
 export const AuthContext = createContext<AuthContextTypes>({
   isLoggedIn: false,
   login: async () => ({ isSuccess: false }),
+  socialLogin: async () => ({ isSuccess: false }),
   logOut: () => {},
   refetchProfile: () => {},
   addOrders: () => {},
@@ -163,6 +172,43 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   }
 
+  async function socialLogin(arg:GoogleLoginPayload): Promise<{ isSuccess: boolean }> {
+    setLoading(true);
+    try {
+      const token = arg.token;
+      if (token) {
+        const decoded = jwtDecode<CustomJwtPayload>(token);
+        const currentTime = Date.now() / 1000;
+
+        if (decoded.exp && decoded.exp < currentTime) {
+          throw new Error('Token has expired');
+        }
+
+        Cookies.set('token', token as string, {
+          secure: true,
+          sameSite: 'lax',
+          expires: dayjs(decoded.exp).toDate(),
+        });
+        setToken(token);
+        queryClient.invalidateQueries({ queryKey: ['user'] });
+        router.push('/dashboard/profile');
+        toast.success('Login succesfully');
+        return { isSuccess: true };
+      } else {
+        toast.error('Failed login using google');
+        return { isSuccess: false };
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        throw error.response?.data || 'An error occurred';
+      } else {
+        throw 'An unexpected error occurred';
+      }
+    } finally {
+      setLoading(false);
+    }
+  }
+
   const addOrders = (products: CartItem[]) => {
     setOrders(products);
     localStorage.setItem('orders', JSON.stringify(products));
@@ -195,6 +241,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         userToken: userToken,
         user: user?.data,
         login,
+        socialLogin,
         logOut,
         refetchProfile,
         isLoading: userLoading || isLoading || isCommonLoading,

@@ -2,6 +2,11 @@ export type LoginForm = {
   email: string;
   password?: string;
 };
+
+export type GoogleLoginPayload = {
+  token: string
+};
+
 export type RegisterForm = {
   first_name: string;
   last_name: string;
@@ -14,6 +19,7 @@ export type AuthContextTypes = {
   userToken: string | null;
   user?: Record<string, any>;
   login: (loginData: any) => Promise<{ isSuccess: boolean }>;
+  socialLogin: (loginData: any) => Promise<{ isSuccess: boolean }>;
   logOut: () => void;
   refetchProfile: () => void;
   removeOrders: () => void;
