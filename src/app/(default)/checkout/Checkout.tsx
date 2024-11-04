@@ -102,9 +102,9 @@ const Checkout = () => {
     queryFn: getCountries,
   });
   const [currentStep, setStep] = useState(0);
-  const [defaultAddress, setDefaultAddress] = useState(addresses?.data[0]);
+  const [defaultAddress, setDefaultAddress] = useState(addresses?.data?.[0]);
   const [deliveryOption, setDeliveryOption] = useState(
-    deliveryOptions[0].value
+    deliveryOptions?.[0].value
   );
   const [isOpen, setOpen] = useState(false);
   const [isUpdateLoding, setUpdateLoading] = useState(false);
@@ -119,7 +119,7 @@ const Checkout = () => {
     if (!supportedAreas.includes(defaultAddress?.state!)) {
       setDeliveryOption(deliveryOptions[1].value);
     }
-    setDefaultAddress(addresses?.data[0]!);
+    setDefaultAddress(addresses?.data?.[0]!);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [addresses, ordersData]);
 
@@ -523,7 +523,7 @@ const Checkout = () => {
                 Total (Exc. Vat)
               </h6>
               <h4 className="md:text-lg font-bold text-primary">
-                {totalPriceWithDeliveryVat} AED
+                {totalPriceWithDeliveryVat.toFixed(2)} AED
               </h4>
             </div>
           </div>

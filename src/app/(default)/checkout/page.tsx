@@ -1,7 +1,10 @@
-'use client';
 import React, { Suspense } from 'react';
 import { BiLoaderAlt } from 'react-icons/bi';
 import Checkout from './Checkout';
+export const metadata = {
+  title: 'Checkout | Palmsouq',
+  description: 'Palmsouq Checkout Page',
+};
 
 const Page = () => {
   return (

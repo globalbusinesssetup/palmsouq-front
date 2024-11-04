@@ -126,9 +126,12 @@ const Wishlist = () => {
                   <div className="h-4 sm:h-5 w-full bg-gray-200 rounded-md mt-2 lg:mt-4" />
                 </div>
               ))
-          : wishlist?.map((pd: { product: ProductData; id: number }) => (
-              <ProductCard key={pd.id} isWishList data={pd.product} />
-            ))}
+          : wishlist?.map(
+              (pd: {
+                product: ProductData & { inventory: any[] };
+                id: number;
+              }) => <ProductCard key={pd.id} isWishList data={pd.product} />
+            )}
       </div>
     </div>
   );

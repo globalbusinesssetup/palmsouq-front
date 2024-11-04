@@ -197,10 +197,11 @@ export const getSearchData = async (query: string) => {
   }
 };
 export const getAddress = async (page?: number) => {
+  const token = Cookies.get('user_token');
   try {
     const { data } = await fetcher<{
       data: { data: Address[]; current_page: number; last_page: number };
-    }>(`/user/address/all?page=${page ?? 1}`);
+    }>(`/user/address/all?page=${page ?? 1}&user_token=${token}`);
     return data;
   } catch (err) {
     console.error(err);

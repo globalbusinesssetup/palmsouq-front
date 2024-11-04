@@ -22,6 +22,7 @@ import { temp_banner } from '@/utils/helper';
 import useAuth from '@/hooks/useAuth';
 import config from '@/config';
 import { set } from 'react-hook-form';
+import { ProductData } from '@/types';
 
 type SwiperElement = Element & {
   swiper?: {
@@ -321,7 +322,7 @@ export default function HomeClient() {
               </div>
               <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-6">
                 {home?.collections[0]?.product_collections?.map(
-                  (product, i) => (
+                  (product: ProductData & { inventory: any[] }, i) => (
                     <ProductCard
                       data={product}
                       category={home?.collections[0]?.slug}
@@ -364,7 +365,7 @@ export default function HomeClient() {
               </div>
               <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-6">
                 {home?.collections[1]?.product_collections?.map(
-                  (product, i) => (
+                  (product: ProductData & { inventory: any[] }, i) => (
                     <ProductCard
                       data={product}
                       category={home?.collections[1]?.slug}
@@ -416,7 +417,7 @@ export default function HomeClient() {
               </div>
               <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-6">
                 {home?.collections[2]?.product_collections?.map(
-                  (product, i) => (
+                  (product: ProductData & { inventory: any[] }, i) => (
                     <ProductCard
                       data={product}
                       category={home?.collections[2]?.slug}

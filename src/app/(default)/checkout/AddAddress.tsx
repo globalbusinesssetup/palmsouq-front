@@ -36,6 +36,7 @@ const AddAddress = ({
       address: '',
       city: '',
       zip: '',
+      email: '',
     },
   });
   const [countryData, setCountryData] = useState<{
@@ -66,6 +67,9 @@ const AddAddress = ({
     }
     // eslint-disable-next-line
   }, [!countryData, isCountriesLoading]);
+  useEffect(() => {
+    reset({ email: user?.data?.email });
+  }, [user]);
 
   const handleCountryChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const countryCode = event.target.value;
@@ -103,7 +107,7 @@ const AddAddress = ({
   };
   const addNewAddress = async (data: any) => {
     setSubmitLoading(true);
-    const token = Cookies.get('token');
+    const token = Cookies.get('user_token');
     try {
       const res = await api.post('/user/address/action', {
         state: selectedState,
@@ -111,7 +115,7 @@ const AddAddress = ({
         phone: data.phone,
         address_1: data.address,
         user_token: token,
-        email: user?.data?.email,
+        email: data.email,
         name: `${user?.data.first_name} ${user?.data.last_name}`,
         city: data.city,
         zip: data.zip,
@@ -273,6 +277,15 @@ const AddAddress = ({
             </Select>
           </div> */}
         </div>
+        <Input
+          control={control}
+          rules={{ required: 'email is required' }}
+          name="email"
+          label="Email"
+          placeholder="exampl@mail.com"
+          wrapClassName="flex-1"
+          error={errors?.email}
+        />
         <div className="md:flex items-center justify-end">
           <Button
             loading={isSubmitLoading}
