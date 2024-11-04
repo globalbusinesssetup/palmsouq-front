@@ -261,7 +261,7 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
                 <RiUserSharedLine className="text-2xl lg:text-[28px] text-green" />
               </Link>
               <Link
-                href={'/dashboard/cart'}
+                href={'/cart'}
                 className="flex items-center gap-x-1 relative"
               >
                 <p className="text-xs lg:text-sm font-medium xl:font-semibold uppercase absolute -top-1.5 -right-1.5 bg-green text-white rounded-full w-5 h-5 flex items-center justify-center">
