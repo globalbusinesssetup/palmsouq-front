@@ -14,6 +14,7 @@ import { getSearchData, useGetUser } from '@/utils/api';
 import { useQuery } from '@tanstack/react-query';
 import { Input } from '@headlessui/react';
 import { BsBookmarkStar } from 'react-icons/bs';
+import { FaRegHeart } from 'react-icons/fa6';
 import config from '@/config';
 import { usePathname } from 'next/navigation';
 
@@ -95,9 +96,7 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
               </Link>
               <div className="">
                 <p className="text-xs text-neutral-800 font-light">Whatsapp</p>
-                <p className="text-sm text-neutral-800 font-semibold">
-                  Instant Quote
-                </p>
+                <p className="text-sm text-neutral-800 font-semibold">Chat</p>
               </div>
             </div>
           </div>
@@ -252,16 +251,22 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
                   </Link>
                 </div>
               </div>
+              <Link href={'/dashboard/wishlist'} className="hidden lg:inline">
+                <FaRegHeart className="text-2xl xl:text-[26px] text-green" />
+              </Link>
             </div>
           ) : (
-            <Link href={'/auth/sign-in'} className="ml-4 hidden lg:inline">
-              <RiUserSharedLine className="text-2xl lg:text-[28px] text-green" />
-
-              {/* <div className="hidden md:block">
-                <p className="text-xs text-green font-light">Login</p>
-                <p className="text-sm text-green font-semibold">Register</p>
-              </div> */}
-            </Link>
+            <div className="flex flex-row items-center gap-x-4">
+              <Link href={'/auth/sign-in'} className="ml-4 hidden lg:inline">
+                <RiUserSharedLine className="text-2xl lg:text-[28px] text-green" />
+              </Link>
+              <Link href={'/cart'} className="hidden lg:inline">
+                <FiShoppingBag className="text-2xl xl:text-[26px] text-green" />
+              </Link>
+              <Link href={'/dashboard/wishlist'} className="hidden lg:inline">
+                <FaRegHeart className="text-2xl xl:text-[26px] text-green" />
+              </Link>
+            </div>
           )}
         </div>
       </header>
@@ -288,6 +293,15 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
                   >
                     <FiShoppingBag className="text-lg" />
                     My Cart
+                  </Link>
+                </li>
+                <li className={``}>
+                  <Link
+                    href={'/dashboard/cart'}
+                    className="flex items-center gap-x-1 text-[#6B7280] hover:text-primary/90 py-2 text-sm xl:text-base font-medium xl:font-semibold"
+                  >
+                    <FaRegHeart className="text-lg" />
+                    My Wislist
                   </Link>
                 </li>
                 <li className={``}>

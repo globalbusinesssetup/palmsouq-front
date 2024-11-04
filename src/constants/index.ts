@@ -396,7 +396,7 @@ export const footerLinks = [
     links: [
       {
         title: 'About Palmsouq',
-        url: '#',
+        url: '/page/about',
       },
       {
         title: 'Palmsouq Blog',

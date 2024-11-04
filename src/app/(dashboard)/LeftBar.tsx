@@ -11,6 +11,7 @@ import { Location, Bag } from '@/components';
 import { FaBarsStaggered } from 'react-icons/fa6';
 import useAuth from '@/hooks/useAuth';
 import { UserData } from '@/types';
+import { FaRegHeart } from 'react-icons/fa6';
 
 export const avatar = '/avatar.png';
 
@@ -24,6 +25,11 @@ const links = [
     title: 'My order’s',
     url: '/dashboard/orders',
     icon: <Bag className="w-[18px] md:w-5 lg:w-6" />,
+  },
+  {
+    title: 'My wishlist',
+    url: '/dashboard/wishlist',
+    icon: <FaRegHeart className="w-[18px] md:w-5 lg:w-6" />,
   },
   {
     title: 'My Wallet',
@@ -97,7 +103,7 @@ const LeftBar = ({ user }: { user: UserData | undefined }) => {
           >
             <FaBarsStaggered />
           </button>
-          {links.slice(0, 2).map((link, i) => (
+          {links.slice(0, 3).map((link, i) => (
             <LinkButton
               isActive={link.url === pathname}
               key={`link_${i}`}
@@ -108,7 +114,7 @@ const LeftBar = ({ user }: { user: UserData | undefined }) => {
             />
           ))}
           <div className="pt-2 md:pt-3 space-y-1">
-            {links.slice(2, 4).map((link, i) => (
+            {links.slice(3, 5).map((link, i) => (
               <LinkButton
                 isActive={link.url === pathname}
                 key={`link_${i}`}

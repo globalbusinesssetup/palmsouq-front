@@ -16,6 +16,7 @@ export type RegisterForm = {
 
 export type AuthContextTypes = {
   isLoggedIn: boolean;
+  userToken: string | null;
   user?: Record<string, any>;
   login: (loginData: any) => Promise<{ isSuccess: boolean }>;
   socialLogin: (loginData: any) => Promise<{ isSuccess: boolean }>;

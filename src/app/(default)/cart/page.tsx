@@ -1,5 +1,10 @@
 import React from 'react';
-import Cart from '../../../(default)/cart/Cart';
+import Cart from './Cart';
+
+export const metadata = {
+  title: 'My Cart | Palmsouq',
+  description: 'Palmsouq Cart Page',
+};
 
 const Page = () => {
   return (

@@ -45,6 +45,7 @@ export const AuthContext = createContext<AuthContextTypes>({
   },
   ordersData: [],
   countries: {},
+  userToken: '',
 });
 
 const AuthProvider = ({ children }: { children: ReactNode }) => {
@@ -52,6 +53,9 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   const queryClient = useQueryClient();
   const [token, setToken] = useState<string | null>(
     Cookies.get('token') || null
+  );
+  const [userToken, setUserToken] = useState<string | null>(
+    Cookies.get('user_token') || null
   );
   const [isLoading, setLoading] = useState(false);
   const {
@@ -111,15 +115,36 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     const tokenFromCookie = Cookies.get('token');
+    const userTokenFromCookie = Cookies.get('user_token');
     if (tokenFromCookie !== token) {
       setToken(tokenFromCookie ?? null);
     }
+    if (userTokenFromCookie !== userToken) {
+      setToken(userTokenFromCookie ?? null);
+    }
   }, [Cookies.get('token')]);
+
+  useEffect(() => {
+    const userTokenFromCookie = Cookies.get('user_token');
+    if (!userTokenFromCookie) {
+      const token =
+        Math.random().toString(36).slice(2, 5) +
+        (+new Date() * Math.random()).toString(36).substring(0, 12) +
+        Math.random().toString(36).slice(2, 5);
+      Cookies.set('user_token', token);
+    }
+    if (userTokenFromCookie !== userToken) {
+      setToken(userTokenFromCookie ?? null);
+    }
+  }, [Cookies.get('user_token')]);
 
   async function login(arg: LoginForm): Promise<{ isSuccess: boolean }> {
     setLoading(true);
     try {
-      const res = await api.post('/user/signin', { ...arg });
+      const res = await api.post('/user/signin', {
+        ...arg,
+        user_token: userToken,
+      });
       const token = res.data?.data?.token;
       if (token) {
         Cookies.set('token', token as string, {
@@ -213,6 +238,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     <AuthContext.Provider
       value={{
         isLoggedIn: !!token,
+        userToken: userToken,
         user: user?.data,
         login,
         socialLogin,

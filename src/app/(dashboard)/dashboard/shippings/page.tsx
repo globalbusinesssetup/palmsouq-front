@@ -120,7 +120,7 @@ const Shippings = () => {
 
   const addNewAddress = async (data: any) => {
     setSubmitLoading(true);
-    const token = Cookies.get('token');
+    const token = Cookies.get('user_token');
     try {
       const res = await api.post('/user/address/action', {
         city: data.city,
