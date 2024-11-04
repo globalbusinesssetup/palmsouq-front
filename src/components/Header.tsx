@@ -260,7 +260,14 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
               <Link href={'/auth/sign-in'} className="ml-4 hidden lg:inline">
                 <RiUserSharedLine className="text-2xl lg:text-[28px] text-green" />
               </Link>
-              <Link href={'/cart'} className="hidden lg:inline">
+              <Link
+                href={'/dashboard/cart'}
+                className="flex items-center gap-x-1 relative"
+              >
+                <p className="text-xs lg:text-sm font-medium xl:font-semibold uppercase absolute -top-1.5 -right-1.5 bg-green text-white rounded-full w-5 h-5 flex items-center justify-center">
+                  {profile?.cart_count}
+                  {/* AED */}
+                </p>
                 <FiShoppingBag className="text-2xl xl:text-[26px] text-green" />
               </Link>
               <Link href={'/dashboard/wishlist'} className="hidden lg:inline">

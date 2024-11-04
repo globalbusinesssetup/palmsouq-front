@@ -16,7 +16,7 @@ const ProductCard = ({
   category,
   isWishList = false,
 }: {
-  data?: ProductData;
+  data?: ProductData & { inventory: any[] };
   category?: string | number;
   isWishList?: boolean;
 }) => {
@@ -36,16 +36,12 @@ const ProductCard = ({
       100
     : 0;
   const addToCart = async () => {
-    if (!isLoggedIn) {
-      toast.warn('Unauthorized! sign in first.');
-      return;
-    }
     const token = Cookies.get('user_token');
     setSubmitLoading(true);
     try {
       const res = await api.post('/cart/action', {
         product_id: data?.id,
-        // inventory_id: data?.inventory[0]?.id,
+        inventory_id: data?.inventory?.[0]?.id,
         quantity: 1,
         user_token: token,
       });
