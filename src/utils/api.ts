@@ -9,6 +9,7 @@ import {
   ProfileApiResponse,
   Country,
   Setting,
+  CartItem,
 } from '@/types';
 import fetcher, { api } from '@/utils/fetcher';
 import Cookies from 'js-cookie';
@@ -213,7 +214,7 @@ export const getAddress = async (page?: number) => {
 export const getCart = async () => {
   const token = Cookies.get('user_token');
   try {
-    const res = await fetcher<{ data: [] }>(
+    const res = await fetcher<{ data: CartItem[] }>(
       `/cart/by-user?user_token=${token}`
     );
     return res ?? [];

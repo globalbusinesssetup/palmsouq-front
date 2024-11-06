@@ -94,7 +94,7 @@ export default function ProductDeatils({ params }: Record<string, any>) {
     const token = Cookies.get('user_token');
     setSubmitLoading(true);
     try {
-      const res = await api.post('/cart/action', {
+      const res = await api.post('/cart/buy-now', {
         product_id: product?.id,
         inventory_id: product?.inventory[0]?.id,
         quantity,
@@ -104,9 +104,9 @@ export default function ProductDeatils({ params }: Record<string, any>) {
         toast.error(res?.data?.data?.form[0]);
       } else {
         refetchProfile();
-        toast.success('Product add Successfully');
+        // toast.success('Product add Successfully');
         // addOrders(selectedProducts);
-        // router.push('/checkout');
+        router.push('/checkout');
       }
       console.log('add cart res =>', res);
     } catch (err) {
@@ -357,7 +357,7 @@ export default function ProductDeatils({ params }: Record<string, any>) {
                 <Button
                   disabled={Number(product?.stock) < 1}
                   loading={isSubmitLoading}
-                  onClick={addToCart}
+                  onClick={buyNow}
                   className="h-11 w-[167px] bg-success border-success"
                 >
                   Buy it Now

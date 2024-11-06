@@ -5,7 +5,7 @@ import { api } from '@/utils/fetcher';
 import { formatFileSize } from '@/utils/helper';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import Image from 'next/image';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { BsHandbag } from 'react-icons/bs';
 import { FaAngleLeft, FaAngleRight } from 'react-icons/fa6';
 import { FiEdit, FiEye, FiLoader, FiTrash2 } from 'react-icons/fi';
@@ -79,24 +79,66 @@ const Cart = () => {
   const [selectedProducts, setSelectedProducts] = useState<CartItem[]>([]);
   const [isCheckoutOpen, setCheckoutOpen] = useState(false);
   const [isDeleteLoading, setDeleteLoading] = useState(false);
+  const [ids, setIds] = useState<number[]>([]);
+  const [checked, setChecked] = useState<number[]>([]);
+  const [unChecked, setUnChecked] = useState<number[] | []>([]);
   const queryClient = useQueryClient();
-  const { data: cart, isLoading } = useQuery({
+  const {
+    data: cart,
+    isLoading,
+    refetch,
+  } = useQuery({
     queryKey: ['cart'],
     queryFn: () => getCart(),
   });
 
-  const handleChecked = (i: number, pd: CartItem) => {
-    const newSelectedPd = selectedProducts.includes(pd)
-      ? selectedProducts.filter((p) => p !== pd)
-      : [...selectedProducts, pd];
-    setSelectedProducts(newSelectedPd);
-    setAllChecked(newSelectedPd.length === cart?.data?.length);
+  useEffect(() => {
+    if (!isLoading) {
+      setChecked([]);
+      setUnChecked([]);
+      cart?.data?.map((pd) => {
+        setIds((prev) => [...prev, pd.id]);
+        if (pd.selected === '1') {
+          setChecked((prev) => [...prev, pd.id]);
+        } else {
+          setUnChecked((prev) => [...prev, pd.id]);
+        }
+      });
+    }
+  }, [isLoading, cart]);
+
+  const handleChecked = async (i: number, pd: CartItem) => {
+    const newSelected = checked.includes(pd.id)
+      ? checked.filter((id) => id !== pd.id)
+      : [...checked, pd.id];
+    const unSelected = ids.filter((id) => newSelected.includes(id) === false);
+    try {
+      await api.post('/cart/change', {
+        checked: newSelected,
+        unchecked: unSelected,
+        isBundle: false,
+      });
+      setChecked(newSelected);
+      refetch();
+    } catch (err) {
+      console.log(err);
+    }
   };
 
-  const handleSelectAll = (checked: boolean) => {
+  const handleSelectAll = async (checked: boolean) => {
     if (cart?.data?.length! > 0) {
-      setAllChecked(checked);
-      setSelectedProducts(checked ? cart?.data! : []);
+      try {
+        await api.post('/cart/change', {
+          checked: checked ? ids : [],
+          unchecked: checked ? [] : ids,
+          isBundle: false,
+        });
+        refetch();
+      } catch (err) {
+        console.log(err);
+      }
+      setChecked(checked ? ids : []);
+      setUnChecked(checked ? [] : ids);
     }
   };
 
@@ -113,6 +155,7 @@ const Cart = () => {
       }
     } catch (err) {
       console.log(err);
+      toast.error(err as string);
     }
     setDeleteLoading(false);
   };
@@ -144,7 +187,7 @@ const Cart = () => {
           </Button>
           <Button
             onClick={handleCheckout}
-            disabled={selectedProducts.length < 1}
+            disabled={checked.length < 1}
             className="h-8 md:h-10 w-28 xs:w-32 sm:w-[140px] md:w-[169px] py-0 flex gap-x-1 sm:gap-x-2 px-0 items-center justify-center text-xs md:!text-sm"
           >
             <IoCheckmark className="hidden xs:block text-base" /> Proceed
@@ -160,11 +203,7 @@ const Cart = () => {
               <tr className="px-6 bg-[#F9FAFB] py-3.5 text-left">
                 <th className="pl-6 py-3.5 w-[10%] pr-2">
                   <CheckBox
-                    checked={
-                      isAllChecked ||
-                      (cart?.data?.length === selectedProducts.length &&
-                        cart.data.length > 0)
-                    }
+                    checked={unChecked.length === 0}
                     onChange={(checked) => handleSelectAll(checked)}
                   />
                 </th>
@@ -337,7 +376,6 @@ const Row = ({
   pd: any;
 }) => {
   const router = useRouter();
-  const { addOrders } = useAuth();
   const [isPreviewOpen, setPreviewOpen] = useState(false);
   const [isFilePreviewOpen, setFilePreviewOpen] = useState(false);
   const [isDeleteLoading, setDeleteLoading] = useState(false);
@@ -353,19 +391,11 @@ const Row = ({
     }
   };
 
-  const handleCheckout = (pd: CartItem) => {
-    addOrders([pd]);
-    router.push('/checkout');
-  };
-
   return (
     <>
       <tr className="border-b border-neutral-200">
         <td className="py-4 pl-6 w-[10%] pr-2">
-          <CheckBox
-            checked={isAllChecked || selectedProducts.includes(pd)}
-            onChange={onChange}
-          />
+          <CheckBox checked={pd?.selected === '1'} onChange={onChange} />
         </td>
         <td className="py-4 flex pr-2 items-center gap-x-2">
           <button
@@ -388,7 +418,7 @@ const Row = ({
         </td>
         <td className="py-4 w-[30%] overflow-hidden pr-2">
           <div className="max-w-[200px] overflow-hidden">
-            <p className="text-xs text-success">Business Card</p>
+            <p className="text-xs text-success">Category name</p>
             <p className="text-sm text-neutral-600 font-semibold whitespace-nowrap overflow-hidden text-ellipsis">
               {pd?.flash_product?.title}
             </p>
@@ -409,7 +439,11 @@ const Row = ({
           {pd?.flash_product?.offered * Number(pd?.quantity ?? '0')}
         </td>
       </tr>
-      <Modal show={isPreviewOpen} onClose={() => setPreviewOpen(true)}>
+      <Modal
+        panelClassName="max-w-[380px]"
+        show={isPreviewOpen}
+        onClose={() => setPreviewOpen(true)}
+      >
         <div className="flex items-center justify-between pb-4">
           <p className="text-black text-sm font-bold">Preview</p>
           <button onClick={() => setPreviewOpen(false)}>
@@ -421,14 +455,14 @@ const Row = ({
             <div className="px-4 lg:px-5">
               <div className="flex items-center gap-x-5 justify-between py-4 border-b border-[#E6E6E6]">
                 <div className="flex-1 overflow-hidden">
-                  <p className="text-xs text-success">Business Card</p>
+                  <p className="text-xs text-success">Category name</p>
                   <p className="text-sm text-neutral-600 font-semibold whitespace-nowrap overflow-hidden text-ellipsis">
                     {pd?.flash_product?.title}
                   </p>
                 </div>
-                <button>
+                {/* <button>
                   <FiEdit className="text-lg lg:text-xl leading-none text-[#667085]" />
-                </button>
+                </button> */}
               </div>
               <div className="space-y-4 lg:space-y-[18px] pt-4 lg:pt-6 pb-6 lg:pb-8">
                 {checkoutData.map((data, i) => (
@@ -455,7 +489,7 @@ const Row = ({
               </p>
             </div>
           </div>
-          <div className="w-full sm:w-[54%] bg-white">
+          {/* <div className="w-full sm:w-[54%] bg-white">
             <div className="border rounded-lg border-neutral-200 px-4 lg:px-6 pt-4 pb-5 lg:pb-7">
               <h5 className="text-black font-semibold text-sm lg:text-base">
                 File Preview
@@ -474,7 +508,6 @@ const Row = ({
                         <div className="flex-1">
                           <p className="text-[#111827] text-sm">{file.name}</p>
                           <p className="text-xs text-[#6B7280] mt-1">
-                            {/* {formatFileSize(file.size)} */}
                             {file.size}
                           </p>
                         </div>
@@ -516,7 +549,7 @@ const Row = ({
                 </Button>
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
       </Modal>
       {/* file preview modal  */}

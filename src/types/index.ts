@@ -4,7 +4,7 @@ export type LoginForm = {
 };
 
 export type GoogleLoginPayload = {
-  token: string
+  token: string;
 };
 
 export type RegisterForm = {
@@ -355,6 +355,24 @@ export type Banner = {
 type Place = {
   id: number;
   country: string;
+  state: string;
+  price: string;
+  day_needed: string;
+  pickup_price: string;
+  pickup_point: string;
+  shipping_rule_id: string;
+  pickup_phone: string;
+  pickup_address_line_1: string;
+  pickup_address_line_2: string;
+  pickup_zip: string;
+  pickup_state: string;
+  pickup_city: string;
+  pickup_country: string;
+  shipping_rule: {
+    id: number;
+    title: string;
+    single_price: number;
+  };
 };
 
 export type CartItem = {
@@ -365,8 +383,17 @@ export type CartItem = {
     shipping_rule: {
       shipping_places: Place[];
     };
+    tax_rules: {
+      id: number;
+      price: string;
+    };
   };
   quantity: string;
+  selected: string;
+  product_id: string;
+  inventory_id: string;
+  shipping_type: string;
+  shipping_place: Place;
 };
 
 export type Setting = {

@@ -15,6 +15,7 @@ import { BiCheckCircle, BiLoaderAlt } from 'react-icons/bi';
 import useAuth from '@/hooks/useAuth';
 import {
   getAddress,
+  getCart,
   getCountries,
   getPayMethods,
   useGetUser,
@@ -81,26 +82,26 @@ const deliveryOptions = [
 const Checkout = () => {
   const router = useRouter();
   const params = useSearchParams();
-  const { ordersData, removeOrders } = useAuth();
+  const { refetchProfile } = useAuth();
   // const [Razorpay] = useRazorpay();
   const queryClient = useQueryClient();
   const { data: addresses, isLoading: isAddressLoading } = useQuery({
     queryKey: ['address'],
     queryFn: () => getAddress(),
   });
-  const { data: user, isLoading } = useQuery({
-    queryKey: ['user'],
-    queryFn: useGetUser,
-  });
   const { data: payData, isLoading: isPayDataLoading } = useQuery({
     queryKey: ['payMethods'],
     queryFn: getPayMethods,
   });
-
   const { data: countriesPhones, isLoading: isCountriesLoading } = useQuery({
     queryKey: ['countries-phones'],
     queryFn: getCountries,
   });
+  const { data: cart, isLoading } = useQuery({
+    queryKey: ['cart'],
+    queryFn: () => getCart(),
+  });
+
   const [currentStep, setStep] = useState(0);
   const [defaultAddress, setDefaultAddress] = useState(addresses?.data?.[0]);
   const [deliveryOption, setDeliveryOption] = useState(
@@ -112,18 +113,58 @@ const Checkout = () => {
   const [isAddAddressOpen, setAddAddressOpen] = useState(false);
   const [orderMethod, setMethod] = useState(1);
   const [isSubmitLoading, setSubmitLoading] = useState(false); //[isLoading]
+  const [carts, setCarts] = useState({});
+  const [totalAmount, setTotalAmount] = useState(0);
+  const [deliveryCost, setDeliveryCost] = useState(0);
+  const [pickupCost, setPickupCost] = useState(0);
+  const [tax, setTax] = useState(0);
 
   useEffect(() => {
-    if (ordersData.length < 1 && isMounted) {
-      router.push('/dashboard/cart');
+    if (cart?.data) {
+      const result = cart.data
+        .filter((item) => item.selected !== '2')
+        .reduce(
+          (acc, item) => {
+            acc.carts[String(item.id)] = {
+              cart: item.id,
+              shipping_place:
+                item.flash_product.shipping_rule.shipping_places?.[0],
+              single_shipping: true,
+              shipping_type: '1',
+            };
+
+            // Assume `item.flash_product.amount` holds the price
+            const itemAmount =
+              item?.flash_product?.offered > 0
+                ? item?.flash_product?.offered
+                : item?.flash_product?.selling;
+            const itemQuantity = Number(item.quantity) || 1;
+            acc.totalAmount += itemAmount * itemQuantity;
+            return acc;
+          },
+          { carts: {}, totalAmount: 0 } // Initial accumulator
+        );
+
+      setCarts(result.carts);
+      setTotalAmount(result.totalAmount);
+      const item = cart?.data[0].flash_product;
+      setDeliveryCost(Number(item.shipping_rule.shipping_places[0].price));
+      setPickupCost(Number(item.shipping_rule.shipping_places[0].pickup_price));
+      setTax(Number(item.tax_rules.price));
     }
+  }, [cart]);
+
+  useEffect(() => {
+    // if (ordersData.length < 1 && isMounted) {
+    //   router.push('/orders');
+    // }
     const supportedAreas = ['AE'];
     if (!supportedAreas.includes(defaultAddress?.state!)) {
       setDeliveryOption(deliveryOptions[1].value);
     }
     setDefaultAddress(addresses?.data?.[0]!);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [addresses, ordersData]);
+  }, [addresses]);
 
   useEffect(() => {
     if (!params.get('currentStep')) {
@@ -140,6 +181,8 @@ const Checkout = () => {
       setMethod(payData?.default!);
     }
   }, [payData, isPayDataLoading]);
+
+  console.log('cart');
 
   // const handlePayment = useCallback(() => {
   //   const options: RazorpayOptions = {
@@ -170,7 +213,7 @@ const Checkout = () => {
   //   rzpay.open();
   // }, [Razorpay]);
 
-  if (isLoading || isPayDataLoading || isCountriesLoading) {
+  if (isPayDataLoading || isCountriesLoading) {
     return (
       <main className="w-full h-screen flex items-center justify-center">
         <div className="">
@@ -194,47 +237,69 @@ const Checkout = () => {
     return false;
   };
 
-  const totalPrice = (ordersData as CartItem[]).reduce(
-    (total: number, item) => {
-      const price =
-        item?.flash_product?.offered > 0
-          ? item?.flash_product?.offered
-          : item?.flash_product?.selling;
-      return total + price * Number(item.quantity);
-    },
-    0
-  );
+  // const totalPrice = (ordersData as CartItem[]).reduce(
+  //   (total: number, item) => {
+  //     const price =
+  //       item?.flash_product?.offered > 0
+  //         ? item?.flash_product?.offered
+  //         : item?.flash_product?.selling;
+  //     return total + price * Number(item.quantity);
+  //   },
+  //   0
+  // );
 
   const totalPriceWithDelivery =
-    totalPrice! + (deliveryOption === 'paid' ? 50 : 0);
-  const vat = totalPrice! * 0.05; // 5% VAT rate
+    totalAmount +
+    (deliveryOption === 'paid'
+      ? deliveryCost
+      : deliveryOption === 'pickup'
+      ? pickupCost
+      : 0);
+  const vat = (totalAmount * tax) / 100; // 5% VAT rate
   const totalPriceWithDeliveryVat = totalPriceWithDelivery + vat;
 
   const handleUpdateCart = async () => {
+    const userToken = Cookies.get('user_token');
     setUpdateLoading(true);
     try {
       const res = await api.post('/cart/update-shipping', {
-        cart: {
-          [String(ordersData[0].id)]: {
-            cart: ordersData[0].id,
-            shipping_place:
-              ordersData[0].flash_product.shipping_rule.shipping_places?.[0],
-            single_shipping: true,
-            shipping_type: '1',
-          },
-        },
+        // cart: {
+        //   [String(ordersData[0].id)]: {
+        //     cart: ordersData[0].id,
+        //     shipping_place:
+        //       ordersData[0].flash_product.shipping_rule.shipping_places?.[0],
+        //     single_shipping: true,
+        //     shipping_type: '1',
+        //   },
+        // },
+        cart: carts,
         selected_address: defaultAddress?.id,
+        user_token: userToken,
       });
       console.log('res', res);
+      if (res?.data?.data?.form) {
+        setUpdateLoading(false);
+        toast.error(res?.data?.data?.form[0]);
+        return { error: res?.data?.data?.form[0] ?? undefined };
+      }
     } catch (err) {
       console.log(err);
+      setUpdateLoading(false);
+      return { error: err };
     }
     setUpdateLoading(false);
   };
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (currentStep === 0) {
-      handleUpdateCart();
+      if (!defaultAddress) {
+        toast.warn('Please add address first');
+        return;
+      }
+      let data = await handleUpdateCart();
+      if (data?.error) {
+        return;
+      }
       setStep((prev) => prev + 1);
       router.push(`/checkout?currentStep=${currentStep + 1}`);
     } else {
@@ -260,20 +325,22 @@ const Checkout = () => {
       const res = await api.post('order/action', {
         data: order,
       });
-      if (res?.data?.message) {
+      if (res?.data.message) {
         console.log(res?.data?.data?.form[0]);
         toast.error(res?.data?.data?.form[0]);
         setSubmitLoading(false);
         return;
       }
       setSubmitLoading(false);
-      removeOrders();
+      refetchProfile();
       queryClient.invalidateQueries({ queryKey: ['cart', 'orders'] });
       toast.success('Order placed Successfully');
+      setStep((prev) => prev + 1);
       router.push('/checkout?currentStep=2');
     } catch (error) {
       console.log(error);
     }
+    setSubmitLoading(false);
   };
 
   return (
@@ -369,7 +436,7 @@ const Checkout = () => {
                             {opt.value === 'standard'
                               ? 'Free'
                               : opt.value === 'paid'
-                              ? '50.00 AED'
+                              ? `${deliveryCost} AED`
                               : 'Warehouse'}
                           </Tag>
                         </div>
@@ -482,7 +549,7 @@ const Checkout = () => {
                 Your order has been successfully proceeded!
               </p>
               <Button
-                onClick={() => router.push('/dashboard/orders')}
+                onClick={() => router.push('/orders')}
                 className="py-0 h-11 max-w-[336px] font-semibold mt-8 flex items-center justify-center gap-x-2"
               >
                 Go to My Order&apos;s{' '}
@@ -499,7 +566,14 @@ const Checkout = () => {
           {currentStep !== steps.length - 1 && (
             <div className="flex items-center justify-between mt-5">
               <button
-                onClick={() => setStep((prev) => prev - 1)}
+                onClick={() => {
+                  if (currentStep === 0) {
+                    router.back();
+                  } else {
+                    setStep(currentStep - 1);
+                    router.push(`/checkout?currentStep=${currentStep - 1}`);
+                  }
+                }}
                 disabled={currentStep === 0}
                 className="text-xs sm:text-sm font-semibold text-neutral-500 flex items-center justify-center gap-x-2"
               >
@@ -534,7 +608,7 @@ const Checkout = () => {
               <div className="flex items-center justify-between">
                 <p className="text-sm font-medium text-neutral-400">Products</p>
                 <p className="text-sm font-medium text-neutral-600">
-                  {totalPrice} AED
+                  {totalAmount} AED
                 </p>
               </div>
               <div className="flex items-center justify-between">
@@ -542,7 +616,11 @@ const Checkout = () => {
                   Delivery costs
                 </p>
                 <p className="text-sm font-medium text-[#4B4EFC]">
-                  {deliveryOption === 'paid' ? '50.00 AED' : 'Free'}
+                  {deliveryOption === 'paid'
+                    ? `${deliveryCost} AED`
+                    : deliveryOption === 'pickup'
+                    ? `${pickupCost} AED`
+                    : 'Free'}
                 </p>
               </div>
             </div>
@@ -554,13 +632,17 @@ const Checkout = () => {
                 <p className="text-sm font-medium text-neutral-600">
                   {deliveryOption === 'paid'
                     ? totalPriceWithDelivery
-                    : totalPrice}{' '}
+                    : totalAmount}{' '}
                   AED
                 </p>
               </div>
               <div className="flex items-center justify-between">
-                <p className="text-sm font-medium text-neutral-400">VAT (5%)</p>
-                <p className="text-sm font-medium text-neutral-600">{vat}</p>
+                <p className="text-sm font-medium text-neutral-400">
+                  VAT ({tax}%)
+                </p>
+                <p className="text-sm font-medium text-neutral-600">
+                  {vat.toFixed(2)}
+                </p>
               </div>
             </div>
             <div className="flex items-center justify-between lg:pt-3.5">
