@@ -74,9 +74,6 @@ const uploadedFiles = [
 
 const Cart = () => {
   const router = useRouter();
-  const { addOrders } = useAuth();
-  const [isAllChecked, setAllChecked] = useState(false);
-  const [selectedProducts, setSelectedProducts] = useState<CartItem[]>([]);
   const [isCheckoutOpen, setCheckoutOpen] = useState(false);
   const [isDeleteLoading, setDeleteLoading] = useState(false);
   const [ids, setIds] = useState<number[]>([]);
@@ -96,6 +93,7 @@ const Cart = () => {
     if (!isLoading) {
       setChecked([]);
       setUnChecked([]);
+      setIds([]);
       cart?.data?.map((pd) => {
         setIds((prev) => [...prev, pd.id]);
         if (pd.selected === '1') {
@@ -148,11 +146,6 @@ const Cart = () => {
       await api.delete(`/cart/delete/${pd?.id}`);
       toast.success('Cart Remove SuccessfullY');
       await queryClient.invalidateQueries({ queryKey: ['cart'] });
-      if (selectedProducts.includes(pd)) {
-        setSelectedProducts(
-          selectedProducts.filter((item) => item.id !== pd.id)
-        );
-      }
     } catch (err) {
       console.log(err);
       toast.error(err as string);
@@ -160,13 +153,7 @@ const Cart = () => {
     setDeleteLoading(false);
   };
 
-  const handleDeleteSelected = () => {
-    setSelectedProducts([]);
-    setAllChecked(false);
-  };
-
   const handleCheckout = () => {
-    addOrders(selectedProducts);
     router.push('/checkout');
   };
 
@@ -243,8 +230,6 @@ const Cart = () => {
                 : cart?.data?.map((pd: any) => (
                     <Row
                       key={pd.id}
-                      isAllChecked={isAllChecked}
-                      selectedProducts={selectedProducts}
                       onChange={() => handleChecked(pd?.id, pd)}
                       onDelete={() => handleDelete(pd)}
                       pd={pd}
@@ -363,14 +348,10 @@ const Cart = () => {
 export default Cart;
 
 const Row = ({
-  isAllChecked,
-  selectedProducts,
   onChange,
   onDelete,
   pd,
 }: {
-  isAllChecked: boolean;
-  selectedProducts: CartItem[];
   onChange: () => void;
   onDelete: () => void;
   pd: any;
