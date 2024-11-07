@@ -18,10 +18,8 @@ import { register } from 'swiper/element/bundle';
 import { useResponsiveSlides } from '@/hooks';
 import { useQuery } from '@tanstack/react-query';
 import { getCategories, getHome } from '@/utils/api';
-import { temp_banner } from '@/utils/helper';
 import useAuth from '@/hooks/useAuth';
 import config from '@/config';
-import { set } from 'react-hook-form';
 import { ProductData } from '@/types';
 
 type SwiperElement = Element & {
@@ -462,9 +460,9 @@ export default function HomeClient() {
           </section>
           <div className="w-full h-[180px] lg:h-[240px] bg-secondary mt-8 lg:mt-10 rounded-md overflow-hidden relative">
             <Image
-              src={home?.banners[5].image}
+              src={home?.banners[5]?.image}
               fill
-              alt={home?.banners[5].title}
+              alt={home?.banners[5]?.title}
               className="object-cover"
             />
           </div>
