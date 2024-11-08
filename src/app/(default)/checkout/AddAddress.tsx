@@ -126,7 +126,8 @@ const AddAddress = ({
         return;
       } else {
         toast.success('Address added Successfully');
-        queryClient.invalidateQueries({ queryKey: ['address'] });
+        await queryClient.invalidateQueries({ queryKey: ['address'] });
+        onClose();
         reset();
       }
     } catch (err) {

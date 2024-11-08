@@ -399,7 +399,7 @@ const Row = ({
         </td>
         <td className="py-4 w-[30%] overflow-hidden pr-2">
           <div className="max-w-[200px] overflow-hidden">
-            <p className="text-xs text-success">Category name</p>
+            {/* <p className="text-xs text-success">Category name</p> */}
             <p className="text-sm text-neutral-600 font-semibold whitespace-nowrap overflow-hidden text-ellipsis">
               {pd?.flash_product?.title}
             </p>
@@ -417,7 +417,8 @@ const Row = ({
           {pd?.quantity}
         </td>
         <td className="py-4 text-neutral-500 text-sm w-[10%] pr-2">
-          {pd?.flash_product?.offered * Number(pd?.quantity ?? '0')}
+          {pd?.flash_product?.offered ??
+            pd?.flash_product?.selling * Number(pd?.quantity ?? '0')}
         </td>
       </tr>
       <Modal
