@@ -4,13 +4,12 @@ import { twMerge } from 'tailwind-merge';
 import { GoDotFill } from 'react-icons/go';
 
 export type StatusTypes =
-  | 'success'
-  | 'failed'
-  | 'ready'
-  | 'production'
+  | 'pending'
+  | 'confirmed'
+  | 'picked_up'
+  | 'on_the_way'
   | 'delivered'
-  | 'cancelled'
-  | 'review';
+  | 'cancelled';
 
 type Tagtype = {
   status: StatusTypes;
@@ -19,42 +18,36 @@ type Tagtype = {
 
 const Tag = ({ status, className }: Tagtype) => {
   const statusClassNames = {
-    success: 'text-success bg-success/25',
-    failed: 'text-error bg-error/20',
-    ready: 'text-success bg-success/25',
-    production: 'text-success bg-success/25',
+    pending: 'text-yellow-700 bg-orange-100',
+    confirmed: 'text-success bg-success/25',
     delivered: 'text-[#655937] bg-[#A79F8833]',
     cancelled: 'text-error bg-error/20',
-    review: 'text-[#4E5BA6] bg-[#F8F9FC]',
   };
 
   const getStatusText = (status: Tagtype['status']) => {
     switch (status) {
-      case 'success':
-        return 'Success';
-      case 'failed':
-        return 'Failed';
-      case 'ready':
-        return 'Ready';
-      case 'production':
-        return 'Production';
+      case 'pending':
+        return 'Pending';
+      case 'confirmed':
+        return 'Confirmed';
+      case 'picked_up':
+        return 'Picked Up';
+      case 'on_the_way':
+        return 'On The Way';
       case 'delivered':
         return 'Delivered';
       case 'cancelled':
         return 'Cancelled';
-      case 'review':
-        return 'In Review';
       default:
-        return '';
+        return 'Pending';
     }
   };
 
   const getIcon = (status: Tagtype['status']) => {
     switch (status) {
-      case 'success':
+      case 'pending':
       case 'delivered':
         return <IoCheckmark className="text-sm" />;
-      case 'failed':
       case 'cancelled':
         return <IoCloseOutline className="text-sm" />;
       default:

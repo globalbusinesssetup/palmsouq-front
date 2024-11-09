@@ -35,7 +35,6 @@ const AddAddress = ({
       phone: '',
       address: '',
       city: '',
-      zip: '',
       email: '',
     },
   });
@@ -49,76 +48,74 @@ const AddAddress = ({
   const [selectedCity, setSelectedCity] = useState('');
   const queryClient = useQueryClient();
 
-  useEffect(() => {
-    if (!isCountriesLoading) {
-      setCountryData(countriesPhones?.countries!);
-    }
-    if (selectedCountry && countryData) {
-      setStates(Object.values(countryData[selectedCountry]?.states || []));
-      if (selectedState) {
-        setCities(
-          Object.values(
-            countryData[selectedCountry].states[selectedState]?.cities || []
-          )
-        );
-      }
-    } else {
-      setStates([]);
-    }
-    // eslint-disable-next-line
-  }, [!countryData, isCountriesLoading]);
+  // useEffect(() => {
+  //   if (!isCountriesLoading) {
+  //     setCountryData(countriesPhones?.countries!);
+  //   }
+  //   if (selectedCountry && countryData) {
+  //     setStates(Object.values(countryData[selectedCountry]?.states || []));
+  //     if (selectedState) {
+  //       setCities(
+  //         Object.values(
+  //           countryData[selectedCountry].states[selectedState]?.cities || []
+  //         )
+  //       );
+  //     }
+  //   } else {
+  //     setStates([]);
+  //   }
+  //   // eslint-disable-next-line
+  // }, [!countryData, isCountriesLoading]);
+
   useEffect(() => {
     reset({ email: user?.data?.email });
   }, [user]);
 
-  const handleCountryChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const countryCode = event.target.value;
-    setSelectedCountry(countryCode);
-    if (countryData && countryData[countryCode]) {
-      setStates(Object.values(countryData[countryCode].states));
-    } else {
-      setStates([]);
-    }
-    setSelectedState('');
-    setSelectedCity('');
-    setCities([]);
-  };
+  // const handleCountryChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  //   const countryCode = event.target.value;
+  //   setSelectedCountry(countryCode);
+  //   if (countryData && countryData[countryCode]) {
+  //     setStates(Object.values(countryData[countryCode].states));
+  //   } else {
+  //     setStates([]);
+  //   }
+  //   setSelectedState('');
+  //   setSelectedCity('');
+  //   setCities([]);
+  // };
 
-  const handleStateChange = (event: any) => {
-    const stateCode = event.target.value;
-    setSelectedState(stateCode);
-    if (
-      countryData &&
-      countryData[selectedCountry] &&
-      countryData[selectedCountry].states[stateCode]
-    ) {
-      setCities(
-        Object.values(
-          countryData[selectedCountry].states[stateCode]?.cities || []
-        )
-      );
-    } else {
-      setCities([]);
-    }
-    setSelectedCity('');
-  };
-  const handleCityChange = (event: any) => {
-    setSelectedCity(event.target.value);
-  };
+  // const handleStateChange = (event: any) => {
+  //   const stateCode = event.target.value;
+  //   setSelectedState(stateCode);
+  //   if (
+  //     countryData &&
+  //     countryData[selectedCountry] &&
+  //     countryData[selectedCountry].states[stateCode]
+  //   ) {
+  //     setCities(
+  //       Object.values(
+  //         countryData[selectedCountry].states[stateCode]?.cities || []
+  //       )
+  //     );
+  //   } else {
+  //     setCities([]);
+  //   }
+  //   setSelectedCity('');
+  // };
+  // const handleCityChange = (event: any) => {
+  //   setSelectedCity(event.target.value);
+  // };
   const addNewAddress = async (data: any) => {
     setSubmitLoading(true);
     const token = Cookies.get('user_token');
     try {
       const res = await api.post('/user/address/action', {
-        state: selectedState,
-        country: selectedCountry,
         phone: data.phone,
         address_1: data.address,
         user_token: token,
         email: data.email,
         name: `${user?.data.first_name} ${user?.data.last_name}`,
         city: data.city,
-        zip: data.zip,
       });
       if (res?.data?.data?.form) {
         toast.error(res?.data?.data?.form[0]);
@@ -146,7 +143,7 @@ const AddAddress = ({
         <h4 className="md:text-lg text-neutral-900 font-semibold">
           New Shipping Address
         </h4>
-        <div className="flex flex-col md:flex-row gap-y-4 gap-x-6 mt-4 sm:mt-6 lg:mt-8">
+        {/* <div className="flex flex-col md:flex-row gap-y-4 gap-x-6 mt-4 sm:mt-6 lg:mt-8">
           <div className="flex-1">
             <label
               htmlFor="countries"
@@ -202,7 +199,7 @@ const AddAddress = ({
               )}
             </Select>
           </div>
-        </div>
+        </div> */}
         <div className="flex flex-col md:flex-row gap-y-4 gap-x-6 mt-2 sm:mt-4 lg:mt-8">
           <Input
             control={control}
@@ -215,13 +212,12 @@ const AddAddress = ({
           />
           <Input
             control={control}
-            rules={{ required: 'zip is required' }}
-            name="zip"
-            label="Zip code"
-            placeholder="zip code"
-            type="number"
+            rules={{ required: 'address is required' }}
+            name="address"
+            label="Address"
+            placeholder="Street, Building, Apt. etc"
             wrapClassName="flex-1"
-            error={errors?.zip}
+            error={errors?.address}
           />
         </div>
         <div className="flex flex-col md:flex-row gap-y-4 gap-x-6 mt-2 sm:mt-4 lg:mt-8">
@@ -242,12 +238,12 @@ const AddAddress = ({
           </div>
           <Input
             control={control}
-            rules={{ required: 'address is required' }}
-            name="address"
-            label="Address"
-            placeholder="Street, Building, Apt. etc"
+            rules={{ required: 'email is required' }}
+            name="email"
+            label="Email"
+            placeholder="exampl@mail.com"
             wrapClassName="flex-1"
-            error={errors?.address}
+            error={errors?.email}
           />
           {/* <div className="flex-1">
             <label
@@ -278,19 +274,10 @@ const AddAddress = ({
             </Select>
           </div> */}
         </div>
-        <Input
-          control={control}
-          rules={{ required: 'email is required' }}
-          name="email"
-          label="Email"
-          placeholder="exampl@mail.com"
-          wrapClassName="flex-1"
-          error={errors?.email}
-        />
         <div className="md:flex items-center justify-end">
           <Button
             loading={isSubmitLoading}
-            disabled={!selectedCountry || !selectedState}
+            // disabled={!selectedCountry || !selectedState}
             type="submit"
             className="md:w-[160px] text-sm font-semibold"
           >

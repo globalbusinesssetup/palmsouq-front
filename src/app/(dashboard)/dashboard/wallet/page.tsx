@@ -72,7 +72,7 @@ const Wallet = () => {
                         Stripe Payment
                       </td>
                       <td className="py-3 md:py-4">
-                        <Tag status="success" />
+                        <Tag status="confirmed" />
                       </td>
                     </tr>
                   ))}

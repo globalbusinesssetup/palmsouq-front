@@ -3,7 +3,14 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Button, CheckBox, Footer, Loader, ProductCard, Image } from '@/components';
+import {
+  Button,
+  CheckBox,
+  Footer,
+  Loader,
+  ProductCard,
+  Image,
+} from '@/components';
 // import Image from 'next/image';
 import { Select } from '@headlessui/react';
 import { FiChevronDown } from 'react-icons/fi';
@@ -186,28 +193,26 @@ const CategoryClient: React.FC<CategoryClientProps> = ({ category }) => {
     refetch();
   }, [params, refetch]);
 
-  const brandTitle = data?.brands.filter((b) => b.id === Number(brands));
+  const brandTitle = data?.brands?.filter((b) => b.id === Number(brands));
 
   return (
     <>
       <main className="bg-[#FCFCFD]">
         <div className="container mx-auto px-4">
           <div className="w-full h-[150px] md:h-[180px] lg:h-[240px] bg-secondary rounded-md mt-6 relative overflow-hidden">
-            { isLoading ? 
-              <div className="animate-pulse" /> :
+            {isLoading ? (
+              <div className="animate-pulse" />
+            ) : (
               <Image
                 defaultSrc={banner}
                 isLocal
-                src={
-                        data?.category?.banner_image ??
-                        data?.brand?.banner_image 
-                }
+                src={data?.category?.banner_image ?? data?.brand?.banner_image}
                 fill
                 alt={data?.category?.title! ?? 'Category banner'}
                 className="object-fit"
                 loading="lazy"
               />
-            }
+            )}
           </div>
           <div className="mt-4 py-5 sm:px-2 flex items-center justify-between">
             <nav aria-label="breadcrumb" className="pb-6">
@@ -517,8 +522,8 @@ const CategoryClient: React.FC<CategoryClientProps> = ({ category }) => {
                       <div className="h-5 w-full bg-gray-200 rounded-md mt-4" />
                     </div>
                   ))
-              ) : data?.result.data.length ? (
-                data?.result.data.map((product: any, i: number) => (
+              ) : data?.result?.data?.length ? (
+                data?.result?.data?.map((product: any, i: number) => (
                   <ProductCard
                     key={`product_${i}`}
                     data={product}

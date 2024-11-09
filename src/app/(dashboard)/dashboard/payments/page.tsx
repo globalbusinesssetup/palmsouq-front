@@ -77,7 +77,7 @@ const Payments = () => {
                     654321
                   </td>
                   <td className="py-4">
-                    <Tag status="success" />
+                    <Tag status="confirmed" />
                   </td>
                 </tr>
               ))}

@@ -131,7 +131,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         Math.random().toString(36).slice(2, 5) +
         (+new Date() * Math.random()).toString(36).substring(0, 12) +
         Math.random().toString(36).slice(2, 5);
-      Cookies.set('user_token', token);
+      Cookies.set('user_token', token, { expires: 365 * 100 });
     }
     if (userTokenFromCookie !== userToken) {
       setToken(userTokenFromCookie ?? null);
@@ -172,7 +172,9 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   }
 
-  async function socialLogin(arg:GoogleLoginPayload): Promise<{ isSuccess: boolean }> {
+  async function socialLogin(
+    arg: GoogleLoginPayload
+  ): Promise<{ isSuccess: boolean }> {
     setLoading(true);
     try {
       const token = arg.token;
