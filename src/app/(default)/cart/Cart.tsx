@@ -200,9 +200,9 @@ const Cart = () => {
                 <th className="text-xs font-semibold text-[#667085] py-3.5 w-[30%] pr-2">
                   Product Name
                 </th>
-                <th className="text-xs font-semibold text-[#667085] py-3.5 w-[20%] pr-2">
+                {/* <th className="text-xs font-semibold text-[#667085] py-3.5 w-[20%] pr-2">
                   Submit Date
-                </th>
+                </th> */}
                 <th className="text-xs font-semibold text-[#667085] py-3.5 w-[10%] pr-2">
                   Quantity
                 </th>
@@ -405,18 +405,10 @@ const Row = ({
             </p>
           </div>
         </td>
-        <td className="py-4 w-[20%] pr-2">
-          <p className="text-[13px]/[19px] text-neutral-500 uppercase">
-            02 SEP 2023
-          </p>
-          <p className="text-[13px]/[19px] text-neutral-500 font-semibold uppercase">
-            21:13
-          </p>
-        </td>
-        <td className="py-4 text-neutral-500 text-sm w-[10%] pr-2">
+        <td className="py-4 text-neutral-500 text-sm w-[20%] pr-2">
           {pd?.quantity}
         </td>
-        <td className="py-4 text-neutral-500 text-sm w-[10%] pr-2">
+        <td className="py-4 text-neutral-500 text-sm w-[20%] pr-2">
           {pd?.flash_product?.offered ??
             pd?.flash_product?.selling * Number(pd?.quantity ?? '0')}
         </td>

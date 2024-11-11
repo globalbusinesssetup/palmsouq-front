@@ -43,6 +43,7 @@ type UserType = 'personal' | 'business';
 
 export type UserData = {
   id: number;
+  avatar: string;
   first_name: string;
   last_name: string;
   company_name: string | null;

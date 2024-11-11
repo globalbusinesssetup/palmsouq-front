@@ -13,9 +13,10 @@ import {
 } from '@/components';
 import { BiEnvelope } from 'react-icons/bi';
 import { useGetUser } from '@/utils/api';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/utils/fetcher';
 import { toast } from 'react-toastify';
+import config from '@/config';
 
 type FormInputs = {
   first_name: string;
@@ -25,7 +26,11 @@ type FormInputs = {
 };
 
 const Profile = () => {
-  const { data: user, isFetching } = useQuery({
+  const {
+    data: user,
+    isFetching,
+    refetch,
+  } = useQuery({
     queryKey: ['user'],
     queryFn: useGetUser,
   });
@@ -55,14 +60,36 @@ const Profile = () => {
   const [preview, setPreview] = useState<string | null>(null);
   const [isPhoneModalOpen, setPhoneModalOpen] = useState(false);
   const [isEmailModalOpen, setEmailModalOpen] = useState(false);
+  const [imageUploadLoading, setImageUploadLoading] = useState(false);
   const [isOtpSent, setOtpSent] = useState(false);
+  const queryClient = useQueryClient();
 
-  const handleUpload = (e: any) => {
+  const handleUpload = async (e: any) => {
     const file = e.target?.files[0];
     if (file) {
+      setImageUploadLoading(true);
       setFile(file);
       const url = URL.createObjectURL(file);
       setPreview(url);
+      try {
+        const formData = new FormData();
+        formData.append('avatar', file);
+        const res = await api.post(`/user/${user?.data.id}/avatar`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+        console.log('res', res);
+        toast.success('Profile avatar update successfully!');
+        refetch();
+      } catch (error) {
+        console.log('error', error);
+        toast.error('Error update profile picture');
+      } finally {
+        setFile(undefined);
+        setPreview(null);
+        setImageUploadLoading(false);
+      }
     }
   };
 
@@ -72,13 +99,19 @@ const Profile = () => {
   };
 
   const handleUpdate = async (data: FormInputs) => {
+    console.log(data);
     try {
       const res = await api.post('/user/update-profile', {
         first_name: data?.first_name,
         last_name: data?.last_name,
         name: `${data?.first_name} ${data?.last_name}`,
       });
-      toast.success('Profile updated Successfully.');
+      if (res?.data?.data?.form) {
+        toast.error(res?.data?.data?.form[0]);
+      } else {
+        queryClient.invalidateQueries({ queryKey: ['user'] });
+        toast.success('Profile updated Successfully.');
+      }
       console.log(res);
     } catch (err) {
       console.log(err);
@@ -94,17 +127,25 @@ const Profile = () => {
             Picture
           </p>
           <div className="mt-2.5 size-10 sm:size-14 lg:size-20 rounded-full overflow-hidden relative">
-            <Image src={preview ?? avatar} fill alt="user avatar" />
+            <Image
+              src={
+                user?.data?.avatar ? config.imgUri + user?.data?.avatar : avatar
+              }
+              fill
+              alt="user avatar"
+              className="object-cover"
+            />
           </div>
         </div>
-        <div className="border border-neutral-200 rounded-lg overflow-hidden mb-1 sm:mb-2.5 lg:mb-3.5 text-xs md:text-sm lg:text-base">
+        <div className="border border-neutral-200 rounded-lg overflow-hidden mb-1 sm:mb-2.5 lg:mb-3.5 text-xs md:text-sm lg:text-base transition-all duration-300 hover:bg-neutral-100 hover:scale-95">
           <button
             onClick={() => uploadRef.current?.click()}
-            className="w-16 lg:w-20 h-8 lg:h-10 text-[#344054] transition-all duration-300 hover:bg-neutral-100 hover:scale-95 border-r"
+            className="w-16 lg:w-20 h-8 lg:h-10 text-[#344054]"
           >
             Upload
           </button>
-          <button
+          {/* <button
+            disabled={!preview}
             onClick={() => {
               setPreview(null);
               setFile(undefined);
@@ -112,7 +153,7 @@ const Profile = () => {
             className="w-16 lg:w-20 h-8 lg:h-10 text-[#344054] transition-all duration-300 hover:bg-neutral-100 hover:scale-95"
           >
             Remove
-          </button>
+          </button> */}
         </div>
       </div>
       {/* <div className="mt-8 sm:mt-10">

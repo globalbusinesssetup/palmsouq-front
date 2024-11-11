@@ -251,8 +251,15 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
                   </Link>
                 </div>
               </div>
-              <Link href={'/dashboard/wishlist'} className="hidden lg:inline">
+              <Link
+                href={'/dashboard/wishlist'}
+                className="hidden md:flex items-center gap-x-3 p-2"
+              >
                 <FaRegHeart className="text-2xl xl:text-[26px] text-green" />
+                <div className="text-green hidden md:block">
+                  <p className="text-tiny lg:text-xs">My Wislist</p>
+                  <IoIosArrowDown className="xl:text-lg" />
+                </div>
               </Link>
             </div>
           ) : (

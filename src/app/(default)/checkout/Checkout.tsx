@@ -144,7 +144,13 @@ const Checkout = () => {
           },
           { carts: {}, totalAmount: 0 } // Initial accumulator
         );
-
+      if (Object.keys(result.carts).length < 1) {
+        console.log('No items for checkout');
+        setTimeout(() => {
+          router.push('/cart');
+        }, 100); // Add a small delay to ensure back action is handled smoothly
+        return;
+      }
       setCarts(result.carts);
       setTotalAmount(result.totalAmount);
       const item = cart?.data[0]?.flash_product;
@@ -157,9 +163,6 @@ const Checkout = () => {
   }, [cart]);
 
   useEffect(() => {
-    if (Object.keys(carts).length < 1 && isMounted) {
-      router.push('/');
-    }
     const supportedAreas = ['AE'];
     if (!supportedAreas.includes(defaultAddress?.state!)) {
       setDeliveryOption(deliveryOptions[1].value);
@@ -213,7 +216,7 @@ const Checkout = () => {
   //   rzpay.open();
   // }, [Razorpay]);
 
-  if (isPayDataLoading || isCountriesLoading) {
+  if (isPayDataLoading || isCountriesLoading || isLoading) {
     return (
       <main className="w-full h-screen flex items-center justify-center">
         <div className="">

@@ -40,7 +40,7 @@ export default function DashboardClient({
 
   return (
     <main>
-      <div className="fixed w-screen">
+      <div className="fixed w-screen z-[1000] bg-white">
         <Header />
       </div>
       <div className="bg-neutral-50 min-h-screen pt-24 md:pt-28 lg:pt-32">

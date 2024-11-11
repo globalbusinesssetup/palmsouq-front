@@ -31,16 +31,16 @@ const links = [
     url: '/dashboard/wishlist',
     icon: <FaRegHeart className="w-[18px] md:w-5 lg:w-6" />,
   },
-  {
-    title: 'My Wallet',
-    url: '/dashboard/wallet',
-    icon: <IoWalletOutline />,
-  },
-  {
-    title: 'Payments',
-    url: '/dashboard/payments',
-    icon: <IoCardOutline />,
-  },
+  // {
+  //   title: 'My Wallet',
+  //   url: '/dashboard/wallet',
+  //   icon: <IoWalletOutline />,
+  // },
+  // {
+  //   title: 'Payments',
+  //   url: '/dashboard/payments',
+  //   icon: <IoCardOutline />,
+  // },
 ];
 const settingLinks = [
   {
@@ -113,7 +113,7 @@ const LeftBar = ({ user }: { user: UserData | undefined }) => {
               isExpanded={isExpand}
             />
           ))}
-          <div className="pt-2 md:pt-3 space-y-1">
+          {/* <div className="pt-2 md:pt-3 space-y-1">
             {links.slice(3, 5).map((link, i) => (
               <LinkButton
                 isActive={link.url === pathname}
@@ -124,7 +124,7 @@ const LeftBar = ({ user }: { user: UserData | undefined }) => {
                 isExpanded={isExpand}
               />
             ))}
-          </div>
+          </div> */}
           <div className="pt-4 md:pt-6 lg:pt-10 space-y-1">
             <p className="hidden sm:block text-xs md:text-base font-medium text-neutral-400 pb-2 pl-2 md:pl-4 lg:pl-8">
               Account Setting&apos;s
