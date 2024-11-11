@@ -82,7 +82,7 @@ const deliveryOptions = [
 const Checkout = () => {
   const router = useRouter();
   const params = useSearchParams();
-  const { refetchProfile } = useAuth();
+  const { refetchProfile, isLoggedIn } = useAuth();
   // const [Razorpay] = useRazorpay();
   const queryClient = useQueryClient();
   const { data: addresses, isLoading: isAddressLoading } = useQuery({
@@ -147,17 +147,19 @@ const Checkout = () => {
 
       setCarts(result.carts);
       setTotalAmount(result.totalAmount);
-      const item = cart?.data[0].flash_product;
-      setDeliveryCost(Number(item.shipping_rule.shipping_places[0].price));
-      setPickupCost(Number(item.shipping_rule.shipping_places[0].pickup_price));
-      setTax(Number(item.tax_rules.price));
+      const item = cart?.data[0]?.flash_product;
+      setDeliveryCost(Number(item?.shipping_rule?.shipping_places[0].price));
+      setPickupCost(
+        Number(item?.shipping_rule?.shipping_places[0].pickup_price)
+      );
+      setTax(Number(item?.tax_rules?.price));
     }
   }, [cart]);
 
   useEffect(() => {
-    // if (ordersData.length < 1 && isMounted) {
-    //   router.push('/orders');
-    // }
+    if (Object.keys(carts).length < 1 && isMounted) {
+      router.push('/');
+    }
     const supportedAreas = ['AE'];
     if (!supportedAreas.includes(defaultAddress?.state!)) {
       setDeliveryOption(deliveryOptions[1].value);
@@ -181,8 +183,6 @@ const Checkout = () => {
       setMethod(payData?.default!);
     }
   }, [payData, isPayDataLoading]);
-
-  console.log('cart');
 
   // const handlePayment = useCallback(() => {
   //   const options: RazorpayOptions = {
@@ -263,15 +263,6 @@ const Checkout = () => {
     setUpdateLoading(true);
     try {
       const res = await api.post('/cart/update-shipping', {
-        // cart: {
-        //   [String(ordersData[0].id)]: {
-        //     cart: ordersData[0].id,
-        //     shipping_place:
-        //       ordersData[0].flash_product.shipping_rule.shipping_places?.[0],
-        //     single_shipping: true,
-        //     shipping_type: '1',
-        //   },
-        // },
         cart: carts,
         selected_address: defaultAddress?.id,
         user_token: userToken,
@@ -344,7 +335,7 @@ const Checkout = () => {
   };
 
   return (
-    <main className="bg-neutral-50 py-10 min-h-screen">
+    <main className="bg-neutral-50 py-10 min-h-[calc(100vh-97px)]">
       <div className="container mx-auto flex flex-col-reverse lg:flex-row gap-y-5 lg:gap-y-0 gap-x-4 xl:gap-x-6 px-4">
         <div className="flex-1 lg:max-w-[920px] lg:mx-auto px-3 xs:px-5 xl:px-10 py-4 md:py-8 border rounded-xl border-neutral-300 bg-white">
           <div className="overflow-hidden flex items-center justify-between gap-x-2 xs:gap-x-3 md:gap-x-5 pb-4 md:pb-6 border-b border-neutral-200">
@@ -549,7 +540,11 @@ const Checkout = () => {
                 Your order has been successfully proceeded!
               </p>
               <Button
-                onClick={() => router.push('/orders')}
+                onClick={() => {
+                  isLoggedIn
+                    ? router.push('/dashboard/orders')
+                    : router.push('/orders');
+                }}
                 className="py-0 h-11 max-w-[336px] font-semibold mt-8 flex items-center justify-center gap-x-2"
               >
                 Go to My Order&apos;s{' '}

@@ -2,7 +2,7 @@
 import { Button, Header } from '@/components';
 import Image from 'next/image';
 import Link from 'next/link';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FiMinus, FiPlus } from 'react-icons/fi';
 import { features, cardCategoryData } from '@/constants';
 import {
@@ -22,6 +22,8 @@ import { FaAngleRight } from 'react-icons/fa6';
 import ImageMagnifier from '@/components/common/ImageMagnifier';
 import { temp_banner } from '@/utils/helper';
 import Cookies from 'js-cookie';
+import { register } from 'swiper/element/bundle';
+register();
 
 type CategoryProps = {
   params: {
@@ -195,32 +197,48 @@ export default function ProductDeatils({ params }: Record<string, any>) {
               </div>
               <ImageMagnifier product={product} selectedImage={selectedImage} />
             </div>
-            <div className="flex items-center gap-x-2 xs:gap-x-3 xl:gap-x-4 mt-4">
-              {product?.images?.map((pd, i) => (
+            <swiper-container slides-per-view={4} space-between={16} navigation>
+              <swiper-slide key={`img_`}>
                 <div
-                  key={`image_${i}`}
-                  onClick={() => {
-                    pd?.image === selectedImage
-                      ? setImage('')
-                      : setImage(pd?.image);
-                  }}
+                  onClick={() => setImage('')}
                   className={`w-full max-w-[156px] p-2 h-20 xs:h-24 lg:h-20 xl:h-[101px] rounded-lg overflow-hidden border cursor-pointer transition-all duration-200 ${
-                    selectedImage === pd?.image
+                    selectedImage === ''
                       ? 'border-primary/50'
                       : 'border-transparent'
                   }`}
                 >
-                  <div className="p-2 w-full h-full relative">
+                  <div className="w-full h-full relative">
                     <Image
-                      src={config.imgUri + pd?.image}
+                      src={config.imgUri + product?.image}
                       fill
                       alt="product image"
                       className=""
                     />
                   </div>
                 </div>
+              </swiper-slide>
+              {product?.images?.map((pd, i) => (
+                <swiper-slide key={`img_${i}`}>
+                  <div
+                    onClick={() => setImage(pd?.image)}
+                    className={`w-full max-w-[156px] p-2 h-20 xs:h-24 lg:h-20 xl:h-[101px] rounded-lg overflow-hidden border cursor-pointer transition-all duration-200 ${
+                      selectedImage === pd?.image
+                        ? 'border-primary/50'
+                        : 'border-transparent'
+                    }`}
+                  >
+                    <div className="w-full h-full relative">
+                      <Image
+                        src={config.imgUri + pd?.image}
+                        fill
+                        alt="product image"
+                        className=""
+                      />
+                    </div>
+                  </div>
+                </swiper-slide>
               ))}
-            </div>
+            </swiper-container>
             <div className="mt-4 py-4 px-[30px] flex items-center justify-center gap-x-4 border border-neutral-100 bg-neutral-100 rounded-lg">
               <Image
                 src={'/icons/free-delivery.svg'}

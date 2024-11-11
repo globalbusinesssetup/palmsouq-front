@@ -22,6 +22,8 @@ import useAuth from '@/hooks/useAuth';
 import config from '@/config';
 import { ProductData } from '@/types';
 
+register();
+
 type SwiperElement = Element & {
   swiper?: {
     slideNext: () => void;
@@ -74,7 +76,6 @@ export default function HomeClient() {
 
   useEffect(() => {
     setSwiperEl(document.querySelectorAll('swiper-container'));
-    register();
   }, []);
 
   const onNext = (id: number) => {
