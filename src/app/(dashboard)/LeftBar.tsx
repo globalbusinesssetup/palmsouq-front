@@ -12,6 +12,7 @@ import { FaBarsStaggered } from 'react-icons/fa6';
 import useAuth from '@/hooks/useAuth';
 import { UserData } from '@/types';
 import { FaRegHeart } from 'react-icons/fa6';
+import config from '@/config';
 
 export const avatar = '/avatar.png';
 
@@ -58,11 +59,11 @@ const settingLinks = [
     url: '/dashboard/shippings',
     icon: <Location className="w-[18px] md:w-5 lg:w-6" />,
   },
-  {
-    title: 'Notifications',
-    url: '/dashboard/notifications',
-    icon: <FiBell />,
-  },
+  // {
+  //   title: 'Notifications',
+  //   url: '/dashboard/notifications',
+  //   icon: <FiBell />,
+  // },
 ];
 
 const LeftBar = ({ user }: { user: UserData | undefined }) => {
@@ -80,7 +81,7 @@ const LeftBar = ({ user }: { user: UserData | undefined }) => {
         <div className="hidden py-6 bg-gradient-to-l to-[#002169] from-[#002169B5] md:flex flex-col items-center">
           <div className="size-12 lg:size-16 rounded-full overflow-hidden border-[1.5px] border-white relative">
             <Image
-              src={avatar}
+              src={user?.avatar ? config.imgUri + user?.avatar : avatar}
               alt="user avatar"
               fill
               className="object-cover"

@@ -126,7 +126,7 @@ const Profile = () => {
           <p className="text-center text-xs font-semibold text-neutral-700">
             Picture
           </p>
-          <div className="mt-2.5 size-10 sm:size-14 lg:size-20 rounded-full overflow-hidden relative">
+          <div className="mt-2.5 size-10 sm:size-14 lg:size-20 rounded-full overflow-hidden relative border border-gray-200">
             <Image
               src={
                 user?.data?.avatar ? config.imgUri + user?.data?.avatar : avatar
