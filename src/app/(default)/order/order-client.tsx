@@ -217,9 +217,9 @@ const OrderClient = () => {
               <div className="px-5">
                 <div className="flex items-center py-4 border-b border-[#E6E6E6]">
                   <div className="flex-1">
-                    <p className="text-xs font-medium text-success">
+                    {/* <p className="text-xs font-medium text-success">
                       Business Card
-                    </p>
+                    </p> */}
                     <h4 className="text-black font-semibold">
                       350 Gsm Matt Lamination
                     </h4>
@@ -301,9 +301,9 @@ const OrderClient = () => {
             <div className="px-5">
               <div className="flex items-center py-4 border-b border-[#E6E6E6]">
                 <div className="flex-1">
-                  <p className="text-xs font-medium text-success">
+                  {/* <p className="text-xs font-medium text-success">
                     Business Card
-                  </p>
+                  </p> */}
                   <h4 className="text-black font-semibold">
                     350 Gsm Matt Lamination
                   </h4>

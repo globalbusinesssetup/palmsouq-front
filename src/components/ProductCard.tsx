@@ -102,7 +102,7 @@ const ProductCard = ({
         </swiper-container>
       </Link>
       <div className="mt-2 py-2.5">
-        <p className="text-xs text-success">Category name</p>
+        {/* <p className="text-xs text-success">Category name</p> */}
         <Link
           href={`/${category}/${data?.slug}/${data?.id}`}
           className="mt-1 flex items-center justify-between gap-x-3"

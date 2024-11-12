@@ -429,7 +429,7 @@ const Row = ({
             <div className="px-4 lg:px-5">
               <div className="flex items-center gap-x-5 justify-between py-4 border-b border-[#E6E6E6]">
                 <div className="flex-1 overflow-hidden">
-                  <p className="text-xs text-success">Category name</p>
+                  {/* <p className="text-xs text-success">Category name</p> */}
                   <p className="text-sm text-neutral-600 font-semibold whitespace-nowrap overflow-hidden text-ellipsis">
                     {pd?.flash_product?.title}
                   </p>

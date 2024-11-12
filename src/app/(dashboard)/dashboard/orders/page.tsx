@@ -111,28 +111,27 @@ const Orders = () => {
                 </th>
               </tr>
             </thead>
-            {isOrdersLoading
-              ? Array(5)
-                  .fill(' ')
-                  .map((_, i) => (
-                    <tr
-                      key={i}
-                      className="bg-gray-200 animate-pulse border-b border-white"
-                    >
-                      {Array(7)
-                        .fill(' ')
-                        .map((_, i) => (
-                          <td key={i} className="h-10 tab " />
-                        ))}
-                    </tr>
-                  ))
-              : orders?.data?.data?.length! > 0 && (
-                  <tbody>
-                    {orders?.data?.data.map((order: any, i: number) => (
-                      <Row key={order?.id} order={order} i={i} />
-                    ))}
-                  </tbody>
-                )}
+            <tbody>
+              {isOrdersLoading
+                ? Array(5)
+                    .fill(' ')
+                    .map((_, i) => (
+                      <tr
+                        key={i}
+                        className="bg-gray-200 animate-pulse border-b border-white"
+                      >
+                        {Array(7)
+                          .fill(' ')
+                          .map((_, i) => (
+                            <td key={i} className="h-10 tab " />
+                          ))}
+                      </tr>
+                    ))
+                : orders?.data?.data?.length! > 0 &&
+                  orders?.data?.data.map((order: any, i: number) => (
+                    <Row key={order?.id} order={order} i={i} />
+                  ))}
+            </tbody>
           </table>
         </div>
         {!isOrdersLoading && !orders?.data?.data?.length && (
@@ -230,7 +229,7 @@ const Row = ({ order, i }: { order: any; i: number }) => {
         </td>
         <td className="py-4 w-[30%]">
           <div className="max-w-[150px] overflow-hidden">
-            <p className="text-tiny lg:text-xs text-success">Business Card</p>
+            {/* <p className="text-tiny lg:text-xs text-success">Business Card</p> */}
             <p className="text-xs lg:text-sm text-neutral-600 font-semibold whitespace-nowrap overflow-hidden text-ellipsis">
               {order?.ordered_products[0]?.product?.title}
             </p>
