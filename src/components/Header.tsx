@@ -277,7 +277,7 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
                 </p>
                 <FiShoppingBag className="text-2xl xl:text-[26px] text-green" />
               </Link>
-              <Link href={'/dashboard/wishlist'} className="hidden lg:inline">
+              <Link href={'/auth/sign-in'} className="hidden lg:inline">
                 <FaRegHeart className="text-2xl xl:text-[26px] text-green" />
               </Link>
             </div>

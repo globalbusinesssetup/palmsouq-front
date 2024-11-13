@@ -68,7 +68,7 @@ const Orders = () => {
         <h5 className="text-sm sm:text-base lg:text-lg whitespace-nowrap font-semibold text-neutral-700">
           My Order&apos;s
         </h5>
-        <div className="flex items-center justify-end gap-x-3">
+        {/* <div className="flex items-center justify-end gap-x-3">
           <Input
             control={control}
             name="search"
@@ -83,7 +83,7 @@ const Orders = () => {
           >
             <Excel /> Export data
           </Button>
-        </div>
+        </div> */}
       </div>
       <div className="">
         <div className="overflow-x-auto">
