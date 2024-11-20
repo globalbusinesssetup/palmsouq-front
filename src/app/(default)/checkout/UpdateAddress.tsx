@@ -221,6 +221,7 @@ const UpdateAddress = ({
               id="countries"
               value={selectedCountry}
               onChange={handleCountryChange}
+              disabled
               className="bg-transparent w-full appearance-none focus-visible:outline-none mt-1.5 text-[#667085] border px-3.5 pr-5 py-2.5 rounded-lg"
             >
               <option value="">Select your Country</option>

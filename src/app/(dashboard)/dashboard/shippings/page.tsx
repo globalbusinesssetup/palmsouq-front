@@ -213,6 +213,7 @@ const Shippings = () => {
             <Select
               id="countries"
               value={selectedCountry}
+              disabled
               onChange={handleCountryChange}
               className="bg-transparent w-full appearance-none focus-visible:outline-none mt-1.5 text-[#667085] border px-3.5 pr-5 py-2.5 rounded-lg"
             >

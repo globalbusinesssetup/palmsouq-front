@@ -39,8 +39,8 @@ export const getCountryTitle = (
 export const getStateTitle = (
   countries: { [key: string]: Country },
   country: string,
-  setate: string
-) => Object.values(countries[country].states[setate].name);
+  state: string
+) => Object.values(countries[country]?.states[state]?.name);
 
 export function debounce(fn: (...args: any[]) => void, delay: number) {
   let timeoutId: ReturnType<typeof setTimeout>;
