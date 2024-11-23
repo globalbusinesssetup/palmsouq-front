@@ -123,7 +123,6 @@ const AddAddress = ({
         email: data.email,
         name: data.name,
         city: data.city,
-        zip: data.zip,
       });
       if (res?.data?.data?.form) {
         toast.error(res?.data?.data?.form[0]);
@@ -226,23 +225,14 @@ const AddAddress = ({
           />
           <Input
             control={control}
-            rules={{ required: 'zip is required' }}
-            name="zip"
-            label="Zip"
-            placeholder="Zip code"
+            rules={{ required: 'address is required' }}
+            name="address"
+            label="Address"
+            placeholder="Street, Building, Apt. etc"
             wrapClassName="flex-1"
-            error={errors?.zip}
+            error={errors?.address}
           />
         </div>
-        <Input
-          control={control}
-          rules={{ required: 'address is required' }}
-          name="address"
-          label="Address"
-          placeholder="Street, Building, Apt. etc"
-          wrapClassName=" mt-2 sm:mt-4"
-          error={errors?.address}
-        />
         <div className="flex flex-col md:flex-row gap-y-4 gap-x-6 mt-4">
           <div className="flex-1">
             <label

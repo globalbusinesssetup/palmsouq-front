@@ -30,9 +30,10 @@ const UpdateAddress = ({
   } = useForm({
     defaultValues: {
       phone: data.phone ?? '',
+      email: data.email ?? '',
+      name: data.name ?? '',
       address_1: data.address_1 ?? '',
       city: data.city ?? '',
-      zip: data.zip ?? '',
     },
   });
   const [countryData, setCountryData] = useState<{
@@ -134,7 +135,25 @@ const UpdateAddress = ({
         <h4 className="md:text-lg text-neutral-900 font-semibold">
           Update Shipping Address
         </h4>
+        <Input
+          control={control}
+          rules={{ required: 'email is required' }}
+          name="email"
+          label="Email"
+          placeholder="exampl@mail.com"
+          wrapClassName="mt-2 sm:mt-4 lg:mt-8"
+          error={errors?.email}
+        />
         <div className="flex flex-col md:flex-row gap-y-4 gap-x-6 mt-2 sm:mt-4 lg:mt-8">
+          <Input
+            control={control}
+            rules={{ required: 'name is required' }}
+            name="name"
+            label="Name"
+            placeholder="Name"
+            wrapClassName="flex-1"
+            error={errors?.name}
+          />
           <div className="flex-1">
             <Input
               prefix="+971"
@@ -150,15 +169,6 @@ const UpdateAddress = ({
               error={errors?.phone}
             />
           </div>
-          <Input
-            control={control}
-            rules={{ required: 'address is required' }}
-            name="address_1"
-            label="Address"
-            placeholder="Street, Building, Apt. etc"
-            wrapClassName="flex-1"
-            error={errors?.address_1}
-          />
           {/* <div className="flex-1">
             <label
               htmlFor="city"
@@ -191,22 +201,21 @@ const UpdateAddress = ({
         <div className="flex flex-col md:flex-row gap-y-4 gap-x-6 mt-2 sm:mt-4 lg:mt-8">
           <Input
             control={control}
+            rules={{ required: 'address is required' }}
+            name="address_1"
+            label="Address"
+            placeholder="Street, Building, Apt. etc"
+            wrapClassName="flex-1"
+            error={errors?.address_1}
+          />
+          <Input
+            control={control}
             rules={{ required: 'city is required' }}
             name="city"
             label="City"
             placeholder="City"
             wrapClassName="flex-1"
             error={errors?.city}
-          />
-          <Input
-            control={control}
-            rules={{ required: 'zip is required' }}
-            name="zip"
-            label="Zip code"
-            placeholder="zip code"
-            type="number"
-            wrapClassName="flex-1"
-            error={errors?.zip}
           />
         </div>
         <div className="flex flex-col md:flex-row gap-y-4 gap-x-6 mt-4 sm:mt-6 lg:mt-8">
