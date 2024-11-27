@@ -2,6 +2,7 @@ import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { currentYear, footerLinks, paymentIcons } from '@/constants';
+import useAuth from '@/hooks/useAuth';
 
 const quickLinks = [
   {
@@ -23,26 +24,45 @@ const quickLinks = [
 ];
 
 const Footer = () => {
+  const { about } = useAuth();
   return (
     <footer className="bg-primary">
       <div className="container mx-auto py-[50px] px-4 sm:px-5">
         <div className="flex flex-row flex-wrap items-center justify-between pb-6 gap-4">
-          {footerLinks.map((footerLink, i) => (
-            <nav key={`footer_${i}`} className="space-y-2">
-              <h6 className="text-neutral-400 text-sm font-semibold pb-1">
-                {footerLink.title}
-              </h6>
-              {footerLink.links.map((link, i) => (
-                <Link
-                  key={`link_${i}`}
-                  href="#"
-                  className="text-sm font-medium text-neutral-200 block"
-                >
-                  {link.title}
-                </Link>
-              ))}
-            </nav>
-          ))}
+          {footerLinks.map((footerLink, i) =>
+            footerLink.title !== 'About' ? (
+              <nav key={`footer_${i}`} className="space-y-2">
+                <h6 className="text-neutral-400 text-sm font-semibold pb-1">
+                  {footerLink.title}
+                </h6>
+                {footerLink.links.map((link, i) => (
+                  <Link
+                    key={`link_${i}`}
+                    href="#"
+                    className="text-sm font-medium text-neutral-200 block"
+                  >
+                    {link.title}
+                  </Link>
+                ))}
+              </nav>
+            ) : (
+              <nav key={`footer_${i}`} className="space-y-2">
+                <h6 className="text-neutral-400 text-sm font-semibold pb-1">
+                  {footerLink.title}
+                </h6>
+
+                {about.map((link, i) => (
+                  <Link
+                    key={`link_${i}`}
+                    href={'/page/' + link.slug}
+                    className="text-sm font-medium text-neutral-200 block"
+                  >
+                    {link.title}
+                  </Link>
+                ))}
+              </nav>
+            )
+          )}
           <div className="lg:pl-2.5">
             <h3 className="text-lg lg:text-xl text-neutral-300 font-medium">
               Payment Methods

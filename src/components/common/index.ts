@@ -8,6 +8,8 @@ import Select from './CustomSelect';
 import Avatar from './Avatar';
 import PdfPreview from './PdfPreview';
 import Loader from './Loader';
+import Image from './Image';
+// import Tooltip from './Tooltip';
 
 export {
   Button,
@@ -20,4 +22,6 @@ export {
   Avatar,
   PdfPreview,
   Loader,
+  Image,
+  // Tooltip,
 };

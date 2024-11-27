@@ -1,9 +1,16 @@
 'use client';
 import { FileDownload, Tag, WalletAdd } from '@/components';
+import { useGetUser } from '@/utils/api';
+import { useQuery } from '@tanstack/react-query';
 import React from 'react';
 import { FaAngleLeft, FaAngleRight } from 'react-icons/fa6';
 
 const Wallet = () => {
+  // const { data: user, isFetching } = useQuery({
+  //   queryKey: ['user'],
+  //   queryFn: useGetUser,
+  // });
+  // console.log('user', user);
   return (
     <div className="border border-neutral-200 bg-white rounded-xl overflow-hidden p-4 max-w-[912px]">
       <h5 className="xs:text-lg font-semibold text-neutral-900">My Wallet</h5>
@@ -65,7 +72,7 @@ const Wallet = () => {
                         Stripe Payment
                       </td>
                       <td className="py-3 md:py-4">
-                        <Tag status="success" />
+                        <Tag status="confirmed" />
                       </td>
                     </tr>
                   ))}

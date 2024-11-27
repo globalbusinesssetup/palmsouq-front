@@ -39,8 +39,24 @@ export const getCountryTitle = (
 export const getStateTitle = (
   countries: { [key: string]: Country },
   country: string,
-  setate: string
-) => Object.values(countries[country].states[setate].name);
+  state: string
+): string | undefined => {
+  // Ensure countries, country, and state are valid
+  if (!countries || !country || !state) {
+    console.error('Invalid parameters:', { countries, country, state });
+    return undefined;
+  }
+
+  // Access the state name safely
+  const stateName = countries[country]?.states?.[state]?.name;
+
+  if (!stateName) {
+    console.error('State not found for:', { country, state });
+    return undefined;
+  }
+
+  return stateName;
+};
 
 export function debounce(fn: (...args: any[]) => void, delay: number) {
   let timeoutId: ReturnType<typeof setTimeout>;

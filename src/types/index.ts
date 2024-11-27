@@ -2,6 +2,11 @@ export type LoginForm = {
   email: string;
   password?: string;
 };
+
+export type GoogleLoginPayload = {
+  token: string;
+};
+
 export type RegisterForm = {
   first_name: string;
   last_name: string;
@@ -11,8 +16,10 @@ export type RegisterForm = {
 
 export type AuthContextTypes = {
   isLoggedIn: boolean;
+  userToken: string | null;
   user?: Record<string, any>;
   login: (loginData: any) => Promise<{ isSuccess: boolean }>;
+  socialLogin: (loginData: any) => Promise<{ isSuccess: boolean }>;
   logOut: () => void;
   refetchProfile: () => void;
   removeOrders: () => void;
@@ -22,6 +29,7 @@ export type AuthContextTypes = {
   languages: [];
   payment: [];
   social: [];
+  about: { id: number; title: string; slug: string }[];
   ordersData: CartItem[] | [];
   default_language: {
     name: string;
@@ -35,6 +43,7 @@ type UserType = 'personal' | 'business';
 
 export type UserData = {
   id: number;
+  avatar: string;
   first_name: string;
   last_name: string;
   company_name: string | null;
@@ -74,6 +83,7 @@ export type ProductData = {
   image: string;
   review_count: number;
   rating: number;
+  inventory?: any;
 };
 
 export type ProductsCommonType = {
@@ -271,7 +281,7 @@ interface ShippingPlace {
 }
 
 export interface ProductResponse {
-  data: SingleProductData & { banner: string };
+  data: SingleProductData & { banner: string; sku: string; barcode: string };
   status: number;
   token: string | null;
   message: string;
@@ -340,11 +350,30 @@ export type Collection = {
 export type Banner = {
   id: number;
   image: string;
+  title: string;
 };
 
 type Place = {
   id: number;
   country: string;
+  state: string;
+  price: string;
+  day_needed: string;
+  pickup_price: string;
+  pickup_point: string;
+  shipping_rule_id: string;
+  pickup_phone: string;
+  pickup_address_line_1: string;
+  pickup_address_line_2: string;
+  pickup_zip: string;
+  pickup_state: string;
+  pickup_city: string;
+  pickup_country: string;
+  shipping_rule: {
+    id: number;
+    title: string;
+    single_price: number;
+  };
 };
 
 export type CartItem = {
@@ -355,8 +384,17 @@ export type CartItem = {
     shipping_rule: {
       shipping_places: Place[];
     };
+    tax_rules: {
+      id: number;
+      price: string;
+    };
   };
   quantity: string;
+  selected: string;
+  product_id: string;
+  inventory_id: string;
+  shipping_type: string;
+  shipping_place: Place;
 };
 
 export type Setting = {

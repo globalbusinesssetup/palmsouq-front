@@ -4,6 +4,7 @@ import {
   CartItem,
   Categorydata,
   Country,
+  GoogleLoginPayload,
   LoginForm,
   Setting,
 } from '@/types';
@@ -16,10 +17,18 @@ import { api } from '@/utils/fetcher';
 import dayjs from 'dayjs';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { getCommon, getCountries, useGetUser } from '@/utils/api';
+import { jwtDecode, JwtPayload } from 'jwt-decode';
+
+interface CustomJwtPayload extends JwtPayload {
+  exp: number;
+  iat: number;
+  aud: string;
+}
 
 export const AuthContext = createContext<AuthContextTypes>({
   isLoggedIn: false,
   login: async () => ({ isSuccess: false }),
+  socialLogin: async () => ({ isSuccess: false }),
   logOut: () => {},
   refetchProfile: () => {},
   addOrders: () => {},
@@ -29,12 +38,14 @@ export const AuthContext = createContext<AuthContextTypes>({
   languages: [],
   payment: [],
   social: [],
+  about: [],
   default_language: {
     name: '',
     code: '',
   },
   ordersData: [],
   countries: {},
+  userToken: '',
 });
 
 const AuthProvider = ({ children }: { children: ReactNode }) => {
@@ -42,6 +53,9 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   const queryClient = useQueryClient();
   const [token, setToken] = useState<string | null>(
     Cookies.get('token') || null
+  );
+  const [userToken, setUserToken] = useState<string | null>(
+    Cookies.get('user_token') || null
   );
   const [isLoading, setLoading] = useState(false);
   const {
@@ -72,6 +86,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [categories, setCategories] = useState<Categorydata[]>([]);
   const [payment, setPayment] = useState<[]>([]);
   const [social, setSocial] = useState<[]>([]);
+  const [about, setAbout] = useState<[]>([]);
   const [defaultLanguage, setDefaultLanguage] = useState<{
     name: string;
     code: string;
@@ -88,6 +103,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       setCategories(common?.categories ?? []);
       setPayment(common?.payment ?? []);
       setSocial(common?.social ?? []);
+      setAbout(common?.about ?? []);
       setSetting(common?.setting);
       if (common?.default_language)
         setDefaultLanguage(common?.default_language);
@@ -99,15 +115,36 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     const tokenFromCookie = Cookies.get('token');
+    const userTokenFromCookie = Cookies.get('user_token');
     if (tokenFromCookie !== token) {
       setToken(tokenFromCookie ?? null);
     }
+    if (userTokenFromCookie !== userToken) {
+      setToken(userTokenFromCookie ?? null);
+    }
   }, [Cookies.get('token')]);
+
+  useEffect(() => {
+    const userTokenFromCookie = Cookies.get('user_token');
+    if (!userTokenFromCookie) {
+      const token =
+        Math.random().toString(36).slice(2, 5) +
+        (+new Date() * Math.random()).toString(36).substring(0, 12) +
+        Math.random().toString(36).slice(2, 5);
+      Cookies.set('user_token', token, { expires: 365 * 100 });
+    }
+    if (userTokenFromCookie !== userToken) {
+      setToken(userTokenFromCookie ?? null);
+    }
+  }, [Cookies.get('user_token')]);
 
   async function login(arg: LoginForm): Promise<{ isSuccess: boolean }> {
     setLoading(true);
     try {
-      const res = await api.post('/user/signin', { ...arg });
+      const res = await api.post('/user/signin', {
+        ...arg,
+        user_token: userToken,
+      });
       const token = res.data?.data?.token;
       if (token) {
         Cookies.set('token', token as string, {
@@ -122,6 +159,45 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         return { isSuccess: true };
       } else {
         toast.error(res.data.data.form[0]);
+        return { isSuccess: false };
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        throw error.response?.data || 'An error occurred';
+      } else {
+        throw 'An unexpected error occurred';
+      }
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function socialLogin(
+    arg: GoogleLoginPayload
+  ): Promise<{ isSuccess: boolean }> {
+    setLoading(true);
+    try {
+      const token = arg.token;
+      if (token) {
+        const decoded = jwtDecode<CustomJwtPayload>(token);
+        const currentTime = Date.now() / 1000;
+
+        if (decoded.exp && decoded.exp < currentTime) {
+          throw new Error('Token has expired');
+        }
+
+        Cookies.set('token', token as string, {
+          secure: true,
+          sameSite: 'lax',
+          expires: dayjs(decoded.exp).toDate(),
+        });
+        setToken(token);
+        queryClient.invalidateQueries({ queryKey: ['user'] });
+        router.push('/dashboard/profile');
+        toast.success('Login succesfully');
+        return { isSuccess: true };
+      } else {
+        toast.error('Failed login using google');
         return { isSuccess: false };
       }
     } catch (error) {
@@ -164,8 +240,10 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     <AuthContext.Provider
       value={{
         isLoggedIn: !!token,
+        userToken: userToken,
         user: user?.data,
         login,
+        socialLogin,
         logOut,
         refetchProfile,
         isLoading: userLoading || isLoading || isCommonLoading,
@@ -173,6 +251,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         languages,
         payment,
         social,
+        about,
         default_language: defaultLanguage,
         ordersData,
         addOrders,

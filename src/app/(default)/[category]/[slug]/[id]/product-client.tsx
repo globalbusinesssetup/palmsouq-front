@@ -2,7 +2,7 @@
 import { Button, Header } from '@/components';
 import Image from 'next/image';
 import Link from 'next/link';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FiMinus, FiPlus } from 'react-icons/fi';
 import { features, cardCategoryData } from '@/constants';
 import {
@@ -12,7 +12,7 @@ import {
 } from '@headlessui/react';
 import { FaAngleDown, FaRegHeart } from 'react-icons/fa6';
 import { useRouter } from 'next/navigation';
-import { QueryClient, useQuery } from '@tanstack/react-query';
+import { QueryClient, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getProduct, useGetUser } from '@/utils/api';
 import { api } from '@/utils/fetcher';
 import { toast } from 'react-toastify';
@@ -21,6 +21,9 @@ import config from '@/config';
 import { FaAngleRight } from 'react-icons/fa6';
 import ImageMagnifier from '@/components/common/ImageMagnifier';
 import { temp_banner } from '@/utils/helper';
+import Cookies from 'js-cookie';
+import { register } from 'swiper/element/bundle';
+register();
 
 type CategoryProps = {
   params: {
@@ -37,6 +40,7 @@ export default function ProductDeatils({ params }: Record<string, any>) {
   const [selectedImage, setImage] = useState('');
   const [isSubmitLoading, setSubmitLoading] = useState(false);
   const [bannerError, setBannerError] = useState(false);
+  const queryClient = useQueryClient();
 
   const { data: product, isLoading } = useQuery({
     queryKey: ['product', params.id],
@@ -58,17 +62,18 @@ export default function ProductDeatils({ params }: Record<string, any>) {
   };
 
   const addToCart = async () => {
-    if (!isLoggedIn) {
-      toast.warn('Unauthorized! sign in first.');
-      return;
-    }
+    // if (!isLoggedIn) {
+    //   toast.warn('Unauthorized! sign in first.');
+    //   return;
+    // }
+    const token = Cookies.get('user_token');
     setSubmitLoading(true);
     try {
       const res = await api.post('/cart/action', {
         product_id: product?.id,
         inventory_id: product?.inventory[0]?.id,
         quantity,
-        user_token: user?.email,
+        user_token: token,
       });
       if (res?.data?.data?.form) {
         toast.error(res?.data?.data?.form[0]);
@@ -84,25 +89,26 @@ export default function ProductDeatils({ params }: Record<string, any>) {
     setSubmitLoading(false);
   };
   const buyNow = async () => {
-    if (!isLoggedIn) {
-      toast.warn('Unauthorized! sign in first.');
-      return;
-    }
+    // if (!isLoggedIn) {
+    //   toast.warn('Unauthorized! sign in first.');
+    //   return;
+    // }
+    const token = Cookies.get('user_token');
     setSubmitLoading(true);
     try {
-      const res = await api.post('/cart/action', {
+      const res = await api.post('/cart/buy-now', {
         product_id: product?.id,
         inventory_id: product?.inventory[0]?.id,
         quantity,
-        user_token: user?.email,
+        user_token: token,
       });
       if (res?.data?.data?.form) {
         toast.error(res?.data?.data?.form[0]);
       } else {
         refetchProfile();
-        toast.success('Product add Successfully');
+        // toast.success('Product add Successfully');
         // addOrders(selectedProducts);
-        // router.push('/checkout');
+        router.push('/checkout');
       }
       console.log('add cart res =>', res);
     } catch (err) {
@@ -123,6 +129,7 @@ export default function ProductDeatils({ params }: Record<string, any>) {
         toast.error(res?.data?.data?.form[0]);
       } else {
         toast.success(res.data?.message);
+        queryClient.invalidateQueries({ queryKey: ['wishlist'] });
       }
       console.log('add wishlist res =>', res);
     } catch (err) {
@@ -182,6 +189,7 @@ export default function ProductDeatils({ params }: Record<string, any>) {
                       ? `${config.imgUri + selectedImage}`
                       : `${config.imgUri + product?.image}`
                   }
+                  onError={() => setImage(config.imgUri + config.defaultImage)}
                   fill
                   alt={product?.image ?? 'product image'}
                   // className="object-cover"
@@ -189,32 +197,48 @@ export default function ProductDeatils({ params }: Record<string, any>) {
               </div>
               <ImageMagnifier product={product} selectedImage={selectedImage} />
             </div>
-            <div className="flex items-center gap-x-2 xs:gap-x-3 xl:gap-x-4 mt-4">
-              {product?.images?.map((pd, i) => (
+            <swiper-container slides-per-view={4} space-between={16} navigation>
+              <swiper-slide key={`img_`}>
                 <div
-                  key={`image_${i}`}
-                  onClick={() => {
-                    pd?.image === selectedImage
-                      ? setImage('')
-                      : setImage(pd?.image);
-                  }}
+                  onClick={() => setImage('')}
                   className={`w-full max-w-[156px] p-2 h-20 xs:h-24 lg:h-20 xl:h-[101px] rounded-lg overflow-hidden border cursor-pointer transition-all duration-200 ${
-                    selectedImage === pd?.image
+                    selectedImage === ''
                       ? 'border-primary/50'
                       : 'border-transparent'
                   }`}
                 >
-                  <div className="p-2 w-full h-full relative">
+                  <div className="w-full h-full relative">
                     <Image
-                      src={config.imgUri + pd?.image}
+                      src={config.imgUri + product?.image}
                       fill
                       alt="product image"
                       className=""
                     />
                   </div>
                 </div>
+              </swiper-slide>
+              {product?.images?.map((pd, i) => (
+                <swiper-slide key={`img_${i}`}>
+                  <div
+                    onClick={() => setImage(pd?.image)}
+                    className={`w-full max-w-[156px] p-2 h-20 xs:h-24 lg:h-20 xl:h-[101px] rounded-lg overflow-hidden border cursor-pointer transition-all duration-200 ${
+                      selectedImage === pd?.image
+                        ? 'border-primary/50'
+                        : 'border-transparent'
+                    }`}
+                  >
+                    <div className="w-full h-full relative">
+                      <Image
+                        src={config.imgUri + pd?.image}
+                        fill
+                        alt="product image"
+                        className=""
+                      />
+                    </div>
+                  </div>
+                </swiper-slide>
               ))}
-            </div>
+            </swiper-container>
             <div className="mt-4 py-4 px-[30px] flex items-center justify-center gap-x-4 border border-neutral-100 bg-neutral-100 rounded-lg">
               <Image
                 src={'/icons/free-delivery.svg'}
@@ -274,7 +298,7 @@ export default function ProductDeatils({ params }: Record<string, any>) {
                   <p
                     className={`flex items-center justify-center text-xs xl:text-sm font-medium px-4 xl:px-5 h-8 xl:h-[34px] rounded-full text-neutral-600 bg-neutral-100`}
                   >
-                    {product?.id}
+                    {product?.sku}
                   </p>
                   <p
                     className={`flex items-center justify-center text-xs xl:text-sm font-medium px-4 xl:px-5 h-8 xl:h-[34px] rounded-full text-neutral-600 bg-neutral-100`}
@@ -351,7 +375,7 @@ export default function ProductDeatils({ params }: Record<string, any>) {
                 <Button
                   disabled={Number(product?.stock) < 1}
                   loading={isSubmitLoading}
-                  onClick={addToCart}
+                  onClick={buyNow}
                   className="h-11 w-[167px] bg-success border-success"
                 >
                   Buy it Now

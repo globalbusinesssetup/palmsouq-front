@@ -9,14 +9,18 @@ import {
   ProfileApiResponse,
   Country,
   Setting,
+  CartItem,
 } from '@/types';
 import fetcher, { api } from '@/utils/fetcher';
 import Cookies from 'js-cookie';
 import { timezone } from './helper';
 
 export const useGetUser = async () => {
+  const token = Cookies.get('user_token');
   try {
-    const data = await fetcher<ProfileApiResponse>('/user/profile');
+    const data = await fetcher<ProfileApiResponse>(
+      `/user/profile?user_token=${token}`
+    );
     return data;
   } catch (err) {
     console.error(err);
@@ -45,7 +49,7 @@ export const getHome = async () => {
         site_features: [];
         slider: {
           main: [];
-          right_bottom: Banner & {
+          right_top: Banner & {
             title: string;
             slug: string;
             url: string | undefined;
@@ -71,6 +75,7 @@ export const getCommon = async () => {
         languages: [];
         payment: [];
         social: [];
+        about: [];
         setting: Setting;
         default_language: {
           name: string;
@@ -90,6 +95,8 @@ export const getPayMethods = async () => {
         stripe_key: string;
         stripe_secret: string;
         stripe: number;
+        cash_on_delivery: number;
+        default: number;
       };
     }>('/payment-gateway');
     return data;
@@ -105,6 +112,20 @@ export const getCategories = async () => {
         categories: Categorydata[];
       };
     }>('/common');
+    return res ?? [];
+  } catch (err) {
+    console.error(err);
+  }
+};
+export const getAbout = async (slug: string) => {
+  try {
+    const res = await fetcher<{
+      data: {
+        slug: string;
+        title: string;
+        description: string;
+      };
+    }>(`/page/${slug}`);
     return res ?? [];
   } catch (err) {
     console.error(err);
@@ -179,22 +200,34 @@ export const getSearchData = async (query: string) => {
   }
 };
 export const getAddress = async (page?: number) => {
+  const token = Cookies.get('user_token');
   try {
     const { data } = await fetcher<{
       data: { data: Address[]; current_page: number; last_page: number };
-    }>(`/user/address/all?page=${page ?? 1}`);
+    }>(`/user/address/all?page=${page ?? 1}&user_token=${token}`);
     return data;
   } catch (err) {
     console.error(err);
   }
 };
 
-export const getCart = async (token: string) => {
+export const getCart = async () => {
+  const token = Cookies.get('user_token');
   try {
-    const res = await fetcher<{ data: [] }>(
+    const res = await fetcher<{ data: CartItem[] }>(
       `/cart/by-user?user_token=${token}`
     );
     return res ?? [];
+  } catch (err) {
+    console.error(err);
+  }
+};
+export const getWishList = async () => {
+  try {
+    const res = await fetcher<{ data: { data: [] } }>(
+      `/user/wishlist/all?order_by=created_at&type=desc&page=1`
+    );
+    return res?.data?.data ?? [];
   } catch (err) {
     console.error(err);
   }
@@ -226,7 +259,7 @@ export const getOrders = async () => {
       order_by: 'created_at',
       page: 1,
       q: null,
-      user_token: Cookies.get('token'),
+      user_token: Cookies.get('user_token'),
     });
     return data;
   } catch (err) {

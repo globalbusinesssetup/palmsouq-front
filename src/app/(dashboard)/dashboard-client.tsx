@@ -5,6 +5,7 @@ import { useGetUser } from '@/utils/api';
 import { useQuery } from '@tanstack/react-query';
 import useAuth from '@/hooks/useAuth';
 import { useRouter } from 'next/navigation';
+import { Header } from '@/components';
 
 export default function DashboardClient({
   children,
@@ -38,13 +39,16 @@ export default function DashboardClient({
   }
 
   return (
-    <>
-      <main className="bg-neutral-50 min-h-screen pt-20 md:pt-16">
+    <main>
+      <div className="fixed w-screen z-[1000] bg-white">
+        <Header />
+      </div>
+      <div className="bg-neutral-50 min-h-screen pt-24 md:pt-28 lg:pt-32">
         <div className="relative flex items-end justify-center px-4 pl-[72px] xs:pl-20 sm:pl-[170px] md:pl-[220px] lg:pl-[300px]">
           <LeftBar user={user?.data} />
           <section className="flex-1 w-full pb-5 2xl:pr-44">
             <div className="flex py-4 xs:py-6 mb-4 bg-gradient-to-l to-[#002169] from-[#002169B5] md:hidden flex-row items-center justify-between rounded-lg px-4 xs:px-6 sm:px-8">
-              <div className="flex items-center gap-x-2 sm:gap-x-4">
+              <div className="flex items-center gap-2 sm:gap-4">
                 <div className="size-10 sm:size-12 rounded-full overflow-hidden border-[1.5px] border-white relative mx-auto">
                   <Image
                     src={avatar}
@@ -53,17 +57,17 @@ export default function DashboardClient({
                     className="object-cover"
                   />
                 </div>
-                <h6 className="text-xs xs:text-sm font-semibold text-white">
+                <h6 className="flex-1 text-xs xs:text-sm font-semibold text-white">
                   {`${user?.data?.first_name ?? user?.data?.name} ${
                     user?.data?.last_name ?? ''
                   }`}
                 </h6>
               </div>
               <div className="text-center">
-                <p className="text-xs xs:text-sm text-white">
+                <p className="text-xs xs:text-sm text-white text-ellipsis overflow-hidden">
                   {user?.data.email}
                 </p>
-                <p className="text-xs xs:text-sm text-white">
+                <p className="text-xs xs:text-sm text-white text-right">
                   {user?.data.phone}{' '}
                 </p>
               </div>
@@ -71,7 +75,7 @@ export default function DashboardClient({
             {children}
           </section>
         </div>
-      </main>
-    </>
+      </div>
+    </main>
   );
 }

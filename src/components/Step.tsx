@@ -28,7 +28,7 @@ const Step = ({
         className={twMerge(
           `rounded-full overflow-hidden flex items-center justify-center size-11 ${
             isActive || isCompleted
-              ? 'bg-[#0408E7] text-white'
+              ? 'bg-green text-white'
               : 'bg-[#EFF0F6] text-[#6F6C90]'
           }`,
           circleClassName
@@ -57,8 +57,8 @@ const Step = ({
         >
           <div
             className={`h-1 xs:h-[5.67px] rounded-full ${
-              isActive ? 'bg-[#4A3AFF] w-[50%]' : 'w-0'
-            } ${isCompleted ? 'bg-[#4A3AFF] w-[100%]' : ''}`}
+              isActive ? 'bg-green/80 w-[50%]' : 'w-0'
+            } ${isCompleted ? 'bg-green/80 w-[100%]' : ''}`}
           />
         </div>
       </div>

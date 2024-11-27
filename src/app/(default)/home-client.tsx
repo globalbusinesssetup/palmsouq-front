@@ -1,7 +1,11 @@
 'use client';
-import { CategoriesBar, Footer, Header, ProductCard } from '@/components';
-import { TopBar } from '@/components';
-import Image from 'next/image';
+import {
+  CategoriesBar,
+  Footer,
+  Header,
+  ProductCard,
+  Image,
+} from '@/components';
 import Link from 'next/link';
 import { FaArrowRightLong } from 'react-icons/fa6';
 import { features, orderSteps } from '@/constants';
@@ -14,10 +18,11 @@ import { register } from 'swiper/element/bundle';
 import { useResponsiveSlides } from '@/hooks';
 import { useQuery } from '@tanstack/react-query';
 import { getCategories, getHome } from '@/utils/api';
-import { temp_banner } from '@/utils/helper';
 import useAuth from '@/hooks/useAuth';
 import config from '@/config';
-import { set } from 'react-hook-form';
+import { ProductData } from '@/types';
+
+register();
 
 type SwiperElement = Element & {
   swiper?: {
@@ -27,12 +32,14 @@ type SwiperElement = Element & {
 };
 
 const catBreakpoints = [
-  { width: 1279, slide: 12 },
+  { width: 1440, slide: 12 },
+  { width: 1279, slide: 10 },
   { width: 1023, slide: 8 },
   { width: 767, slide: 6 },
   { width: 639, slide: 3 },
   { width: 0, slide: 2 },
 ];
+
 const brandBreakpoints = [
   { width: 1279, slide: 10 },
   { width: 1023, slide: 7 },
@@ -61,6 +68,7 @@ export default function HomeClient() {
     queryKey: ['categories'],
     queryFn: getCategories,
   });
+
   const { data: home, isLoading } = useQuery({
     queryKey: ['home'],
     queryFn: getHome,
@@ -68,12 +76,12 @@ export default function HomeClient() {
 
   useEffect(() => {
     setSwiperEl(document.querySelectorAll('swiper-container'));
-    register();
   }, []);
 
   const onNext = (id: number) => {
     swiperEl?.[id]?.swiper?.slideNext();
   };
+
   const onPrev = (id: number) => {
     swiperEl?.[id]?.swiper?.slidePrev();
   };
@@ -151,7 +159,7 @@ export default function HomeClient() {
                 <swiper-slide key={`banner_${i}`} style={{ width: '100%' }}>
                   <div className="w-full h-[200px] sm:h-[250px] xl:h-[304px] relative overflow-hidden rounded-[10px]">
                     <Image
-                      src={`${config.imgUri}/${s?.image}`}
+                      src={s?.image}
                       fill
                       alt={'banner'}
                       className="object-cover"
@@ -162,18 +170,14 @@ export default function HomeClient() {
             </swiper-container>
           </div>
           <Link
-            href={home?.slider?.right_bottom?.url ?? '#'}
+            href={home?.slider?.right_top?.url ?? '#'}
             className="lg:w-5/12 h-[250px] xl:h-[304px] hidden lg:block relative overflow-hidden sm:rounded-[10px] mt-4 lg:mt-0"
           >
             <Image
-              src={
-                bannerError
-                  ? temp_banner
-                  : config.imgUri + home?.slider?.right_bottom?.image
-              }
+              src={home?.slider?.right_top?.image}
               onError={() => setBannerError(true)}
               fill
-              alt={home?.slider?.right_bottom?.title ?? 'Weekly offer Banner'}
+              alt={home?.slider?.right_top?.title ?? 'Weekly offer Banner'}
               className="bg-gray-100"
             />
           </Link>
@@ -200,7 +204,7 @@ export default function HomeClient() {
                 </button>
               </div>
             </div>
-            <div className="mt-5 max-h-[172px] overflow-hidden">
+            <div className="mt-5 overflow-hidden">
               <swiper-container
                 slides-per-view={getCatSlide}
                 space-between={16}
@@ -263,18 +267,9 @@ export default function HomeClient() {
                     >
                       <div className="h-[100px] relative mx-1 mb-4 overflow-hidden rounded-md">
                         <Image
-                          src={
-                            cat?.image
-                              ? `${config.imgUri}${cat.image}`
-                              : `${config.imgUri}default-image.webp`
-                          }
+                          src={cat?.image}
                           width={100}
                           height={100}
-                          onError={(
-                            e: React.SyntheticEvent<HTMLImageElement, Event>
-                          ) => {
-                            e.currentTarget.src = `${config.imgUri}default-image.webp`;
-                          }}
                           alt="cat image"
                           loading="lazy"
                           className="rounded-full mx-auto object-contain"
@@ -299,17 +294,17 @@ export default function HomeClient() {
             <section className="flex items-center gap-x-4 mt-5 md:mt-8">
               <div className="flex-1 h-[108px] bg-[#F5F5F7] relative rounded overflow-hidden">
                 <Image
-                  src={config.imgUri + home?.banners[0].image}
+                  src={home?.banners[0].image}
                   fill
-                  alt="banner"
+                  alt={home?.banners[0].title}
                   className="object-cover"
                 />
               </div>
               <div className="hidden md:block flex-1 h-[108px] bg-[#F5F5F7] relative rounded overflow-hidden">
                 <Image
-                  src={config.imgUri + home?.banners[1].image}
+                  src={home?.banners[1].image}
                   fill
-                  alt="banner"
+                  alt={home?.banners[0].title}
                   className="object-cover"
                 />
               </div>
@@ -326,7 +321,7 @@ export default function HomeClient() {
               </div>
               <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-6">
                 {home?.collections[0]?.product_collections?.map(
-                  (product, i) => (
+                  (product: ProductData & { inventory: any[] }, i) => (
                     <ProductCard
                       data={product}
                       category={home?.collections[0]?.slug}
@@ -343,9 +338,9 @@ export default function HomeClient() {
           <>
             <div className="w-full h-[180px] lg:h-[240px] bg-secondary mt-8 lg:mt-10 rounded-md overflow-hidden relative">
               <Image
-                src={config.imgUri + home?.banners[2].image}
+                src={home?.banners[2].image}
                 fill
-                alt="banner"
+                alt={home?.banners[2].title}
                 className="object-cover"
               />
             </div>
@@ -369,7 +364,7 @@ export default function HomeClient() {
               </div>
               <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-6">
                 {home?.collections[1]?.product_collections?.map(
-                  (product, i) => (
+                  (product: ProductData & { inventory: any[] }, i) => (
                     <ProductCard
                       data={product}
                       category={home?.collections[1]?.slug}
@@ -387,17 +382,17 @@ export default function HomeClient() {
             <section className="flex items-center gap-x-4 mt-5 md:mt-8">
               <div className="flex-1 h-[150px] sm:h-[180px] lg:h-[240px] bg-[#F5F5F7] relative rounded-md overflow-hidden">
                 <Image
-                  src={config.imgUri + home?.banners[3].image}
+                  src={home?.banners[3].image}
                   fill
-                  alt="banner"
+                  alt={home?.banners[3].title}
                   className="object-cover"
                 />
               </div>
               <div className="hidden md:block flex-1 h-[180px] lg:h-[240px] bg-[#F5F5F7] relative rounded-md overflow-hidden">
                 <Image
-                  src={config.imgUri + home?.banners[4].image}
+                  src={home?.banners[4].image}
                   fill
-                  alt="banner"
+                  alt={home?.banners[0].title}
                   className="object-cover"
                 />
               </div>
@@ -421,7 +416,7 @@ export default function HomeClient() {
               </div>
               <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-6">
                 {home?.collections[2]?.product_collections?.map(
-                  (product, i) => (
+                  (product: ProductData & { inventory: any[] }, i) => (
                     <ProductCard
                       data={product}
                       category={home?.collections[2]?.slug}
@@ -466,15 +461,15 @@ export default function HomeClient() {
           </section>
           <div className="w-full h-[180px] lg:h-[240px] bg-secondary mt-8 lg:mt-10 rounded-md overflow-hidden relative">
             <Image
-              src={config.imgUri + home?.banners[5].image}
+              src={home?.banners[5]?.image}
               fill
-              alt="banner"
+              alt={home?.banners[5]?.title}
               className="object-cover"
             />
           </div>
         </>
         {/* features */}
-        <section className="mt-5 md:mt-8 lg:mt-10 p-4 flex flex-wrap items-center gap-[18px]">
+        <section className="mt-5 md:mt-8 lg:mt-10 p-4 space-y-10 md:space-y-0 md:flex flex-wrap items-center gap-[18px]">
           {home?.site_features?.map((feature: any, i) => (
             <div
               key={`feature_${i}`}
@@ -482,11 +477,11 @@ export default function HomeClient() {
             >
               <div className="size-10 lg:size-14 xl:size-[72px] rounded-full flex items-center justify-center bg-neutral-50">
                 <Image
-                  src={config.imgUri + feature?.image}
+                  src={feature?.image}
                   width={42}
                   height={42}
                   className="size-8 xl:size-[42px]"
-                  alt="icon"
+                  alt={feature.title}
                 />
               </div>
               <div
@@ -565,7 +560,8 @@ export default function HomeClient() {
         <section className="mt-5 md:mt-8 lg:mt-10 p-4 sm:px-6 py-5 sm:py-[33px] border border-[#10182833] rounded-[10px] md:flex items-center gap-x-10 justify-between">
           <div className="flex-1 w-full h-[250px] xs:h-[293px] relative">
             <Image
-              src={'/banners/industry-banner.png'}
+              defaultSrc={'/banners/industry-banner.png'}
+              isLocal
               fill
               alt="industry banner"
             />
@@ -595,7 +591,7 @@ export default function HomeClient() {
               className="flex-1 flex flex-col gap-y-4 items-center"
             >
               <div className="w-[83px] h-[78px] md:w-[93px] md:h-[88px] relative">
-                <Image src={step.icon} fill alt="icon" />
+                <Image defaultSrc={step.icon} isLocal fill alt={step.title} />
               </div>
               <div className="text-center">
                 <h4 className="lg:text-lg xl:text-xl font-medium text-primary text-nowrap">
@@ -641,15 +637,11 @@ const CatCard = ({ cat }: any) => {
   return (
     <Link
       href={`/${cat.slug}`}
-      className="block rounded-lg bg-[#F5F5F7] xs:min-w-[107px] flex-1 pt-2 overflow-hidden"
+      className="block rounded-lg bg-[#F5F5F7] xs:min-w-[95px] 2xl:min-w-[107px] flex-1 pt-2 overflow-hidden"
     >
       <div className="h-[100px] relative mx-1 mb-4 overflow-hidden rounded-md">
         <Image
-          src={
-            imageError
-              ? config.imgUri + 'default-image.webp'
-              : `${config.imgUri}${cat.image}`
-          }
+          src={imageError ? config.defaultImage : cat.image}
           onError={() => setImageError(true)}
           fill
           alt="cat image"

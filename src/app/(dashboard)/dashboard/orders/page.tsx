@@ -19,50 +19,41 @@ import { IoMdClose } from 'react-icons/io';
 import Image from 'next/image';
 import { StatusTypes } from '@/components/common/Tag';
 import OrderStep from '@/app/(default)/order/OrderStep';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { getOrders } from '@/utils/api';
-
-const checkoutData = [
-  {
-    title: 'Quantity',
-    value: '1000',
-  },
-  {
-    title: 'Size',
-    value: '9x5.5 cm',
-  },
-  {
-    title: 'Print Side',
-    value: 'Bothside',
-  },
-  {
-    title: 'File Type',
-    value: 'Upload file',
-  },
-  {
-    title: 'Turnaround',
-    value: '24 Business Hours',
-  },
-];
-
-const uploadedFiles = [
-  {
-    name: 'document.pdf',
-    size: '25kb',
-  },
-  // {
-  //   name: 'document2.pdf',
-  //   size: '35kb',
-  // },
-];
+import { api } from '@/utils/fetcher';
+import Cookies from 'js-cookie';
+import { toast } from 'react-toastify';
 
 const steps = [
-  { title: 'Order received', icon: '/icons/check.svg' },
-  { title: 'Details Review', icon: '/icons/check.svg' },
-  { title: 'Production', icon: '/icons/check.svg' },
-  { title: 'Ready', icon: '/icons/check.svg' },
-  { title: 'Received', icon: '/icons/check.svg' },
+  { title: 'Pending', icon: '/icons/check.svg' },
+  { title: 'Confirmed', icon: '/icons/check.svg' },
+  { title: 'Picked up', icon: '/icons/check.svg' },
+  { title: 'on the way', icon: '/icons/check.svg' },
+  { title: 'Delivered', icon: '/icons/check.svg' },
 ];
+
+const getCurrentStatus = (status: string) => {
+  let currentStatus: StatusTypes = 'pending';
+  switch (status) {
+    case '1':
+      currentStatus = 'pending';
+      break;
+    case '2':
+      currentStatus = 'confirmed';
+      break;
+    case '3':
+      currentStatus = 'picked_up';
+      break;
+    case '4':
+      currentStatus = 'on_the_way';
+      break;
+    case '5':
+      currentStatus = 'delivered';
+      break;
+  }
+  return currentStatus;
+};
 
 const Orders = () => {
   const { data: orders, isLoading: isOrdersLoading } = useQuery({
@@ -77,7 +68,7 @@ const Orders = () => {
         <h5 className="text-sm sm:text-base lg:text-lg whitespace-nowrap font-semibold text-neutral-700">
           My Order&apos;s
         </h5>
-        <div className="flex items-center justify-end gap-x-3">
+        {/* <div className="flex items-center justify-end gap-x-3">
           <Input
             control={control}
             name="search"
@@ -92,7 +83,7 @@ const Orders = () => {
           >
             <Excel /> Export data
           </Button>
-        </div>
+        </div> */}
       </div>
       <div className="">
         <div className="overflow-x-auto">
@@ -120,28 +111,27 @@ const Orders = () => {
                 </th>
               </tr>
             </thead>
-            {isOrdersLoading
-              ? Array(5)
-                  .fill(' ')
-                  .map((_, i) => (
-                    <tr
-                      key={i}
-                      className="bg-gray-200 animate-pulse border-b border-white"
-                    >
-                      {Array(7)
-                        .fill(' ')
-                        .map((_, i) => (
-                          <td key={i} className="h-10 tab " />
-                        ))}
-                    </tr>
-                  ))
-              : orders?.data?.data?.length! > 0 && (
-                  <tbody>
-                    {orders?.data?.data.map((order: any, i: number) => (
-                      <Row key={order?.id} order={order} i={i} />
-                    ))}
-                  </tbody>
-                )}
+            <tbody>
+              {isOrdersLoading
+                ? Array(5)
+                    .fill(' ')
+                    .map((_, i) => (
+                      <tr
+                        key={i}
+                        className="bg-gray-200 animate-pulse border-b border-white"
+                      >
+                        {Array(7)
+                          .fill(' ')
+                          .map((_, i) => (
+                            <td key={i} className="h-10 tab " />
+                          ))}
+                      </tr>
+                    ))
+                : orders?.data?.data?.length! > 0 &&
+                  orders?.data?.data.map((order: any, i: number) => (
+                    <Row key={order?.id} order={order} i={i} />
+                  ))}
+            </tbody>
           </table>
         </div>
         {!isOrdersLoading && !orders?.data?.data?.length && (
@@ -182,7 +172,50 @@ export default Orders;
 const Row = ({ order, i }: { order: any; i: number }) => {
   const [isOpen, setOpen] = useState(false);
   const [isFilePreviewOpen, setFilePreviewOpen] = useState(false);
-  const [status, setStatus] = useState<StatusTypes>('success');
+  const [status, setStatus] = useState<StatusTypes>(
+    order?.cancelled === 1 ? 'cancelled' : getCurrentStatus(order?.status)
+  );
+  const [isCancelLoading, setIsCancelLoading] = useState(false);
+  const queryClient = useQueryClient();
+  const {
+    control,
+    handleSubmit,
+    register,
+    formState: { errors },
+    clearErrors,
+    reset,
+  } = useForm<{ title: string; message: string }>({
+    defaultValues: {
+      title: '',
+      message: '',
+    },
+  });
+
+  const handleCancel = async (data: { title: string; message: string }) => {
+    setIsCancelLoading(true);
+    try {
+      const res = await api.post(`/cancellation/cancel-order`, {
+        order_id: order?.id,
+        title: data?.title,
+        message: data?.message,
+        user_token: Cookies.get('user_token'),
+      });
+      if (res?.data?.data?.form) {
+        toast.error(res?.data?.data?.form[0]);
+      } else {
+        toast.success('Order cancelled successfully');
+        await queryClient.invalidateQueries({ queryKey: ['orders'] });
+        reset();
+        setFilePreviewOpen(false);
+      }
+    } catch (err) {
+      toast.error('Error to cancel order');
+      console.log('err =>', err);
+    } finally {
+      setIsCancelLoading(false);
+    }
+  };
+
   return (
     <>
       <tr key={`table_${i}`} className="border-b border-neutral-200">
@@ -196,7 +229,7 @@ const Row = ({ order, i }: { order: any; i: number }) => {
         </td>
         <td className="py-4 w-[30%]">
           <div className="max-w-[150px] overflow-hidden">
-            <p className="text-tiny lg:text-xs text-success">Business Card</p>
+            {/* <p className="text-tiny lg:text-xs text-success">Business Card</p> */}
             <p className="text-xs lg:text-sm text-neutral-600 font-semibold whitespace-nowrap overflow-hidden text-ellipsis">
               {order?.ordered_products[0]?.product?.title}
             </p>
@@ -217,7 +250,13 @@ const Row = ({ order, i }: { order: any; i: number }) => {
           {order?.total_amount}
         </td>
         <td className="py-4">
-          <Tag status={order?.cancelled === 1 ? 'failed' : 'success'} />
+          <Tag
+            status={
+              order?.cancelled === 1
+                ? 'cancelled'
+                : getCurrentStatus(order?.status)
+            }
+          />
         </td>
       </tr>
 
@@ -234,7 +273,13 @@ const Row = ({ order, i }: { order: any; i: number }) => {
                 <h5 className="text-black font-semibold text-xs xs:text-sm sm:text-base md:text-lg">
                   Order Status
                 </h5>
-                <Tag status={status} />
+                <Tag
+                  status={
+                    order?.cancelled === 1
+                      ? 'cancelled'
+                      : getCurrentStatus(order?.status)
+                  }
+                />
               </div>
               <div className="flex flex-col sm:flex-row sm:items-center gap-y-2 sm:gap-y-0 sm:gap-x-2.5 mt-2 md:mt-3">
                 <div className="flex items-center gap-x-2.5">
@@ -252,14 +297,17 @@ const Row = ({ order, i }: { order: any; i: number }) => {
               </div>
             </div>
             <div
-              aria-disabled={status === 'cancelled'}
+              aria-disabled={order?.cancelled === 1}
               className="flex flex-col items-end aria-disabled:opacity-40"
             >
-              {status === 'review' || status === 'cancelled' ? (
+              {order.status === '1' ? (
                 <Button
                   outlined
-                  disabled={status === 'cancelled'}
-                  onClick={() => setStatus('cancelled')}
+                  disabled={order?.cancelled === 1}
+                  onClick={() => {
+                    setOpen(false);
+                    setFilePreviewOpen(true);
+                  }}
                   className="w-32 sm:w-[146px] border-[#FDA29B] !text-xs md:!text-sm font-semibold text-error hover:text-error hover:scale-90 hover:bg-transparent flex items-center justify-center gap-x-2.5"
                 >
                   <File varient="FileClose" className="size-4 md:size-5" />{' '}
@@ -280,7 +328,7 @@ const Row = ({ order, i }: { order: any; i: number }) => {
             </div>
           </div>
           <div
-            aria-disabled={status === 'cancelled'}
+            aria-disabled={order.cancelled === 1}
             className="flex flex-col sm:flex-row sm:items-center justify-center pt-10 pb-4 aria-disabled:opacity-45"
           >
             {steps.map((step, i) => (
@@ -294,109 +342,57 @@ const Row = ({ order, i }: { order: any; i: number }) => {
             ))}
           </div>
         </div>
-        <div className="flex flex-col sm:flex-row items-start gap-y-4 sm:gap-y-0 sm:gap-x-4 mt-4">
-          <div className="w-full flex-1 border border-neutral-300 bg-white rounded-xl overflow-hidden">
-            <div className="px-5">
-              <div className="flex items-center py-4 border-b border-[#E6E6E6]">
-                <div className="flex-1">
-                  <p className="text-xs font-medium text-success">
-                    Business Card
-                  </p>
-                  <h4 className="max-w-[330px] text-black font-semibold text-sm md:text-base whitespace-nowrap overflow-hidden text-ellipsis">
-                    {order?.ordered_products[0]?.product?.title}
-                  </h4>
-                </div>
-              </div>
-              <div className="space-y-4 pt-6 pb-4">
-                {checkoutData.map((data, i) => (
-                  <div
-                    key={`data_${i}`}
-                    className="flex items-center justify-between"
-                  >
-                    <p className="text-sm font-medium text-neutral-400">
-                      {data.title}
-                    </p>
-                    <p className="text-sm font-medium text-neutral-600">
-                      {data.title === 'Quantity'
-                        ? order?.ordered_products[0]?.quantity
-                        : data.value}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-          <div className="w-full flex-1 md:w-[54%] min-h-52 sm:min-h-[279px] bg-white flex flex-col">
-            <div className="border rounded-lg border-neutral-200 px-4 md:px-6 pt-4 pb-7 flex-1">
-              <h5 className="text-black font-semibold text-sm md:text-base">
-                File Preview
-              </h5>
-              <div className="mt-2 min-h-full">
-                {uploadedFiles.length > 0 &&
-                  uploadedFiles.map((file, i) => (
-                    <div
-                      key={`file_${i}`}
-                      className="bg-white rounded-lg pt-4 border-neutral-300 flex items-center justify-between"
-                    >
-                      <div className="flex items-center gap-x-4">
-                        <div className="size-8 sm:size-10 rounded-full flex items-center justify-center bg-neutral-700">
-                          <FileAttach className="size-5 sm:size-6" />
-                        </div>
-                        <div className="flex-1">
-                          <p className="text-[#111827] text-sm">{file.name}</p>
-                          <p className="text-xs text-[#6B7280] mt-1">
-                            {/* {formatFileSize(file.size)} */}
-                            {file.size}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-x-4">
-                        <button
-                          onClick={() => setFilePreviewOpen(true)}
-                          className="size-8 sm:size-10 rounded-lg transition-all duration-300 hover:scale-95 bg-neutral-50 hover:bg-neutral-200 flex items-center justify-center"
-                        >
-                          <FiEye className="text-lg sm:text-xl text-neutral-500" />
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-              </div>
-            </div>
-            <div className="p-3 md:p-4 border border-neutral-200 rounded-lg bg-neutral-50 mt-4">
-              <div className="flex items-center justify-between">
-                <h6 className="text-xs md:text-sm font-bold text-neutral-800">
-                  Total (Exc. Vat)
-                </h6>
-                <h4 className="text-sm sm:text-base md:text-xl font-bold text-primary">
-                  {order?.total_amount} AED
-                </h4>
-              </div>
-            </div>
-          </div>
-        </div>
       </Modal>
       {/* file preview modal  */}
       <Modal
         show={isFilePreviewOpen}
-        panelClassName="p-0"
-        onClose={() => setFilePreviewOpen(false)}
+        panelClassName="p-0 max-w-[400px]"
+        onClose={() => {
+          clearErrors();
+          setFilePreviewOpen(false);
+        }}
       >
         <div className="flex items-center justify-between bg-primary px-6 py-3">
-          <p className="text-white text-sm font-bold">File Preview</p>
-          <button onClick={() => setFilePreviewOpen(false)}>
+          <p className="text-white text-sm font-bold">Cancel Order</p>
+          <button
+            onClick={() => {
+              clearErrors();
+              setFilePreviewOpen(false);
+            }}
+          >
             <IoMdClose className="text-2xl text-white" />
           </button>
         </div>
-        <div className="p-4 bg-white">
-          <div className="w-full h-[624px] relative">
-            <Image
-              src={'/temp-banner.png'}
-              className="object-cover"
-              fill
-              alt="preview"
+        <form onSubmit={handleSubmit(handleCancel)} className="px-4 py-4">
+          <Input
+            name="title"
+            control={control}
+            rules={{ required: 'Title is required' }}
+            label="Title"
+            error={errors.title}
+          />
+          <div className="mt-2 mb-4">
+            <label htmlFor="message" className="text-sm">
+              Message
+            </label>
+            <textarea
+              {...register('message', { required: 'Message is required' })}
+              id="message"
+              rows={4}
+              className="border rounded-lg w-full focus-visible:outline-neutral-300 pl-3.5 pr-[38px] py-2.5 mt-2 text-[#667085]"
             />
+            <p
+              className={`text-red-500 text-xs mt-0.5 ml-0.5 min-h-4 ${
+                errors.message ? 'visible' : 'invisible'
+              } `}
+            >
+              {errors.message?.message}
+            </p>
           </div>
-        </div>
+          <Button loading={isCancelLoading} type="submit">
+            Submit
+          </Button>
+        </form>
       </Modal>
     </>
   );

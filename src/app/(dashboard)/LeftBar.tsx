@@ -11,6 +11,8 @@ import { Location, Bag } from '@/components';
 import { FaBarsStaggered } from 'react-icons/fa6';
 import useAuth from '@/hooks/useAuth';
 import { UserData } from '@/types';
+import { FaRegHeart } from 'react-icons/fa6';
+import config from '@/config';
 
 export const avatar = '/avatar.png';
 
@@ -26,15 +28,20 @@ const links = [
     icon: <Bag className="w-[18px] md:w-5 lg:w-6" />,
   },
   {
-    title: 'My Wallet',
-    url: '/dashboard/wallet',
-    icon: <IoWalletOutline />,
+    title: 'My wishlist',
+    url: '/dashboard/wishlist',
+    icon: <FaRegHeart className="w-[18px] md:w-5 lg:w-6" />,
   },
-  {
-    title: 'Payments',
-    url: '/dashboard/payments',
-    icon: <IoCardOutline />,
-  },
+  // {
+  //   title: 'My Wallet',
+  //   url: '/dashboard/wallet',
+  //   icon: <IoWalletOutline />,
+  // },
+  // {
+  //   title: 'Payments',
+  //   url: '/dashboard/payments',
+  //   icon: <IoCardOutline />,
+  // },
 ];
 const settingLinks = [
   {
@@ -52,11 +59,11 @@ const settingLinks = [
     url: '/dashboard/shippings',
     icon: <Location className="w-[18px] md:w-5 lg:w-6" />,
   },
-  {
-    title: 'Notifications',
-    url: '/dashboard/notifications',
-    icon: <FiBell />,
-  },
+  // {
+  //   title: 'Notifications',
+  //   url: '/dashboard/notifications',
+  //   icon: <FiBell />,
+  // },
 ];
 
 const LeftBar = ({ user }: { user: UserData | undefined }) => {
@@ -67,14 +74,14 @@ const LeftBar = ({ user }: { user: UserData | undefined }) => {
   return (
     <>
       <aside
-        className={`w-14 sm:w-[150px] md:w-[200px] lg:w-[264px] fixed left-2 top-20 md:top-28 lg:left-5 lg:top-16 z-50 h-[calc(100vh-90px)] md:h-[calc(100vh-130px)] bg-white rounded md:rounded-xl border border-neutral-200 overflow-hidden mb-2 transition-all duration-300 ${
+        className={`w-14 sm:w-[150px] md:w-[200px] lg:w-[264px] fixed left-2 top-24 md:top-28 lg:left-5 lg:top-32 z-10 h-[calc(100vh-130px)] md:h-[calc(100vh-150px)] bg-white rounded md:rounded-xl border border-neutral-200 overflow-hidden mb-2 transition-all duration-300 ${
           isExpand && 'w-[150px]'
         }`}
       >
         <div className="hidden py-6 bg-gradient-to-l to-[#002169] from-[#002169B5] md:flex flex-col items-center">
           <div className="size-12 lg:size-16 rounded-full overflow-hidden border-[1.5px] border-white relative">
             <Image
-              src={avatar}
+              src={user?.avatar ? config.imgUri + user?.avatar : avatar}
               alt="user avatar"
               fill
               className="object-cover"
@@ -97,7 +104,7 @@ const LeftBar = ({ user }: { user: UserData | undefined }) => {
           >
             <FaBarsStaggered />
           </button>
-          {links.slice(0, 2).map((link, i) => (
+          {links.slice(0, 3).map((link, i) => (
             <LinkButton
               isActive={link.url === pathname}
               key={`link_${i}`}
@@ -107,8 +114,8 @@ const LeftBar = ({ user }: { user: UserData | undefined }) => {
               isExpanded={isExpand}
             />
           ))}
-          <div className="pt-2 md:pt-3 space-y-1">
-            {links.slice(2, 4).map((link, i) => (
+          {/* <div className="pt-2 md:pt-3 space-y-1">
+            {links.slice(3, 5).map((link, i) => (
               <LinkButton
                 isActive={link.url === pathname}
                 key={`link_${i}`}
@@ -118,7 +125,7 @@ const LeftBar = ({ user }: { user: UserData | undefined }) => {
                 isExpanded={isExpand}
               />
             ))}
-          </div>
+          </div> */}
           <div className="pt-4 md:pt-6 lg:pt-10 space-y-1">
             <p className="hidden sm:block text-xs md:text-base font-medium text-neutral-400 pb-2 pl-2 md:pl-4 lg:pl-8">
               Account Setting&apos;s

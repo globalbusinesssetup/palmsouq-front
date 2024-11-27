@@ -24,15 +24,16 @@ const UpdateAddress = ({
   const {
     control,
     handleSubmit,
-    formState: { errors, isDirty },
+    formState: { errors },
     reset,
     clearErrors,
   } = useForm({
     defaultValues: {
       phone: data.phone ?? '',
+      email: data.email ?? '',
+      name: data.name ?? '',
       address_1: data.address_1 ?? '',
       city: data.city ?? '',
-      zip: data.zip ?? '',
     },
   });
   const [countryData, setCountryData] = useState<{
@@ -134,6 +135,89 @@ const UpdateAddress = ({
         <h4 className="md:text-lg text-neutral-900 font-semibold">
           Update Shipping Address
         </h4>
+        <Input
+          control={control}
+          rules={{ required: 'email is required' }}
+          name="email"
+          label="Email"
+          placeholder="exampl@mail.com"
+          wrapClassName="mt-2 sm:mt-4 lg:mt-8"
+          error={errors?.email}
+        />
+        <div className="flex flex-col md:flex-row gap-y-4 gap-x-6 mt-2 sm:mt-4 lg:mt-8">
+          <Input
+            control={control}
+            rules={{ required: 'name is required' }}
+            name="name"
+            label="Name"
+            placeholder="Name"
+            wrapClassName="flex-1"
+            error={errors?.name}
+          />
+          <div className="flex-1">
+            <Input
+              prefix="+971"
+              name="phone"
+              control={control}
+              rules={{
+                required: 'phone number required',
+                minLength: { value: 10, message: 'min 10' },
+              }}
+              label="Phone"
+              placeholder="000-000-000"
+              type="number"
+              error={errors?.phone}
+            />
+          </div>
+          {/* <div className="flex-1">
+            <label
+              htmlFor="city"
+              className="text-sm font-medium text-[#344054] block"
+            >
+              City
+            </label>
+            <Select
+              id="city"
+              disabled={!selectedState || selectedCities.length === 0}
+              value={selectedCity}
+              onChange={handleCityChange}
+              className="bg-transparent w-full appearance-none focus-visible:outline-none mt-1.5 text-[#667085] border px-3.5 pr-5 py-2.5 rounded-lg"
+            >
+              <option value="">Select your City</option>
+              {selectedCities ? (
+                <>
+                  {selectedCities.map((city: any) => (
+                    <option key={city.code} value={city.code}>
+                      {city?.name}
+                    </option>
+                  ))}
+                </>
+              ) : (
+                <option>loading ...</option>
+              )}
+            </Select>
+          </div> */}
+        </div>
+        <div className="flex flex-col md:flex-row gap-y-4 gap-x-6 mt-2 sm:mt-4 lg:mt-8">
+          <Input
+            control={control}
+            rules={{ required: 'address is required' }}
+            name="address_1"
+            label="Address"
+            placeholder="Street, Building, Apt. etc"
+            wrapClassName="flex-1"
+            error={errors?.address_1}
+          />
+          <Input
+            control={control}
+            rules={{ required: 'city is required' }}
+            name="city"
+            label="City"
+            placeholder="City"
+            wrapClassName="flex-1"
+            error={errors?.city}
+          />
+        </div>
         <div className="flex flex-col md:flex-row gap-y-4 gap-x-6 mt-4 sm:mt-6 lg:mt-8">
           <div className="flex-1">
             <label
@@ -146,6 +230,7 @@ const UpdateAddress = ({
               id="countries"
               value={selectedCountry}
               onChange={handleCountryChange}
+              disabled
               className="bg-transparent w-full appearance-none focus-visible:outline-none mt-1.5 text-[#667085] border px-3.5 pr-5 py-2.5 rounded-lg"
             >
               <option value="">Select your Country</option>
@@ -191,82 +276,7 @@ const UpdateAddress = ({
             </Select>
           </div>
         </div>
-        <div className="flex flex-col md:flex-row gap-y-4 gap-x-6 mt-2 sm:mt-4 lg:mt-8">
-          <Input
-            control={control}
-            rules={{ required: 'city is required' }}
-            name="city"
-            label="City"
-            placeholder="City"
-            wrapClassName="flex-1"
-            error={errors?.city}
-          />
-          <Input
-            control={control}
-            rules={{ required: 'zip is required' }}
-            name="zip"
-            label="Zip code"
-            placeholder="zip code"
-            type="number"
-            wrapClassName="flex-1"
-            error={errors?.zip}
-          />
-        </div>
-        <div className="flex flex-col md:flex-row gap-y-4 gap-x-6 mt-2 sm:mt-4 lg:mt-8">
-          <div className="flex-1">
-            <Input
-              prefix="+971"
-              name="phone"
-              control={control}
-              rules={{
-                required: 'phone number required',
-                minLength: { value: 10, message: 'min 10' },
-              }}
-              label="Phone"
-              placeholder="000-000-000"
-              type="number"
-              error={errors?.phone}
-            />
-          </div>
-          <Input
-            control={control}
-            rules={{ required: 'address is required' }}
-            name="address_1"
-            label="Address"
-            placeholder="Street, Building, Apt. etc"
-            wrapClassName="flex-1"
-            error={errors?.address_1}
-          />
-          {/* <div className="flex-1">
-            <label
-              htmlFor="city"
-              className="text-sm font-medium text-[#344054] block"
-            >
-              City
-            </label>
-            <Select
-              id="city"
-              disabled={!selectedState || selectedCities.length === 0}
-              value={selectedCity}
-              onChange={handleCityChange}
-              className="bg-transparent w-full appearance-none focus-visible:outline-none mt-1.5 text-[#667085] border px-3.5 pr-5 py-2.5 rounded-lg"
-            >
-              <option value="">Select your City</option>
-              {selectedCities ? (
-                <>
-                  {selectedCities.map((city: any) => (
-                    <option key={city.code} value={city.code}>
-                      {city?.name}
-                    </option>
-                  ))}
-                </>
-              ) : (
-                <option>loading ...</option>
-              )}
-            </Select>
-          </div> */}
-        </div>
-        <div className="md:flex items-center justify-end">
+        <div className="md:flex items-center justify-end mt-5">
           <Button
             loading={isSubmitLoading}
             disabled={!selectedCountry || !selectedState}

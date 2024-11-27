@@ -15,7 +15,7 @@ import { getCountryTitle, getStateTitle } from '@/utils/helper';
 import UpdateAddress from '@/app/(default)/checkout/UpdateAddress';
 
 const Shippings = () => {
-  const { data: user } = useQuery({
+  const { data: user, isLoading } = useQuery({
     queryKey: ['user'],
     queryFn: useGetUser,
   });
@@ -41,7 +41,7 @@ const Shippings = () => {
       phone: '',
       address: '',
       city: '',
-      zip: '',
+      name: '',
     },
   });
   // const [countryData, setCountryData] = useState<{
@@ -53,6 +53,14 @@ const Shippings = () => {
   const [selectedCities, setCities] = useState<City>([]);
   const [selectedCity, setSelectedCity] = useState('');
   const queryClient = useQueryClient();
+
+  useEffect(() => {
+    if (!isLoading) {
+      reset({
+        name: `${user?.data?.first_name} ${user?.data?.last_name ?? ''}`,
+      });
+    }
+  }, [isLoading, user]);
 
   useEffect(() => {
     if (selectedCountry && countriesWithPhones) {
@@ -120,7 +128,7 @@ const Shippings = () => {
 
   const addNewAddress = async (data: any) => {
     setSubmitLoading(true);
-    const token = Cookies.get('token');
+    const token = Cookies.get('user_token');
     try {
       const res = await api.post('/user/address/action', {
         city: data.city,
@@ -130,11 +138,11 @@ const Shippings = () => {
         address_1: data.address,
         user_token: token,
         email: user?.data?.email,
-        name: `${user?.data.first_name} ${user?.data.last_name}`,
-        zip: data.zip,
+        name: data.name,
       });
       if (res?.data?.data?.form) {
         toast.error(res?.data?.data?.form[0]);
+        setSubmitLoading(false);
         return;
       } else {
         toast.success('Address added Successfully');
@@ -168,7 +176,7 @@ const Shippings = () => {
       <h4 className="text-lg text-neutral-900 font-semibold">
         Shipping Address
       </h4>
-      {isAddressLoading ? (
+      {isAddressLoading || isCountriesLoading ? (
         <div className="mt-6 flex flex-col sm:flex-row sm:items-center gap-4">
           <div className="flex-1 bg-gray-300 animate-pulse h-32 rounded-lg" />
           <div className="flex-1 bg-gray-300 animate-pulse h-32 rounded-lg" />
@@ -202,6 +210,52 @@ const Shippings = () => {
         <h4 className="md:text-lg text-neutral-900 font-semibold">
           New Shipping Address
         </h4>
+        <div className="flex flex-col md:flex-row gap-y-4 gap-x-6 mt-2 sm:mt-4 lg:mt-8">
+          <Input
+            control={control}
+            rules={{ required: 'name is required' }}
+            name="name"
+            label="Name"
+            placeholder="Name"
+            wrapClassName="flex-1"
+            error={errors?.name}
+          />
+          <Input
+            control={control}
+            rules={{ required: 'address is required' }}
+            name="address"
+            label="Address"
+            placeholder="Street, Building, Apt. etc"
+            wrapClassName="flex-1"
+            error={errors?.address}
+          />
+        </div>
+        <div className="flex flex-col md:flex-row gap-y-4 gap-x-6 mt-2 sm:mt-4 lg:mt-8">
+          <div className="flex-1">
+            <Input
+              prefix="+971"
+              name="phone"
+              control={control}
+              rules={{
+                required: 'phone number required',
+                min: 10,
+              }}
+              label="Phone"
+              placeholder="000-000-000"
+              type="number"
+              error={errors?.phone}
+            />
+          </div>
+          <Input
+            control={control}
+            rules={{ required: 'city is required' }}
+            name="city"
+            label="City"
+            placeholder="City"
+            wrapClassName="flex-1"
+            error={errors?.city}
+          />
+        </div>
         <div className="flex flex-col md:flex-row gap-y-4 gap-x-6 mt-4 sm:mt-6 lg:mt-8">
           <div className="flex-1">
             <label
@@ -213,6 +267,7 @@ const Shippings = () => {
             <Select
               id="countries"
               value={selectedCountry}
+              disabled
               onChange={handleCountryChange}
               className="bg-transparent w-full appearance-none focus-visible:outline-none mt-1.5 text-[#667085] border px-3.5 pr-5 py-2.5 rounded-lg"
             >
@@ -260,57 +315,10 @@ const Shippings = () => {
             </Select>
           </div>
         </div>
-        <div className="flex flex-col md:flex-row gap-y-4 gap-x-6 mt-2 sm:mt-4 lg:mt-8">
-          <div className="flex-1">
-            <Input
-              prefix="+971"
-              name="phone"
-              control={control}
-              rules={{
-                required: 'phone number required',
-                min: 10,
-              }}
-              label="Phone"
-              placeholder="000-000-000"
-              type="number"
-              error={errors?.phone}
-            />
-          </div>
-          <Input
-            control={control}
-            rules={{ required: 'city is required' }}
-            name="city"
-            label="City"
-            placeholder="City"
-            wrapClassName="flex-1"
-            error={errors?.city}
-          />
-        </div>
-        <div className="flex flex-col md:flex-row gap-y-4 gap-x-6 mt-2 sm:mt-4 lg:mt-8">
-          <Input
-            control={control}
-            rules={{ required: 'address is required' }}
-            name="address"
-            label="Address"
-            placeholder="Street, Building, Apt. etc"
-            wrapClassName="flex-1"
-            error={errors?.address}
-          />
-          <Input
-            control={control}
-            rules={{ required: 'zip is required' }}
-            name="zip"
-            label="Zip code"
-            placeholder="zip code"
-            type="number"
-            wrapClassName="flex-1"
-            error={errors?.zip}
-          />
-        </div>
-        <div className="md:flex items-center justify-end">
+        <div className="md:flex items-center justify-end mt-5">
           <Button
             loading={isSubmitLoading}
-            disabled={!selectedCity || !selectedCountry || !selectedState}
+            disabled={!selectedCountry || !selectedState}
             type="submit"
             className="md:w-[160px] text-sm font-semibold"
           >

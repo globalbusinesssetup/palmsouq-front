@@ -24,18 +24,18 @@ const OrderStep = ({
 }: StepProps) => {
   const isCompleted = () => {
     switch (status) {
-      case 'success':
+      case 'pending':
         return index < 1;
+      case 'confirmed':
+        return index < 2;
+      case 'picked_up':
+        return index < 3;
+      case 'on_the_way':
+        return index < 4;
+      case 'delivered':
+        return index < 5;
       case 'cancelled':
         return index < 1;
-      case 'review':
-        return index <= 1;
-      case 'production':
-        return index <= 2;
-      case 'ready':
-        return index <= 3;
-      case 'delivered':
-        return index <= 4;
       default:
         return false;
     }
@@ -43,15 +43,13 @@ const OrderStep = ({
 
   const isActive = () => {
     switch (status) {
-      case 'success':
-        return index < 1;
-      case 'cancelled':
+      case 'pending':
         return index < 2;
-      case 'review':
+      case 'confirmed':
         return index <= 2;
-      case 'production':
+      case 'picked_up':
         return index <= 3;
-      case 'ready':
+      case 'on_the_way':
         return index <= 4;
       default:
         return false;
@@ -64,9 +62,9 @@ const OrderStep = ({
         <div className={`hidden sm:block ${index === 0 ? 'hidden' : 'flex-1'}`}>
           <div className={`w-full overflow-hidden bg-gray-200 `}>
             <div
-              className={`h-[1.5px] ${
+              className={`h-0.5 ${
                 (isActive() || isCompleted()) && status !== 'cancelled'
-                  ? 'bg-green-500 w-full'
+                  ? 'bg-green w-full'
                   : 'w-0'
               }`}
             />
@@ -78,9 +76,9 @@ const OrderStep = ({
               status === 'cancelled' && isCompleted()
                 ? 'bg-neutral-200 border-neutral-200'
                 : isCompleted()
-                ? 'bg-green-500 border-green-500'
+                ? 'bg-green border-green'
                 : isActive() && status !== 'cancelled'
-                ? 'border-green-500'
+                ? 'border-green'
                 : 'border-gray-200'
             }`,
             circleClassName
@@ -92,7 +90,7 @@ const OrderStep = ({
             <div
               className={twMerge(
                 `size-3 md:size-[15px] rounded-full ${
-                  status === 'cancelled' ? 'bg-gray-200' : 'bg-green-500'
+                  status === 'cancelled' ? 'bg-gray-200' : 'bg-green'
                 } `,
                 activeDot
               )}
@@ -107,9 +105,9 @@ const OrderStep = ({
         >
           <div className={`w-full overflow-hidden bg-gray-200 `}>
             <div
-              className={`h-[1.5px] ${
+              className={`h-0.5 ${
                 (isActive() || isCompleted()) && status !== 'cancelled'
-                  ? 'bg-green-500 w-full'
+                  ? 'bg-green w-full'
                   : 'w-0'
               }`}
             />
@@ -129,14 +127,14 @@ const OrderStep = ({
       )}
       <div className={`flex sm:hidden gap-x-4 `}>
         <div
-          className={`w-[1.5px] overflow-hidden bg-gray-200 ml-[11px] ${
+          className={`w-0.5 overflow-hidden bg-gray-200 ml-[11px] ${
             index === lastIndex && 'hidden'
           }`}
         >
           <div
-            className={`w-[1.5px] h-10 ${
+            className={`w-0.5 h-10 ${
               (isActive() || isCompleted()) && status !== 'cancelled'
-                ? 'bg-green-500 w-full'
+                ? 'bg-green w-full'
                 : 'w-0'
             }`}
           />

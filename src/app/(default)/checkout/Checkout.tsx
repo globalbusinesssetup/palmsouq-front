@@ -10,11 +10,12 @@ import Image from 'next/image';
 import { IoCardOutline, IoWalletOutline } from 'react-icons/io5';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { FaCheck } from 'react-icons/fa6';
+import { FaCheck, FaHandshake } from 'react-icons/fa6';
 import { BiCheckCircle, BiLoaderAlt } from 'react-icons/bi';
 import useAuth from '@/hooks/useAuth';
 import {
   getAddress,
+  getCart,
   getCountries,
   getPayMethods,
   useGetUser,
@@ -36,6 +37,7 @@ import {
 import AddAddress from './AddAddress';
 import { Address as AddressType, CartItem, Country } from '@/types';
 import UpdateAddress from './UpdateAddress';
+import Cookies from 'js-cookie';
 
 const steps = [
   {
@@ -80,47 +82,94 @@ const deliveryOptions = [
 const Checkout = () => {
   const router = useRouter();
   const params = useSearchParams();
-  const { ordersData, removeOrders } = useAuth();
+  const { refetchProfile, isLoggedIn } = useAuth();
   // const [Razorpay] = useRazorpay();
   const queryClient = useQueryClient();
   const { data: addresses, isLoading: isAddressLoading } = useQuery({
     queryKey: ['address'],
     queryFn: () => getAddress(),
   });
-  const { data: user, isLoading } = useQuery({
-    queryKey: ['user'],
-    queryFn: useGetUser,
-  });
   const { data: payData, isLoading: isPayDataLoading } = useQuery({
     queryKey: ['payMethods'],
     queryFn: getPayMethods,
   });
-
   const { data: countriesPhones, isLoading: isCountriesLoading } = useQuery({
     queryKey: ['countries-phones'],
     queryFn: getCountries,
   });
+  const { data: cart, isLoading } = useQuery({
+    queryKey: ['cart'],
+    queryFn: () => getCart(),
+  });
+
   const [currentStep, setStep] = useState(0);
-  const [defaultAddress, setDefaultAddress] = useState(addresses?.data[0]);
+  const [defaultAddress, setDefaultAddress] = useState(addresses?.data?.[0]);
   const [deliveryOption, setDeliveryOption] = useState(
-    deliveryOptions[0].value
+    deliveryOptions?.[0].value
   );
   const [isOpen, setOpen] = useState(false);
   const [isUpdateLoding, setUpdateLoading] = useState(false);
   const isMounted = useMount();
   const [isAddAddressOpen, setAddAddressOpen] = useState(false);
+  const [orderMethod, setMethod] = useState(1);
+  const [isSubmitLoading, setSubmitLoading] = useState(false); //[isLoading]
+  const [carts, setCarts] = useState({});
+  const [totalAmount, setTotalAmount] = useState(0);
+  const [deliveryCost, setDeliveryCost] = useState(0);
+  const [pickupCost, setPickupCost] = useState(0);
+  const [tax, setTax] = useState(0);
 
   useEffect(() => {
-    if (ordersData.length < 1 && isMounted) {
-      router.push('/dashboard/cart');
+    if (cart?.data) {
+      const result = cart.data
+        .filter((item) => item.selected !== '2')
+        .reduce(
+          (acc, item) => {
+            acc.carts[String(item.id)] = {
+              cart: item.id,
+              shipping_place:
+                item.flash_product.shipping_rule.shipping_places?.[0],
+              single_shipping: true,
+              shipping_type: '1',
+            };
+
+            // Assume `item.flash_product.amount` holds the price
+            const itemAmount =
+              item?.flash_product?.offered > 0
+                ? item?.flash_product?.offered
+                : item?.flash_product?.selling;
+            const itemQuantity = Number(item.quantity) || 1;
+            acc.totalAmount += itemAmount * itemQuantity;
+            return acc;
+          },
+          { carts: {}, totalAmount: 0 } // Initial accumulator
+        );
+      if (Object.keys(result.carts).length < 1) {
+        console.log('No items for checkout');
+        setTimeout(() => {
+          router.push('/cart');
+        }, 100); // Add a small delay to ensure back action is handled smoothly
+        return;
+      }
+      setCarts(result.carts);
+      setTotalAmount(result.totalAmount);
+      const item = cart?.data[0]?.flash_product;
+      setDeliveryCost(Number(item?.shipping_rule?.shipping_places[0].price));
+      setPickupCost(
+        Number(item?.shipping_rule?.shipping_places[0].pickup_price)
+      );
+      setTax(Number(item?.tax_rules?.price));
     }
+  }, [cart]);
+
+  useEffect(() => {
     const supportedAreas = ['AE'];
     if (!supportedAreas.includes(defaultAddress?.state!)) {
       setDeliveryOption(deliveryOptions[1].value);
     }
-    setDefaultAddress(addresses?.data[0]!);
+    setDefaultAddress(addresses?.data?.[0]!);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [addresses, ordersData]);
+  }, [addresses]);
 
   useEffect(() => {
     if (!params.get('currentStep')) {
@@ -131,6 +180,12 @@ const Checkout = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentStep, params]);
+
+  useEffect(() => {
+    if (!isPayDataLoading) {
+      setMethod(payData?.default!);
+    }
+  }, [payData, isPayDataLoading]);
 
   // const handlePayment = useCallback(() => {
   //   const options: RazorpayOptions = {
@@ -161,7 +216,7 @@ const Checkout = () => {
   //   rzpay.open();
   // }, [Razorpay]);
 
-  if (isLoading || isPayDataLoading || isCountriesLoading) {
+  if (isPayDataLoading || isCountriesLoading || isLoading) {
     return (
       <main className="w-full h-screen flex items-center justify-center">
         <div className="">
@@ -185,81 +240,105 @@ const Checkout = () => {
     return false;
   };
 
-  const totalPrice = (ordersData as CartItem[]).reduce(
-    (total: number, item) => {
-      const price =
-        item?.flash_product?.offered > 0
-          ? item?.flash_product?.offered
-          : item?.flash_product?.selling;
-      return total + price * Number(item.quantity);
-    },
-    0
-  );
+  // const totalPrice = (ordersData as CartItem[]).reduce(
+  //   (total: number, item) => {
+  //     const price =
+  //       item?.flash_product?.offered > 0
+  //         ? item?.flash_product?.offered
+  //         : item?.flash_product?.selling;
+  //     return total + price * Number(item.quantity);
+  //   },
+  //   0
+  // );
 
   const totalPriceWithDelivery =
-    totalPrice! + (deliveryOption === 'paid' ? 50 : 0);
-  const vat = totalPrice! * 0.05; // 5% VAT rate
+    totalAmount +
+    (deliveryOption === 'paid'
+      ? deliveryCost
+      : deliveryOption === 'pickup'
+      ? pickupCost
+      : 0);
+  const vat = (totalAmount * tax) / 100; // 5% VAT rate
   const totalPriceWithDeliveryVat = totalPriceWithDelivery + vat;
 
   const handleUpdateCart = async () => {
+    const userToken = Cookies.get('user_token');
     setUpdateLoading(true);
     try {
       const res = await api.post('/cart/update-shipping', {
-        cart: {
-          [String(ordersData[0].id)]: {
-            cart: ordersData[0].id,
-            shipping_place:
-              ordersData[0].flash_product.shipping_rule.shipping_places?.[0],
-            single_shipping: true,
-            shipping_type: '1',
-          },
-        },
+        cart: carts,
         selected_address: defaultAddress?.id,
+        user_token: userToken,
       });
       console.log('res', res);
+      if (res?.data?.data?.form) {
+        setUpdateLoading(false);
+        toast.error(res?.data?.data?.form[0]);
+        return { error: res?.data?.data?.form[0] ?? undefined };
+      }
     } catch (err) {
       console.log(err);
+      setUpdateLoading(false);
+      return { error: err };
     }
     setUpdateLoading(false);
   };
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (currentStep === 0) {
-      handleUpdateCart();
+      if (!defaultAddress) {
+        toast.warn('Please add address first');
+        return;
+      }
+      let data = await handleUpdateCart();
+      if (data?.error) {
+        return;
+      }
       setStep((prev) => prev + 1);
       router.push(`/checkout?currentStep=${currentStep + 1}`);
-      return;
+    } else {
+      if (orderMethod === 1) {
+        setOpen(true);
+      } else {
+        handleOrder();
+      }
     }
-    setOpen(true);
     console.log('Clicked!');
   };
 
   const handleOrder = async () => {
+    const token = Cookies.get('user_token');
+    setSubmitLoading(true);
     try {
       const order = orderEncrypt({
-        user_token: user?.data?.email!,
-        order_method: 1,
+        user_token: token!,
+        order_method: orderMethod,
         voucher: '',
         time_zone: timezone,
       });
       const res = await api.post('order/action', {
         data: order,
       });
-      // if (res?.data?.data.form[0]) {
-      //   console.log(res?.data?.data.form[0]);
-      //   return;
-      // }
-      removeOrders();
+      if (res?.data.message) {
+        console.log(res?.data?.data?.form[0]);
+        toast.error(res?.data?.data?.form[0]);
+        setSubmitLoading(false);
+        return;
+      }
+      setSubmitLoading(false);
+      refetchProfile();
       queryClient.invalidateQueries({ queryKey: ['cart', 'orders'] });
       toast.success('Order placed Successfully');
+      setStep((prev) => prev + 1);
       router.push('/checkout?currentStep=2');
     } catch (error) {
       console.log(error);
     }
+    setSubmitLoading(false);
   };
 
   return (
-    <main className="bg-neutral-50 py-10 min-h-screen">
+    <main className="bg-neutral-50 py-10 min-h-[calc(100vh-97px)]">
       <div className="container mx-auto flex flex-col-reverse lg:flex-row gap-y-5 lg:gap-y-0 gap-x-4 xl:gap-x-6 px-4">
         <div className="flex-1 lg:max-w-[920px] lg:mx-auto px-3 xs:px-5 xl:px-10 py-4 md:py-8 border rounded-xl border-neutral-300 bg-white">
           <div className="overflow-hidden flex items-center justify-between gap-x-2 xs:gap-x-3 md:gap-x-5 pb-4 md:pb-6 border-b border-neutral-200">
@@ -351,7 +430,7 @@ const Checkout = () => {
                             {opt.value === 'standard'
                               ? 'Free'
                               : opt.value === 'paid'
-                              ? '50.00 AED'
+                              ? `${deliveryCost} AED`
                               : 'Warehouse'}
                           </Tag>
                         </div>
@@ -377,7 +456,15 @@ const Checkout = () => {
                 Select Payment Options
               </h4>
               <div className="mt-6 grid sm:grid-cols-2 gap-x-6 gap-y-5 sm:gap-y-0 sm:max-w-[506px]">
-                <div className="px-6 py-4 border rounded-lg border-[#4B4EFC] flex-1">
+                <button
+                  disabled={payData?.stripe! === 0}
+                  onClick={() => setMethod(1)}
+                  className={`cursor-pointer px-6 py-4 border rounded-lg flex-1 ${
+                    orderMethod === 1
+                      ? 'border-[#9B9DFD]'
+                      : 'border-neutral-300'
+                  }`}
+                >
                   <p className="text-sm font-semibold text-neutral-800">
                     Pay with Card
                   </p>
@@ -403,8 +490,8 @@ const Checkout = () => {
                     </span>
                     .
                   </p>
-                </div>
-                <div className="p-6 border rounded-lg border-neutral-300 flex-1 h-full flex flex-col items-center justify-center">
+                </button>
+                {/* <div className="p-6 border rounded-lg border-neutral-300 flex-1 h-full flex flex-col items-center justify-center">
                   <Avatar className="bg-neutral-50 mx-auto size-9">
                     <IoWalletOutline className="text-[#344054] text-lg" />
                   </Avatar>
@@ -415,7 +502,28 @@ const Checkout = () => {
                     Wallet Balance :{' '}
                     <span className="text-primary font-semibold">0.00 AED</span>
                   </p>
-                </div>
+                </div> */}
+                <button
+                  disabled={payData?.cash_on_delivery! === 0}
+                  onClick={() => setMethod(2)}
+                  className={`cursor-pointer p-6 border rounded-lg flex-1 h-full flex flex-col items-center justify-center ${
+                    orderMethod === 2
+                      ? 'border-[#9B9DFD]'
+                      : 'border-neutral-300'
+                  }`}
+                >
+                  <Avatar className="bg-neutral-50 mx-auto size-9">
+                    <FaHandshake className="text-[#344054] text-lg" />
+                  </Avatar>
+                  <h5 className="mt-2 text-sm font-semibold text-neutral-800">
+                    COD
+                  </h5>
+                  <p className="text-xs text-neutral-400 mt-6">
+                    <span className="text-primary font-semibold">
+                      Cash on delivery
+                    </span>
+                  </p>
+                </button>
               </div>
             </div>
           ) : (
@@ -435,7 +543,11 @@ const Checkout = () => {
                 Your order has been successfully proceeded!
               </p>
               <Button
-                onClick={() => router.push('/dashboard/orders')}
+                onClick={() => {
+                  isLoggedIn
+                    ? router.push('/dashboard/orders')
+                    : router.push('/orders');
+                }}
                 className="py-0 h-11 max-w-[336px] font-semibold mt-8 flex items-center justify-center gap-x-2"
               >
                 Go to My Order&apos;s{' '}
@@ -452,7 +564,14 @@ const Checkout = () => {
           {currentStep !== steps.length - 1 && (
             <div className="flex items-center justify-between mt-5">
               <button
-                onClick={() => setStep((prev) => prev - 1)}
+                onClick={() => {
+                  if (currentStep === 0) {
+                    router.back();
+                  } else {
+                    setStep(currentStep - 1);
+                    router.push(`/checkout?currentStep=${currentStep - 1}`);
+                  }
+                }}
                 disabled={currentStep === 0}
                 className="text-xs sm:text-sm font-semibold text-neutral-500 flex items-center justify-center gap-x-2"
               >
@@ -461,7 +580,7 @@ const Checkout = () => {
               </button>
               <Button
                 // disabled={currentStep === 0}
-                loading={currentStep === 0 && isUpdateLoding}
+                loading={isUpdateLoding || isSubmitLoading}
                 onClick={handleNext}
                 className="flex items-center justify-center gap-x-2 w-[170px] sm:w-[227px] text-xs sm:text-sm py-2 sm:py-2.5"
               >
@@ -487,7 +606,7 @@ const Checkout = () => {
               <div className="flex items-center justify-between">
                 <p className="text-sm font-medium text-neutral-400">Products</p>
                 <p className="text-sm font-medium text-neutral-600">
-                  {totalPrice} AED
+                  {totalAmount} AED
                 </p>
               </div>
               <div className="flex items-center justify-between">
@@ -495,7 +614,11 @@ const Checkout = () => {
                   Delivery costs
                 </p>
                 <p className="text-sm font-medium text-[#4B4EFC]">
-                  {deliveryOption === 'paid' ? '50.00 AED' : 'Free'}
+                  {deliveryOption === 'paid'
+                    ? `${deliveryCost} AED`
+                    : deliveryOption === 'pickup'
+                    ? `${pickupCost} AED`
+                    : 'Free'}
                 </p>
               </div>
             </div>
@@ -507,13 +630,17 @@ const Checkout = () => {
                 <p className="text-sm font-medium text-neutral-600">
                   {deliveryOption === 'paid'
                     ? totalPriceWithDelivery
-                    : totalPrice}{' '}
+                    : totalAmount}{' '}
                   AED
                 </p>
               </div>
               <div className="flex items-center justify-between">
-                <p className="text-sm font-medium text-neutral-400">VAT (5%)</p>
-                <p className="text-sm font-medium text-neutral-600">{vat}</p>
+                <p className="text-sm font-medium text-neutral-400">
+                  VAT ({tax}%)
+                </p>
+                <p className="text-sm font-medium text-neutral-600">
+                  {vat.toFixed(2)}
+                </p>
               </div>
             </div>
             <div className="flex items-center justify-between lg:pt-3.5">
@@ -521,7 +648,7 @@ const Checkout = () => {
                 Total (Exc. Vat)
               </h6>
               <h4 className="md:text-lg font-bold text-primary">
-                {totalPriceWithDeliveryVat} AED
+                {totalPriceWithDeliveryVat.toFixed(2)} AED
               </h4>
             </div>
           </div>

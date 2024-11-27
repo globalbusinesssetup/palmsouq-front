@@ -1,7 +1,8 @@
+'use client';
 import { Button, InputPhoneNumber, Input } from '@/components';
 import React from 'react';
-import { BsPhone } from 'react-icons/bs';
 import { useForm } from 'react-hook-form';
+import { BsPhone } from 'react-icons/bs';
 
 const SendOtp = ({
   onContinue,

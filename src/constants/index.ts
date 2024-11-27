@@ -370,7 +370,8 @@ export const footerLinks = [
     ],
   },
   {
-    title: 'Top Services',
+    title: 'About',
+    id: 'about',
     links: [
       {
         title: 'Next Day Delivery',
@@ -395,7 +396,7 @@ export const footerLinks = [
     links: [
       {
         title: 'About Palmsouq',
-        url: '#',
+        url: '/page/about',
       },
       {
         title: 'Palmsouq Blog',
