@@ -25,7 +25,7 @@ const CustomButton = ({
       onClick={onClick}
       disabled={disabled ?? loading}
       className={twMerge(
-        `w-full py-2.5 px-2 active:scale-90 disabled:scale-100 transition-all duration-300 rounded-lg text-white border text-sm lg:text-base ${
+        `w-full py-2.5 px-2 active:scale-90 disabled:active:scale-100 transition-all duration-300 rounded-lg text-white border text-sm lg:text-base ${
           outlined
             ? 'bg-transparent border-primary text-primary hover:bg-primary disabled:hover:bg-transparent hover:text-white disabled:hover:text-primary disabled:opacity-35'
             : 'bg-primary border-primary/50 hover:bg-transparent hover:text-primary disabled:border-transparent disabled:bg-primary/55 disabled:text-white'

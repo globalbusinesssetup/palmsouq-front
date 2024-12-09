@@ -20,10 +20,12 @@ import Image from 'next/image';
 import { StatusTypes } from '@/components/common/Tag';
 import OrderStep from '@/app/(default)/order/OrderStep';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { getOrders } from '@/utils/api';
+import { getCountries, getOrder, getOrders } from '@/utils/api';
 import { api } from '@/utils/fetcher';
 import Cookies from 'js-cookie';
 import { toast } from 'react-toastify';
+import { usePDF } from 'react-to-pdf';
+import Invoice from '@/components/Invoice';
 
 const steps = [
   { title: 'Pending', icon: '/icons/check.svg' },
@@ -170,11 +172,20 @@ const Orders = () => {
 export default Orders;
 
 const Row = ({ order, i }: { order: any; i: number }) => {
+  const { data: orderData, isLoading } = useQuery({
+    queryKey: ['order', order?.id],
+    queryFn: () => getOrder(order?.id),
+  });
+  const { data: countriesPhones, isLoading: isCountriesLoading } = useQuery({
+    queryKey: ['countries-phones'],
+    queryFn: getCountries,
+  });
   const [isOpen, setOpen] = useState(false);
   const [isFilePreviewOpen, setFilePreviewOpen] = useState(false);
   const [status, setStatus] = useState<StatusTypes>(
     order?.cancelled === 1 ? 'cancelled' : getCurrentStatus(order?.status)
   );
+  const { toPDF, targetRef } = usePDF({ filename: `invoice-${order.id}.pdf` });
   const [isCancelLoading, setIsCancelLoading] = useState(false);
   const queryClient = useQueryClient();
   const {
@@ -215,6 +226,8 @@ const Row = ({ order, i }: { order: any; i: number }) => {
       setIsCancelLoading(false);
     }
   };
+
+  console.log('orderData', orderData);
 
   return (
     <>
@@ -259,7 +272,21 @@ const Row = ({ order, i }: { order: any; i: number }) => {
           />
         </td>
       </tr>
-
+      {isOpen && orderData && (
+        <Invoice
+          key={i}
+          ref={targetRef}
+          isFreeShipping
+          isVendor={false}
+          order={order}
+          address={orderData.address}
+          countries={countriesPhones?.countries}
+          subtotalPrice={orderData?.calculated?.subtotal ?? 'N/A'}
+          totalPrice={orderData?.calculated?.total_price ?? 'N/A'}
+          shippingPrice={orderData?.calculated?.shipping_price ?? 'N/A'}
+          taxPrice={orderData?.calculated?.tax ?? 'N/A'}
+        />
+      )}
       <Modal show={isOpen} onClose={() => setOpen(false)}>
         <div className="flex md:hidden items-center justify-end pb-3 -mt-1">
           <button onClick={() => setOpen(false)}>
@@ -314,7 +341,10 @@ const Row = ({ order, i }: { order: any; i: number }) => {
                   Cancel Order
                 </Button>
               ) : (
-                <Button className="w-[90px] sm:w-[105px] py-0 h-8 sm:h-9 text-xs sm:text-sm font-semibold flex items-center justify-center gap-x-2">
+                <Button
+                  onClick={() => toPDF()}
+                  className="w-[90px] sm:w-[105px] py-0 h-8 sm:h-9 text-xs sm:text-sm font-semibold flex items-center justify-center gap-x-2"
+                >
                   <FiDownload className="text-base sm:text-lg md:text-xl" />
                   Invoice
                 </Button>

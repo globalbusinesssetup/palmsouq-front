@@ -266,3 +266,11 @@ export const getOrders = async () => {
     console.error(err);
   }
 };
+export const getOrder = async (id) => {
+  try {
+    const { data } = await api.get(`/order/find/${id}`);
+    return data?.data ?? {};
+  } catch (err) {
+    console.error(err);
+  }
+};
