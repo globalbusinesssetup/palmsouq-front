@@ -35,8 +35,8 @@ const Invoice = forwardRef<HTMLDivElement, InvoiceTypes>(
     ref
   ) => {
     const priceFormatting = (price) => `$${price}`;
-
     const { setting } = useAuth();
+
     return (
       <div className="absolute -z-10 top-0 left-0 w-screen bg-white h-screen">
         {/* <div className="absolute top-5 right-10">
@@ -49,13 +49,13 @@ const Invoice = forwardRef<HTMLDivElement, InvoiceTypes>(
             <div className="flex-1">
               <picture>
                 <img
-                  className="h-[25px] w-auto mb-2.5"
-                  src="/logo.svg"
-                  // src={`data:image/png;base64,${base64SiteLogo}`}
+                  className="h-[45px] w-auto mb-2.5"
+                  src="/header_logo.png"
+                  // src={base64SiteLogo}
                   alt="Logo"
                 />
               </picture>
-              <h4 className="font-semibold mb-1.5 mt-6">Printcraft</h4>
+              <h4 className="font-semibold mb-1.5 mt-6">Palmsouq</h4>
               <p>{`${setting?.address_1} ${setting?.city ?? setting?.state}-${
                 setting?.zip
               } ${setting?.state}`}</p>
