@@ -130,6 +130,7 @@ export default function ProductDeatils({ params }: Record<string, any>) {
       } else {
         toast.success(res.data?.message);
         queryClient.invalidateQueries({ queryKey: ['wishlist'] });
+        queryClient.refetchQueries({ queryKey: ['wishlist'] });
       }
       console.log('add wishlist res =>', res);
     } catch (err) {

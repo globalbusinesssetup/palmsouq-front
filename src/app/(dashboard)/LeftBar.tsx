@@ -14,7 +14,7 @@ import { UserData } from '@/types';
 import { FaRegHeart } from 'react-icons/fa6';
 import config from '@/config';
 
-export const avatar = '/avatar.png';
+export const avatar = '/avatar.webp';
 
 const links = [
   {

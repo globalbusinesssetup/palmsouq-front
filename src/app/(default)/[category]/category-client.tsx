@@ -511,7 +511,7 @@ const CategoryClient: React.FC<CategoryClientProps> = ({ category }) => {
                 </div>
               )}
             </div>
-            <div className="pl-5 flex-1 grid xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-6 pt-4 pb-10">
+            <div className="lg:pl-5 flex-1 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-6 pt-4 pb-10">
               {isLoading || isRefetching ? (
                 Array(8)
                   .fill('')

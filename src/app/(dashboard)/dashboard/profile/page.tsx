@@ -1,6 +1,6 @@
 'use client';
 import Image from 'next/image';
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { avatar } from '../../LeftBar';
 import { useForm } from 'react-hook-form';
 import {
@@ -17,6 +17,8 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/utils/fetcher';
 import { toast } from 'react-toastify';
 import config from '@/config';
+import useAuth from '@/hooks/useAuth';
+import { RiLoader4Line } from 'react-icons/ri';
 
 type FormInputs = {
   first_name: string;
@@ -26,6 +28,7 @@ type FormInputs = {
 };
 
 const Profile = () => {
+  const { user: userData } = useAuth();
   const {
     data: user,
     isFetching,
@@ -37,15 +40,15 @@ const Profile = () => {
   const {
     control,
     handleSubmit,
-    setError,
+    reset: updateReset,
     clearErrors,
     formState: { isDirty },
   } = useForm<FormInputs>({
     defaultValues: {
-      first_name: user?.data.first_name ?? '',
-      last_name: user?.data.last_name ?? '',
-      phone: user?.data.phone ?? '',
-      email: user?.data.email ?? '',
+      first_name: '',
+      last_name: '',
+      phone: '',
+      email: '',
     },
   });
   const {
@@ -60,6 +63,7 @@ const Profile = () => {
   const [preview, setPreview] = useState<string | null>(null);
   const [isPhoneModalOpen, setPhoneModalOpen] = useState(false);
   const [isEmailModalOpen, setEmailModalOpen] = useState(false);
+  const [updateLoading, setUpdateLoading] = useState(false);
   const [imageUploadLoading, setImageUploadLoading] = useState(false);
   const [isOtpSent, setOtpSent] = useState(false);
   const queryClient = useQueryClient();
@@ -99,7 +103,7 @@ const Profile = () => {
   };
 
   const handleUpdate = async (data: FormInputs) => {
-    console.log(data);
+    setUpdateLoading(true);
     try {
       const res = await api.post('/user/update-profile', {
         first_name: data?.first_name,
@@ -109,14 +113,28 @@ const Profile = () => {
       if (res?.data?.data?.form) {
         toast.error(res?.data?.data?.form[0]);
       } else {
+        updateReset();
         queryClient.invalidateQueries({ queryKey: ['user'] });
+        queryClient.refetchQueries({ queryKey: ['user'] });
         toast.success('Profile updated Successfully.');
       }
-      console.log(res);
     } catch (err) {
       console.log(err);
+    } finally {
+      setUpdateLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (user) {
+      updateReset({
+        first_name: user?.data.first_name ?? '',
+        last_name: user?.data.last_name ?? '',
+        phone: user?.data.phone ?? '',
+        email: user?.data.email ?? '',
+      });
+    }
+  }, [user, isFetching]);
 
   return (
     <div className="px-4 md:px-6 lg:px-8 pt-6 pb-10 bg-white border border-neutral-200 rounded-xl max-w-[924px]">
@@ -126,7 +144,7 @@ const Profile = () => {
           <p className="text-center text-xs font-semibold text-neutral-700">
             Picture
           </p>
-          <div className="mt-2.5 size-10 sm:size-14 lg:size-20 rounded-full overflow-hidden relative border border-gray-200">
+          <div className="mt-2.5 size-14 lg:size-20 rounded-full overflow-hidden relative border border-gray-200">
             <Image
               src={
                 user?.data?.avatar ? config.imgUri + user?.data?.avatar : avatar
@@ -139,10 +157,15 @@ const Profile = () => {
         </div>
         <div className="border border-neutral-200 rounded-lg overflow-hidden mb-1 sm:mb-2.5 lg:mb-3.5 text-xs md:text-sm lg:text-base transition-all duration-300 hover:bg-neutral-100 hover:scale-95">
           <button
+            disabled={imageUploadLoading}
             onClick={() => uploadRef.current?.click()}
-            className="w-16 lg:w-20 h-8 lg:h-10 text-[#344054]"
+            className="w-16 lg:w-20 h-8 lg:h-10 text-[#344054] flex items-center justify-center"
           >
-            Upload
+            {imageUploadLoading ? (
+              <RiLoader4Line size={20} className="animate-spin" />
+            ) : (
+              'Upload'
+            )}
           </button>
           {/* <button
             disabled={!preview}
@@ -184,11 +207,15 @@ const Profile = () => {
             wrapClassName="flex-1"
           />
           <button
-            disabled={!isDirty}
+            disabled={!isDirty || updateLoading}
             onClick={() => handleSubmit(handleUpdate)()}
-            className="h-8 sm:h-11 w-12 sm:w-16 md:w-[94px] text-primary hover:text-primary/80 text-xs sm:text-sm font-semibold mt-1.5 sm:mt-0.5"
+            className="h-8 sm:h-11 w-12 sm:w-16 md:w-[94px] flex items-center justify-center text-primary hover:text-primary/80 text-xs sm:text-sm font-semibold mt-1.5 sm:mt-0.5"
           >
-            Update
+            {updateLoading ? (
+              <RiLoader4Line size={20} className="animate-spin" />
+            ) : (
+              'Update'
+            )}
           </button>
         </div>
         <div className="flex items-center gap-x-1.5 mt-3 lg:mt-7">

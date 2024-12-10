@@ -147,6 +147,7 @@ const Shippings = () => {
       } else {
         toast.success('Address added Successfully');
         queryClient.invalidateQueries({ queryKey: ['address'] });
+        queryClient.refetchQueries({ queryKey: ['address'] });
         reset();
       }
     } catch (err) {
@@ -162,6 +163,7 @@ const Shippings = () => {
         `/user/address/delete/${id}?user_token=${token}`
       );
       queryClient.invalidateQueries({ queryKey: ['address'] });
+      queryClient.refetchQueries({ queryKey: ['address'] });
       toast.success(data?.message);
     } catch (err) {
       console.log(err);

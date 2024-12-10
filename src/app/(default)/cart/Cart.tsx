@@ -146,6 +146,7 @@ const Cart = () => {
       await api.delete(`/cart/delete/${pd?.id}`);
       toast.success('Cart Remove SuccessfullY');
       await queryClient.invalidateQueries({ queryKey: ['cart'] });
+      await queryClient.refetchQueries({ queryKey: ['cart'] });
     } catch (err) {
       console.log(err);
       toast.error(err as string);

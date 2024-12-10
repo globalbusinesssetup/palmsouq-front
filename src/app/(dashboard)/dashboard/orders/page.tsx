@@ -218,6 +218,7 @@ const Row = ({ order, i }: { order: any; i: number }) => {
       } else {
         toast.success('Order cancelled successfully');
         await queryClient.invalidateQueries({ queryKey: ['orders'] });
+        await queryClient.refetchQueries({ queryKey: ['orders'] });
         reset();
         setFilePreviewOpen(false);
       }

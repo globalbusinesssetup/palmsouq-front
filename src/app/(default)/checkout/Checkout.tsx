@@ -328,6 +328,7 @@ const Checkout = () => {
       setSubmitLoading(false);
       refetchProfile();
       queryClient.invalidateQueries({ queryKey: ['cart', 'orders'] });
+      queryClient.refetchQueries({ queryKey: ['cart', 'orders'] });
       toast.success('Order placed Successfully');
       setStep((prev) => prev + 1);
       router.push('/checkout?currentStep=2');
@@ -572,11 +573,10 @@ const Checkout = () => {
                     router.push(`/checkout?currentStep=${currentStep - 1}`);
                   }
                 }}
-                disabled={currentStep === 0}
                 className="text-xs sm:text-sm font-semibold text-neutral-500 flex items-center justify-center gap-x-2"
               >
                 <IoIosArrowRoundBack className="text-2xl sm:text-2xl" /> Back to
-                Cart
+                {currentStep === 0 && 'Cart'}
               </button>
               <Button
                 // disabled={currentStep === 0}
