@@ -38,7 +38,7 @@ const Invoice = forwardRef<HTMLDivElement, InvoiceTypes>(
     const { setting } = useAuth();
 
     return (
-      <div className="absolute -z-10 top-0 left-0 w-screen bg-white h-screen">
+      <div className="absolute -z-[1000] top-0 -left-[9999px] w-screen bg-white h-screen min-w-[1000px]">
         {/* <div className="absolute top-5 right-10">
           <button onClick={printInvoice} className="border p-2 rounded">
             Print Invoice

@@ -164,14 +164,14 @@ const Cart = () => {
           My Cart
         </h5>
         <div className="flex items-center gap-x-2 xs:gap-x-3">
-          <Button
+          {/* <Button
             disabled
             outlined
             // onClick={handleDeleteSelected}
             className="h-8 sm:h-9 w-20 sm:w-[90px] md:w-[100px] py-0 flex items-center gap-x-2.5 border-[#EAECF0] text-xs md:!text-sm font-semibold"
           >
             <FiTrash2 className="text-lg md:text-xl" /> Delete
-          </Button>
+          </Button> */}
           <Button
             onClick={handleCheckout}
             disabled={checked.length < 1}
@@ -390,12 +390,12 @@ const Row = ({
               <FiLoader className="animate-spin" />
             )}
           </button>
-          <button
+          {/* <button
             onClick={() => setPreviewOpen(true)}
             className="size-8 md:size-10 bg-neutral-100 hover:bg-neutral-300 rounded-lg flex items-center justify-center transition-all duration-300"
           >
             <FileSearch />
-          </button>
+          </button> */}
         </td>
         <td className="py-4 w-[30%] overflow-hidden pr-2">
           <div className="max-w-[200px] overflow-hidden">

@@ -185,7 +185,9 @@ const Row = ({ order, i }: { order: any; i: number }) => {
   const [status, setStatus] = useState<StatusTypes>(
     order?.cancelled === 1 ? 'cancelled' : getCurrentStatus(order?.status)
   );
-  const { toPDF, targetRef } = usePDF({ filename: `invoice-${order.id}.pdf` });
+  const { toPDF, targetRef } = usePDF({
+    filename: `Invoice-${order.order}.pdf`,
+  });
   const [isCancelLoading, setIsCancelLoading] = useState(false);
   const queryClient = useQueryClient();
   const {
@@ -226,8 +228,6 @@ const Row = ({ order, i }: { order: any; i: number }) => {
       setIsCancelLoading(false);
     }
   };
-
-  console.log('orderData', orderData);
 
   return (
     <>
