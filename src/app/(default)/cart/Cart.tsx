@@ -16,6 +16,8 @@ import { toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
 import { CartItem, ProductData } from '@/types';
 import useAuth from '@/hooks/useAuth';
+import config from '@/config';
+import Link from 'next/link';
 
 // export const metadata: Metadata = {
 //   title: 'Next.js',
@@ -189,25 +191,28 @@ const Cart = () => {
           <table className="w-full min-w-[630px]">
             <thead>
               <tr className="px-6 bg-[#F9FAFB] py-3.5 text-left">
-                <th className="pl-6 py-3.5 w-[10%] pr-2">
+                <th className="pl-6 py-3.5 w-20 pr-2">
                   <CheckBox
                     checked={unChecked.length === 0}
                     onChange={(checked) => handleSelectAll(checked)}
                   />
                 </th>
-                <th className="text-xs font-semibold text-[#667085] py-3.5 w-[15%] sm:w-[20%] pr-2">
+                <th className="text-xs font-semibold text-[#667085] py-3.5 w-20 pr-2">
                   Action
                 </th>
-                <th className="text-xs font-semibold text-[#667085] py-3.5 w-[30%] pr-2">
+                <th className="text-xs font-semibold text-[#667085] py-3.5 w-20 pr-2">
+                  Image
+                </th>
+                <th className="text-xs font-semibold text-[#667085] py-3.5 pr-2">
                   Product Name
                 </th>
                 {/* <th className="text-xs font-semibold text-[#667085] py-3.5 w-[20%] pr-2">
                   Submit Date
                 </th> */}
-                <th className="text-xs font-semibold text-[#667085] py-3.5 w-[10%] pr-2">
+                <th className="text-xs font-semibold text-[#667085] py-3.5 w-20 pr-2">
                   Quantity
                 </th>
-                <th className="text-xs font-semibold text-[#667085] py-3.5 w-[10%] pr-2">
+                <th className="text-xs font-semibold text-[#667085] py-3.5 w-20 pr-2">
                   Amount
                 </th>
               </tr>
@@ -376,7 +381,7 @@ const Row = ({
   return (
     <>
       <tr className="border-b border-neutral-200">
-        <td className="py-4 pl-6 w-[10%] pr-2">
+        <td className="py-4 pl-6 pr-2">
           <CheckBox checked={pd?.selected === '1'} onChange={onChange} />
         </td>
         <td className="py-4 flex pr-2 items-center gap-x-2">
@@ -398,158 +403,32 @@ const Row = ({
             <FileSearch />
           </button> */}
         </td>
-        <td className="py-4 w-[30%] overflow-hidden pr-2">
+        <td className="overflow-hidden pr-2">
+          <Image
+            src={config.imgUri + pd?.flash_product?.image}
+            alt={pd?.flash_product?.image}
+            width={40}
+            height={30}
+            className="overflow-hidden object-cover bg-gray-200 text-sm"
+          />
+        </td>
+        <td className="py-4 overflow-hidden pr-2">
           <div className="max-w-[200px] overflow-hidden">
             {/* <p className="text-xs text-success">Category name</p> */}
-            <p className="text-sm text-neutral-600 font-semibold whitespace-nowrap overflow-hidden text-ellipsis">
+            <Link
+              href={`/cart/${pd?.flash_product?.slug}/${pd?.flash_product?.id}`}
+              className="text-sm text-neutral-600 font-semibold whitespace-nowrap overflow-hidden text-ellipsis"
+            >
               {pd?.flash_product?.title}
-            </p>
+            </Link>
           </div>
         </td>
-        <td className="py-4 text-neutral-500 text-sm w-[20%] pr-2">
-          {pd?.quantity}
-        </td>
-        <td className="py-4 text-neutral-500 text-sm w-[20%] pr-2">
+        <td className="py-4 text-neutral-500 text-sm pr-2">{pd?.quantity}</td>
+        <td className="py-4 text-neutral-500 text-sm pr-2">
           {pd?.flash_product?.offered ??
             pd?.flash_product?.selling * Number(pd?.quantity ?? '0')}
         </td>
       </tr>
-      <Modal
-        panelClassName="max-w-[380px]"
-        show={isPreviewOpen}
-        onClose={() => setPreviewOpen(true)}
-      >
-        <div className="flex items-center justify-between pb-4">
-          <p className="text-black text-sm font-bold">Preview</p>
-          <button onClick={() => setPreviewOpen(false)}>
-            <IoMdClose className="text-xl md:text-2xl" />
-          </button>
-        </div>
-        <div className="flex flex-col sm:flex-row items-start gap-y-5 sm:gap-y-0 sm:gap-x-2 md:gap-x-4">
-          <div className="w-full flex-1 border border-neutral-300 bg-white rounded-xl overflow-hidden">
-            <div className="px-4 lg:px-5">
-              <div className="flex items-center gap-x-5 justify-between py-4 border-b border-[#E6E6E6]">
-                <div className="flex-1 overflow-hidden">
-                  {/* <p className="text-xs text-success">Category name</p> */}
-                  <p className="text-sm text-neutral-600 font-semibold whitespace-nowrap overflow-hidden text-ellipsis">
-                    {pd?.flash_product?.title}
-                  </p>
-                </div>
-                {/* <button>
-                  <FiEdit className="text-lg lg:text-xl leading-none text-[#667085]" />
-                </button> */}
-              </div>
-              <div className="space-y-4 lg:space-y-[18px] pt-4 lg:pt-6 pb-6 lg:pb-8">
-                {checkoutData.map((data, i) => (
-                  <div
-                    key={`data_${i}`}
-                    className="flex items-center justify-between"
-                  >
-                    <p className="text-xs sm:text-sm font-medium text-neutral-400">
-                      {data.title}
-                    </p>
-                    <p className="text-xs sm:text-sm font-medium text-neutral-600">
-                      {data.title === 'Quantity' ? pd?.quantity : data.value}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className="py-3 lg:py-3.5 px-4 lg:px-6 bg-neutral-50 flex items-center justify-between">
-              <p className="text-xs lg:text-sm font-bold text-neutral-800">
-                Total (Exc. Vat)
-              </p>
-              <p className="text-sm sm:text-base lg:text-lg font-semibold sm:font-bold text-primary">
-                {pd?.flash_product?.offered * Number(pd?.quantity ?? '0')} AED
-              </p>
-            </div>
-          </div>
-          {/* <div className="w-full sm:w-[54%] bg-white">
-            <div className="border rounded-lg border-neutral-200 px-4 lg:px-6 pt-4 pb-5 lg:pb-7">
-              <h5 className="text-black font-semibold text-sm lg:text-base">
-                File Preview
-              </h5>
-              <div className="mt-2">
-                {uploadedFiles.length > 0 &&
-                  uploadedFiles.map((file, i) => (
-                    <div
-                      key={`file_${i}`}
-                      className="bg-white rounded-lg pt-4 border-neutral-300 flex items-center justify-between"
-                    >
-                      <div className="flex items-center gap-x-4">
-                        <div className="size-8 lg:size-10 rounded-full flex items-center justify-center bg-neutral-700">
-                          <FileAttach className="size-5 lg:size-6" />
-                        </div>
-                        <div className="flex-1">
-                          <p className="text-[#111827] text-sm">{file.name}</p>
-                          <p className="text-xs text-[#6B7280] mt-1">
-                            {file.size}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-x-4">
-                        <button
-                          onClick={() => setFilePreviewOpen(true)}
-                          className="size-8 lg:size-10 rounded-lg transition-all duration-300 hover:scale-95 bg-neutral-50 hover:bg-neutral-200 flex items-center justify-center"
-                        >
-                          <FiEye className="text-lg lg:text-xl text-neutral-500" />
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-              </div>
-            </div>
-            <div className="p-3 md:p-4 border border-neutral-200 rounded-lg bg-neutral-50 mt-2 md:mt-4">
-              <div className="flex items-center justify-between">
-                <h6 className="text-xs lg:text-sm font-bold text-neutral-800">
-                  Total (Exc. Vat)
-                </h6>
-                <h4 className="text-xs sm:text-base md:text-lg lg:text-xl font-bold text-primary">
-                  {pd?.flash_product?.offered * Number(pd?.quantity ?? '0')} AED
-                </h4>
-              </div>
-              <div className="flex justify-end sm:justify-start items-center gap-x-3 mt-4">
-                <Button
-                  outlined
-                  className=" w-28 lg:w-[138px] py-2 lg:py-2.5 text-xs lg:text-sm flex gap-x-2 items-center justify-center"
-                >
-                  <BsHandbag className="text-sm lg:text-base" />
-                  Add to Card
-                </Button>
-                <Button
-                  onClick={() => setPreviewOpen(false)}
-                  className="h-9 lg:h-11 flex-1 max-w-48 flex gap-x-1 md:gap-x-2 px-0 items-center justify-center text-xs md:text-sm lg:text-sm"
-                >
-                  <IoCheckmark className="text-base" /> Proceed to Checkout
-                </Button>
-              </div>
-            </div>
-          </div> */}
-        </div>
-      </Modal>
-      {/* file preview modal  */}
-      <Modal
-        show={isFilePreviewOpen}
-        panelClassName="p-0"
-        onClose={() => setFilePreviewOpen(false)}
-      >
-        <div className="flex items-center justify-between bg-primary px-6 py-3">
-          <p className="text-white text-sm font-bold">File Preview</p>
-          <button onClick={() => setFilePreviewOpen(false)}>
-            <IoMdClose className="text-2xl text-white" />
-          </button>
-        </div>
-        <div className="p-4 bg-white h-[85vh] overflow-y-scroll scrollbar-thin">
-          <div className="w-full h-[624px] relative">
-            <Image
-              src={'/temp-banner.png'}
-              className="object-fill md:object-cover"
-              fill
-              alt="preview"
-            />
-          </div>
-        </div>
-      </Modal>
     </>
   );
 };
