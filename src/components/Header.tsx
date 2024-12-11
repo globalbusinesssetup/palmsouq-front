@@ -100,7 +100,7 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
               </div>
             </div>
           </div>
-          {showSearch && path === '/' && (
+          {showSearch && (
             <div className="hidden md:block flex-1 relative">
               <div className="relative">
                 <Input
