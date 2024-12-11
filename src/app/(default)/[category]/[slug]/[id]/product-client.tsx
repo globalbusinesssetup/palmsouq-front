@@ -360,7 +360,9 @@ export default function ProductDeatils({ params }: Record<string, any>) {
               </div>
               <div
                 className="py-2.5 lg:py-4"
-                dangerouslySetInnerHTML={{ __html: product?.overview || '' }}
+                dangerouslySetInnerHTML={{
+                  __html: product?.overview.split('\n').join('<br/>') || '',
+                }}
               />
             </div>
             <div className="">
