@@ -4,8 +4,9 @@ import Image from 'next/image';
 import { useGetUser } from '@/utils/api';
 import { useQuery } from '@tanstack/react-query';
 import useAuth from '@/hooks/useAuth';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { Header } from '@/components';
+import { useEffect } from 'react';
 
 export default function DashboardClient({
   children,
@@ -13,16 +14,23 @@ export default function DashboardClient({
   children: React.ReactNode;
 }>) {
   const router = useRouter();
+  const pathname = usePathname();
   const { data: user, isLoading } = useQuery<any>({
     queryKey: ['user'],
     queryFn: useGetUser,
   });
   const { isLoggedIn } = useAuth();
 
-  if (isLoading || !isLoggedIn) {
-    if (!isLoading && !isLoggedIn) {
-      router.push('/auth/sign-in');
+  useEffect(() => {
+    if (!isLoggedIn && !isLoading) {
+      router.push(`/auth/sign-in?redirect=${pathname}`);
     }
+  }, [isLoggedIn, router, isLoading, pathname]);
+
+  if (isLoading || !isLoggedIn) {
+    // if (!isLoading && !isLoggedIn) {
+    //   router.push('/auth/sign-in');
+    // }
     return (
       <div className="w-screen h-screen flex gap-x-10 bg-white px-6 py-10">
         <div className="sm:w-[150px] md:w-[200px] lg:w-[264px] h-full bg-gray-200 rounded animate-pulse flex flex-col gap-y-5 px-4 py-5">

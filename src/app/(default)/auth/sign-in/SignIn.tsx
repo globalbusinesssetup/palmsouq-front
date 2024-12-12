@@ -2,16 +2,18 @@
 import React, { useEffect, useState } from 'react';
 import SignInForm from './SignInForm';
 import { FaArrowLeftLong } from 'react-icons/fa6';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { OtpVerify, SendOtp } from '@/components';
 import useAuth from '@/hooks/useAuth';
 
 const SignIn = () => {
   const router = useRouter();
+  const query = useSearchParams();
   const { isLoggedIn } = useAuth();
+  const redirect = query.get('redirect');
   useEffect(() => {
     if (isLoggedIn) {
-      router.push('/');
+      router.push(redirect ? redirect : '/');
     }
   });
   const [flow, setFlow] = useState('sign-in');
