@@ -42,7 +42,11 @@ export default function ProductDeatils({ params }: Record<string, any>) {
   const [bannerError, setBannerError] = useState(false);
   const queryClient = useQueryClient();
 
-  const { data: product, isLoading } = useQuery({
+  const {
+    data: product,
+    isLoading,
+    isError,
+  } = useQuery({
     queryKey: ['product', params.id],
     queryFn: () => getProduct(params.id),
   });
@@ -153,6 +157,18 @@ export default function ProductDeatils({ params }: Record<string, any>) {
       </div>
     );
   }
+  if ((product && 'form' in product && product.form) || isError) {
+    return (
+      <div className="w-full h-[calc(100vh-97px)] bg-[url('/not-found.webp')] bg-cover bg-no-repeat">
+        <Link
+          href={'/'}
+          className="ml-5 px-5 py-3 text-white inline-block text-lg mt-5 font-semibold"
+        >
+          Go to Home
+        </Link>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -165,11 +181,11 @@ export default function ProductDeatils({ params }: Record<string, any>) {
                 <span className="text-primary hover:underline">Home</span>
               </Link>
             </div>
-            <div key={'/'} className="flex items-center">
+            <div className="flex items-center">
               <FaAngleRight size={12} />
-              <Link href={`/${product?.category_data[0]?.slug}`}>
+              <Link href={`/${product?.category_data?.[0]?.slug}`}>
                 <span className="text-primary hover:underline px-1">
-                  {product?.category_data[0]?.title}
+                  {product?.category_data?.[0]?.title}
                 </span>
               </Link>
               <FaAngleRight size={12} />
@@ -361,7 +377,7 @@ export default function ProductDeatils({ params }: Record<string, any>) {
               <div
                 className="py-2.5 lg:py-4"
                 dangerouslySetInnerHTML={{
-                  __html: product?.overview.split('\n').join('<br/>') || '',
+                  __html: product?.overview?.split('\n').join('<br/>') || '',
                 }}
               />
             </div>
