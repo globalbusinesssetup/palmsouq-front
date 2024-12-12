@@ -100,7 +100,7 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
               </div>
             </div>
           </div>
-          {showSearch && path === '/' && (
+          {showSearch && (
             <div className="hidden md:block flex-1 relative">
               <div className="relative">
                 <Input
@@ -300,7 +300,7 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
           <ul className="space-y-1 pt-6">
             {isLoggedIn && (
               <>
-                <li className={``}>
+                <li>
                   <Link
                     href={'/dashboard/cart'}
                     className="flex items-center gap-x-1 text-[#6B7280] hover:text-primary/90 py-2 text-sm xl:text-base font-medium xl:font-semibold"
@@ -309,18 +309,18 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
                     My Cart
                   </Link>
                 </li>
-                <li className={``}>
+                <li>
                   <Link
-                    href={'/dashboard/cart'}
+                    href={'/dashboard/wishlist'}
                     className="flex items-center gap-x-1 text-[#6B7280] hover:text-primary/90 py-2 text-sm xl:text-base font-medium xl:font-semibold"
                   >
                     <FaRegHeart className="text-lg" />
                     My Wislist
                   </Link>
                 </li>
-                <li className={``}>
+                <li>
                   <Link
-                    href={'/dashboard/cart'}
+                    href={'/dashboard/profile'}
                     className="flex items-center gap-x-1 text-[#6B7280] hover:text-primary/90 py-2 text-sm xl:text-base font-medium xl:font-semibold"
                   >
                     <FiUser className="text-lg" />

@@ -116,6 +116,7 @@ const UpdateAddress = ({
         toast.success('Address updated Successfully');
         onClose();
         await queryClient.invalidateQueries({ queryKey: ['address'] });
+        await queryClient.refetchQueries({ queryKey: ['address'] });
         onClose();
         reset();
       }

@@ -131,6 +131,7 @@ const AddAddress = ({
       } else {
         toast.success('Address added Successfully');
         await queryClient.invalidateQueries({ queryKey: ['address'] });
+        await queryClient.refetchQueries({ queryKey: ['address'] });
         onClose();
         reset();
       }
