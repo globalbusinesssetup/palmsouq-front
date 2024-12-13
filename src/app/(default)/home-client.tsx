@@ -584,11 +584,11 @@ export default function HomeClient() {
           </div>
         </section>
         {/* order steps */}
-        <section className="mt-5 md:mt-8 lg:mt-10 sm:px-6 py-4 bg-neutral-50 rounded-[10px] flex flex-wrap items-center gap-6">
+        <section className="mt-5 md:mt-8 lg:mt-10 sm:px-6 py-4 bg-neutral-50 rounded-[10px] flex flex-col sm:flex-row flex-wrap items-center gap-6">
           {orderSteps.map((step, i) => (
             <div
               key={`step_${i}`}
-              className="flex-1 flex flex-col gap-y-4 items-center"
+              className="flex-1 flex flex-col gap-4 items-center pl-4 sm:pl-0"
             >
               <div className="w-[83px] h-[78px] md:w-[93px] md:h-[88px] relative">
                 <Image defaultSrc={step.icon} isLocal fill alt={step.title} />
@@ -608,11 +608,11 @@ export default function HomeClient() {
       {/* companyDetails */}
 
       <section className="bg-neutral-50 pt-10 pb-[30px] px-4 sm:px-0">
-        <div className="container px-4 mx-auto flex flex-wrap gap-3 lg:gap-5 lg:justify-between">
+        <div className="container px-4 mx-auto flex flex-col sm:flex-row flex-wrap gap-4 lg:gap-5 items-center lg:justify-between">
           {companyDetails.map((detail, i) => (
             <div
               key={`detail_${i}`}
-              className="flex gap-x-3.5 xs:max-w-[50%] sm:max-w-fit"
+              className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-x-3.5 xs:max-w-[50%] sm:max-w-fit"
             >
               {detail.icon}
               <div className="max-w-[220px] flex-1">

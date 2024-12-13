@@ -28,10 +28,13 @@ const Footer = () => {
   return (
     <footer className="bg-primary">
       <div className="container mx-auto py-[50px] px-4 sm:px-5">
-        <div className="flex flex-row flex-wrap items-center justify-between pb-6 gap-4">
+        <div className="flex flex-col sm:flex-row flex-wrap items-center sm:justify-between pb-6 gap-4">
           {footerLinks.map((footerLink, i) =>
             footerLink.title !== 'About' ? (
-              <nav key={`footer_${i}`} className="space-y-2">
+              <nav
+                key={`footer_${i}`}
+                className="space-y-2 text-center sm:text-left"
+              >
                 <h6 className="text-neutral-400 text-sm font-semibold pb-1">
                   {footerLink.title}
                 </h6>
@@ -46,11 +49,13 @@ const Footer = () => {
                 ))}
               </nav>
             ) : (
-              <nav key={`footer_${i}`} className="space-y-2">
+              <nav
+                key={`footer_${i}`}
+                className="space-y-2 text-center sm:text-left"
+              >
                 <h6 className="text-neutral-400 text-sm font-semibold pb-1">
                   {footerLink.title}
                 </h6>
-
                 {about.map((link, i) => (
                   <Link
                     key={`link_${i}`}
