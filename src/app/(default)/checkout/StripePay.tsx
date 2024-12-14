@@ -33,6 +33,7 @@ const StripePay = ({
     const { error: submitError } = await elements.submit();
     if (submitError) {
       toast.error(submitError?.message!);
+      setSubmitting(false);
       return;
     }
     setErrorMessage(undefined);
@@ -64,6 +65,7 @@ const StripePay = ({
         if (res?.data.message) {
           console.log(res?.data?.data?.form[0]);
           toast.error(res?.data?.data?.form[0]);
+          setSubmitting(false);
           return;
         }
         onSuccess();
