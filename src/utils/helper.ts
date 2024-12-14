@@ -29,6 +29,19 @@ export const orderEncrypt = (data: {
     padding: CryptoJS.pad.ZeroPadding,
   }).toString();
 };
+export const paymentEncrypt = (data: {
+  id: string | number;
+  payment_token: any;
+  order_method: string | number;
+  user_token: string;
+}) => {
+  let key = CryptoJS.enc.Hex.parse('0123456470abcdef0123456789abcdef');
+  let iv = CryptoJS.enc.Hex.parse('abcdef1876343516abcdef9876543210');
+  return CryptoJS.AES.encrypt(JSON.stringify(data), key, {
+    iv,
+    padding: CryptoJS.pad.ZeroPadding,
+  }).toString();
+};
 
 export const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 

@@ -22,6 +22,8 @@ const Tag = ({ status, className }: Tagtype) => {
     confirmed: 'text-success bg-success/25',
     delivered: 'text-[#655937] bg-[#A79F8833]',
     cancelled: 'text-error bg-error/20',
+    picked_up: 'text-[#655937] bg-[#A79F8833]',
+    on_the_way: 'text-[#655937] bg-[#A79F8833]',
   };
 
   const getStatusText = (status: Tagtype['status']) => {

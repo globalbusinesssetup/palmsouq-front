@@ -118,6 +118,7 @@ const Checkout = () => {
   const [deliveryCost, setDeliveryCost] = useState(0);
   const [pickupCost, setPickupCost] = useState(0);
   const [tax, setTax] = useState(0);
+  const [order, setOrder] = useState<any>({});
 
   useEffect(() => {
     if (cart?.data) {
@@ -147,7 +148,7 @@ const Checkout = () => {
       if (Object.keys(result.carts).length < 1) {
         console.log('No items for checkout');
         setTimeout(() => {
-          router.push('/cart');
+          router.push(isLoggedIn ? '/dashboard/cart' : '/cart');
         }, 100); // Add a small delay to ensure back action is handled smoothly
         return;
       }
@@ -187,35 +188,6 @@ const Checkout = () => {
     }
   }, [payData, isPayDataLoading]);
 
-  // const handlePayment = useCallback(() => {
-  //   const options: RazorpayOptions = {
-  //     key: 'rzp_test_vv1FCZvuDRF6lQ',
-  //     amount: '3000',
-  //     currency: 'AED',
-  //     name: 'Printcraft',
-  //     description: 'Test Transaction',
-  //     image: 'https://example.com/your_logo',
-  //     order_id: '1',
-  //     handler: (res) => {
-  //       console.log(res);
-  //     },
-  //     prefill: {
-  //       name: 'Piyush Garg',
-  //       email: 'youremail@example.com',
-  //       contact: '9999999999',
-  //     },
-  //     notes: {
-  //       address: 'Razorpay Corporate Office',
-  //     },
-  //     theme: {
-  //       color: '#3399cc',
-  //     },
-  //   };
-
-  //   const rzpay = new Razorpay(options);
-  //   rzpay.open();
-  // }, [Razorpay]);
-
   if (isPayDataLoading || isCountriesLoading || isLoading) {
     return (
       <main className="w-full h-screen flex items-center justify-center">
@@ -226,9 +198,10 @@ const Checkout = () => {
     );
   }
 
-  const stripePromise = loadStripe(
-    'pk_test_51KSxxsLPva6t8Wj1SbcnYQnGvroMwctxhcqlKuslVnix4eJzxNZlA2QjtIaXLyY5Ay8pzEdtN3PHUlnXonpd10Vs00jntUNba6'
-  );
+  const stripePromise = loadStripe(payData?.stripe_key!);
+  // const stripePromise = loadStripe(
+  //   'pk_test_51KSxxsLPva6t8Wj1SbcnYQnGvroMwctxhcqlKuslVnix4eJzxNZlA2QjtIaXLyY5Ay8pzEdtN3PHUlnXonpd10Vs00jntUNba6'
+  // );
   const isDisabled = (val: any) => {
     const supportedAreas = ['AE'];
     if (val === 'standard') {
@@ -296,12 +269,8 @@ const Checkout = () => {
       }
       setStep((prev) => prev + 1);
       router.push(`/checkout?currentStep=${currentStep + 1}`);
-    } else {
-      if (orderMethod === 1) {
-        setOpen(true);
-      } else {
-        handleOrder();
-      }
+    } else if (currentStep === 1) {
+      handleOrder();
     }
     console.log('Clicked!');
   };
@@ -325,17 +294,26 @@ const Checkout = () => {
         setSubmitLoading(false);
         return;
       }
+      setOrder(res.data?.data);
       setSubmitLoading(false);
-      refetchProfile();
-      queryClient.invalidateQueries({ queryKey: ['cart', 'orders'] });
-      queryClient.refetchQueries({ queryKey: ['cart', 'orders'] });
-      toast.success('Order placed Successfully');
-      setStep((prev) => prev + 1);
-      router.push('/checkout?currentStep=2');
+      if (orderMethod === 2) {
+        onSuccess();
+      } else {
+        setOpen(true);
+      }
     } catch (error) {
       console.log(error);
     }
     setSubmitLoading(false);
+  };
+
+  const onSuccess = () => {
+    refetchProfile();
+    queryClient.invalidateQueries({ queryKey: ['cart', 'orders'] });
+    queryClient.refetchQueries({ queryKey: ['cart', 'orders'] });
+    toast.success('Order placed Successfully');
+    setStep((prev) => prev + 1);
+    router.push('/checkout?currentStep=2');
   };
 
   return (
@@ -459,9 +437,9 @@ const Checkout = () => {
               <div className="mt-6 grid sm:grid-cols-2 gap-x-6 gap-y-5 sm:gap-y-0 sm:max-w-[506px]">
                 <button
                   disabled={payData?.stripe! === 0}
-                  onClick={() => setMethod(1)}
+                  onClick={() => setMethod(3)}
                   className={`cursor-pointer px-6 py-4 border rounded-lg flex-1 ${
-                    orderMethod === 1
+                    orderMethod === 3
                       ? 'border-[#9B9DFD]'
                       : 'border-neutral-300'
                   }`}
@@ -599,6 +577,7 @@ const Checkout = () => {
             </div>
           )}
         </div>
+        {/* rightSide  */}
         {currentStep !== steps.length - 1 && (
           <div className="lg:w-[336px] h-fit py-4 px-6 border rounded-xl border-neutral-300 bg-white">
             <h5 className="text-black font-semibold pb-4">Order Summery</h5>
@@ -664,21 +643,29 @@ const Checkout = () => {
         show={isOpen}
         onClose={() => {
           setOpen(false);
-          handleOrder();
+          router.push(isLoggedIn ? '/dashboard/orders' : '/orders');
         }}
-        panelClassName={'max-w-[500px]'}
+        panelClassName={'max-w-[350px]'}
       >
         <div className="min-h-60">
           <Elements
             stripe={stripePromise}
-            options={{
-              mode: 'payment',
-              amount: 100,
-              currency: 'usd',
-              // clientSecret: 'afsadfsefe',
-            }}
+            // options={{
+            //   clientSecret: payData?.stripe_secret!,
+            // }}
+            // options={{
+            //   mode: 'payment',
+            //   amount: Math.round(Number(order.amount) * 100),
+            //   currency: order.currency.toLocaleLowerCase(),
+            // }}
           >
-            <StripePay payData={payData} />
+            <StripePay
+              payData={order}
+              onSuccess={() => {
+                setOpen(false);
+                onSuccess();
+              }}
+            />
           </Elements>
         </div>
       </Modal>
