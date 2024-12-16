@@ -414,10 +414,9 @@ const Row = ({
         </td>
         <td className="py-4 overflow-hidden pr-2">
           <div className="max-w-[200px] overflow-hidden">
-            {/* <p className="text-xs text-success">Category name</p> */}
             <Link
               href={`/cart/${pd?.flash_product?.slug}/${pd?.flash_product?.id}`}
-              className="text-sm text-neutral-600 font-semibold whitespace-nowrap overflow-hidden text-ellipsis"
+              className="text-sm text-neutral-600 font-semibold whitespace-nowrap text-ellipsis"
             >
               {pd?.flash_product?.title}
             </Link>
