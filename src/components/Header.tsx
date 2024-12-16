@@ -35,13 +35,8 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
     enabled: false,
   });
 
-  const [mounted, setMounted] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   useEffect(() => {
     if (query && isFocus) {
@@ -164,7 +159,11 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
                           </h4>
                           <div className="pt-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-8 gap-2 px-2 2xl:px-4">
                             {data?.category?.map((cat, i) => (
-                              <SearchCatCard key={`cat_${i}`} cat={cat} />
+                              <SearchCatCard
+                                onClick={() => setFocus(false)}
+                                key={`cat_${i}`}
+                                cat={cat}
+                              />
                             ))}
                           </div>
                         </>
@@ -176,7 +175,11 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
                           </h4>
                           <div className="pt-6 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-2 2xl:gap-4 px-2 2xl:px-4">
                             {data?.product?.map((pd, i) => (
-                              <SearchPrdCard key={`pd_${i}`} pd={pd} />
+                              <SearchPrdCard
+                                onClick={() => setFocus(false)}
+                                key={`pd_${i}`}
+                                pd={pd}
+                              />
                             ))}
                           </div>
                         </>
@@ -390,13 +393,13 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
 
 export default Header;
 
-const SearchCatCard = ({ cat }) => {
+const SearchCatCard = ({ cat, ...res }) => {
   const [image, setImage] = useState('');
   const handleError = () => {
     setImage('/default-image.webp'); // fallback image path
   };
   return (
-    <Link href={`/${cat.slug}`} className="block">
+    <Link href={`/${cat.slug}`} {...res} className="block">
       <div className="relative h-20 2xl:h-24 overflow-hidden rounded-lg px-2">
         <Image
           src={image ?? config.imgUri + cat.image}
@@ -413,7 +416,7 @@ const SearchCatCard = ({ cat }) => {
   );
 };
 
-const SearchPrdCard = ({ pd }) => {
+const SearchPrdCard = ({ pd, ...res }) => {
   const [image, setImage] = useState('');
   const handleError = () => {
     setImage('/default-image.webp'); // fallback image path
@@ -421,6 +424,7 @@ const SearchPrdCard = ({ pd }) => {
   return (
     <Link
       href={`/search/${pd.slug}/${pd.id}`}
+      {...res}
       key={`cat_`}
       className="border border-gray-200 flex gap-x-4 px-3 py-2 rounded-md overflow-hidden"
     >
