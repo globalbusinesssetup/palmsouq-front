@@ -11,7 +11,7 @@ import {
 } from '@/components';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { FaAngleLeft, FaAngleRight } from 'react-icons/fa6';
+import { FaAngleLeft, FaAngleRight, FaCreditCard } from 'react-icons/fa6';
 import { FiCalendar, FiDownload } from 'react-icons/fi';
 import { BiMessageDots } from 'react-icons/bi';
 import { FiEdit, FiEye } from 'react-icons/fi';
@@ -26,6 +26,7 @@ import Cookies from 'js-cookie';
 import { toast } from 'react-toastify';
 import { usePDF } from 'react-to-pdf';
 import Invoice from '@/components/Invoice';
+import Payment from '@/app/(default)/checkout/Payment';
 
 const steps = [
   { title: 'Pending', icon: '/icons/check.svg' },
@@ -62,7 +63,6 @@ const Orders = () => {
     queryKey: ['orders'],
     queryFn: getOrders,
   });
-  const { control } = useForm();
 
   return (
     <div className="border border-neutral-200 bg-white rounded-xl overflow-hidden max-w-7xl">
@@ -181,6 +181,7 @@ const Row = ({ order, i }: { order: any; i: number }) => {
     queryFn: getCountries,
   });
   const [isOpen, setOpen] = useState(false);
+  const [isPayOpen, setPayOpen] = useState(false);
   const [isFilePreviewOpen, setFilePreviewOpen] = useState(false);
   const [status, setStatus] = useState<StatusTypes>(
     order?.cancelled === 1 ? 'cancelled' : getCurrentStatus(order?.status)
@@ -228,6 +229,13 @@ const Row = ({ order, i }: { order: any; i: number }) => {
     } finally {
       setIsCancelLoading(false);
     }
+  };
+
+  const handlePaySuccess = () => {
+    setPayOpen(false);
+    queryClient.invalidateQueries({ queryKey: ['orders'] });
+    queryClient.refetchQueries({ queryKey: ['orders'] });
+    toast.success('Payment done Successfully!');
   };
 
   return (
@@ -288,6 +296,7 @@ const Row = ({ order, i }: { order: any; i: number }) => {
           taxPrice={orderData?.calculated?.tax ?? 'N/A'}
         />
       )}
+      {/* Order Details  */}
       <Modal show={isOpen} onClose={() => setOpen(false)}>
         <div className="flex md:hidden items-center justify-end pb-3 -mt-1">
           <button onClick={() => setOpen(false)}>
@@ -297,7 +306,7 @@ const Row = ({ order, i }: { order: any; i: number }) => {
         <div className="px-[18px] py-4 border border-neutral-300 rounded-xl">
           <div className="flex justify-between">
             <div className="">
-              <div className="flex flex-col xs:flex-row xs:items-center gap-1 sm:gap-6">
+              <div className="flex-1 flex flex-col xs:flex-row xs:items-center gap-1 sm:gap-6">
                 <h5 className="text-black font-semibold text-xs xs:text-sm sm:text-base md:text-lg">
                   Order Status
                 </h5>
@@ -309,7 +318,7 @@ const Row = ({ order, i }: { order: any; i: number }) => {
                   }
                 />
               </div>
-              <div className="flex flex-col sm:flex-row sm:items-center gap-y-2 sm:gap-y-0 sm:gap-x-2.5 mt-2 md:mt-3">
+              <div className="flex-1 flex flex-col sm:flex-row sm:items-center gap-y-2 sm:gap-y-0 sm:gap-x-2.5 mt-2 md:mt-3">
                 <div className="flex items-center gap-x-2.5">
                   <File />
                   <p className="text-tiny sm:text-xs font-light text-neutral-500">
@@ -323,44 +332,81 @@ const Row = ({ order, i }: { order: any; i: number }) => {
                   </p>
                 </div>
               </div>
+              <div className="mt-3 hidden md:block">
+                <p className="text-sm text-neutral-500 ">
+                  <span className="font-bold">Order method</span> :{' '}
+                  {order?.order_method === '2' ? 'COD' : 'Stripe'}
+                </p>
+                {order?.order_method !== '2' && (
+                  <p className="text-sm text-neutral-500 mt-2">
+                    <span className="font-bold">Payment status</span> :{' '}
+                    {order?.payment_done === 0 ? 'Unpaid' : 'Paid'}
+                  </p>
+                )}
+              </div>
             </div>
             <div
               aria-disabled={order?.cancelled === 1}
               className="flex flex-col items-end aria-disabled:opacity-40"
             >
-              {order.status === '1' ? (
-                <Button
-                  outlined
-                  disabled={order?.cancelled === 1}
-                  onClick={() => {
-                    setOpen(false);
-                    setFilePreviewOpen(true);
-                  }}
-                  className="w-32 sm:w-[146px] border-[#FDA29B] !text-xs md:!text-sm font-semibold text-error hover:text-error hover:scale-90 hover:bg-transparent flex items-center justify-center gap-x-2.5"
-                >
-                  <File varient="FileClose" className="size-4 md:size-5" />{' '}
-                  Cancel Order
-                </Button>
-              ) : (
-                <Button
-                  onClick={() => toPDF()}
-                  className="w-[90px] sm:w-[105px] py-0 h-8 sm:h-9 text-xs sm:text-sm font-semibold flex items-center justify-center gap-x-2"
-                >
-                  <FiDownload className="text-base sm:text-lg md:text-xl" />
-                  Invoice
-                </Button>
-              )}
-              <div className="flex items-center gap-x-2.5 mt-2">
-                <p className="text-tiny md:text-xs font-light text-right text-neutral-500">
-                  Cancel the order pre-production
+              <div className="mb-3 md:hidden">
+                <p className="text-xs text-neutral-500 ">
+                  <span className="font-bold">Order method</span> :{' '}
+                  {order?.order_method === '2' ? 'COD' : 'Stripe'}
                 </p>
-                <BiMessageDots className="text-xs sm:text-base text-black" />
+                {order?.order_method !== '2' && (
+                  <p className="text-xs text-neutral-500 mt-2">
+                    <span className="font-bold">Payment status</span> :{' '}
+                    {order?.payment_done === 0 ? 'Unpaid' : 'Paid'}
+                  </p>
+                )}
               </div>
+              <div className="flex items-center gap-x-3">
+                {order.order_method !== '2' && order.payment_done === 0 && (
+                  <Button
+                    onClick={() => setPayOpen(true)}
+                    className="w-[90px] sm:w-[105px] py-0 h-8 sm:h-9 text-xs sm:text-sm font-semibold flex items-center justify-center gap-x-2"
+                  >
+                    <FaCreditCard className="text-base sm:text-lg md:text-xl" />
+                    Pay
+                  </Button>
+                )}
+                {order.status === '1' ? (
+                  <Button
+                    outlined
+                    disabled={order?.cancelled === 1}
+                    onClick={() => {
+                      setOpen(false);
+                      setFilePreviewOpen(true);
+                    }}
+                    className="w-32 sm:w-[146px] border-[#FDA29B] !text-xs md:!text-sm font-semibold text-error hover:text-error hover:scale-90 hover:bg-transparent flex items-center justify-center gap-x-2.5"
+                  >
+                    <File varient="FileClose" className="size-4 md:size-5" />{' '}
+                    Cancel Order
+                  </Button>
+                ) : (
+                  <Button
+                    onClick={() => toPDF()}
+                    className="w-[90px] sm:w-[105px] py-0 h-8 sm:h-9 text-xs sm:text-sm font-semibold flex items-center justify-center gap-x-2"
+                  >
+                    <FiDownload className="text-base sm:text-lg md:text-xl" />
+                    Invoice
+                  </Button>
+                )}
+              </div>
+              {order.status === '1' && (
+                <div className="flex items-center gap-x-2.5 mt-2">
+                  <p className="text-tiny md:text-xs font-light text-right text-neutral-500">
+                    Cancel the order pre-production
+                  </p>
+                  <BiMessageDots className="text-xs sm:text-base text-black" />
+                </div>
+              )}
             </div>
           </div>
           <div
             aria-disabled={order.cancelled === 1}
-            className="flex flex-col sm:flex-row sm:items-center justify-center pt-10 pb-4 aria-disabled:opacity-45"
+            className="flex flex-col sm:flex-row sm:items-center justify-center pt-6 lg:pt-10 pb-4 aria-disabled:opacity-45"
           >
             {steps.map((step, i) => (
               <OrderStep
@@ -374,7 +420,14 @@ const Row = ({ order, i }: { order: any; i: number }) => {
           </div>
         </div>
       </Modal>
-      {/* file preview modal  */}
+      {/* Payment  */}
+      <Payment
+        order={{ ...order, name: orderData?.address?.name }}
+        isOpen={isPayOpen}
+        onClose={() => setPayOpen(false)}
+        onSuccess={handlePaySuccess}
+      />
+      {/* Cancel modal  */}
       <Modal
         show={isFilePreviewOpen}
         panelClassName="p-0 max-w-[400px]"

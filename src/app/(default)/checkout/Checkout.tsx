@@ -109,7 +109,6 @@ const Checkout = () => {
   );
   const [isOpen, setOpen] = useState(false);
   const [isUpdateLoding, setUpdateLoading] = useState(false);
-  const isMounted = useMount();
   const [isAddAddressOpen, setAddAddressOpen] = useState(false);
   const [orderMethod, setMethod] = useState(1);
   const [isSubmitLoading, setSubmitLoading] = useState(false); //[isLoading]
@@ -164,7 +163,7 @@ const Checkout = () => {
   }, [cart]);
 
   useEffect(() => {
-    const supportedAreas = ['AE'];
+    const supportedAreas = ['DU', 'AJ', 'SH'];
     if (!supportedAreas.includes(defaultAddress?.state!)) {
       setDeliveryOption(deliveryOptions[1].value);
     }
@@ -199,11 +198,8 @@ const Checkout = () => {
   }
 
   const stripePromise = loadStripe(payData?.stripe_key!);
-  // const stripePromise = loadStripe(
-  //   'pk_test_51KSxxsLPva6t8Wj1SbcnYQnGvroMwctxhcqlKuslVnix4eJzxNZlA2QjtIaXLyY5Ay8pzEdtN3PHUlnXonpd10Vs00jntUNba6'
-  // );
   const isDisabled = (val: any) => {
-    const supportedAreas = ['AE'];
+    const supportedAreas = ['DU', 'AJ', 'SH'];
     if (val === 'standard') {
       return !supportedAreas.includes(defaultAddress?.state!);
     }
@@ -648,17 +644,7 @@ const Checkout = () => {
         panelClassName={'max-w-[350px]'}
       >
         <div className="min-h-60">
-          <Elements
-            stripe={stripePromise}
-            // options={{
-            //   clientSecret: payData?.stripe_secret!,
-            // }}
-            // options={{
-            //   mode: 'payment',
-            //   amount: Math.round(Number(order.amount) * 100),
-            //   currency: order.currency.toLocaleLowerCase(),
-            // }}
-          >
+          <Elements stripe={stripePromise}>
             <StripePay
               payData={order}
               onSuccess={() => {
