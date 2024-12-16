@@ -79,6 +79,8 @@ const deliveryOptions = [
   },
 ];
 
+const supportedAreas = ['DU', 'AJ', 'SH'];
+
 const Checkout = () => {
   const router = useRouter();
   const params = useSearchParams();
@@ -163,7 +165,6 @@ const Checkout = () => {
   }, [cart]);
 
   useEffect(() => {
-    const supportedAreas = ['DU', 'AJ', 'SH'];
     if (!supportedAreas.includes(defaultAddress?.state!)) {
       setDeliveryOption(deliveryOptions[1].value);
     }
@@ -187,6 +188,20 @@ const Checkout = () => {
     }
   }, [payData, isPayDataLoading]);
 
+  useEffect(() => {
+    if (
+      deliveryOption === 'standard' &&
+      !supportedAreas.includes(defaultAddress?.state!)
+    ) {
+      setDeliveryOption(deliveryOptions[1].value);
+    } else if (
+      deliveryOption === 'paid' &&
+      supportedAreas.includes(defaultAddress?.state!)
+    ) {
+      setDeliveryOption(deliveryOptions[0].value);
+    }
+  }, [defaultAddress]);
+
   if (isPayDataLoading || isCountriesLoading || isLoading) {
     return (
       <main className="w-full h-screen flex items-center justify-center">
@@ -199,7 +214,6 @@ const Checkout = () => {
 
   const stripePromise = loadStripe(payData?.stripe_key!);
   const isDisabled = (val: any) => {
-    const supportedAreas = ['DU', 'AJ', 'SH'];
     if (val === 'standard') {
       return !supportedAreas.includes(defaultAddress?.state!);
     }

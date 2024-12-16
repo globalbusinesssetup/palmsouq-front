@@ -233,8 +233,8 @@ const Row = ({ order, i }: { order: any; i: number }) => {
 
   const handlePaySuccess = () => {
     setPayOpen(false);
-    queryClient.invalidateQueries({ queryKey: ['orders'] });
-    queryClient.refetchQueries({ queryKey: ['orders'] });
+    queryClient.invalidateQueries({ queryKey: ['orders', 'order'] });
+    queryClient.refetchQueries({ queryKey: ['orders', 'order'] });
     toast.success('Payment done Successfully!');
   };
 
@@ -361,14 +361,14 @@ const Row = ({ order, i }: { order: any; i: number }) => {
                   </p>
                 )}
               </div>
-              <div className="flex items-center gap-x-3">
+              <div className="flex flex-col md:flex-row items-center gap-3">
                 {order.order_method !== '2' && order.payment_done === 0 && (
                   <Button
                     onClick={() => setPayOpen(true)}
-                    className="w-[90px] sm:w-[105px] py-0 h-8 sm:h-9 text-xs sm:text-sm font-semibold flex items-center justify-center gap-x-2"
+                    className="sm:w-[115px] py-0 h-8 sm:h-9 !text-xs sm:!text-sm font-semibold flex items-center justify-center gap-x-2"
                   >
                     <FaCreditCard className="text-base sm:text-lg md:text-xl" />
-                    Pay
+                    Pay now
                   </Button>
                 )}
                 {order.status === '1' ? (
