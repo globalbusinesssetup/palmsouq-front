@@ -190,7 +190,7 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
               )}
             </div>
           )}
-          <button className=" md:hidden" onClick={() => setIsOpen(true)}>
+          <button className="md:hidden" onClick={() => setIsOpen(true)}>
             <FaBars className="text-xl sm:text-2xl text-green" />
           </button>
           {isLoading ? (
@@ -266,7 +266,7 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
               </Link>
             </div>
           ) : (
-            <div className="flex flex-row items-center gap-x-4">
+            <div className="hidden md:flex flex-row items-center gap-x-4">
               <Link href={'/auth/sign-in'} className="ml-4 hidden lg:inline">
                 <RiUserSharedLine className="text-2xl lg:text-[28px] text-green" />
               </Link>
@@ -291,7 +291,13 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
         <div className="p-4">
           <div className="flex items-center justify-between">
             <Link href={'/'} className="w-24 h-10 block relative">
-              <Image src="/header_logo.png" fill alt="logo" />
+              <Image
+                defaultSrc="/header_logo.png"
+                isLocal
+                fill
+                alt="logo"
+                className="object-fit"
+              />
             </Link>
             <button
               onClick={() => setIsOpen(false)}
@@ -301,7 +307,7 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
             </button>
           </div>
           <ul className="space-y-1 pt-6">
-            {isLoggedIn && (
+            {isLoggedIn ? (
               <>
                 <li>
                   <Link
@@ -328,6 +334,27 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
                   >
                     <FiUser className="text-lg" />
                     My Account
+                  </Link>
+                </li>
+              </>
+            ) : (
+              <>
+                <li>
+                  <Link
+                    href={'/cart'}
+                    className="flex items-center gap-x-1 text-[#6B7280] hover:text-primary/90 py-2 text-sm xl:text-base font-medium xl:font-semibold"
+                  >
+                    <FiShoppingBag className="text-lg" />
+                    My Cart
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href={'/orders'}
+                    className="flex items-center gap-x-1 text-[#6B7280] hover:text-primary/90 py-2 text-sm xl:text-base font-medium xl:font-semibold"
+                  >
+                    <FaRegHeart className="text-lg" />
+                    My Orders
                   </Link>
                 </li>
               </>
