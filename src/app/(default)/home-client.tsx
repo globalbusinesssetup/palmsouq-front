@@ -319,7 +319,7 @@ export default function HomeClient() {
                   Discover the Best Selling Products on the Market Today.
                 </p>
               </div>
-              <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-6">
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-6">
                 {home?.collections[0]?.product_collections?.map(
                   (product: ProductData & { inventory: any[] }, i) => (
                     <ProductCard
@@ -362,7 +362,7 @@ export default function HomeClient() {
                   View All <HiArrowRight />
                 </Link>
               </div>
-              <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-6">
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-6">
                 {home?.collections[1]?.product_collections?.map(
                   (product: ProductData & { inventory: any[] }, i) => (
                     <ProductCard
@@ -414,7 +414,7 @@ export default function HomeClient() {
                   View All <HiArrowRight />
                 </Link>
               </div>
-              <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-6">
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-6">
                 {home?.collections[2]?.product_collections?.map(
                   (product: ProductData & { inventory: any[] }, i) => (
                     <ProductCard

@@ -33,7 +33,7 @@ import { FaAngleRight } from 'react-icons/fa6';
 import config from '@/config';
 import Filter from './Filter';
 import Drawer from 'react-modern-drawer';
-import { IoFilter } from 'react-icons/io5';
+import { IoClose, IoFilter } from 'react-icons/io5';
 
 type CategoryClientProps = {
   category: string;
@@ -62,7 +62,7 @@ const CategoryClient: React.FC<CategoryClientProps> = ({ category }) => {
   const router = useRouter();
   const path = usePathname();
   const params = useSearchParams();
-  const [isOpen, setOpen] = useState(true);
+  const [isOpen, setOpen] = useState(false);
   const [selectedCat, setCat] = useState('all');
   const [categoryData, setCategoryData] = useState<any[]>([]);
   const [selectedBrands, setBrands] = useState<number[]>([]);
@@ -328,7 +328,12 @@ const CategoryClient: React.FC<CategoryClientProps> = ({ category }) => {
         </div>
       </main>
       <Drawer open={isOpen} onClose={() => setOpen(false)} direction="left">
-        <div className="p-4 h-screen overflow-y-auto">
+        <div className="flex items-center justify-end pt-3 pb-1 px-4">
+          <button className="border rounded-full w-6 h-6 flex items-center justify-center">
+            <IoClose size={16} onClick={() => setOpen(false)} />
+          </button>
+        </div>
+        <div className="px-4 pb-8 h-screen overflow-y-auto">
           <Filter
             data={data}
             handleFilters={handleFilters}

@@ -107,10 +107,10 @@ const ProductCard = ({
           href={`/${category}/${data?.slug}/${data?.id}`}
           className="mt-1 flex items-center justify-between gap-x-3"
         >
-          <h5 className="text-sm font-bold text-neutral-800 whitespace-nowrap overflow-hidden flex-1 text-ellipsis">
+          <h5 className="text-xs xs:text-sm font-bold text-neutral-800 whitespace-nowrap overflow-hidden flex-1 text-ellipsis">
             {data?.title ?? 'Product Title goes here'}
           </h5>
-          <HiArrowRight className="text-base text-success" />
+          <HiArrowRight className="text-sm xs:text-base text-success" />
         </Link>
         <p className="text-xs text-neutral-500 mt-1 font-medium">
           <span className="line-through">{data?.selling}</span> -{' '}
