@@ -27,6 +27,7 @@ const PersonalForm = () => {
         name: `${data?.first_name} ${data?.last_name}`,
       });
       if (res?.data?.data?.form) {
+        console.log(res?.data);
         toast.error(res?.data?.data?.form[0]);
         setLoading(false);
         return;
@@ -36,7 +37,7 @@ const PersonalForm = () => {
       toast.success('Account has been created successfully!');
     } catch (err) {
       console.log(err);
-      toast.error(err?.data?.message);
+      toast.error(err?.data?.message ?? err?.response.data?.message);
     }
     setLoading(false);
   };
