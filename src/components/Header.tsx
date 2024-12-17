@@ -8,7 +8,7 @@ import { FiPlus, FiSearch, FiShoppingBag, FiUser } from 'react-icons/fi';
 import Drawer from 'react-modern-drawer';
 import 'react-modern-drawer/dist/index.css';
 import { HiArrowNarrowRight } from 'react-icons/hi';
-import { FaBars, FaGifts } from 'react-icons/fa6';
+import { FaBars, FaBox, FaGifts } from 'react-icons/fa6';
 import useAuth from '@/hooks/useAuth';
 import { getSearchData, useGetUser } from '@/utils/api';
 import { useQuery } from '@tanstack/react-query';
@@ -359,6 +359,15 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
                 </li>
               </>
             )}
+            <li>
+              <Link
+                href={'/track-order'}
+                className="flex items-center gap-x-1 text-[#6B7280] hover:text-primary/90 py-2 text-sm xl:text-base font-medium xl:font-semibold"
+              >
+                <FaBox className="text-lg" />
+                Track Order
+              </Link>
+            </li>
             {/* {topBarCategories.map((cat, i) => (
               <li key={`cat_${i}`}>
                 <Link

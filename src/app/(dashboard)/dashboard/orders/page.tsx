@@ -28,7 +28,7 @@ import { usePDF } from 'react-to-pdf';
 import Invoice from '@/components/Invoice';
 import Payment from '@/app/(default)/checkout/Payment';
 
-const steps = [
+export const steps = [
   { title: 'Pending', icon: '/icons/check.svg' },
   { title: 'Confirmed', icon: '/icons/check.svg' },
   { title: 'Picked up', icon: '/icons/check.svg' },
@@ -36,7 +36,7 @@ const steps = [
   { title: 'Delivered', icon: '/icons/check.svg' },
 ];
 
-const getCurrentStatus = (status: string) => {
+export const getCurrentStatus = (status: string) => {
   let currentStatus: StatusTypes = 'pending';
   switch (status) {
     case '1':
