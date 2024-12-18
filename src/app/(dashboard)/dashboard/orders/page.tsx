@@ -421,10 +421,7 @@ const Row = ({ order, i }: { order: any; i: number }) => {
           </div>
           <div className="mt-4">
             <div className="flex items-center justify-between bg-[#F9FAFB] py-2">
-              <div className="flex items-center gap-x-2">
-                <p className="w-[60px] text-xs md:text-sm pl-2">Image</p>
-                <p className="text-xs md:text-sm">Name</p>
-              </div>
+              <p className="text-xs md:text-sm">Product</p>
               <div className="flex items-center gap-x-2">
                 <p className="w-[70px] text-xs md:text-sm">Quantity</p>
                 <p className="w-[70px] text-xs md:text-sm text-right pr-2">
