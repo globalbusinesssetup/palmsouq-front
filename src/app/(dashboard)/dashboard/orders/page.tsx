@@ -386,10 +386,7 @@ const Row = ({ order, i }: { order: any; i: number }) => {
                   </Button>
                 ) : (
                   <Button
-                    onClick={() => {
-                      toPDF();
-                      setTimeout(() => window.print(), 500);
-                    }}
+                    onClick={() => toPDF()}
                     className="w-[90px] sm:w-[105px] py-0 h-8 sm:h-9 text-xs sm:text-sm font-semibold flex items-center justify-center gap-x-2"
                   >
                     <FiDownload className="text-base sm:text-lg md:text-xl" />
