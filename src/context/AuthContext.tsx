@@ -39,6 +39,7 @@ export const AuthContext = createContext<AuthContextTypes>({
   payment: [],
   social: [],
   about: [],
+  services: [],
   default_language: {
     name: '',
     code: '',
@@ -87,6 +88,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [payment, setPayment] = useState<[]>([]);
   const [social, setSocial] = useState<[]>([]);
   const [about, setAbout] = useState<[]>([]);
+  const [services, setServices] = useState<[]>([]);
   const [defaultLanguage, setDefaultLanguage] = useState<{
     name: string;
     code: string;
@@ -104,6 +106,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       setPayment(common?.payment ?? []);
       setSocial(common?.social ?? []);
       setAbout(common?.about ?? []);
+      setServices(common?.services ?? []);
       setSetting(common?.setting);
       if (common?.default_language)
         setDefaultLanguage(common?.default_language);
@@ -252,6 +255,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         payment,
         social,
         about,
+        services,
         default_language: defaultLanguage,
         ordersData,
         addOrders,

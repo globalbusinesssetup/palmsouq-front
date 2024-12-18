@@ -1,8 +1,9 @@
 import React from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 import { currentYear, footerLinks, paymentIcons } from '@/constants';
 import useAuth from '@/hooks/useAuth';
+import config from '@/config';
+import { Image } from './common';
 
 const quickLinks = [
   {
@@ -24,12 +25,12 @@ const quickLinks = [
 ];
 
 const Footer = () => {
-  const { about } = useAuth();
+  const { about, payment, social, services } = useAuth();
   return (
     <footer className="bg-primary">
       <div className="container mx-auto py-[50px] px-4 sm:px-5">
-        <div className="flex flex-col sm:flex-row flex-wrap items-center sm:justify-between pb-6 gap-4">
-          {footerLinks.map((footerLink, i) =>
+        <div className="flex flex-col sm:flex-row flex-wrap sm:justify-between pb-6 gap-4">
+          {/* {footerLinks.map((footerLink, i) =>
             footerLink.title !== 'About' ? (
               <nav
                 key={`footer_${i}`}
@@ -67,34 +68,84 @@ const Footer = () => {
                 ))}
               </nav>
             )
-          )}
+          )} */}
+          <nav className="space-y-2 text-center sm:text-left">
+            <h6 className="text-neutral-400 text-sm font-semibold pb-1">
+              About
+            </h6>
+            {about.map((link, i) => (
+              <Link
+                key={`link_${i}`}
+                href={'/page/' + link.slug}
+                className="text-sm font-medium text-neutral-200 block"
+              >
+                {link.title}
+              </Link>
+            ))}
+          </nav>
+          <nav className="space-y-2 text-center sm:text-left">
+            <h6 className="text-neutral-400 text-sm font-semibold pb-1">
+              Services
+            </h6>
+            {services.map((link, i) => (
+              <Link
+                key={`link_${i}`}
+                href={'/page/' + link.slug}
+                className="text-sm font-medium text-neutral-200 block"
+              >
+                {link.title}
+              </Link>
+            ))}
+          </nav>
+          <nav className="space-y-2 text-center sm:text-left">
+            <h6 className="text-neutral-400 text-sm font-semibold pb-1">
+              Social
+            </h6>
+            {social.map((l, i) => (
+              <Link
+                key={`link_${i}`}
+                href={l.link}
+                target="_blank"
+                className="text-sm font-medium text-neutral-200 flex items-center gap-x-2"
+              >
+                <Image defaultSrc={l.image} width={15} height={15} alt="s" />{' '}
+                {l.title}
+              </Link>
+            ))}
+          </nav>
           <div className="lg:pl-2.5">
             <h3 className="text-lg lg:text-xl text-neutral-300 font-medium">
               Payment Methods
             </h3>
             <div className="flex items-center mt-2 gap-x-1">
-              {paymentIcons.map((icon, i) => (
+              {payment.map((l, i) => (
                 <Image
                   key={i}
-                  src={icon}
+                  defaultSrc={l.image}
                   width={34}
                   height={23}
                   className="rounded"
-                  alt="payment icon"
+                  alt="pay"
                 />
               ))}
             </div>
-            <ul className="mt-4 text-[#E1E1FE] list-disc pl-5 text-sm sm:text-base">
+            {/* <ul className="mt-4 text-[#E1E1FE] list-disc pl-5 text-sm sm:text-base">
               <li>Pay on Delivery</li>
               <li>Make a Bank Transfer</li>
               <li>We accept Cheques</li>
-            </ul>
+            </ul> */}
           </div>
         </div>
         <div className="w-full h-[1px] bg-gradient-to-l to-[#FDDE5C] from-[#70DB96]" />
         <div className="flex flex-col lg:flex-row items-center justify-between pt-4 gap-y-4">
           <div className="flex flex-col lg:flex-row items-center lg:items-end gap-2">
-            <Image src="/footer_logo.png" width={127} height={32} alt="logo" />
+            <Image
+              defaultSrc="/footer_logo.png"
+              isLocal
+              width={127}
+              height={32}
+              alt="logo"
+            />
             <p className="text-sm md:text-base text-neutral-200">
               Copywrite {currentYear}, All right reserved.
             </p>
