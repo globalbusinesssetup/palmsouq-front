@@ -8,6 +8,7 @@ import {
   Modal,
   Tag,
   FileAttach,
+  Image,
 } from '@/components';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -16,7 +17,6 @@ import { FiCalendar, FiDownload } from 'react-icons/fi';
 import { BiMessageDots } from 'react-icons/bi';
 import { FiEdit, FiEye } from 'react-icons/fi';
 import { IoMdClose } from 'react-icons/io';
-import Image from 'next/image';
 import { StatusTypes } from '@/components/common/Tag';
 import OrderStep from '@/app/(default)/order/OrderStep';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
@@ -27,6 +27,7 @@ import { toast } from 'react-toastify';
 import { usePDF } from 'react-to-pdf';
 import Invoice from '@/components/Invoice';
 import Payment from '@/app/(default)/checkout/Payment';
+import config from '@/config';
 
 export const steps = [
   { title: 'Pending', icon: '/icons/check.svg' },
@@ -94,7 +95,7 @@ const Orders = () => {
               <tr className="px-6 bg-[#F9FAFB] py-3.5 text-left">
                 <th className="text-xs font-semibold text-[#667085] py-3.5 pl-6"></th>
                 <th className="text-xs font-semibold text-[#667085] py-3.5">
-                  Invoice No.
+                  Order No.
                 </th>
                 <th className="text-xs font-semibold text-[#667085] py-3.5">
                   Product Name
@@ -247,10 +248,10 @@ const Row = ({ order, i }: { order: any; i: number }) => {
           </button>
         </td>
         <td className="py-4 text-neutral-500 text-xs lg:text-sm">
-          {order?.order?.slice(0, 10)}...
+          {order?.order}
         </td>
         <td className="py-4 w-[30%]">
-          <div className="max-w-[150px] overflow-hidden">
+          <div className="max-w-[150px] lg:max-w-[200px] overflow-hidden">
             {/* <p className="text-tiny lg:text-xs text-success">Business Card</p> */}
             <p className="text-xs lg:text-sm text-neutral-600 font-semibold whitespace-nowrap overflow-hidden text-ellipsis">
               {order?.ordered_products[0]?.product?.title}
@@ -322,7 +323,7 @@ const Row = ({ order, i }: { order: any; i: number }) => {
                 <div className="flex items-center gap-x-2.5">
                   <File />
                   <p className="text-tiny sm:text-xs font-light text-neutral-500">
-                    {order?.order?.slice(0, 7)}...
+                    {order?.order}
                   </p>
                 </div>
                 <div className="flex items-center gap-x-2.5">
@@ -332,7 +333,7 @@ const Row = ({ order, i }: { order: any; i: number }) => {
                   </p>
                 </div>
               </div>
-              <div className="mt-3 hidden md:block">
+              {/* <div className="mt-3 hidden md:block">
                 <p className="text-sm text-neutral-500 ">
                   <span className="font-bold">Order method</span> :{' '}
                   {order?.order_method === '2' ? 'COD' : 'Stripe'}
@@ -343,7 +344,7 @@ const Row = ({ order, i }: { order: any; i: number }) => {
                     {order?.payment_done === 0 ? 'Unpaid' : 'Paid'}
                   </p>
                 )}
-              </div>
+              </div> */}
             </div>
             <div
               aria-disabled={order?.cancelled === 1}
@@ -417,6 +418,78 @@ const Row = ({ order, i }: { order: any; i: number }) => {
                 status={status}
               />
             ))}
+          </div>
+          <div className="mt-4">
+            <div className="flex items-center justify-between bg-[#F9FAFB] py-2">
+              <div className="flex items-center gap-x-2">
+                <p className="w-[60px] text-xs md:text-sm pl-2">Image</p>
+                <p className="text-xs md:text-sm">Name</p>
+              </div>
+              <div className="flex items-center gap-x-2">
+                <p className="w-[70px] text-xs md:text-sm">Quantity</p>
+                <p className="w-[70px] text-xs md:text-sm text-right pr-2">
+                  Amount
+                </p>
+              </div>
+            </div>
+            <div className="space-y-3 mt-4 divide-y">
+              {order?.ordered_products?.map((pd, i) => (
+                <div
+                  key={`product_${i}`}
+                  className="flex items-center justify-between py-2"
+                >
+                  <div className="flex items-center gap-x-2">
+                    <div className="relative w-10 h-10 xs:w-[60px] xs:h-[50px]">
+                      <Image
+                        fill
+                        defaultSrc={pd?.product?.image}
+                        className="object-contain"
+                        alt="product"
+                      />
+                    </div>
+                    <p className="text-ellipsis w-[70px] xs:w-auto overflow-hidden text-nowrap text-xs lg:text-sm">
+                      {pd?.product?.title}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-x-2">
+                    <p className="w-[70px] text-ellipsis text-center text-xs lg:text-sm">
+                      {pd?.quantity}
+                    </p>
+                    <p className="w-[70px] text-ellipsis text-center text-xs lg:text-sm">
+                      {pd?.product?.offered ?? pd?.product?.selling}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="mt-3">
+              <p className="text-xs md:text-sm text-neutral-500 text-right">
+                <span className="inline-block uppercase font-bold text-primary">
+                  Order method :
+                </span>
+                <span className="w-[100px] inline-block">
+                  {order?.order_method === '2' ? 'COD' : 'Stripe'}
+                </span>
+              </p>
+              {order?.order_method !== '2' && (
+                <p className="text-xs md:text-sm text-neutral-500 mt-3 text-right">
+                  <span className="inline-block uppercase font-bold text-primary">
+                    Payment status :
+                  </span>
+                  <span className="w-[100px] inline-block ">
+                    {order?.payment_done === 0 ? 'Unpaid' : 'Paid'}
+                  </span>
+                </p>
+              )}
+              <p className="text-xs md:text-sm text-neutral-500 mt-3 text-right">
+                <span className="inline-block uppercase font-bold text-primary">
+                  Order amount :
+                </span>
+                <span className="w-[100px] inline-block ">
+                  {order?.total_amount} AED
+                </span>
+              </p>
+            </div>
           </div>
         </div>
       </Modal>

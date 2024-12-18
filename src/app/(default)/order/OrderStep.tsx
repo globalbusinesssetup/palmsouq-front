@@ -57,7 +57,9 @@ const OrderStep = ({
   };
 
   return (
-    <div className={`group ${index !== lastIndex ? 'flex-1' : ''}`}>
+    <div
+      className={`group ${index !== lastIndex ? 'flex-1 first:flex-none' : ''}`}
+    >
       <div className={twMerge(' flex items-center', className)}>
         <div className={`hidden sm:block ${index === 0 ? 'hidden' : 'flex-1'}`}>
           <div className={`w-full overflow-hidden bg-gray-200 `}>
