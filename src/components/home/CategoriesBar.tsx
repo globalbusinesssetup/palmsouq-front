@@ -55,13 +55,13 @@ const CategoriesBar = () => {
             </Link>
           ))}
         </div> */}
-        <div className="flex-1 hidden lg:flex items-center justify-end lg:justify-end gap-x-5">
-          {/* <Link
-            href={'#'}
-            className="text-[#6B7280] hover:text-primary/90 text-sm xl:text-base font-medium xl:font-semibold block"
+        <div className="flex-1 hidden lg:flex items-center justify-end gap-x-5">
+          <Link
+            href={'/track-order'}
+            className="text-[#6B7280] hover:text-primary/90 text-sm xl:text-base uppercase font-medium xl:font-semibold block"
           >
-            New Arrival
-          </Link> */}
+            Track Order
+          </Link>
           <Link href={'#'} className="w-[140px] h-12 relative">
             <Image
               fill

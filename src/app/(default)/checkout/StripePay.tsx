@@ -28,7 +28,6 @@ const StripePay = ({
     event.preventDefault();
     if (!stripe || !elements) return;
     setSubmitting(true);
-    console.log('payData =>', payData);
 
     const { error: submitError } = await elements.submit();
     if (submitError) {
@@ -41,8 +40,8 @@ const StripePay = ({
     const cardElement = elements.getElement(CardNumberElement);
     // Create a token
     const result = await stripe.createToken(cardElement!, {
-      name: payData.name,
-      currency: payData.currency,
+      name: payData?.name,
+      currency: payData?.currency,
     });
 
     if (result.error) {

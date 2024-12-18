@@ -8,15 +8,15 @@ import {
   Modal,
   Tag,
   FileAttach,
+  Image,
 } from '@/components';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { FaAngleLeft, FaAngleRight } from 'react-icons/fa6';
+import { FaAngleLeft, FaAngleRight, FaCreditCard } from 'react-icons/fa6';
 import { FiCalendar, FiDownload } from 'react-icons/fi';
 import { BiMessageDots } from 'react-icons/bi';
 import { FiEdit, FiEye } from 'react-icons/fi';
 import { IoMdClose } from 'react-icons/io';
-import Image from 'next/image';
 import { StatusTypes } from '@/components/common/Tag';
 import OrderStep from '@/app/(default)/order/OrderStep';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
@@ -26,8 +26,10 @@ import Cookies from 'js-cookie';
 import { toast } from 'react-toastify';
 import { usePDF } from 'react-to-pdf';
 import Invoice from '@/components/Invoice';
+import Payment from '@/app/(default)/checkout/Payment';
+import config from '@/config';
 
-const steps = [
+export const steps = [
   { title: 'Pending', icon: '/icons/check.svg' },
   { title: 'Confirmed', icon: '/icons/check.svg' },
   { title: 'Picked up', icon: '/icons/check.svg' },
@@ -35,7 +37,7 @@ const steps = [
   { title: 'Delivered', icon: '/icons/check.svg' },
 ];
 
-const getCurrentStatus = (status: string) => {
+export const getCurrentStatus = (status: string) => {
   let currentStatus: StatusTypes = 'pending';
   switch (status) {
     case '1':
@@ -62,7 +64,6 @@ const Orders = () => {
     queryKey: ['orders'],
     queryFn: getOrders,
   });
-  const { control } = useForm();
 
   return (
     <div className="border border-neutral-200 bg-white rounded-xl overflow-hidden max-w-7xl">
@@ -94,7 +95,7 @@ const Orders = () => {
               <tr className="px-6 bg-[#F9FAFB] py-3.5 text-left">
                 <th className="text-xs font-semibold text-[#667085] py-3.5 pl-6"></th>
                 <th className="text-xs font-semibold text-[#667085] py-3.5">
-                  Invoice No.
+                  Order No.
                 </th>
                 <th className="text-xs font-semibold text-[#667085] py-3.5">
                   Product Name
@@ -181,6 +182,7 @@ const Row = ({ order, i }: { order: any; i: number }) => {
     queryFn: getCountries,
   });
   const [isOpen, setOpen] = useState(false);
+  const [isPayOpen, setPayOpen] = useState(false);
   const [isFilePreviewOpen, setFilePreviewOpen] = useState(false);
   const [status, setStatus] = useState<StatusTypes>(
     order?.cancelled === 1 ? 'cancelled' : getCurrentStatus(order?.status)
@@ -230,6 +232,13 @@ const Row = ({ order, i }: { order: any; i: number }) => {
     }
   };
 
+  const handlePaySuccess = () => {
+    setPayOpen(false);
+    queryClient.invalidateQueries({ queryKey: ['orders', 'order'] });
+    queryClient.refetchQueries({ queryKey: ['orders', 'order'] });
+    toast.success('Payment done Successfully!');
+  };
+
   return (
     <>
       <tr key={`table_${i}`} className="border-b border-neutral-200">
@@ -239,10 +248,10 @@ const Row = ({ order, i }: { order: any; i: number }) => {
           </button>
         </td>
         <td className="py-4 text-neutral-500 text-xs lg:text-sm">
-          {order?.order?.slice(0, 10)}...
+          {order?.order}
         </td>
         <td className="py-4 w-[30%]">
-          <div className="max-w-[150px] overflow-hidden">
+          <div className="max-w-[150px] lg:max-w-[200px] overflow-hidden">
             {/* <p className="text-tiny lg:text-xs text-success">Business Card</p> */}
             <p className="text-xs lg:text-sm text-neutral-600 font-semibold whitespace-nowrap overflow-hidden text-ellipsis">
               {order?.ordered_products[0]?.product?.title}
@@ -288,6 +297,7 @@ const Row = ({ order, i }: { order: any; i: number }) => {
           taxPrice={orderData?.calculated?.tax ?? 'N/A'}
         />
       )}
+      {/* Order Details  */}
       <Modal show={isOpen} onClose={() => setOpen(false)}>
         <div className="flex md:hidden items-center justify-end pb-3 -mt-1">
           <button onClick={() => setOpen(false)}>
@@ -297,7 +307,7 @@ const Row = ({ order, i }: { order: any; i: number }) => {
         <div className="px-[18px] py-4 border border-neutral-300 rounded-xl">
           <div className="flex justify-between">
             <div className="">
-              <div className="flex flex-col xs:flex-row xs:items-center gap-1 sm:gap-6">
+              <div className="flex-1 flex flex-col xs:flex-row xs:items-center gap-1 sm:gap-6">
                 <h5 className="text-black font-semibold text-xs xs:text-sm sm:text-base md:text-lg">
                   Order Status
                 </h5>
@@ -309,11 +319,11 @@ const Row = ({ order, i }: { order: any; i: number }) => {
                   }
                 />
               </div>
-              <div className="flex flex-col sm:flex-row sm:items-center gap-y-2 sm:gap-y-0 sm:gap-x-2.5 mt-2 md:mt-3">
+              <div className="flex-1 flex flex-col sm:flex-row sm:items-center gap-y-2 sm:gap-y-0 sm:gap-x-2.5 mt-2 md:mt-3">
                 <div className="flex items-center gap-x-2.5">
                   <File />
                   <p className="text-tiny sm:text-xs font-light text-neutral-500">
-                    {order?.order?.slice(0, 7)}...
+                    {order?.order}
                   </p>
                 </div>
                 <div className="flex items-center gap-x-2.5">
@@ -323,47 +333,81 @@ const Row = ({ order, i }: { order: any; i: number }) => {
                   </p>
                 </div>
               </div>
+              {/* <div className="mt-3 hidden md:block">
+                <p className="text-sm text-neutral-500 ">
+                  <span className="font-bold">Order method</span> :{' '}
+                  {order?.order_method === '2' ? 'COD' : 'Stripe'}
+                </p>
+                {order?.order_method !== '2' && (
+                  <p className="text-sm text-neutral-500 mt-2">
+                    <span className="font-bold">Payment status</span> :{' '}
+                    {order?.payment_done === 0 ? 'Unpaid' : 'Paid'}
+                  </p>
+                )}
+              </div> */}
             </div>
             <div
               aria-disabled={order?.cancelled === 1}
               className="flex flex-col items-end aria-disabled:opacity-40"
             >
-              {order.status === '1' ? (
-                <Button
-                  outlined
-                  disabled={order?.cancelled === 1}
-                  onClick={() => {
-                    setOpen(false);
-                    setFilePreviewOpen(true);
-                  }}
-                  className="w-32 sm:w-[146px] border-[#FDA29B] !text-xs md:!text-sm font-semibold text-error hover:text-error hover:scale-90 hover:bg-transparent flex items-center justify-center gap-x-2.5"
-                >
-                  <File varient="FileClose" className="size-4 md:size-5" />{' '}
-                  Cancel Order
-                </Button>
-              ) : (
-                <Button
-                  onClick={() => {
-                    toPDF();
-                    setTimeout(() => window.print(), 500);
-                  }}
-                  className="w-[90px] sm:w-[105px] py-0 h-8 sm:h-9 text-xs sm:text-sm font-semibold flex items-center justify-center gap-x-2"
-                >
-                  <FiDownload className="text-base sm:text-lg md:text-xl" />
-                  Invoice
-                </Button>
-              )}
-              <div className="flex items-center gap-x-2.5 mt-2">
-                <p className="text-tiny md:text-xs font-light text-right text-neutral-500">
-                  Cancel the order pre-production
+              <div className="mb-3 md:hidden">
+                <p className="text-xs text-neutral-500 ">
+                  <span className="font-bold">Order method</span> :{' '}
+                  {order?.order_method === '2' ? 'COD' : 'Stripe'}
                 </p>
-                <BiMessageDots className="text-xs sm:text-base text-black" />
+                {order?.order_method !== '2' && (
+                  <p className="text-xs text-neutral-500 mt-2">
+                    <span className="font-bold">Payment status</span> :{' '}
+                    {order?.payment_done === 0 ? 'Unpaid' : 'Paid'}
+                  </p>
+                )}
               </div>
+              <div className="flex flex-col md:flex-row items-center gap-3">
+                {order.order_method !== '2' && order.payment_done === 0 && (
+                  <Button
+                    onClick={() => setPayOpen(true)}
+                    className="sm:w-[115px] py-0 h-8 sm:h-9 !text-xs sm:!text-sm font-semibold flex items-center justify-center gap-x-2"
+                  >
+                    <FaCreditCard className="text-base sm:text-lg md:text-xl" />
+                    Pay now
+                  </Button>
+                )}
+                {order.status === '1' ? (
+                  <Button
+                    outlined
+                    disabled={order?.cancelled === 1}
+                    onClick={() => {
+                      setOpen(false);
+                      setFilePreviewOpen(true);
+                    }}
+                    className="w-32 sm:w-[146px] border-[#FDA29B] !text-xs md:!text-sm font-semibold text-error hover:text-error hover:scale-90 hover:bg-transparent flex items-center justify-center gap-x-2.5"
+                  >
+                    <File varient="FileClose" className="size-4 md:size-5" />{' '}
+                    Cancel Order
+                  </Button>
+                ) : (
+                  <Button
+                    onClick={() => toPDF()}
+                    className="w-[90px] sm:w-[105px] py-0 h-8 sm:h-9 text-xs sm:text-sm font-semibold flex items-center justify-center gap-x-2"
+                  >
+                    <FiDownload className="text-base sm:text-lg md:text-xl" />
+                    Invoice
+                  </Button>
+                )}
+              </div>
+              {order.status === '1' && (
+                <div className="flex items-center gap-x-2.5 mt-2">
+                  <p className="text-tiny md:text-xs font-light text-right text-neutral-500">
+                    Cancel the order pre-production
+                  </p>
+                  <BiMessageDots className="text-xs sm:text-base text-black" />
+                </div>
+              )}
             </div>
           </div>
           <div
             aria-disabled={order.cancelled === 1}
-            className="flex flex-col sm:flex-row sm:items-center justify-center pt-10 pb-4 aria-disabled:opacity-45"
+            className="flex flex-col sm:flex-row sm:items-center justify-center pt-6 lg:pt-10 pb-4 aria-disabled:opacity-45"
           >
             {steps.map((step, i) => (
               <OrderStep
@@ -375,9 +419,88 @@ const Row = ({ order, i }: { order: any; i: number }) => {
               />
             ))}
           </div>
+          <div className="mt-4">
+            <div className="flex items-center justify-between bg-[#F9FAFB] py-2">
+              <div className="flex items-center gap-x-2">
+                <p className="w-[60px] text-xs md:text-sm pl-2">Image</p>
+                <p className="text-xs md:text-sm">Name</p>
+              </div>
+              <div className="flex items-center gap-x-2">
+                <p className="w-[70px] text-xs md:text-sm">Quantity</p>
+                <p className="w-[70px] text-xs md:text-sm text-right pr-2">
+                  Amount
+                </p>
+              </div>
+            </div>
+            <div className="space-y-3 mt-4 divide-y">
+              {order?.ordered_products?.map((pd, i) => (
+                <div
+                  key={`product_${i}`}
+                  className="flex items-center justify-between py-2"
+                >
+                  <div className="flex items-center gap-x-2">
+                    <div className="relative w-10 h-10 xs:w-[60px] xs:h-[50px]">
+                      <Image
+                        fill
+                        defaultSrc={pd?.product?.image}
+                        className="object-contain"
+                        alt="product"
+                      />
+                    </div>
+                    <p className="text-ellipsis w-[70px] xs:w-auto overflow-hidden text-nowrap text-xs lg:text-sm">
+                      {pd?.product?.title}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-x-2">
+                    <p className="w-[70px] text-ellipsis text-center text-xs lg:text-sm">
+                      {pd?.quantity}
+                    </p>
+                    <p className="w-[70px] text-ellipsis text-center text-xs lg:text-sm">
+                      {pd?.product?.offered ?? pd?.product?.selling}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="mt-3">
+              <p className="text-xs md:text-sm text-neutral-500 text-right">
+                <span className="inline-block uppercase font-bold text-primary">
+                  Order method :
+                </span>
+                <span className="w-[100px] inline-block">
+                  {order?.order_method === '2' ? 'COD' : 'Stripe'}
+                </span>
+              </p>
+              {order?.order_method !== '2' && (
+                <p className="text-xs md:text-sm text-neutral-500 mt-3 text-right">
+                  <span className="inline-block uppercase font-bold text-primary">
+                    Payment status :
+                  </span>
+                  <span className="w-[100px] inline-block ">
+                    {order?.payment_done === 0 ? 'Unpaid' : 'Paid'}
+                  </span>
+                </p>
+              )}
+              <p className="text-xs md:text-sm text-neutral-500 mt-3 text-right">
+                <span className="inline-block uppercase font-bold text-primary">
+                  Order amount :
+                </span>
+                <span className="w-[100px] inline-block ">
+                  {order?.total_amount} AED
+                </span>
+              </p>
+            </div>
+          </div>
         </div>
       </Modal>
-      {/* file preview modal  */}
+      {/* Payment  */}
+      <Payment
+        order={{ ...order, name: orderData?.address?.name }}
+        isOpen={isPayOpen}
+        onClose={() => setPayOpen(false)}
+        onSuccess={handlePaySuccess}
+      />
+      {/* Cancel modal  */}
       <Modal
         show={isFilePreviewOpen}
         panelClassName="p-0 max-w-[400px]"

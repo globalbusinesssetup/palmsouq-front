@@ -89,10 +89,10 @@ const Invoice = forwardRef<HTMLDivElement, InvoiceTypes>(
             <table className="min-w-full bg-none mt-0 shipping-table">
               <thead>
                 <tr className="text-white font-bold">
-                  <th className="text-left pl-4 bg-blue-500 rounded-tl-lg py-1.5">
+                  <th className="text-left pl-4 bg-primary rounded-tl-lg py-1.5">
                     Ship To
                   </th>
-                  <th className="text-left bg-blue-500 rounded-tr-lg py-1.5">
+                  <th className="text-left bg-primary rounded-tr-lg py-1.5">
                     Order Method
                   </th>
                 </tr>
@@ -131,13 +131,14 @@ const Invoice = forwardRef<HTMLDivElement, InvoiceTypes>(
             <table className="min-w-full bg-none">
               <thead>
                 <tr className="text-white font-bold">
-                  <th className="text-left pl-4 bg-blue-500 py-1.5 rounded-tl-lg">
+                  <th className="text-left pl-4 bg-primary py-1.5 rounded-tl-lg">
                     Title
                   </th>
-                  <th className="text-left bg-blue-500 py-1.5">shipping</th>
-                  <th className="text-left bg-blue-500 py-1.5">Quantity</th>
-                  <th className="text-left bg-blue-500 py-1.5">Price</th>
-                  <th className="text-left bg-blue-500 py-1.5 rounded-tr-lg">
+                  <th className="text-left bg-primary py-1.5">SKU</th>
+                  <th className="text-left bg-primary py-1.5">shipping</th>
+                  <th className="text-left bg-primary py-1.5">Quantity</th>
+                  <th className="text-left bg-primary py-1.5">Price</th>
+                  <th className="text-left bg-primary py-1.5 rounded-tr-lg">
                     Total
                   </th>
                 </tr>
@@ -160,6 +161,7 @@ const Invoice = forwardRef<HTMLDivElement, InvoiceTypes>(
                       )}
                     </div> */}
                     </td>
+                    <td>SKU: {value?.inventory?.[0]?.sku ?? 'N/A'}</td>
                     <td>{priceFormatting(value.shipping_price)}</td>
                     <td>{value.quantity}</td>
                     <td>{priceFormatting(value.selling)}</td>
@@ -213,7 +215,7 @@ const Invoice = forwardRef<HTMLDivElement, InvoiceTypes>(
             <table className="w-1/2 bg-none mt-0 shipping-table single-table">
               <thead className="">
                 <tr className="">
-                  <th className="text-left text-white font-bold bg-blue-500 px-4 rounded-t-lg py-2">
+                  <th className="text-left text-white font-bold bg-primary px-4 rounded-t-lg py-2">
                     Notes
                   </th>
                 </tr>

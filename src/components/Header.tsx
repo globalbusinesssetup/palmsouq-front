@@ -8,7 +8,7 @@ import { FiPlus, FiSearch, FiShoppingBag, FiUser } from 'react-icons/fi';
 import Drawer from 'react-modern-drawer';
 import 'react-modern-drawer/dist/index.css';
 import { HiArrowNarrowRight } from 'react-icons/hi';
-import { FaBars, FaGifts } from 'react-icons/fa6';
+import { FaBars, FaBox, FaGifts } from 'react-icons/fa6';
 import useAuth from '@/hooks/useAuth';
 import { getSearchData, useGetUser } from '@/utils/api';
 import { useQuery } from '@tanstack/react-query';
@@ -35,13 +35,8 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
     enabled: false,
   });
 
-  const [mounted, setMounted] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   useEffect(() => {
     if (query && isFocus) {
@@ -164,7 +159,11 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
                           </h4>
                           <div className="pt-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-8 gap-2 px-2 2xl:px-4">
                             {data?.category?.map((cat, i) => (
-                              <SearchCatCard key={`cat_${i}`} cat={cat} />
+                              <SearchCatCard
+                                onClick={() => setFocus(false)}
+                                key={`cat_${i}`}
+                                cat={cat}
+                              />
                             ))}
                           </div>
                         </>
@@ -176,7 +175,11 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
                           </h4>
                           <div className="pt-6 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-2 2xl:gap-4 px-2 2xl:px-4">
                             {data?.product?.map((pd, i) => (
-                              <SearchPrdCard key={`pd_${i}`} pd={pd} />
+                              <SearchPrdCard
+                                onClick={() => setFocus(false)}
+                                key={`pd_${i}`}
+                                pd={pd}
+                              />
                             ))}
                           </div>
                         </>
@@ -187,7 +190,7 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
               )}
             </div>
           )}
-          <button className=" md:hidden" onClick={() => setIsOpen(true)}>
+          <button className="md:hidden" onClick={() => setIsOpen(true)}>
             <FaBars className="text-xl sm:text-2xl text-green" />
           </button>
           {isLoading ? (
@@ -263,7 +266,7 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
               </Link>
             </div>
           ) : (
-            <div className="flex flex-row items-center gap-x-4">
+            <div className="hidden md:flex flex-row items-center gap-x-4">
               <Link href={'/auth/sign-in'} className="ml-4 hidden lg:inline">
                 <RiUserSharedLine className="text-2xl lg:text-[28px] text-green" />
               </Link>
@@ -288,7 +291,13 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
         <div className="p-4">
           <div className="flex items-center justify-between">
             <Link href={'/'} className="w-24 h-10 block relative">
-              <Image src="/header_logo.png" fill alt="logo" />
+              <Image
+                defaultSrc="/header_logo.png"
+                isLocal
+                fill
+                alt="logo"
+                className="object-fit"
+              />
             </Link>
             <button
               onClick={() => setIsOpen(false)}
@@ -298,7 +307,7 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
             </button>
           </div>
           <ul className="space-y-1 pt-6">
-            {isLoggedIn && (
+            {isLoggedIn ? (
               <>
                 <li>
                   <Link
@@ -328,7 +337,37 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
                   </Link>
                 </li>
               </>
+            ) : (
+              <>
+                <li>
+                  <Link
+                    href={'/cart'}
+                    className="flex items-center gap-x-1 text-[#6B7280] hover:text-primary/90 py-2 text-sm xl:text-base font-medium xl:font-semibold"
+                  >
+                    <FiShoppingBag className="text-lg" />
+                    My Cart
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href={'/orders'}
+                    className="flex items-center gap-x-1 text-[#6B7280] hover:text-primary/90 py-2 text-sm xl:text-base font-medium xl:font-semibold"
+                  >
+                    <FaRegHeart className="text-lg" />
+                    My Orders
+                  </Link>
+                </li>
+              </>
             )}
+            <li>
+              <Link
+                href={'/track-order'}
+                className="flex items-center gap-x-1 text-[#6B7280] hover:text-primary/90 py-2 text-sm xl:text-base font-medium xl:font-semibold"
+              >
+                <FaBox className="text-lg" />
+                Track Order
+              </Link>
+            </li>
             {/* {topBarCategories.map((cat, i) => (
               <li key={`cat_${i}`}>
                 <Link
@@ -390,13 +429,13 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
 
 export default Header;
 
-const SearchCatCard = ({ cat }) => {
+const SearchCatCard = ({ cat, ...res }) => {
   const [image, setImage] = useState('');
   const handleError = () => {
     setImage('/default-image.webp'); // fallback image path
   };
   return (
-    <Link href={`/${cat.slug}`} className="block">
+    <Link href={`/${cat.slug}`} {...res} className="block">
       <div className="relative h-20 2xl:h-24 overflow-hidden rounded-lg px-2">
         <Image
           src={image ?? config.imgUri + cat.image}
@@ -413,7 +452,7 @@ const SearchCatCard = ({ cat }) => {
   );
 };
 
-const SearchPrdCard = ({ pd }) => {
+const SearchPrdCard = ({ pd, ...res }) => {
   const [image, setImage] = useState('');
   const handleError = () => {
     setImage('/default-image.webp'); // fallback image path
@@ -421,6 +460,7 @@ const SearchPrdCard = ({ pd }) => {
   return (
     <Link
       href={`/search/${pd.slug}/${pd.id}`}
+      {...res}
       key={`cat_`}
       className="border border-gray-200 flex gap-x-4 px-3 py-2 rounded-md overflow-hidden"
     >

@@ -31,6 +31,9 @@ import { getProducts } from '@/utils/api';
 import { useQuery } from '@tanstack/react-query';
 import { FaAngleRight } from 'react-icons/fa6';
 import config from '@/config';
+import Filter from './Filter';
+import Drawer from 'react-modern-drawer';
+import { IoClose, IoFilter } from 'react-icons/io5';
 
 type CategoryClientProps = {
   category: string;
@@ -59,6 +62,7 @@ const CategoryClient: React.FC<CategoryClientProps> = ({ category }) => {
   const router = useRouter();
   const path = usePathname();
   const params = useSearchParams();
+  const [isOpen, setOpen] = useState(false);
   const [selectedCat, setCat] = useState('all');
   const [categoryData, setCategoryData] = useState<any[]>([]);
   const [selectedBrands, setBrands] = useState<number[]>([]);
@@ -214,8 +218,24 @@ const CategoryClient: React.FC<CategoryClientProps> = ({ category }) => {
               />
             )}
           </div>
-          <div className="mt-4 py-5 sm:px-2 flex items-center justify-between">
-            <nav aria-label="breadcrumb" className="pb-6">
+          <nav aria-label="breadcrumb" className="pt-6 lg:hidden">
+            <div className="flex flex-wrap space-x-1">
+              {/* Home link */}
+              <div>
+                <Link href="/">
+                  <span className="text-primary hover:underline">Home</span>
+                </Link>
+              </div>
+              <div className="!ml-0 flex items-center">
+                <FaAngleRight size={12} />
+                <span className="text-gray-500">
+                  {data?.category?.title ?? data?.brand?.title}
+                </span>
+              </div>
+            </div>
+          </nav>
+          <div className=" lg:mt-4 py-5 sm:px-2 flex items-center justify-between">
+            <nav aria-label="breadcrumb" className="pb-6 hidden lg:block">
               <div className="flex flex-wrap space-x-1">
                 {/* Home link */}
                 <div>
@@ -231,6 +251,9 @@ const CategoryClient: React.FC<CategoryClientProps> = ({ category }) => {
                 </div>
               </div>
             </nav>
+            <button className="lg:hidden" onClick={() => setOpen(true)}>
+              <IoFilter />
+            </button>
             {/* <div className="flex-1 flex items-center gap-x-1 xs:gap-x-2 sm:gap-x-3">
               {categoryData.map((type, i) => (
                 <button
@@ -262,254 +285,19 @@ const CategoryClient: React.FC<CategoryClientProps> = ({ category }) => {
             </div>
           </div>
           <div className="lg:flex gap-x-5 lg:divide-x">
-            <div className="hidden lg:block w-[200px] pb-5">
-              <div className="space-y-2">
-                {data?.category &&
-                  data?.category?.child?.map((cat, i) => (
-                    <Link
-                      href={`/${cat.slug}`}
-                      key={i}
-                      className="uppercase text-gray-700 inline-block"
-                    >
-                      {cat?.title}
-                    </Link>
-                  ))}
-              </div>
-              <div className="">
-                <h3 className="text-gray-700 text-xl font-bold mt-3">Price</h3>
-                <button
-                  onClick={() => {
-                    setPrice({ min: '', max: '' });
-                    handleFilters({ minPrice: '', maxPrice: '' });
-                  }}
-                  className="px-2 py-2 mt-4 text-xs"
-                >
-                  Any price
-                </button>
-                <div className="flex gap-x-2 mt-2">
-                  <div className="flex gap-x-3">
-                    <div className="flex items-center border border-gray-200 rounded-lg px-2 py-1 divide-x">
-                      <p className="text-xs text-gray-600 pr-1 font-bold">
-                        AED
-                      </p>
-                      <input
-                        type="number"
-                        placeholder="Min"
-                        value={selectedPrice.min}
-                        onChange={(e) =>
-                          setPrice((prev) => ({ ...prev, min: e.target.value }))
-                        }
-                        className="px-2 py-1 w-full text-xs focus-visible:outline-none"
-                      />
-                    </div>
-                    <div className="flex items-center border border-gray-200 rounded-lg px-2 py-1 divide-x">
-                      <p className="text-xs text-gray-600 pr-1 font-bold">
-                        AED
-                      </p>
-                      <input
-                        type="number"
-                        placeholder="Max"
-                        value={selectedPrice.max}
-                        onChange={(e) =>
-                          setPrice((prev) => ({ ...prev, max: e.target.value }))
-                        }
-                        className="px-2 py-1 w-full text-xs focus-visible:outline-none"
-                      />
-                    </div>
-                  </div>
-                </div>
-                <Button
-                  onClick={() =>
-                    handleFilters({
-                      minPrice: selectedPrice.min,
-                      maxPrice: selectedPrice.max,
-                    })
-                  }
-                  className="mt-4 h-8 py-0 !text-xs"
-                >
-                  Go
-                </Button>
-              </div>
-              <div className="mt-4">
-                <h3 className="text-gray-700 text-xl font-bold mt-3">
-                  Customer reviews
-                </h3>
-                <button
-                  onClick={() => {
-                    setRating(0);
-                    handleFilters({ rating: 0 });
-                  }}
-                  className="px-2 py-2 mt-4 text-xs"
-                >
-                  Clear{' '}
-                </button>
-                <div className="mt-2 space-y-2">
-                  <button
-                    onClick={() => {
-                      setRating(1);
-                      handleFilters({ rating: 1 });
-                    }}
-                    disabled={Number(Qrating) === 1}
-                    className="flex items-center gap-x-1"
-                  >
-                    <IoMdStar size={20} className="text-orange-400" />
-                    <IoMdStarOutline size={20} className="text-orange-400" />
-                    <IoMdStarOutline size={20} className="text-orange-400" />
-                    <IoMdStarOutline size={20} className="text-orange-400" />
-                    <IoMdStarOutline
-                      size={20}
-                      className="text-orange-400"
-                    />{' '}
-                    <span className="text-sm">&up</span>
-                  </button>
-                  <button
-                    onClick={() => {
-                      setRating(2);
-                      handleFilters({ rating: 2 });
-                    }}
-                    disabled={Number(Qrating) === 2}
-                    className="flex items-center gap-x-1"
-                  >
-                    <IoMdStar size={20} className="text-orange-400" />
-                    <IoMdStar size={20} className="text-orange-400" />
-                    <IoMdStarOutline size={20} className="text-orange-400" />
-                    <IoMdStarOutline size={20} className="text-orange-400" />
-                    <IoMdStarOutline
-                      size={20}
-                      className="text-orange-400"
-                    />{' '}
-                    <span className="text-sm">&up</span>
-                  </button>
-                  <button
-                    onClick={() => {
-                      setRating(3);
-                      handleFilters({ rating: 3 });
-                    }}
-                    disabled={Number(Qrating) === 3}
-                    className="flex items-center gap-x-1"
-                  >
-                    <IoMdStar size={20} className="text-orange-400" />
-                    <IoMdStar size={20} className="text-orange-400" />
-                    <IoMdStar size={20} className="text-orange-400" />
-                    <IoMdStarOutline size={20} className="text-orange-400" />
-                    <IoMdStarOutline
-                      size={20}
-                      className="text-orange-400"
-                    />{' '}
-                    <span className="text-sm">&up</span>
-                  </button>
-                  <button
-                    onClick={() => {
-                      setRating(4);
-                      handleFilters({ rating: 4 });
-                    }}
-                    disabled={Number(Qrating) === 4}
-                    className="flex items-center gap-x-1"
-                  >
-                    <IoMdStar size={20} className="text-orange-400" />
-                    <IoMdStar size={20} className="text-orange-400" />
-                    <IoMdStar size={20} className="text-orange-400" />
-                    <IoMdStar size={20} className="text-orange-400" />
-                    <IoMdStarOutline
-                      size={20}
-                      className="text-orange-400"
-                    />{' '}
-                    <span className="text-sm">&up</span>
-                  </button>
-                </div>
-              </div>
-              {data?.brands && (
-                <div className="mt-4">
-                  <h3 className="text-gray-700 text-xl font-bold mt-3">
-                    Brands
-                  </h3>
-                  <div
-                    className={`mt-3 space-y-1 ${
-                      isShowAll ? '' : 'h-[150px] overflow-hidden'
-                    }`}
-                  >
-                    {data?.brands.map((b, i) => (
-                      <div
-                        key={`brand_${i}`}
-                        className="flex items-center gap-x-2"
-                      >
-                        <CheckBox
-                          checked={selectedBrands.includes(b.id)}
-                          onChange={(e) => handleOnChange({ brand: b.id })}
-                          id={`b_${b.id}`}
-                        />
-                        <label
-                          onClick={() => handleOnChange({ brand: b.id })}
-                          htmlFor={`b_${b.id}`}
-                          className=" cursor-pointer"
-                        >
-                          {b.title}
-                        </label>
-                      </div>
-                    ))}
-                  </div>
-                  <button
-                    onClick={() => setShowAll(!isShowAll)}
-                    className="mt-3 text-sm"
-                  >
-                    {isShowAll ? 'Hide all' : 'Show all'}
-                  </button>
-                </div>
-              )}
-              {data?.collections && (
-                <div className="mt-4">
-                  <h3 className="text-gray-700 text-xl font-bold">
-                    Collections
-                  </h3>
-                  <div className="mt-3 space-y-1.5">
-                    {data?.collections.map((c, i) => (
-                      <div
-                        key={`collections_${i}`}
-                        className="flex items-center gap-x-2"
-                      >
-                        <CheckBox
-                          checked={selectedCollections.includes(c.id)}
-                          onChange={(e) => handleOnChange({ collection: c.id })}
-                        />
-                        <label
-                          onClick={() => handleOnChange({ collection: c.id })}
-                          htmlFor={`collections_${i}`}
-                          className="cursor-pointer"
-                        >
-                          {c.title}
-                        </label>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-              {data?.shipping && (
-                <div className="mt-4">
-                  <h3 className="text-gray-700 text-xl font-bold">
-                    Shipping Options
-                  </h3>
-                  <div className="mt-3 space-y-1.5">
-                    {data?.shipping.map((s, i) => (
-                      <div
-                        key={`shipping_${i}`}
-                        className="flex items-center gap-x-2"
-                      >
-                        <CheckBox
-                          checked={selectedShipping.includes(s.id)}
-                          onChange={() => handleOnChange({ shipping: s.id })}
-                        />
-                        <label
-                          onClick={() => handleOnChange({ shipping: s.id })}
-                          htmlFor={`shipping_${i}`}
-                          className="cursor-pointer"
-                        >
-                          {s.title}
-                        </label>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
+            <div className="hidden lg:block">
+              <Filter
+                data={data}
+                handleFilters={handleFilters}
+                setPrice={setPrice}
+                setRating={setRating}
+                Qrating={Qrating}
+                handleOnChange={handleOnChange}
+                selectedBrands={selectedBrands}
+                selectedCollections={selectedCollections}
+                selectedPrice={selectedPrice}
+                selectedShipping={selectedShipping}
+              />
             </div>
             <div className="lg:pl-5 flex-1 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-6 pt-4 pb-10">
               {isLoading || isRefetching ? (
@@ -539,6 +327,27 @@ const CategoryClient: React.FC<CategoryClientProps> = ({ category }) => {
           </div>
         </div>
       </main>
+      <Drawer open={isOpen} onClose={() => setOpen(false)} direction="left">
+        <div className="flex items-center justify-end pt-3 pb-1 px-4">
+          <button className="border rounded-full w-6 h-6 flex items-center justify-center">
+            <IoClose size={16} onClick={() => setOpen(false)} />
+          </button>
+        </div>
+        <div className="px-4 pb-8 h-screen overflow-y-auto">
+          <Filter
+            data={data}
+            handleFilters={handleFilters}
+            setPrice={setPrice}
+            setRating={setRating}
+            Qrating={Qrating}
+            handleOnChange={handleOnChange}
+            selectedBrands={selectedBrands}
+            selectedCollections={selectedCollections}
+            selectedPrice={selectedPrice}
+            selectedShipping={selectedShipping}
+          />
+        </div>
+      </Drawer>
       <Footer />
     </>
   );
