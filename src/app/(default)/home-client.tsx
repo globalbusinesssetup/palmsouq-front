@@ -468,36 +468,6 @@ export default function HomeClient() {
             />
           </div>
         </>
-        {/* features */}
-        <section className="mt-5 md:mt-8 lg:mt-10 p-4 space-y-10 md:space-y-0 md:flex flex-wrap items-center gap-[18px]">
-          {home?.site_features?.map((feature: any, i) => (
-            <div
-              key={`feature_${i}`}
-              className="flex-1 p-3 xl:p-4 border border-[#385f48bf] rounded-lg flex items-center gap-x-3 xl:gap-x-4"
-            >
-              <div className="size-10 lg:size-14 xl:size-[72px] rounded-full flex items-center justify-center bg-neutral-50">
-                <Image
-                  src={feature?.image}
-                  width={42}
-                  height={42}
-                  className="size-8 xl:size-[42px]"
-                  alt={feature.title}
-                />
-              </div>
-              <div
-                dangerouslySetInnerHTML={{ __html: feature?.detail }}
-                className="flex-1"
-              >
-                {/* <h6 className=" xl:text-lg font-semibold text-black whitespace-nowrap">
-                  {feature.title}
-                </h6>
-                <p className="text-xs xl:text-sm text-neutral-600 mt-1 whitespace-nowrap">
-                  {feature.desc}
-                </p> */}
-              </div>
-            </div>
-          ))}
-        </section>
         {/* client testimonial  */}
         {home?.testimonials?.length! > 0 && (
           <section className="p-4 lg:p-8 bg-[#A79F881A] mt-8 lg:mt-10">
@@ -583,8 +553,38 @@ export default function HomeClient() {
             </p>
           </div>
         </section>
+        {/* features */}
+        <section className="mt-5 md:mt-8 lg:mt-10 p-4 space-y-10 md:space-y-0 md:flex flex-wrap items-center gap-[18px]">
+          {home?.site_features?.map((feature: any, i) => (
+            <div
+              key={`feature_${i}`}
+              className="flex-1 p-3 xl:p-4 border border-[#385f48bf] rounded-lg flex items-center gap-x-3 xl:gap-x-4"
+            >
+              <div className="size-10 lg:size-14 xl:size-[72px] rounded-full flex items-center justify-center bg-neutral-50">
+                <Image
+                  src={feature?.image}
+                  width={42}
+                  height={42}
+                  className="size-8 xl:size-[42px]"
+                  alt={feature.title}
+                />
+              </div>
+              <div
+                dangerouslySetInnerHTML={{ __html: feature?.detail }}
+                className="flex-1"
+              >
+                {/* <h6 className=" xl:text-lg font-semibold text-black whitespace-nowrap">
+                  {feature.title}
+                </h6>
+                <p className="text-xs xl:text-sm text-neutral-600 mt-1 whitespace-nowrap">
+                  {feature.desc}
+                </p> */}
+              </div>
+            </div>
+          ))}
+        </section>
         {/* order steps */}
-        <section className="mt-5 md:mt-8 lg:mt-10 sm:px-6 py-4 bg-neutral-50 rounded-[10px] flex flex-col sm:flex-row flex-wrap items-center gap-6">
+        {/* <section className="mt-5 md:mt-8 lg:mt-10 sm:px-6 py-4 bg-neutral-50 rounded-[10px] flex flex-col sm:flex-row flex-wrap items-center gap-6">
           {orderSteps.map((step, i) => (
             <div
               key={`step_${i}`}
@@ -603,7 +603,7 @@ export default function HomeClient() {
               </div>
             </div>
           ))}
-        </section>
+        </section> */}
       </div>
       {/* companyDetails */}
 
