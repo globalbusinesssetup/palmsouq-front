@@ -9,6 +9,7 @@ import {
   Disclosure,
   DisclosureButton,
   DisclosurePanel,
+  Transition,
 } from '@headlessui/react';
 import { FaAngleDown, FaRegHeart } from 'react-icons/fa6';
 import { useRouter } from 'next/navigation';
@@ -209,7 +210,7 @@ export default function ProductDeatils({ params }: Record<string, any>) {
                   onError={() => setImage(config.imgUri + config.defaultImage)}
                   fill
                   alt={product?.image ?? 'product image'}
-                  // className="object-cover"
+                  className="object-contain"
                 />
               </div>
               <ImageMagnifier product={product} selectedImage={selectedImage} />
@@ -428,7 +429,9 @@ export default function ProductDeatils({ params }: Record<string, any>) {
             <DisclosurePanel className="pt-4 lg:pt-5 text-sm lg:text-base bg-white text-neutral-500 px-4 lg:px-5 transition-all duration-0 pb-5">
               <div
                 className="space-y-2"
-                dangerouslySetInnerHTML={{ __html: product?.description || '' }}
+                dangerouslySetInnerHTML={{
+                  __html: product?.description?.split('\n').join('<br/>') || '',
+                }}
               />
             </DisclosurePanel>
           </Disclosure>

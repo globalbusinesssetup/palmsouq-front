@@ -25,7 +25,7 @@ const ImageMagnifier: React.FC<{ product: any; selectedImage?: string }> = ({
   const handleMouseLeave = () => setShowMagnifier(false);
 
   return (
-    <div className="hidden lg:block w-full h-60 xs:h-[300px] sm:h-[396px] rounded-lg relative bg-secondary">
+    <div className="hidden lg:block w-full h-60 xs:h-[300px] sm:h-[396px] rounded-lg relative">
       {/* Original Image Section */}
       <div
         className="w-full h-full relative"
@@ -41,6 +41,7 @@ const ImageMagnifier: React.FC<{ product: any; selectedImage?: string }> = ({
           }
           fill
           alt={product?.image ?? 'product image'}
+          className="object-contain"
         />
         {showMagnifier && (
           <div
