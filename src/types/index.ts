@@ -125,6 +125,9 @@ interface SingleProductData {
   id: number;
   title: string;
   description: string;
+  specifications: string;
+  weight: string;
+  dimention: string;
   overview: string;
   unit: string;
   badge: string | null;

@@ -412,10 +412,10 @@ export default function ProductDeatils({ params }: Record<string, any>) {
             </div>
           </div>
         </div>
-        <div className="mt-6 lg:mt-8 pb-10">
+        <div className="mt-6 lg:mt-8 mb-10 border border-neutral-200 rounded-xl overflow-hidden">
           <Disclosure
             as="div"
-            className={'border border-neutral-200 rounded-xl overflow-hidden'}
+            className={'overflow-hidden border-b border-neutral-200'}
             defaultOpen={false}
           >
             <DisclosureButton className="group w-full flex data-[open]:border-b items-center justify-between py-2.5 lg:py-3 px-4 lg:px-6 bg-white">
@@ -426,11 +426,86 @@ export default function ProductDeatils({ params }: Record<string, any>) {
                 <FaAngleDown className="text-sm lg:text-base text-[#344054]" />
               </div>
             </DisclosureButton>
-            <DisclosurePanel className="pt-4 lg:pt-5 text-sm lg:text-base bg-white text-neutral-500 px-4 lg:px-5 transition-all duration-0 pb-5">
+            <DisclosurePanel
+              translate="yes"
+              className="pt-4 lg:pt-5 text-sm lg:text-base bg-white text-neutral-500 px-4 lg:px-5 pb-5 origin-top transition duration-700 ease-out data-[closed]:-translate-y-6 data-[closed]:opacity-0"
+            >
               <div
                 className="space-y-2"
                 dangerouslySetInnerHTML={{
                   __html: product?.description?.split('\n').join('<br/>') || '',
+                }}
+              />
+            </DisclosurePanel>
+          </Disclosure>
+          <Disclosure
+            as="div"
+            className={'overflow-hidden border-b border-neutral-200'}
+            defaultOpen={false}
+          >
+            <DisclosureButton className="group w-full flex data-[open]:border-b items-center justify-between py-2.5 lg:py-3 px-4 lg:px-6 bg-white">
+              <span className="text-sm sm:text-base md:text-lg lg:text-xl text-neutral-800 font-semibold">
+                Product Specifications
+              </span>
+              <div className="group-data-[open]:rotate-180 size-6 lg:size-8 flex items-center justify-center rounded-full bg-neutral-100">
+                <FaAngleDown className="text-sm lg:text-base text-[#344054]" />
+              </div>
+            </DisclosureButton>
+            <DisclosurePanel className="pt-4 lg:pt-5 text-sm lg:text-base bg-white text-neutral-500 px-4 lg:px-5 transition-all duration-0 pb-5">
+              <div
+                className="space-y-2"
+                dangerouslySetInnerHTML={{
+                  __html:
+                    product?.specifications?.split('\n').join('<br/>') ||
+                    'Specifications not available',
+                }}
+              />
+            </DisclosurePanel>
+          </Disclosure>
+          <Disclosure
+            as="div"
+            className={'overflow-hidden border-b border-neutral-200'}
+            defaultOpen={false}
+          >
+            <DisclosureButton className="group w-full flex data-[open]:border-b items-center justify-between py-2.5 lg:py-3 px-4 lg:px-6 bg-white">
+              <span className="text-sm sm:text-base md:text-lg lg:text-xl text-neutral-800 font-semibold">
+                Product Weight
+              </span>
+              <div className="group-data-[open]:rotate-180 size-6 lg:size-8 flex items-center justify-center rounded-full bg-neutral-100">
+                <FaAngleDown className="text-sm lg:text-base text-[#344054]" />
+              </div>
+            </DisclosureButton>
+            <DisclosurePanel className="pt-4 lg:pt-5 text-sm lg:text-base bg-white text-neutral-500 px-4 lg:px-5 transition-all duration-0 pb-5">
+              <div
+                className="space-y-2"
+                dangerouslySetInnerHTML={{
+                  __html:
+                    product?.weight?.split('\n').join('<br/>') ||
+                    'Weight not available',
+                }}
+              />
+            </DisclosurePanel>
+          </Disclosure>
+          <Disclosure
+            as="div"
+            className={'overflow-hidden border-b border-neutral-200'}
+            defaultOpen={false}
+          >
+            <DisclosureButton className="group w-full flex data-[open]:border-b items-center justify-between py-2.5 lg:py-3 px-4 lg:px-6 bg-white">
+              <span className="text-sm sm:text-base md:text-lg lg:text-xl text-neutral-800 font-semibold">
+                Product Dimention
+              </span>
+              <div className="group-data-[open]:rotate-180 size-6 lg:size-8 flex items-center justify-center rounded-full bg-neutral-100">
+                <FaAngleDown className="text-sm lg:text-base text-[#344054]" />
+              </div>
+            </DisclosureButton>
+            <DisclosurePanel className="pt-4 lg:pt-5 text-sm lg:text-base bg-white text-neutral-500 px-4 lg:px-5 transition-all duration-0 pb-5">
+              <div
+                className="space-y-2"
+                dangerouslySetInnerHTML={{
+                  __html:
+                    product?.dimention?.split('\n').join('<br/>') ||
+                    'Dimention not available',
                 }}
               />
             </DisclosurePanel>
