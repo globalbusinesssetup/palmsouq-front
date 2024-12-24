@@ -8,19 +8,19 @@ import { Image } from './common';
 const quickLinks = [
   {
     title: 'Legal Notice',
-    url: '#',
+    url: '/page/legal-notice',
   },
   {
     title: 'Terms of Use',
-    url: '#',
+    url: '/page/terms-of-use',
   },
   {
     title: 'Privacy Policy',
-    url: '#',
+    url: '/page/privacy-policy',
   },
   {
-    title: 'Return Policy',
-    url: '#',
+    title: 'Refund Policy',
+    url: '/page/refund-policy',
   },
 ];
 
