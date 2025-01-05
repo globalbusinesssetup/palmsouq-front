@@ -231,12 +231,12 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     try {
       await api.post('/user/logout');
+      router.push('/auth/sign-in');
+      await queryClient.resetQueries();
     } catch (error) {
       console.error('Logout error:', error);
     }
     toast.warn('Logged out!');
-    await queryClient.resetQueries();
-    router.push('/auth/sign-in');
   };
 
   return (

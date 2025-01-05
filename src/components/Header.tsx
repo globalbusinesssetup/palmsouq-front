@@ -12,11 +12,30 @@ import { FaBars, FaBox, FaGifts } from 'react-icons/fa6';
 import useAuth from '@/hooks/useAuth';
 import { getSearchData, useGetUser } from '@/utils/api';
 import { useQuery } from '@tanstack/react-query';
-import { Input } from '@headlessui/react';
+import { Input, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import { BsBookmarkStar } from 'react-icons/bs';
 import { FaRegHeart } from 'react-icons/fa6';
 import config from '@/config';
 import { usePathname } from 'next/navigation';
+import { title } from 'process';
+
+const dropdown = [
+  {
+    title: 'My Account',
+    icon: <FiUser className="text-2xl xl:text-[28px] text-green" />,
+    link: '/dashboard/profile',
+  },
+  {
+    title: 'My Cart',
+    icon: <FiShoppingBag className="text-2xl xl:text-[26px] text-green" />,
+    link: '/dashboard/cart',
+  },
+  {
+    title: 'My Wishlist',
+    icon: <FaRegHeart className="text-2xl xl:text-[26px] text-green" />,
+    link: '/dashboard/wishlist',
+  }
+];
 
 const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
   const path = usePathname();
@@ -37,6 +56,8 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
 
   const modalRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  const { logOut } = useAuth();
 
   useEffect(() => {
     if (query && isFocus) {
@@ -217,54 +238,81 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
               </div>
             </div>
           ) : isLoggedIn ? (
-            <div className="hidden md:flex items-center gap-x-2 md:gap-x-4">
-              <div className="hidden md:flex items-center gap-x-3 p-2">
-                <Link href={'/dashboard/profile'}>
-                  <FiUser className="text-2xl xl:text-[28px] text-green" />
+              <div className="hidden md:flex items-center gap-x-2 md:gap-x-4">
+                <div className="hidden md:flex items-center gap-x-3 p-2 relative">
+                  <Menu>
+                    <MenuButton className="flex items-center gap-x-2">
+                      <span>
+                        <FiUser className="text-2xl xl:text-[28px] text-green" />
+                      </span>
+                      <div className="text-green hidden md:block">
+                        <p className="text-tiny lg:text-xs">
+                          Hi,{' '}
+                          <span className=" capitalize">{profile?.first_name}</span>
+                        </p>
+                        <span
+                          className="flex items-center gap-x-1"
+                        >
+                          <p className="text-xs lg:text-sm font-medium xl:font-semibold">
+                            My Account
+                          </p>
+                          <IoIosArrowDown className="xl:text-lg" />
+                        </span>
+                      </div>
+                    </MenuButton>
+                    <MenuItems
+                      anchor="bottom"
+                      className={`bg-white border border-gray-200 rounded-lg shadow-lg px-1 py-2 z-[1000] mt-8`}
+                    >
+                      {dropdown.map((item, i) => (
+                        <MenuItem key={i}>
+                            <Link
+                              href={item.link}
+                              className={`data-[focus]:bg-gray-100 block px-4 py-2 text-sm text-gray-700`}
+                            >
+                              {item.title}
+                            </Link>
+                        </MenuItem>
+                      ))}
+                      <MenuItem>
+                          <button
+                            onClick={logOut}
+                            className={`w-full data-[focus]:bg-gray-100 block px-4 py-2 text-sm text-gray-700 text-left`}
+                          >
+                            Logout
+                          </button>
+                      </MenuItem>
+                    </MenuItems>
+                  </Menu>
+                </div>
+                <div className="hidden md:flex items-center gap-x-3 p-2">
+                  <FiShoppingBag className="text-2xl xl:text-[26px] text-green" />
+                  <div className="text-green hidden md:block">
+                    <p className="text-tiny lg:text-xs">My Cart</p>
+                    <Link
+                      href={'/dashboard/cart'}
+                      className="flex items-center gap-x-1"
+                    >
+                      <p className="text-xs lg:text-sm font-medium xl:font-semibold uppercase">
+                        {profile?.cart_count}
+                        {/* AED */}
+                      </p>
+                      <IoIosArrowDown className="xl:text-lg" />
+                    </Link>
+                  </div>
+                </div>
+                <Link
+                  href={'/dashboard/wishlist'}
+                  className="hidden md:flex items-center gap-x-3 p-2"
+                >
+                  <FaRegHeart className="text-2xl xl:text-[26px] text-green" />
+                  <div className="text-green hidden md:block">
+                    <p className="text-tiny lg:text-xs">My Wislist</p>
+                    <IoIosArrowDown className="xl:text-lg" />
+                  </div>
                 </Link>
-                <div className="text-green hidden md:block">
-                  <p className="text-tiny lg:text-xs">
-                    Hi,{' '}
-                    <span className=" capitalize">{profile?.first_name}</span>
-                  </p>
-                  <Link
-                    href={'/dashboard/profile'}
-                    className="flex items-center gap-x-1"
-                  >
-                    <p className="text-xs lg:text-sm font-medium xl:font-semibold">
-                      My Account
-                    </p>
-                    <IoIosArrowDown className="xl:text-lg" />
-                  </Link>
-                </div>
               </div>
-              <div className="hidden md:flex items-center gap-x-3 p-2">
-                <FiShoppingBag className="text-2xl xl:text-[26px] text-green" />
-                <div className="text-green hidden md:block">
-                  <p className="text-tiny lg:text-xs">My Cart</p>
-                  <Link
-                    href={'/dashboard/cart'}
-                    className="flex items-center gap-x-1"
-                  >
-                    <p className="text-xs lg:text-sm font-medium xl:font-semibold uppercase">
-                      {profile?.cart_count}
-                      {/* AED */}
-                    </p>
-                    <IoIosArrowDown className="xl:text-lg" />
-                  </Link>
-                </div>
-              </div>
-              <Link
-                href={'/dashboard/wishlist'}
-                className="hidden md:flex items-center gap-x-3 p-2"
-              >
-                <FaRegHeart className="text-2xl xl:text-[26px] text-green" />
-                <div className="text-green hidden md:block">
-                  <p className="text-tiny lg:text-xs">My Wislist</p>
-                  <IoIosArrowDown className="xl:text-lg" />
-                </div>
-              </Link>
-            </div>
+              
           ) : (
             <div className="hidden md:flex flex-row items-center gap-x-4">
               <Link href={'/auth/sign-in'} className="ml-4 hidden lg:inline">
