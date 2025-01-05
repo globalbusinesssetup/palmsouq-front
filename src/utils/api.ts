@@ -76,6 +76,7 @@ export const getCommon = async () => {
         payment: [];
         social: [];
         about: [];
+        services: [];
         setting: Setting;
         default_language: {
           name: string;

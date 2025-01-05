@@ -9,6 +9,7 @@ import {
   Disclosure,
   DisclosureButton,
   DisclosurePanel,
+  Transition,
 } from '@headlessui/react';
 import { FaAngleDown, FaRegHeart } from 'react-icons/fa6';
 import { useRouter } from 'next/navigation';
@@ -209,7 +210,7 @@ export default function ProductDeatils({ params }: Record<string, any>) {
                   onError={() => setImage(config.imgUri + config.defaultImage)}
                   fill
                   alt={product?.image ?? 'product image'}
-                  // className="object-cover"
+                  className="object-contain"
                 />
               </div>
               <ImageMagnifier product={product} selectedImage={selectedImage} />
@@ -411,15 +412,40 @@ export default function ProductDeatils({ params }: Record<string, any>) {
             </div>
           </div>
         </div>
-        <div className="mt-6 lg:mt-8 pb-10">
+        <div className="mt-6 lg:mt-8 mb-10 border border-neutral-200 rounded-xl overflow-hidden">
           <Disclosure
             as="div"
-            className={'border border-neutral-200 rounded-xl overflow-hidden'}
+            className={'overflow-hidden border-b border-neutral-200'}
             defaultOpen={false}
           >
             <DisclosureButton className="group w-full flex data-[open]:border-b items-center justify-between py-2.5 lg:py-3 px-4 lg:px-6 bg-white">
               <span className="text-sm sm:text-base md:text-lg lg:text-xl text-neutral-800 font-semibold">
-                Product Description
+                Description
+              </span>
+              <div className="group-data-[open]:rotate-180 size-6 lg:size-8 flex items-center justify-center rounded-full bg-neutral-100">
+                <FaAngleDown className="text-sm lg:text-base text-[#344054]" />
+              </div>
+            </DisclosureButton>
+            <DisclosurePanel
+              translate="yes"
+              className="pt-4 lg:pt-5 text-sm lg:text-base bg-white text-neutral-500 px-4 lg:px-5 pb-5 origin-top transition duration-700 ease-out data-[closed]:-translate-y-6 data-[closed]:opacity-0"
+            >
+              <div
+                className="space-y-2"
+                dangerouslySetInnerHTML={{
+                  __html: product?.description?.split('\n').join('<br/>') || 'n/a',
+                }}
+              />
+            </DisclosurePanel>
+          </Disclosure>
+          <Disclosure
+            as="div"
+            className={'overflow-hidden border-b border-neutral-200'}
+            defaultOpen={false}
+          >
+            <DisclosureButton className="group w-full flex data-[open]:border-b items-center justify-between py-2.5 lg:py-3 px-4 lg:px-6 bg-white">
+              <span className="text-sm sm:text-base md:text-lg lg:text-xl text-neutral-800 font-semibold">
+                Specifications
               </span>
               <div className="group-data-[open]:rotate-180 size-6 lg:size-8 flex items-center justify-center rounded-full bg-neutral-100">
                 <FaAngleDown className="text-sm lg:text-base text-[#344054]" />
@@ -428,21 +454,76 @@ export default function ProductDeatils({ params }: Record<string, any>) {
             <DisclosurePanel className="pt-4 lg:pt-5 text-sm lg:text-base bg-white text-neutral-500 px-4 lg:px-5 transition-all duration-0 pb-5">
               <div
                 className="space-y-2"
-                dangerouslySetInnerHTML={{ __html: product?.description || '' }}
+                dangerouslySetInnerHTML={{
+                  __html:
+                    product?.specifications?.split('\n').join('<br/>') ||
+                    'n/a',
+                }}
+              />
+            </DisclosurePanel>
+          </Disclosure>
+          <Disclosure
+            as="div"
+            className={'overflow-hidden border-b border-neutral-200'}
+            defaultOpen={false}
+          >
+            <DisclosureButton className="group w-full flex data-[open]:border-b items-center justify-between py-2.5 lg:py-3 px-4 lg:px-6 bg-white">
+              <span className="text-sm sm:text-base md:text-lg lg:text-xl text-neutral-800 font-semibold">
+                Weight
+              </span>
+              <div className="group-data-[open]:rotate-180 size-6 lg:size-8 flex items-center justify-center rounded-full bg-neutral-100">
+                <FaAngleDown className="text-sm lg:text-base text-[#344054]" />
+              </div>
+            </DisclosureButton>
+            <DisclosurePanel className="pt-4 lg:pt-5 text-sm lg:text-base bg-white text-neutral-500 px-4 lg:px-5 transition-all duration-0 pb-5">
+              <div
+                className="space-y-2"
+                dangerouslySetInnerHTML={{
+                  __html:
+                    product?.weight?.split('\n').join('<br/>') ||
+                    'n/a',
+                }}
+              />
+            </DisclosurePanel>
+          </Disclosure>
+          <Disclosure
+            as="div"
+            className={'overflow-hidden border-b border-neutral-200'}
+            defaultOpen={false}
+          >
+            <DisclosureButton className="group w-full flex data-[open]:border-b items-center justify-between py-2.5 lg:py-3 px-4 lg:px-6 bg-white">
+              <span className="text-sm sm:text-base md:text-lg lg:text-xl text-neutral-800 font-semibold">
+                Dimension
+              </span>
+              <div className="group-data-[open]:rotate-180 size-6 lg:size-8 flex items-center justify-center rounded-full bg-neutral-100">
+                <FaAngleDown className="text-sm lg:text-base text-[#344054]" />
+              </div>
+            </DisclosureButton>
+            <DisclosurePanel className="pt-4 lg:pt-5 text-sm lg:text-base bg-white text-neutral-500 px-4 lg:px-5 transition-all duration-0 pb-5">
+              <div
+                className="space-y-2"
+                dangerouslySetInnerHTML={{
+                  __html:
+                    product?.dimention?.split('\n').join('<br/>') ||
+                    'n/a',
+                }}
               />
             </DisclosurePanel>
           </Disclosure>
         </div>
-        <div className="w-full h-[150px] md:h-[180px] lg:h-[200px] bg-secondary rounded-md mt-6 relative overflow-hidden mb-6">
-          <Image
-            src={bannerError ? temp_banner : config.imgUri + product?.banner}
-            fill
-            alt={'Product banner'}
-            onError={() => setBannerError(true)}
-            className="object-cover"
-            loading="lazy"
-          />
-        </div>
+        {
+          product?.banner && (
+            <div className="w-full h-[150px] md:h-[180px] lg:h-[200px] bg-secondary rounded-md mt-6 relative overflow-hidden mb-6">
+              <Image
+                src={bannerError ? temp_banner : config.imgUri + product?.banner}
+                fill
+                alt={'Product banner'}
+                onError={() => setBannerError(true)}
+                className="object-cover"
+                loading="lazy"
+              />
+            </div>)
+        }
       </div>
     </>
   );
