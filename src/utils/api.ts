@@ -35,6 +35,12 @@ export const getHome = async () => {
         collections: Collection[];
         featured_brands: [];
         featured_categories: [];
+        home_brief: {
+          title: string;
+          subtitle: string;
+          description: string;
+          image: string;
+        };
         flash_sales: {
           id: number;
           public_products: {

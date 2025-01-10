@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Input, Button, Select, Modal } from '@/components';
+import { Input, Button, Select, Modal, InputPhoneNumber } from '@/components';
 import { useForm } from 'react-hook-form';
 import { getCountries } from '@/utils/api';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
@@ -156,19 +156,12 @@ const UpdateAddress = ({
             error={errors?.name}
           />
           <div className="flex-1">
-            <Input
-              prefix="+971"
-              name="phone"
+            <InputPhoneNumber
+              name='phone'
               control={control}
-              rules={{
-                required: 'phone number required',
-                minLength: { value: 10, message: 'min 10' },
-              }}
-              label="Phone"
-              placeholder="000-000-000"
-              type="number"
-              error={errors?.phone}
-            />
+              label='Phone'
+              placeholder='000-000-000'
+              error={errors?.phone} />
           </div>
           {/* <div className="flex-1">
             <label

@@ -66,17 +66,17 @@ const deliveryOptions = [
     value: 'paid',
     desc: 'Get your order delivered quickly with Extra Charges.',
   },
-  {
-    title: 'Pickup',
-    value: 'pickup',
-    desc: (
-      <p>
-        Wait for{' '}
-        <span className="font-medium text-neutral-600">Notification</span> and
-        collect your order directly.
-      </p>
-    ),
-  },
+  // {
+  //   title: 'Pickup',
+  //   value: 'pickup',
+  //   desc: (
+  //     <p>
+  //       Wait for{' '}
+  //       <span className="font-medium text-neutral-600">Notification</span> and
+  //       collect your order directly.
+  //     </p>
+  //   ),
+  // },
 ];
 
 const supportedAreas = ['DU', 'AJ', 'SH'];
@@ -389,13 +389,13 @@ const Checkout = () => {
                   onChange={setDeliveryOption}
                   aria-label="Server size"
                   className={
-                    'flex flex-col sm:flex-row sm:items-center gap-4 mt-6'
+                    'flex flex-col sm:flex-row sm:items-stretch gap-4 mt-6'
                   }
                 >
                   {deliveryOptions.map((opt) => (
                     <Field
                       key={opt.value}
-                      className={`flex-1 gap-2 p-3 xl:p-4 border rounded-lg transition-all duration-300 cursor-pointer ${
+                      className={`flex-1 gap-2 p-3 xl:p-4 border h-full rounded-lg transition-all duration-300 cursor-pointer ${
                         deliveryOption === opt.value
                           ? 'bg-neutral-50 border-[#9B9DFD]'
                           : ''
@@ -558,7 +558,7 @@ const Checkout = () => {
               <button
                 onClick={() => {
                   if (currentStep === 0) {
-                    router.back();
+                    router.push('/cart');
                   } else {
                     setStep(currentStep - 1);
                     router.push(`/checkout?currentStep=${currentStep - 1}`);
@@ -567,7 +567,7 @@ const Checkout = () => {
                 className="text-xs sm:text-sm font-semibold text-neutral-500 flex items-center justify-center gap-x-2"
               >
                 <IoIosArrowRoundBack className="text-2xl sm:text-2xl" /> Back to
-                {currentStep === 0 && 'Cart'}
+                {currentStep === 0 && ' Cart'}
               </button>
               <Button
                 // disabled={currentStep === 0}
