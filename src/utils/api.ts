@@ -133,18 +133,25 @@ export const getAbout = async (slug: string) => {
   }
 };
 type Brand = { id: number; image: string; slug: string; title: string };
-export const getBrands = async () => {
+export const getBrands = async (pageParam = 0) => {
+  console.log('pageParam', pageParam);
   try {
     const res = await fetcher<{
-      data: { data: Brand[] };
-      current_page: number;
-      last_page: number;
-      total: number;
-    }>('/brands');
-    return res?.data?.data ?? []; // Return the data array directly
+      data: { 
+        data: Brand[];
+        current_page: number;
+        last_page: number;
+      };
+    }>(`/brands?page=${pageParam}`);
+    console.log('res', res);
+    return {
+      brands: res.data.data,
+      nextPage: res.data?.current_page + 1,
+      hasNextPage: res.data.current_page < res.data.last_page,
+    }; // Return the data array directly
   } catch (err) {
     console.error('Failed to fetch brands:', err);
-    return []; // Ensure a fallback return in case of failure
+    return err; // Ensure a fallback return in case of failure
   }
 };
 

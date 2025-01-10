@@ -1,18 +1,36 @@
 'use client';
 import React from 'react';
 import Image from 'next/image';
-import { useQuery } from '@tanstack/react-query';
+import { InfiniteData, QueryKey, useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { getBrands, getCategories } from '@/utils/api';
 import Link from 'next/link';
 import config from '@/config';
+import { ImSpinner6 } from 'react-icons/im';
+
+
+type Brand = { id: number; image: string; slug: string; title: string };
 
 const BrandsClient = () => {
-  const { data, isLoading, isError } = useQuery({
+
+  const {
+    data,
+    isLoading,
+    error,
+    isError,
+    fetchNextPage,
+    hasNextPage,
+    isFetching,
+    isFetchingNextPage,
+    status,
+  } = useInfiniteQuery({
     queryKey: ['brands'],
-    queryFn: getBrands,
+    queryFn: ({pageParam}) => getBrands(pageParam as number),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage, pages) => lastPage.hasNextPage ? lastPage.nextPage : undefined,
   });
+
   return (
-    <div className="py-10 grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 sm:gap-5 container mx-auto px-5">
+    <div className="py-10 grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 xl:grid-cols-5 gap-3 sm:gap-5 container mx-auto px-5">
       {isLoading ? (
         Array(16)
           .fill('')
@@ -25,7 +43,7 @@ const BrandsClient = () => {
       ) : isError ? (
         <p className="col-span-full text-center pt-5">Failed fetch brand</p>
       ) : (
-        data?.map((b, i) => (
+        data?.pages?.flatMap(page => page.brands)?.map((b, i) => (
           <Link
             href={`/brand?sortby=&shipping=&brand=${b?.id}&collection=&rating=0&max=0&min=0&page=`}
             key={b?.id}
@@ -46,7 +64,23 @@ const BrandsClient = () => {
             </p> */}
           </Link>
         ))
-      )}
+      )
+      }
+      {
+        hasNextPage ? (
+          <div className="col-span-full flex justify-center">
+            <button
+            onClick={() => fetchNextPage()}
+            disabled={!hasNextPage || isFetchingNextPage}
+            className="flex justify-center items-center w-32 py-3 text-sm border text-primary border-gray-200 rounded-md"
+          >
+            {isFetchingNextPage ? 
+            <ImSpinner6 className='animate-spin text-lg' /> : 
+            'Load More'}
+          </button>
+          </div>
+        ) : null
+      }
     </div>
   );
 };
