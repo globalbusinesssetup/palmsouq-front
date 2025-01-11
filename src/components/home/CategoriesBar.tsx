@@ -29,16 +29,18 @@ const CategoriesBar = () => {
         >
           <MenuButton className="group w-full lg:w-auto flex-auto lg:flex-none text-left gap-2 xl:gap-4 flex items-center justify-between bg-primary rounded-md lg:rounded-lg py-2 xl:py-3 px-3 xl:px-5 text-white text-sm xl:text-base font-medium xl:font-semibold">
             <div className="flex items-center gap-2 xl:gap-3 flex-1">
-              <HiOutlineMenuAlt2 className="text-base xl:text-xl" /> Browse
-              Categories
+              <HiOutlineMenuAlt2 className="text-base xl:text-xl" /> 
+              Browse Categories
             </div>
             <IoChevronDown className="text-lg xl:text-xl" />
           </MenuButton>
 
-          <MenuItems className="absolute mt-2 bg-primary w-[calc(100%)] lg:w-[200px] xl:w-[250px] py-3 rounded-lg z-10">
-            {categories.map((cat, i) => (
-              <Item key={`item_${i}`} cat={cat} i={i} />
-            ))}
+          <MenuItems className="absolute overflow-hidden mt-2 bg-primary w-[calc(100%)] lg:w-[200px] xl:w-[250px] py-3 rounded-lg z-10">
+            <div className="max-h-96 overflow-y-auto scrollbar-thin scrollbar-track-primary scrollbar-thumb-green scrollbar-rounded">
+              {categories.map((cat, i) => (
+                <Item key={`item_${i}`} cat={cat} i={i} />
+              ))}
+            </div>
           </MenuItems>
         </Menu>
 
