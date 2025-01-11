@@ -11,10 +11,10 @@ import {
   DisclosurePanel,
   Transition,
 } from '@headlessui/react';
-import { FaAngleDown, FaRegHeart } from 'react-icons/fa6';
+import { FaAngleDown, FaRegHeart, FaHeart } from 'react-icons/fa6';
 import { useRouter } from 'next/navigation';
 import { QueryClient, useQuery, useQueryClient } from '@tanstack/react-query';
-import { getProduct, useGetUser } from '@/utils/api';
+import { getProduct, getWishList, useGetUser } from '@/utils/api';
 import { api } from '@/utils/fetcher';
 import { toast } from 'react-toastify';
 import useAuth from '@/hooks/useAuth';
@@ -41,6 +41,7 @@ export default function ProductDeatils({ params }: Record<string, any>) {
   const [selectedImage, setImage] = useState('');
   const [isSubmitLoading, setSubmitLoading] = useState(false);
   const [bannerError, setBannerError] = useState(false);
+  const [wishListed, setWishListed] = useState(false);
   const queryClient = useQueryClient();
 
   const {
@@ -51,6 +52,11 @@ export default function ProductDeatils({ params }: Record<string, any>) {
     queryKey: ['product', params.id],
     queryFn: () => getProduct(params.id),
   });
+
+  const { data: wishlist, isLoading:wishListLoading } = useQuery({
+      queryKey: ['wishlist', isLoggedIn],
+      queryFn: () => getWishList(),
+    });
 
   const handleQuantity = (type: 'minus' | 'plus' | number) => {
     if (quantity > 9 && type === 'plus') {
@@ -142,6 +148,16 @@ export default function ProductDeatils({ params }: Record<string, any>) {
       console.log(err);
     }
   };
+
+  useEffect(() => {
+    if (wishlist) {
+      const isWishListed = wishlist?.some((pd: any) => pd.product_id == params?.id);
+      console.log('isWishListed =>', isWishListed);
+      console.log('isWishListed =>', params?.id);
+      console.log('isWishListed =>', wishlist);
+      setWishListed(isWishListed);
+    }
+  },[wishlist]);
 
   if (isLoading) {
     return (
@@ -334,8 +350,10 @@ export default function ProductDeatils({ params }: Record<string, any>) {
                     {Number(product?.stock) > 0 ? 'In Stock' : 'Stock out'}
                   </p>
                 </div>
-                <button disabled={!isLoggedIn} onClick={addToWishlist}>
-                  <FaRegHeart size={26} />
+                <button disabled={!isLoggedIn || wishListed} onClick={addToWishlist}>
+                  {
+                    wishListed ? <FaHeart size={26} /> : <FaRegHeart size={26} />
+                  }
                 </button>
               </div>
               <div className="flex items-end justify-between pt-8 pb-4">
