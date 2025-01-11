@@ -527,32 +527,31 @@ export default function HomeClient() {
           </section>
         )}
         {/* industry banner  */}
-        <section className="mt-5 md:mt-8 lg:mt-10 p-4 sm:px-6 py-5 sm:py-[33px] border border-[#10182833] rounded-[10px] md:flex items-center gap-x-10 justify-between">
-          <div className="flex-1 w-full h-[250px] xs:h-[293px] relative">
-            <Image
-              defaultSrc={'/banners/industry-banner.png'}
-              isLocal
-              fill
-              alt="industry banner"
-            />
-          </div>
-          <div className="flex-1 mt-5 md:mt-0">
-            <p className=" xl:text-lg font-medium text-success/80">
-              Fastest and Cheapest Store in UAE{' '}
-            </p>
-            <h3 className="text-lg lg:text-xl xl:text-3xl font-semibold text-neutral-800 mt-2">
-              Palmsouq is Revolutionizing the Online Outdoor & Adventure Store.
-            </h3>
-            <p className="mt-4 text-sm lg:text-base xl:text-lg text-neutral-600">
-              Delivering top-quality Tools and Products in UAE with a wide range
-              of high-quality Tools products at the best prices in the UAE. Our
-              easy-to-use website makes it a breeze to order the printed
-              materials you need simply select your desired product, choose your
-              quantity, and upload your design. Our team of expert printers will
-              take it from there.
-            </p>
-          </div>
-        </section>
+        {
+          home?.home_brief && (
+            <section className="mt-5 md:mt-8 lg:mt-10 p-4 sm:px-6 py-5 sm:py-[33px] border border-[#10182833] rounded-[10px] md:flex items-center gap-x-10 justify-between">
+              <div className="flex-1 w-full h-[250px] xs:h-[293px] relative">
+                <Image
+                  defaultSrc={home?.home_brief.image ? config.imgUri +  home?.home_brief.image : '/banners/industry-banner.png'}
+                  isLocal
+                  fill
+                  alt="industry banner"
+                />
+              </div>
+              <div className="flex-1 mt-5 md:mt-0">
+                <p className=" xl:text-lg font-medium text-success/80">
+                  {home?.home_brief.title}
+                </p>
+                <h3 className="text-lg lg:text-xl xl:text-3xl font-semibold text-neutral-800 mt-2">
+                  {home?.home_brief.subtitle}
+                </h3>
+                <p className="mt-4 text-sm lg:text-base xl:text-lg text-neutral-600">
+                  {home?.home_brief.description}
+                </p>
+              </div>
+            </section>
+          )
+        }
         {/* features */}
         <section className="mt-5 md:mt-8 lg:mt-10 p-4 space-y-10 md:space-y-0 md:flex flex-wrap items-center gap-[18px]">
           {home?.site_features?.map((feature: any, i) => (

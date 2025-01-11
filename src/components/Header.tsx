@@ -104,8 +104,7 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
               <Link
                 target="_blank"
                 href={
-                  'https://wa.me/+971066265479?text=Hello%20there!'
-                  // 'https://web.whatsapp.com/send?phone=+8801965921314&text=Hello%20there!'
+                  'https://wa.me/+971585077884?text=Hello%20there!'
                 }
               >
                 <RiWhatsappFill className="text-[28px] text-[#1FAF38]" />
