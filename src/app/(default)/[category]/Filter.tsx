@@ -192,53 +192,6 @@ const Filter = ({
           </button>
         </div>
       )}
-      {data?.collections && (
-        <div className="mt-4">
-          <h3 className="text-gray-700 text-xl font-bold">Collections</h3>
-          <div className="mt-3 space-y-1.5">
-            {data?.collections.map((c, i) => (
-              <div
-                key={`collections_${i}`}
-                className="flex items-center gap-x-2"
-              >
-                <CheckBox
-                  checked={selectedCollections.includes(c.id)}
-                  onChange={(e) => handleOnChange({ collection: c.id })}
-                />
-                <label
-                  onClick={() => handleOnChange({ collection: c.id })}
-                  htmlFor={`collections_${i}`}
-                  className="cursor-pointer"
-                >
-                  {c.title}
-                </label>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-      {data?.shipping && (
-        <div className="mt-4">
-          <h3 className="text-gray-700 text-xl font-bold">Shipping Options</h3>
-          <div className="mt-3 space-y-1.5">
-            {data?.shipping.map((s, i) => (
-              <div key={`shipping_${i}`} className="flex items-center gap-x-2">
-                <CheckBox
-                  checked={selectedShipping.includes(s.id)}
-                  onChange={() => handleOnChange({ shipping: s.id })}
-                />
-                <label
-                  onClick={() => handleOnChange({ shipping: s.id })}
-                  htmlFor={`shipping_${i}`}
-                  className="cursor-pointer"
-                >
-                  {s.title}
-                </label>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
     </div>
   );
 };
