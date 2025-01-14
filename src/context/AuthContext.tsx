@@ -226,6 +226,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const logOut = async () => {
     Cookies.remove('token');
+    setToken(null);
     await queryClient.invalidateQueries({ queryKey: ['user'] });
     setOrders([]);
 
