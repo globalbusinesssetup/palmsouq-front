@@ -83,13 +83,13 @@ export default function HomeClient() {
   const onNext = (id: number) => {
     swiperEl?.[id]?.swiper?.slideNext();
     if (id === 1) catRef.current?.swiper?.slideNext();
-    else if (id === 2) brandRef.current?.swiper?.slideNext();
+    else if (id === 3) brandRef.current?.swiper?.slideNext();
   };
 
   const onPrev = (id: number) => {
     swiperEl?.[id]?.swiper?.slidePrev();
     if (id === 1) catRef.current?.swiper?.slidePrev();
-    else if (id === 2) brandRef.current?.swiper?.slidePrev();
+    else if (id === 3) brandRef.current?.swiper?.slidePrev();
   };
 
   if (isLoading || isCatLoading) {
