@@ -13,7 +13,7 @@ import { HiArrowLeft, HiArrowRight, HiOutlineMail } from 'react-icons/hi';
 import { GrLocation } from 'react-icons/gr';
 import { IoCallOutline } from 'react-icons/io5';
 import StarRatings from 'react-star-ratings';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { register } from 'swiper/element/bundle';
 import { useResponsiveSlides } from '@/hooks';
 import { useQuery } from '@tanstack/react-query';
@@ -63,6 +63,8 @@ export default function HomeClient() {
   const [swiperEl, setSwiperEl] = useState<NodeListOf<SwiperElement> | null>(
     null
   );
+  const catRef = useRef<any>(null);
+  const brandRef = useRef<any>(null);
   const [bannerError, setBannerError] = useState(false);
   const { data, isLoading: isCatLoading } = useQuery({
     queryKey: ['categories'],
@@ -80,10 +82,14 @@ export default function HomeClient() {
 
   const onNext = (id: number) => {
     swiperEl?.[id]?.swiper?.slideNext();
+    if (id === 1) catRef.current?.swiper?.slideNext();
+    else if (id === 2) brandRef.current?.swiper?.slideNext();
   };
 
   const onPrev = (id: number) => {
     swiperEl?.[id]?.swiper?.slidePrev();
+    if (id === 1) catRef.current?.swiper?.slidePrev();
+    else if (id === 2) brandRef.current?.swiper?.slidePrev();
   };
 
   if (isLoading || isCatLoading) {
@@ -208,6 +214,7 @@ export default function HomeClient() {
               <swiper-container
                 slides-per-view={getCatSlide}
                 space-between={16}
+                ref={catRef}
               >
                 {home?.featured_categories?.map(
                   (cat: { slug: string; title: string; image: string }, i) => (
@@ -246,6 +253,7 @@ export default function HomeClient() {
           </div>
           <div className="mt-1 max-h-[172px] overflow-hidden">
             <swiper-container
+              ref={brandRef}
               slides-per-view={getBrandSlide}
               space-between={16}
               pagination={{ clickable: true }}
@@ -527,31 +535,33 @@ export default function HomeClient() {
           </section>
         )}
         {/* industry banner  */}
-        {
-          home?.home_brief && (
-            <section className="mt-5 md:mt-8 lg:mt-10 p-4 sm:px-6 py-5 sm:py-[33px] border border-[#10182833] rounded-[10px] md:flex items-center gap-x-10 justify-between">
-              <div className="flex-1 w-full h-[250px] xs:h-[293px] relative">
-                <Image
-                  defaultSrc={home?.home_brief.image ? config.imgUri +  home?.home_brief.image : '/banners/industry-banner.png'}
-                  isLocal
-                  fill
-                  alt="industry banner"
-                />
-              </div>
-              <div className="flex-1 mt-5 md:mt-0">
-                <p className=" xl:text-lg font-medium text-success/80">
-                  {home?.home_brief.title}
-                </p>
-                <h3 className="text-lg lg:text-xl xl:text-3xl font-semibold text-neutral-800 mt-2">
-                  {home?.home_brief.subtitle}
-                </h3>
-                <p className="mt-4 text-sm lg:text-base xl:text-lg text-neutral-600">
-                  {home?.home_brief.description}
-                </p>
-              </div>
-            </section>
-          )
-        }
+        {home?.home_brief && (
+          <section className="mt-5 md:mt-8 lg:mt-10 p-4 sm:px-6 py-5 sm:py-[33px] border border-[#10182833] rounded-[10px] md:flex items-center gap-x-10 justify-between">
+            <div className="flex-1 w-full h-[250px] xs:h-[293px] relative">
+              <Image
+                defaultSrc={
+                  home?.home_brief.image
+                    ? config.imgUri + home?.home_brief.image
+                    : '/banners/industry-banner.png'
+                }
+                isLocal
+                fill
+                alt="industry banner"
+              />
+            </div>
+            <div className="flex-1 mt-5 md:mt-0">
+              <p className=" xl:text-lg font-medium text-success/80">
+                {home?.home_brief.title}
+              </p>
+              <h3 className="text-lg lg:text-xl xl:text-3xl font-semibold text-neutral-800 mt-2">
+                {home?.home_brief.subtitle}
+              </h3>
+              <p className="mt-4 text-sm lg:text-base xl:text-lg text-neutral-600">
+                {home?.home_brief.description}
+              </p>
+            </div>
+          </section>
+        )}
         {/* features */}
         <section className="mt-5 md:mt-8 lg:mt-10 p-4 space-y-10 md:space-y-0 md:flex flex-wrap items-center gap-[18px]">
           {home?.site_features?.map((feature: any, i) => (
