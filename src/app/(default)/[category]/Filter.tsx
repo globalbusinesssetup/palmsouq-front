@@ -24,9 +24,9 @@ const Filter = ({
             <Link
               href={`/${cat.slug}`}
               key={i}
-              className="uppercase text-sm underline text-gray-700 inline-block"
+              className="uppercase text-sm hover:underline text-gray-700 block"
             >
-              {`${cat?.title} , `}
+              {`${cat?.title}`}
             </Link>
           ))}
       </div>

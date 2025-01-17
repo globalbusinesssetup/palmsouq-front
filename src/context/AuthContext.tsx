@@ -118,14 +118,14 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     const tokenFromCookie = Cookies.get('token');
-    const userTokenFromCookie = Cookies.get('user_token');
+    // const userTokenFromCookie = Cookies.get('user_token');
     if (tokenFromCookie !== token) {
       setToken(tokenFromCookie ?? null);
     }
-    if (userTokenFromCookie !== userToken) {
-      setToken(userTokenFromCookie ?? null);
-    }
-  }, [Cookies.get('token')]);
+    // if (userTokenFromCookie !== userToken) {
+    //   setUserToken(userTokenFromCookie ?? null);
+    // }
+  }, [Cookies.get('token'), token]);
 
   useEffect(() => {
     const userTokenFromCookie = Cookies.get('user_token');
@@ -137,7 +137,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       Cookies.set('user_token', token, { expires: 365 * 100 });
     }
     if (userTokenFromCookie !== userToken) {
-      setToken(userTokenFromCookie ?? null);
+      setUserToken(userTokenFromCookie ?? null);
     }
   }, [Cookies.get('user_token')]);
 
@@ -226,6 +226,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const logOut = async () => {
     Cookies.remove('token');
+    setToken(null);
     await queryClient.invalidateQueries({ queryKey: ['user'] });
     setOrders([]);
 
