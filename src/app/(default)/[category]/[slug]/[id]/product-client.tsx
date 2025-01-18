@@ -24,6 +24,7 @@ import ImageMagnifier from '@/components/common/ImageMagnifier';
 import { temp_banner } from '@/utils/helper';
 import Cookies from 'js-cookie';
 import { register } from 'swiper/element/bundle';
+import Rate from 'rc-rate';
 register();
 
 type CategoryProps = {
@@ -53,10 +54,10 @@ export default function ProductDeatils({ params }: Record<string, any>) {
     queryFn: () => getProduct(params.id),
   });
 
-  const { data: wishlist, isLoading:wishListLoading } = useQuery({
-      queryKey: ['wishlist', isLoggedIn],
-      queryFn: () => getWishList(),
-    });
+  const { data: wishlist, isLoading: wishListLoading } = useQuery({
+    queryKey: ['wishlist', isLoggedIn],
+    queryFn: () => getWishList(),
+  });
 
   const handleQuantity = (type: 'minus' | 'plus' | number) => {
     if (quantity > 9 && type === 'plus') {
@@ -151,13 +152,15 @@ export default function ProductDeatils({ params }: Record<string, any>) {
 
   useEffect(() => {
     if (wishlist) {
-      const isWishListed = wishlist?.some((pd: any) => pd.product_id == params?.id);
+      const isWishListed = wishlist?.some(
+        (pd: any) => pd.product_id == params?.id
+      );
       console.log('isWishListed =>', isWishListed);
       console.log('isWishListed =>', params?.id);
       console.log('isWishListed =>', wishlist);
       setWishListed(isWishListed);
     }
-  },[wishlist]);
+  }, [wishlist]);
 
   if (isLoading) {
     return (
@@ -327,6 +330,21 @@ export default function ProductDeatils({ params }: Record<string, any>) {
               <h2 className="text-xl lg:text-2xl text-black font-semibold mt-1">
                 {product?.title}
               </h2>
+              <div className="flex items-center gap-x-2 font-semibold text-neutral-600">
+                <Rate
+                  value={product?.rating}
+                  allowHalf
+                  disabled
+                  style={{ fontSize: '30px' }}
+                />
+                <p>{product?.rating}</p>
+                <p>
+                  ({product?.review_count}){' '}
+                  <Link href={'#reviews'} className="hover:underline">
+                    See reviews
+                  </Link>
+                </p>
+              </div>
               <div className="flex flex-row items-center gap-x-3 border-b border-[#E6E6E6]">
                 <div className="flex-1 flex flex-wrap items-center gap-2 xl:gap-3 py-4">
                   <p
@@ -350,10 +368,15 @@ export default function ProductDeatils({ params }: Record<string, any>) {
                     {Number(product?.stock) > 0 ? 'In Stock' : 'Stock out'}
                   </p>
                 </div>
-                <button disabled={!isLoggedIn || wishListed} onClick={addToWishlist}>
-                  {
-                    wishListed ? <FaHeart size={26} /> : <FaRegHeart size={26} />
-                  }
+                <button
+                  disabled={!isLoggedIn || wishListed}
+                  onClick={addToWishlist}
+                >
+                  {wishListed ? (
+                    <FaHeart size={26} />
+                  ) : (
+                    <FaRegHeart size={26} />
+                  )}
                 </button>
               </div>
               <div className="flex items-end justify-between pt-8 pb-4">
@@ -451,7 +474,8 @@ export default function ProductDeatils({ params }: Record<string, any>) {
               <div
                 className="space-y-2"
                 dangerouslySetInnerHTML={{
-                  __html: product?.description?.split('\n').join('<br/>') || 'n/a',
+                  __html:
+                    product?.description?.split('\n').join('<br/>') || 'n/a',
                 }}
               />
             </DisclosurePanel>
@@ -474,8 +498,7 @@ export default function ProductDeatils({ params }: Record<string, any>) {
                 className="space-y-2"
                 dangerouslySetInnerHTML={{
                   __html:
-                    product?.specifications?.split('\n').join('<br/>') ||
-                    'n/a',
+                    product?.specifications?.split('\n').join('<br/>') || 'n/a',
                 }}
               />
             </DisclosurePanel>
@@ -497,9 +520,7 @@ export default function ProductDeatils({ params }: Record<string, any>) {
               <div
                 className="space-y-2"
                 dangerouslySetInnerHTML={{
-                  __html:
-                    product?.weight?.split('\n').join('<br/>') ||
-                    'n/a',
+                  __html: product?.weight?.split('\n').join('<br/>') || 'n/a',
                 }}
               />
             </DisclosurePanel>
@@ -522,26 +543,48 @@ export default function ProductDeatils({ params }: Record<string, any>) {
                 className="space-y-2"
                 dangerouslySetInnerHTML={{
                   __html:
-                    product?.dimention?.split('\n').join('<br/>') ||
-                    'n/a',
+                    product?.dimention?.split('\n').join('<br/>') || 'n/a',
                 }}
               />
             </DisclosurePanel>
           </Disclosure>
+          <Disclosure
+            as="div"
+            id="reviews"
+            className={'overflow-hidden border-b border-neutral-200'}
+            defaultOpen={false}
+          >
+            <DisclosureButton className="group w-full flex data-[open]:border-b items-center justify-between py-2.5 lg:py-3 px-4 lg:px-6 bg-white">
+              <span className="text-sm sm:text-base md:text-lg lg:text-xl text-neutral-800 font-semibold">
+                Reviews ({product?.review_count})
+              </span>
+              <div className="group-data-[open]:rotate-180 size-6 lg:size-8 flex items-center justify-center rounded-full bg-neutral-100">
+                <FaAngleDown className="text-sm lg:text-base text-[#344054]" />
+              </div>
+            </DisclosureButton>
+            <DisclosurePanel className="pt-4 lg:pt-5 text-sm lg:text-base bg-white text-neutral-500 px-4 lg:px-5 transition-all duration-0 pb-5">
+              <div className="">
+                {product?.review_count! > 0 ? (
+                  <p className="text-center">Reviews</p>
+                ) : (
+                  <p className="text-center">No Reviews</p>
+                )}
+              </div>
+            </DisclosurePanel>
+          </Disclosure>
         </div>
-        {
-          product?.banner && (
-            <div className="w-full h-[150px] md:h-[180px] lg:h-[200px] bg-secondary rounded-md mt-6 relative overflow-hidden mb-6">
-              <Image
-                src={bannerError ? temp_banner : config.imgUri + product?.banner}
-                fill
-                alt={'Product banner'}
-                onError={() => setBannerError(true)}
-                className="object-cover"
-                loading="lazy"
-              />
-            </div>)
-        }
+        {product?.banner && (
+          <div className="w-full h-[150px] md:h-[180px] lg:h-[200px] bg-secondary rounded-md mt-6 relative overflow-hidden mb-6">
+            <Image
+              src={bannerError ? temp_banner : config.imgUri + product?.banner}
+              fill
+              alt={'Product banner'}
+              onError={() => setBannerError(true)}
+              className="object-cover"
+              loading="lazy"
+            />
+          </div>
+        )}
       </div>
     </>
   );

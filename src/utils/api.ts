@@ -10,6 +10,7 @@ import {
   Country,
   Setting,
   CartItem,
+  siteSetting,
 } from '@/types';
 import fetcher, { api } from '@/utils/fetcher';
 import Cookies from 'js-cookie';
@@ -88,6 +89,7 @@ export const getCommon = async () => {
           name: string;
           code: string;
         };
+        site_setting: siteSetting;
       };
     }>('/common');
     return data;
@@ -143,7 +145,7 @@ export const getBrands = async (pageParam = 0) => {
   console.log('pageParam', pageParam);
   try {
     const res = await fetcher<{
-      data: { 
+      data: {
         data: Brand[];
         current_page: number;
         last_page: number;

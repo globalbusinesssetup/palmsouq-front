@@ -7,6 +7,7 @@ import {
   GoogleLoginPayload,
   LoginForm,
   Setting,
+  siteSetting,
 } from '@/types';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
@@ -94,6 +95,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     code: string;
   }>({ name: 'English', code: 'en' });
   const [setting, setSetting] = useState<Setting>();
+  const [siteSetting, setSiteSetting] = useState<siteSetting>();
 
   useEffect(() => {
     const storedOrders = localStorage.getItem('orders');
@@ -108,6 +110,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       setAbout(common?.about ?? []);
       setServices(common?.services ?? []);
       setSetting(common?.setting);
+      setSiteSetting(common?.site_setting);
       if (common?.default_language)
         setDefaultLanguage(common?.default_language);
     }
@@ -263,6 +266,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         removeOrders,
         countries,
         setting,
+        siteSetting,
       }}
     >
       {children}
