@@ -1,5 +1,5 @@
 'use client';
-import { Button, Header } from '@/components';
+import { Button, Header, Modal } from '@/components';
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
@@ -25,6 +25,13 @@ import { temp_banner } from '@/utils/helper';
 import Cookies from 'js-cookie';
 import { register } from 'swiper/element/bundle';
 import Rate from 'rc-rate';
+import { IoClose } from 'react-icons/io5';
+import {
+  AiOutlineDislike,
+  AiOutlineLike,
+  AiFillDislike,
+  AiFillLike,
+} from 'react-icons/ai';
 register();
 
 type CategoryProps = {
@@ -44,6 +51,8 @@ export default function ProductDeatils({ params }: Record<string, any>) {
   const [bannerError, setBannerError] = useState(false);
   const [wishListed, setWishListed] = useState(false);
   const queryClient = useQueryClient();
+  const [rate, setRate] = useState(0);
+  const [isRateOpen, setRateOpen] = useState(false);
 
   const {
     data: product,
@@ -562,13 +571,121 @@ export default function ProductDeatils({ params }: Record<string, any>) {
                 <FaAngleDown className="text-sm lg:text-base text-[#344054]" />
               </div>
             </DisclosureButton>
-            <DisclosurePanel className="pt-4 lg:pt-5 text-sm lg:text-base bg-white text-neutral-500 px-4 lg:px-5 transition-all duration-0 pb-5">
-              <div className="">
-                {product?.review_count! > 0 ? (
-                  <p className="text-center">Reviews</p>
-                ) : (
-                  <p className="text-center">No Reviews</p>
-                )}
+            <DisclosurePanel className="pt-4 lg:pt-5 bg-white px-4 lg:px-5 transition-all duration-0 pb-5">
+              {/* <h2 className="text-5xl font-bold text-neutral-800">Reviews</h2> */}
+              <div className="flex justify-between gap-x-10 px-6">
+                <div className="flex-1 text-sm text-neutral-800">
+                  <p>Rating Snapshot</p>
+                  <div className="mt-4 space-y-3">
+                    <div className="flex items-center gap-x-3">
+                      <p className="w-12">5 stars</p>
+                      <div className="h-3 flex-1 border border-gray-400 rounded-full bg-gray-300 overflow-hidden">
+                        <div className="w-2/3 h-full bg-primary" />
+                      </div>
+                      <p className="w-5">20</p>
+                    </div>
+                    <div className="flex items-center gap-x-3">
+                      <p className="w-12">4 stars</p>
+                      <div className="h-3 flex-1 border border-gray-400 rounded-full bg-gray-300 overflow-hidden">
+                        <div className="w-[10%] h-full bg-primary" />
+                      </div>
+                      <p className="w-5">1</p>
+                    </div>
+                    <div className="flex items-center gap-x-3">
+                      <p className="w-12">3 stars</p>
+                      <div className="h-3 flex-1 border border-gray-400 rounded-full bg-gray-300 overflow-hidden">
+                        <div className="w-1/6 h-full bg-primary" />
+                      </div>
+                      <p className="w-5">2</p>
+                    </div>
+                    <div className="flex items-center gap-x-3">
+                      <p className="w-12">2 stars</p>
+                      <div className="h-3 flex-1 border border-gray-400 rounded-full bg-gray-300 overflow-hidden">
+                        <div className="w-3/12 h-full bg-primary" />
+                      </div>
+                      <p className="w-5">2</p>
+                    </div>
+                    <div className="flex items-center gap-x-3">
+                      <p className="w-12">1 stars</p>
+                      <div className="h-3 flex-1 border border-gray-400 rounded-full bg-gray-300 overflow-hidden">
+                        <div className="w-1/12 h-full bg-primary" />
+                      </div>
+                      <p className="w-5">6</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex-1 text-sm text-neutral-800">
+                  <p>Overall Rating</p>
+                  <div className="mt-4 flex items-end gap-x-4">
+                    <h3 className="text-5xl font-semibold">3.9</h3>
+                    <div className="">
+                      <Rate value={4} disabled style={{ fontSize: 20 }} />
+                      <p className="font-semibold">31 Reviews</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex-1 text-sm text-neutral-800">
+                  <p>Review this Product</p>
+                  <Rate
+                    value={rate}
+                    onChange={(r) => {
+                      if (isLoggedIn) {
+                        setRateOpen(true);
+                        setRate(r);
+                      } else {
+                        toast.warn('Unauthorized! sign in first.');
+                      }
+                    }}
+                    style={{ fontSize: 40 }}
+                  />
+                  <p>
+                    Adding a review will require a valid email for verification
+                  </p>
+                </div>
+              </div>
+              <div className="mt-8 space-y-3 px-6">
+                <div className="">
+                  <div className="flex items-center gap-x-3">
+                    <div className="size-9 rounded-full bg-primary flex items-center justify-center">
+                      <p className="font-semibold text-center text-white">S</p>
+                    </div>
+                    <p className="text-neutral-800 text-sm">Shazzad Hossen</p>
+                  </div>
+                  <div className="mt-3 flex items-center gap-x-2 text-sm font-semibold text-neutral-600">
+                    <Rate value={2} disabled />
+                    <p className="text-xs font-normal text-neutral-500">
+                      {'December 9, 2024'}
+                    </p>
+                  </div>
+                  <p className="text-xs font-normal text-neutral-500 mt-2 lg:max-w-[60%]">
+                    {`Title: Lag Issues on Low-End Devices. "I’ve been playing
+                    Free Fire for a long time and always enjoyed the game.
+                    However, after recent updates, I’ve noticed significant lag,
+                    even on devices with 3GB RAM. The game used to run smoothly
+                    on 2GB RAM, but now it lags, even with low graphics
+                    settings. The lag makes it difficult to enjoy gameplay,
+                    especially during battles. Please optimize the game for
+                    low-end devices or release a lighter version to ensure a
+                    better experience for all players."`}
+                  </p>
+                  <div className="flex items-center gap-x-2 mt-2">
+                    <p className="text-xs font-normal text-neutral-500">
+                      Helpful?{' '}
+                    </p>
+                    <button className="flex items-start gap-1">
+                      <AiOutlineLike />
+                      <p className="text-tiny font-normal text-neutral-500">
+                        (0)
+                      </p>
+                    </button>
+                    <button className="flex items-start gap-1">
+                      <AiOutlineDislike />
+                      <p className="text-tiny font-normal text-neutral-500">
+                        (0)
+                      </p>
+                    </button>
+                  </div>
+                </div>
               </div>
             </DisclosurePanel>
           </Disclosure>
@@ -586,6 +703,33 @@ export default function ProductDeatils({ params }: Record<string, any>) {
           </div>
         )}
       </div>
+      <Modal show={isRateOpen} onClose={() => setRateOpen(false)}>
+        <div className="">
+          <div className="flex items-center justify-between mb-1">
+            <p>Review this Product</p>
+            <button onClick={() => setRateOpen(false)}>
+              <IoClose size={20} />
+            </button>
+          </div>
+          <Rate
+            value={rate}
+            onChange={(r) => setRate(r)}
+            style={{ fontSize: 40 }}
+          />
+          <div className="">
+            <label htmlFor="review" className="label">
+              Review
+            </label>
+            <textarea
+              id="review"
+              maxLength={500}
+              className="custom-input mt-1.5 text-sm "
+              placeholder="Example: i bought this a month ago and i am so happy with it"
+              rows={6}
+            />
+          </div>
+        </div>
+      </Modal>
     </>
   );
 }
