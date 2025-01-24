@@ -1,5 +1,5 @@
 'use client';
-import { Image } from '@/components';
+import { Button, Image } from '@/components';
 import Link from 'next/link';
 import React, { useEffect, useRef, useState } from 'react';
 import { RiUserSharedLine, RiWhatsappFill } from 'react-icons/ri';
@@ -64,6 +64,8 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const { logOut } = useAuth();
+
+  const onClose = () => setIsOpen(false);
 
   useEffect(() => {
     if (query && isFocus) {
@@ -214,9 +216,18 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
               )}
             </div>
           )}
-          <button className="md:hidden" onClick={() => setIsOpen(true)}>
-            <FaBars className="text-xl sm:text-2xl text-green" />
-          </button>
+          <div className="flex md:hidden items-center gap-x-4">
+            <Link href={'/cart'} className="flex items-center gap-x-1 relative">
+              <p className="text-tiny font-medium xl:font-semibold uppercase absolute -top-1.5 -right-1.5 bg-green text-white rounded-full w-4 h-4 flex items-center justify-center">
+                {profile?.cart_count}
+                {/* AED */}
+              </p>
+              <FiShoppingBag className="text-2xl xl:text-[26px] text-green" />
+            </Link>
+            <button className="md:hidden" onClick={() => setIsOpen(true)}>
+              <FaBars className="text-xl sm:text-2xl text-green" />
+            </button>
+          </div>
           {isLoading ? (
             <div className="hidden md:flex items-center gap-x-2 md:gap-x-4">
               <div className="hidden md:flex items-center gap-x-3 p-2">
@@ -338,9 +349,13 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
         </div>
       </header>
       <Drawer open={isOpen} onClose={() => setIsOpen(false)} direction="left">
-        <div className="p-4">
+        <div className="p-4 h-full">
           <div className="flex items-center justify-between">
-            <Link href={'/'} className="w-24 h-10 block relative">
+            <Link
+              onClick={onClose}
+              href={'/'}
+              className="w-24 h-10 block relative"
+            >
               <Image
                 defaultSrc="/header_logo.png"
                 isLocal
@@ -350,7 +365,7 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
               />
             </Link>
             <button
-              onClick={() => setIsOpen(false)}
+              onClick={onClose}
               className="size-6 rounded-full flex items-center justify-center bg-slate-100"
             >
               <FiPlus className="rotate-45" />
@@ -361,6 +376,17 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
               <>
                 <li>
                   <Link
+                    onClick={onClose}
+                    href={'/dashboard/profile'}
+                    className="flex items-center gap-x-1 text-[#6B7280] hover:text-primary/90 py-2 text-sm xl:text-base font-medium xl:font-semibold"
+                  >
+                    <FiUser className="text-lg" />
+                    My Account
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    onClick={onClose}
                     href={'/dashboard/cart'}
                     className="flex items-center gap-x-1 text-[#6B7280] hover:text-primary/90 py-2 text-sm xl:text-base font-medium xl:font-semibold"
                   >
@@ -370,6 +396,7 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
                 </li>
                 <li>
                   <Link
+                    onClick={onClose}
                     href={'/dashboard/wishlist'}
                     className="flex items-center gap-x-1 text-[#6B7280] hover:text-primary/90 py-2 text-sm xl:text-base font-medium xl:font-semibold"
                   >
@@ -377,20 +404,12 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
                     My Wislist
                   </Link>
                 </li>
-                <li>
-                  <Link
-                    href={'/dashboard/profile'}
-                    className="flex items-center gap-x-1 text-[#6B7280] hover:text-primary/90 py-2 text-sm xl:text-base font-medium xl:font-semibold"
-                  >
-                    <FiUser className="text-lg" />
-                    My Account
-                  </Link>
-                </li>
               </>
             ) : (
               <>
                 <li>
                   <Link
+                    onClick={onClose}
                     href={'/cart'}
                     className="flex items-center gap-x-1 text-[#6B7280] hover:text-primary/90 py-2 text-sm xl:text-base font-medium xl:font-semibold"
                   >
@@ -400,6 +419,7 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
                 </li>
                 <li>
                   <Link
+                    onClick={onClose}
                     href={'/orders'}
                     className="flex items-center gap-x-1 text-[#6B7280] hover:text-primary/90 py-2 text-sm xl:text-base font-medium xl:font-semibold"
                   >
@@ -411,6 +431,7 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
             )}
             <li>
               <Link
+                onClick={onClose}
                 href={'/track-order'}
                 className="flex items-center gap-x-1 text-[#6B7280] hover:text-primary/90 py-2 text-sm xl:text-base font-medium xl:font-semibold"
               >
@@ -431,6 +452,7 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
             ))} */}
             <li className="">
               <Link
+                onClick={onClose}
                 href={'#'}
                 className="text-green hover:text-primary/90 pt-2 pb-3 uppercase items-center gap-x-2 text-sm xl:text-base font-medium xl:font-semibold flex"
               >
@@ -452,6 +474,7 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
               <>
                 <li className="pt-8">
                   <Link
+                    onClick={onClose}
                     href={'/auth/sign-in'}
                     className="text-sm xl:text-base font-medium xl:font-semibold py-2 border border-primary rounded flex items-center justify-center gap-x-1 text-primary"
                   >
@@ -461,6 +484,7 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
                 </li>
                 <li>
                   <Link
+                    onClick={onClose}
                     href={'/auth/register'}
                     className="text-sm xl:text-base font-medium xl:font-semibold py-2 mt-3 border border-primary rounded flex items-center justify-center gap-x-1 text-primary"
                   >
@@ -471,6 +495,11 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
               </>
             )}
           </ul>
+          {isLoggedIn && (
+            <Button onClick={logOut} outlined className="mt-[50%]">
+              Log Out
+            </Button>
+          )}
         </div>
       </Drawer>
     </>
