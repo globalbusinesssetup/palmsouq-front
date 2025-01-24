@@ -1,5 +1,5 @@
 'use client';
-import { Button, Header } from '@/components';
+import { Button, Header, Modal } from '@/components';
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
@@ -24,6 +24,14 @@ import ImageMagnifier from '@/components/common/ImageMagnifier';
 import { temp_banner } from '@/utils/helper';
 import Cookies from 'js-cookie';
 import { register } from 'swiper/element/bundle';
+import Rate from 'rc-rate';
+import { IoClose } from 'react-icons/io5';
+import {
+  AiOutlineDislike,
+  AiOutlineLike,
+  AiFillDislike,
+  AiFillLike,
+} from 'react-icons/ai';
 register();
 
 type CategoryProps = {
@@ -43,6 +51,8 @@ export default function ProductDeatils({ params }: Record<string, any>) {
   const [bannerError, setBannerError] = useState(false);
   const [wishListed, setWishListed] = useState(false);
   const queryClient = useQueryClient();
+  const [rate, setRate] = useState(0);
+  const [isRateOpen, setRateOpen] = useState(false);
 
   const {
     data: product,
@@ -53,10 +63,10 @@ export default function ProductDeatils({ params }: Record<string, any>) {
     queryFn: () => getProduct(params.id),
   });
 
-  const { data: wishlist, isLoading:wishListLoading } = useQuery({
-      queryKey: ['wishlist', isLoggedIn],
-      queryFn: () => getWishList(),
-    });
+  const { data: wishlist, isLoading: wishListLoading } = useQuery({
+    queryKey: ['wishlist', isLoggedIn],
+    queryFn: () => getWishList(),
+  });
 
   const handleQuantity = (type: 'minus' | 'plus' | number) => {
     if (quantity > 9 && type === 'plus') {
@@ -151,13 +161,15 @@ export default function ProductDeatils({ params }: Record<string, any>) {
 
   useEffect(() => {
     if (wishlist) {
-      const isWishListed = wishlist?.some((pd: any) => pd.product_id == params?.id);
+      const isWishListed = wishlist?.some(
+        (pd: any) => pd.product_id == params?.id
+      );
       console.log('isWishListed =>', isWishListed);
       console.log('isWishListed =>', params?.id);
       console.log('isWishListed =>', wishlist);
       setWishListed(isWishListed);
     }
-  },[wishlist]);
+  }, [wishlist]);
 
   if (isLoading) {
     return (
@@ -327,6 +339,21 @@ export default function ProductDeatils({ params }: Record<string, any>) {
               <h2 className="text-xl lg:text-2xl text-black font-semibold mt-1">
                 {product?.title}
               </h2>
+              <div className="flex items-center gap-x-2 font-semibold text-neutral-600">
+                <Rate
+                  value={product?.rating}
+                  allowHalf
+                  disabled
+                  style={{ fontSize: '30px' }}
+                />
+                <p>{product?.rating}</p>
+                <p>
+                  ({product?.review_count}){' '}
+                  <Link href={'#reviews'} className="hover:underline">
+                    See reviews
+                  </Link>
+                </p>
+              </div>
               <div className="flex flex-row items-center gap-x-3 border-b border-[#E6E6E6]">
                 <div className="flex-1 flex flex-wrap items-center gap-2 xl:gap-3 py-4">
                   <p
@@ -350,10 +377,15 @@ export default function ProductDeatils({ params }: Record<string, any>) {
                     {Number(product?.stock) > 0 ? 'In Stock' : 'Stock out'}
                   </p>
                 </div>
-                <button disabled={!isLoggedIn || wishListed} onClick={addToWishlist}>
-                  {
-                    wishListed ? <FaHeart size={26} /> : <FaRegHeart size={26} />
-                  }
+                <button
+                  disabled={!isLoggedIn || wishListed}
+                  onClick={addToWishlist}
+                >
+                  {wishListed ? (
+                    <FaHeart size={26} />
+                  ) : (
+                    <FaRegHeart size={26} />
+                  )}
                 </button>
               </div>
               <div className="flex items-end justify-between pt-8 pb-4">
@@ -451,7 +483,8 @@ export default function ProductDeatils({ params }: Record<string, any>) {
               <div
                 className="space-y-2"
                 dangerouslySetInnerHTML={{
-                  __html: product?.description?.split('\n').join('<br/>') || 'n/a',
+                  __html:
+                    product?.description?.split('\n').join('<br/>') || 'n/a',
                 }}
               />
             </DisclosurePanel>
@@ -474,8 +507,7 @@ export default function ProductDeatils({ params }: Record<string, any>) {
                 className="space-y-2"
                 dangerouslySetInnerHTML={{
                   __html:
-                    product?.specifications?.split('\n').join('<br/>') ||
-                    'n/a',
+                    product?.specifications?.split('\n').join('<br/>') || 'n/a',
                 }}
               />
             </DisclosurePanel>
@@ -497,9 +529,7 @@ export default function ProductDeatils({ params }: Record<string, any>) {
               <div
                 className="space-y-2"
                 dangerouslySetInnerHTML={{
-                  __html:
-                    product?.weight?.split('\n').join('<br/>') ||
-                    'n/a',
+                  __html: product?.weight?.split('\n').join('<br/>') || 'n/a',
                 }}
               />
             </DisclosurePanel>
@@ -522,27 +552,184 @@ export default function ProductDeatils({ params }: Record<string, any>) {
                 className="space-y-2"
                 dangerouslySetInnerHTML={{
                   __html:
-                    product?.dimention?.split('\n').join('<br/>') ||
-                    'n/a',
+                    product?.dimention?.split('\n').join('<br/>') || 'n/a',
                 }}
               />
             </DisclosurePanel>
           </Disclosure>
+          <Disclosure
+            as="div"
+            id="reviews"
+            className={'overflow-hidden border-b border-neutral-200'}
+            defaultOpen={false}
+          >
+            <DisclosureButton className="group w-full flex data-[open]:border-b items-center justify-between py-2.5 lg:py-3 px-4 lg:px-6 bg-white">
+              <span className="text-sm sm:text-base md:text-lg lg:text-xl text-neutral-800 font-semibold">
+                Reviews ({product?.review_count})
+              </span>
+              <div className="group-data-[open]:rotate-180 size-6 lg:size-8 flex items-center justify-center rounded-full bg-neutral-100">
+                <FaAngleDown className="text-sm lg:text-base text-[#344054]" />
+              </div>
+            </DisclosureButton>
+            <DisclosurePanel className="pt-4 lg:pt-5 bg-white px-4 lg:px-5 transition-all duration-0 pb-5">
+              {/* <h2 className="text-5xl font-bold text-neutral-800">Reviews</h2> */}
+              <div className="flex justify-between gap-x-10 px-6">
+                <div className="flex-1 text-sm text-neutral-800">
+                  <p>Rating Snapshot</p>
+                  <div className="mt-4 space-y-3">
+                    <div className="flex items-center gap-x-3">
+                      <p className="w-12">5 stars</p>
+                      <div className="h-3 flex-1 border border-gray-400 rounded-full bg-gray-300 overflow-hidden">
+                        <div className="w-2/3 h-full bg-primary" />
+                      </div>
+                      <p className="w-5">20</p>
+                    </div>
+                    <div className="flex items-center gap-x-3">
+                      <p className="w-12">4 stars</p>
+                      <div className="h-3 flex-1 border border-gray-400 rounded-full bg-gray-300 overflow-hidden">
+                        <div className="w-[10%] h-full bg-primary" />
+                      </div>
+                      <p className="w-5">1</p>
+                    </div>
+                    <div className="flex items-center gap-x-3">
+                      <p className="w-12">3 stars</p>
+                      <div className="h-3 flex-1 border border-gray-400 rounded-full bg-gray-300 overflow-hidden">
+                        <div className="w-1/6 h-full bg-primary" />
+                      </div>
+                      <p className="w-5">2</p>
+                    </div>
+                    <div className="flex items-center gap-x-3">
+                      <p className="w-12">2 stars</p>
+                      <div className="h-3 flex-1 border border-gray-400 rounded-full bg-gray-300 overflow-hidden">
+                        <div className="w-3/12 h-full bg-primary" />
+                      </div>
+                      <p className="w-5">2</p>
+                    </div>
+                    <div className="flex items-center gap-x-3">
+                      <p className="w-12">1 stars</p>
+                      <div className="h-3 flex-1 border border-gray-400 rounded-full bg-gray-300 overflow-hidden">
+                        <div className="w-1/12 h-full bg-primary" />
+                      </div>
+                      <p className="w-5">6</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex-1 text-sm text-neutral-800">
+                  <p>Overall Rating</p>
+                  <div className="mt-4 flex items-end gap-x-4">
+                    <h3 className="text-5xl font-semibold">3.9</h3>
+                    <div className="">
+                      <Rate value={4} disabled style={{ fontSize: 20 }} />
+                      <p className="font-semibold">31 Reviews</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex-1 text-sm text-neutral-800">
+                  <p>Review this Product</p>
+                  <Rate
+                    value={rate}
+                    onChange={(r) => {
+                      if (isLoggedIn) {
+                        setRateOpen(true);
+                        setRate(r);
+                      } else {
+                        toast.warn('Unauthorized! sign in first.');
+                      }
+                    }}
+                    style={{ fontSize: 40 }}
+                  />
+                  <p>
+                    Adding a review will require a valid email for verification
+                  </p>
+                </div>
+              </div>
+              <div className="mt-8 space-y-3 px-6">
+                <div className="">
+                  <div className="flex items-center gap-x-3">
+                    <div className="size-9 rounded-full bg-primary flex items-center justify-center">
+                      <p className="font-semibold text-center text-white">S</p>
+                    </div>
+                    <p className="text-neutral-800 text-sm">Shazzad Hossen</p>
+                  </div>
+                  <div className="mt-3 flex items-center gap-x-2 text-sm font-semibold text-neutral-600">
+                    <Rate value={2} disabled />
+                    <p className="text-xs font-normal text-neutral-500">
+                      {'December 9, 2024'}
+                    </p>
+                  </div>
+                  <p className="text-xs font-normal text-neutral-500 mt-2 lg:max-w-[60%]">
+                    {`Title: Lag Issues on Low-End Devices. "I’ve been playing
+                    Free Fire for a long time and always enjoyed the game.
+                    However, after recent updates, I’ve noticed significant lag,
+                    even on devices with 3GB RAM. The game used to run smoothly
+                    on 2GB RAM, but now it lags, even with low graphics
+                    settings. The lag makes it difficult to enjoy gameplay,
+                    especially during battles. Please optimize the game for
+                    low-end devices or release a lighter version to ensure a
+                    better experience for all players."`}
+                  </p>
+                  <div className="flex items-center gap-x-2 mt-2">
+                    <p className="text-xs font-normal text-neutral-500">
+                      Helpful?{' '}
+                    </p>
+                    <button className="flex items-start gap-1">
+                      <AiOutlineLike />
+                      <p className="text-tiny font-normal text-neutral-500">
+                        (0)
+                      </p>
+                    </button>
+                    <button className="flex items-start gap-1">
+                      <AiOutlineDislike />
+                      <p className="text-tiny font-normal text-neutral-500">
+                        (0)
+                      </p>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </DisclosurePanel>
+          </Disclosure>
         </div>
-        {
-          product?.banner && (
-            <div className="w-full h-[150px] md:h-[180px] lg:h-[200px] bg-secondary rounded-md mt-6 relative overflow-hidden mb-6">
-              <Image
-                src={bannerError ? temp_banner : config.imgUri + product?.banner}
-                fill
-                alt={'Product banner'}
-                onError={() => setBannerError(true)}
-                className="object-cover"
-                loading="lazy"
-              />
-            </div>)
-        }
+        {product?.banner && (
+          <div className="w-full h-[150px] md:h-[180px] lg:h-[200px] bg-secondary rounded-md mt-6 relative overflow-hidden mb-6">
+            <Image
+              src={bannerError ? temp_banner : config.imgUri + product?.banner}
+              fill
+              alt={'Product banner'}
+              onError={() => setBannerError(true)}
+              className="object-cover"
+              loading="lazy"
+            />
+          </div>
+        )}
       </div>
+      <Modal show={isRateOpen} onClose={() => setRateOpen(false)}>
+        <div className="">
+          <div className="flex items-center justify-between mb-1">
+            <p>Review this Product</p>
+            <button onClick={() => setRateOpen(false)}>
+              <IoClose size={20} />
+            </button>
+          </div>
+          <Rate
+            value={rate}
+            onChange={(r) => setRate(r)}
+            style={{ fontSize: 40 }}
+          />
+          <div className="">
+            <label htmlFor="review" className="label">
+              Review
+            </label>
+            <textarea
+              id="review"
+              maxLength={500}
+              className="custom-input mt-1.5 text-sm "
+              placeholder="Example: i bought this a month ago and i am so happy with it"
+              rows={6}
+            />
+          </div>
+        </div>
+      </Modal>
     </>
   );
 }

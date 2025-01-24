@@ -38,6 +38,7 @@ export type AuthContextTypes = {
   };
   countries: { [key: string]: Country };
   setting?: Setting;
+  siteSetting?: siteSetting;
 };
 
 type UserType = 'personal' | 'business';
@@ -410,4 +411,15 @@ export type Setting = {
   zip: string;
   email: string;
   phone: number;
+};
+
+export type siteSetting = {
+  api_base: string;
+  copyright_text: string;
+  header_logo: string;
+  footer_logo: string;
+  email_logo: string;
+  meta_description: string;
+  meta_title: string;
+  site_name: string;
 };

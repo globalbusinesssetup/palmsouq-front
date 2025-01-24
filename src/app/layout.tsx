@@ -4,6 +4,7 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import 'react-phone-input-2/lib/style.css';
 import 'swiper/css';
+import 'rc-rate/assets/index.css';
 import { ToastContainer } from 'react-toastify';
 import AuthProvider from '@/context/AuthContext';
 import 'react-toastify/dist/ReactToastify.css';
@@ -21,7 +22,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  
   const queryClient = new QueryClient();
 
   return (

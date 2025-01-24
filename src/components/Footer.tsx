@@ -1,8 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
-import { currentYear, footerLinks, paymentIcons } from '@/constants';
+import { currentYear } from '@/constants';
 import useAuth from '@/hooks/useAuth';
-import config from '@/config';
 import { Image } from './common';
 
 const quickLinks = [
@@ -25,7 +24,7 @@ const quickLinks = [
 ];
 
 const Footer = () => {
-  const { about, payment, social, services } = useAuth();
+  const { about, payment, social, services, siteSetting } = useAuth();
   return (
     <footer className="bg-primary">
       <div className="container mx-auto py-[50px] px-4 sm:px-5">
@@ -140,8 +139,9 @@ const Footer = () => {
         <div className="flex flex-col lg:flex-row items-center justify-between pt-4 gap-y-4">
           <div className="flex flex-col lg:flex-row items-center lg:items-end gap-2">
             <Image
-              defaultSrc="/footer_logo.png"
-              isLocal
+              src={siteSetting?.footer_logo}
+              // defaultSrc="/footer_logo.png"
+              // isLocal
               width={127}
               height={32}
               alt="logo"
