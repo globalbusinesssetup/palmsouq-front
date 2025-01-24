@@ -63,7 +63,7 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
   const modalRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const { logOut } = useAuth();
+  const { logOut, siteSetting } = useAuth();
 
   useEffect(() => {
     if (query && isFocus) {
@@ -99,8 +99,9 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
               className="w-[90px] sm:w-[110px] md:w-[136px] lg:w-[156px] xl:w-[176px] h-10 sm:h-14 relative"
             >
               <Image
-                defaultSrc="/header_logo.png"
-                isLocal
+                // defaultSrc="/header_logo.png"
+                src={siteSetting?.header_logo}
+                // isLocal
                 fill
                 alt="logo"
                 className="object-fit"
