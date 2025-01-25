@@ -643,7 +643,7 @@ export default function ProductDeatils({ params }: Record<string, any>) {
                   </p>
                 </div>
               </div>
-              <div className="mt-8 space-y-3 px-6">
+              {/* <div className="mt-8 space-y-3 px-6">
                 <div className="">
                   <div className="flex items-center gap-x-3">
                     <div className="size-9 rounded-full bg-primary flex items-center justify-center">
@@ -686,7 +686,7 @@ export default function ProductDeatils({ params }: Record<string, any>) {
                     </button>
                   </div>
                 </div>
-              </div>
+              </div> */}
             </DisclosurePanel>
           </Disclosure>
         </div>

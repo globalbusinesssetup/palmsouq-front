@@ -362,9 +362,6 @@ const Row = ({
   onDelete: () => void;
   pd: any;
 }) => {
-  const router = useRouter();
-  const [isPreviewOpen, setPreviewOpen] = useState(false);
-  const [isFilePreviewOpen, setFilePreviewOpen] = useState(false);
   const [isDeleteLoading, setDeleteLoading] = useState(false);
 
   const handleDelete = async () => {
@@ -380,7 +377,10 @@ const Row = ({
 
   return (
     <>
-      <tr className="border-b border-neutral-200">
+      <tr
+        onClick={onChange}
+        className="border-b border-neutral-200 cursor-pointer"
+      >
         <td className="py-4 pl-6 pr-2">
           <CheckBox checked={pd?.selected === '1'} onChange={onChange} />
         </td>
@@ -414,12 +414,12 @@ const Row = ({
         </td>
         <td className="py-4 overflow-hidden pr-2">
           <div className="max-w-[200px] overflow-hidden">
-            <Link
-              href={`/cart/${pd?.flash_product?.slug}/${pd?.flash_product?.id}`}
+            <p
+              // href={`/cart/${pd?.flash_product?.slug}/${pd?.flash_product?.id}`}
               className="text-sm text-neutral-600 font-semibold whitespace-nowrap text-ellipsis"
             >
               {pd?.flash_product?.title}
-            </Link>
+            </p>
           </div>
         </td>
         <td className="py-4 text-neutral-500 text-sm pr-2">{pd?.quantity}</td>
