@@ -19,9 +19,8 @@ import { timezone } from './helper';
 export const useGetUser = async () => {
   const token = Cookies.get('user_token');
   try {
-    const data = await fetcher<ProfileApiResponse>(
-      `/user/profile?user_token=${token}`
-    );
+    const url = token ? `/user/profile?user_token=${token}` : '/user/profile';
+    const data = await fetcher<ProfileApiResponse>(url);
     return data;
   } catch (err) {
     console.error(err);

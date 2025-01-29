@@ -158,6 +158,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
           sameSite: 'lax',
           expires: dayjs(res.data?.data.expires_in).toDate(),
         });
+        setUserToken(null);
         setToken(token);
         queryClient.invalidateQueries({ queryKey: ['user'] });
         router.push('/dashboard/profile');
@@ -197,6 +198,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
           sameSite: 'lax',
           expires: dayjs(decoded.exp).toDate(),
         });
+        setUserToken(null);
         setToken(token);
         queryClient.invalidateQueries({ queryKey: ['user'] });
         router.push('/dashboard/profile');
