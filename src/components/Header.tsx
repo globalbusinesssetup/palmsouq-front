@@ -264,7 +264,7 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
                       <p className="text-tiny lg:text-xs text-left">
                         Hi,{' '}
                         <span className=" capitalize">
-                          {profile?.first_name}
+                          {profile?.first_name ?? 'User'}
                         </span>
                       </p>
                       <span className="flex items-center gap-x-1">
