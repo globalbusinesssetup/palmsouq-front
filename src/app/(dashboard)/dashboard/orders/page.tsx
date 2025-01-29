@@ -185,7 +185,9 @@ const Row = ({ order, i }: { order: any; i: number }) => {
   const [isPayOpen, setPayOpen] = useState(false);
   const [isFilePreviewOpen, setFilePreviewOpen] = useState(false);
   const [status, setStatus] = useState<StatusTypes>(
-    order?.cancelled === 1 ? 'cancelled' : getCurrentStatus(order?.status)
+    order?.cancelled === 1 || order.status === '6'
+      ? 'cancelled'
+      : getCurrentStatus(order?.status)
   );
   const { toPDF, targetRef } = usePDF({
     filename: `Invoice-${order.order}.pdf`,
@@ -275,7 +277,7 @@ const Row = ({ order, i }: { order: any; i: number }) => {
         <td className="py-4">
           <Tag
             status={
-              order?.cancelled === 1
+              order?.cancelled === 1 || order.status === '6'
                 ? 'cancelled'
                 : getCurrentStatus(order?.status)
             }
@@ -313,7 +315,7 @@ const Row = ({ order, i }: { order: any; i: number }) => {
                 </h5>
                 <Tag
                   status={
-                    order?.cancelled === 1
+                    order?.cancelled === 1 || order.status === '6'
                       ? 'cancelled'
                       : getCurrentStatus(order?.status)
                   }
@@ -333,6 +335,11 @@ const Row = ({ order, i }: { order: any; i: number }) => {
                   </p>
                 </div>
               </div>
+              {order.status === '6' && (
+                <p className="text-tiny sm:text-xs font-light text-error mt-3">
+                  Order Cancelled by Palmsouq
+                </p>
+              )}
               {/* <div className="mt-3 hidden md:block">
                 <p className="text-sm text-neutral-500 ">
                   <span className="font-bold">Order method</span> :{' '}
@@ -347,7 +354,7 @@ const Row = ({ order, i }: { order: any; i: number }) => {
               </div> */}
             </div>
             <div
-              aria-disabled={order?.cancelled === 1}
+              aria-disabled={order?.cancelled === 1 || order.status === '6'}
               className="flex flex-col items-end aria-disabled:opacity-40"
             >
               <div className="mb-3 md:hidden">
@@ -375,7 +382,7 @@ const Row = ({ order, i }: { order: any; i: number }) => {
                 {order.status === '1' ? (
                   <Button
                     outlined
-                    disabled={order?.cancelled === 1}
+                    disabled={order?.cancelled === 1 || order.status === '6'}
                     onClick={() => {
                       setOpen(false);
                       setFilePreviewOpen(true);

@@ -425,6 +425,24 @@ export default function ProductDeatils({ params }: Record<string, any>) {
                   </p>
                 </div>
               </div>
+              <div className="flex lg:hidden justify-end gap-x-4 mt-4">
+                <Button
+                  disabled={Number(product?.stock) < 1}
+                  loading={isSubmitLoading}
+                  onClick={addToCart}
+                  className="h-11 w-[167px]"
+                >
+                  Add to Cart
+                </Button>
+                <Button
+                  disabled={Number(product?.stock) < 1}
+                  loading={isSubmitLoading}
+                  onClick={buyNow}
+                  className="h-11 w-[167px] bg-success border-success"
+                >
+                  Buy it Now
+                </Button>
+              </div>
               <div
                 className="py-2.5 lg:py-4"
                 dangerouslySetInnerHTML={{
@@ -433,7 +451,7 @@ export default function ProductDeatils({ params }: Record<string, any>) {
               />
             </div>
             <div className="">
-              <div className="flex justify-end gap-x-4 mt-8">
+              <div className="hidden lg:flex justify-end gap-x-4 mt-8">
                 <Button
                   disabled={Number(product?.stock) < 1}
                   loading={isSubmitLoading}
