@@ -425,7 +425,7 @@ export default function ProductDeatils({ params }: Record<string, any>) {
                   </p>
                 </div>
               </div>
-              <div className="flex lg:hidden justify-end gap-x-4 mt-4">
+              <div className="flex justify-end gap-x-4 my-2">
                 <Button
                   disabled={Number(product?.stock) < 1}
                   loading={isSubmitLoading}
@@ -451,7 +451,7 @@ export default function ProductDeatils({ params }: Record<string, any>) {
               />
             </div>
             <div className="">
-              <div className="hidden lg:flex justify-end gap-x-4 mt-8">
+              {/* <div className="hidden lg:flex justify-end gap-x-4 mt-8">
                 <Button
                   disabled={Number(product?.stock) < 1}
                   loading={isSubmitLoading}
@@ -468,7 +468,7 @@ export default function ProductDeatils({ params }: Record<string, any>) {
                 >
                   Buy it Now
                 </Button>
-              </div>
+              </div> */}
               <div className="mt-5 sm:mt-8 px-3 sm:px-4 py-1 xs:py-2 sm:py-3 xl:py-3.5 border border-dashed border-neutral-400 rounded-lg xl:rounded-[10px] flex items-center justify-between">
                 <p className="text-tiny sm:text-xs xl:text-sm text-neutral-600 flex-1">
                   Based on selection, your order will be ready within next
