@@ -305,7 +305,6 @@ const Checkout = () => {
         return;
       }
       setOrder(res.data?.data);
-      setSubmitLoading(false);
       if (orderMethod === 2) {
         await api.get(
           `/order/send-order-email/${res.data?.data?.id}?id=${res.data?.data?.id}&user_token=${token}&time_zone=${timezone}`
@@ -314,6 +313,7 @@ const Checkout = () => {
       } else {
         setOpen(true);
       }
+      setSubmitLoading(false);
     } catch (error) {
       console.log(error);
     }

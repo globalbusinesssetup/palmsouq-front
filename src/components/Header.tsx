@@ -98,16 +98,20 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
           <div className="flex items-center gap-6">
             <Link
               href={'/'}
-              className="w-[90px] sm:w-[110px] md:w-[136px] lg:w-[156px] xl:w-[176px] h-10 sm:h-14 relative"
+              className={`w-[90px] sm:w-[110px] md:w-[136px] lg:w-[156px] xl:w-[176px] h-10 sm:h-14 relative ${
+                isLoading && 'bg-gray-200 rounded animate-pulse'
+              }`}
             >
-              <Image
-                // defaultSrc="/header_logo.png"
-                src={siteSetting?.header_logo}
-                // isLocal
-                fill
-                alt="logo"
-                className="object-fit"
-              />
+              {!isLoading && (
+                <Image
+                  // defaultSrc="/header_logo.png"
+                  src={siteSetting?.header_logo}
+                  // isLocal
+                  fill
+                  alt="logo"
+                  className="object-fit"
+                />
+              )}
             </Link>
             <div className="py-1 px-2 items-center gap-x-3 hidden lg:flex">
               <Link
