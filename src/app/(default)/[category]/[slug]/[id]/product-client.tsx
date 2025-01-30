@@ -339,20 +339,22 @@ export default function ProductDeatils({ params }: Record<string, any>) {
               <h2 className="text-xl lg:text-2xl text-black font-semibold mt-1">
                 {product?.title}
               </h2>
-              <div className="flex items-center gap-x-2 font-semibold text-neutral-600">
+              <div className="flex items-center flex-wrap gap-x-2 font-semibold text-neutral-600">
                 <Rate
                   value={product?.rating}
                   allowHalf
                   disabled
                   style={{ fontSize: '30px' }}
                 />
-                <p>{product?.rating}</p>
-                <p>
-                  ({product?.review_count}){' '}
-                  <Link href={'#reviews'} className="hover:underline">
-                    See reviews
-                  </Link>
-                </p>
+                <div className="flex-1 flex items-center text-nowrap text-sm sm:text-base">
+                  <p>{product?.rating}</p>
+                  <p>
+                    ({product?.review_count}){' '}
+                    <Link href={'#reviews'} className="hover:underline">
+                      See reviews
+                    </Link>
+                  </p>
+                </div>
               </div>
               <div className="flex flex-row items-center gap-x-3 border-b border-[#E6E6E6]">
                 <div className="flex-1 flex flex-wrap items-center gap-2 xl:gap-3 py-4">
