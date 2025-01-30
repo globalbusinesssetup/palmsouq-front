@@ -453,24 +453,6 @@ export default function ProductDeatils({ params }: Record<string, any>) {
               />
             </div>
             <div className="">
-              {/* <div className="hidden lg:flex justify-end gap-x-4 mt-8">
-                <Button
-                  disabled={Number(product?.stock) < 1}
-                  loading={isSubmitLoading}
-                  onClick={addToCart}
-                  className="h-11 w-[167px]"
-                >
-                  Add to Cart
-                </Button>
-                <Button
-                  disabled={Number(product?.stock) < 1}
-                  loading={isSubmitLoading}
-                  onClick={buyNow}
-                  className="h-11 w-[167px] bg-success border-success"
-                >
-                  Buy it Now
-                </Button>
-              </div> */}
               <div className="mt-5 sm:mt-8 px-3 sm:px-4 py-1 xs:py-2 sm:py-3 xl:py-3.5 border border-dashed border-neutral-400 rounded-lg xl:rounded-[10px] flex items-center justify-between">
                 <p className="text-tiny sm:text-xs xl:text-sm text-neutral-600 flex-1">
                   Based on selection, your order will be ready within next
@@ -593,7 +575,7 @@ export default function ProductDeatils({ params }: Record<string, any>) {
             </DisclosureButton>
             <DisclosurePanel className="pt-4 lg:pt-5 bg-white px-4 lg:px-5 transition-all duration-0 pb-5">
               {/* <h2 className="text-5xl font-bold text-neutral-800">Reviews</h2> */}
-              <div className="flex justify-between gap-x-10 px-6">
+              <div className="flex flex-col lg:flex-row justify-between gap-6 lg:gap-10 px-3 lg:px-6">
                 <div className="flex-1 text-sm text-neutral-800">
                   <p>Rating Snapshot</p>
                   <div className="mt-4 space-y-3">
