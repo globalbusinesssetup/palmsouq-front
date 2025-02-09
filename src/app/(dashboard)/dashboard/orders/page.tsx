@@ -1,15 +1,20 @@
 'use client';
-import { Button, File, Input, Modal, Tag, Image } from '@/components';
-import React, { useState } from 'react';
+import { Button, File, Input, Modal, Tag, Image, Avatar } from '@/components';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { FaAngleLeft, FaAngleRight, FaCreditCard } from 'react-icons/fa6';
+import {
+  FaAngleLeft,
+  FaAngleRight,
+  FaCreditCard,
+  FaHandshake,
+} from 'react-icons/fa6';
 import { FiCalendar, FiDownload } from 'react-icons/fi';
 import { BiMessageDots } from 'react-icons/bi';
 import { IoMdClose } from 'react-icons/io';
 import { StatusTypes } from '@/components/common/Tag';
 import OrderStep from '@/app/(default)/order/OrderStep';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { getCountries, getOrder, getOrders } from '@/utils/api';
+import { getCountries, getOrder, getOrders, getPayMethods } from '@/utils/api';
 import { api } from '@/utils/fetcher';
 import Cookies from 'js-cookie';
 import { toast } from 'react-toastify';
@@ -17,6 +22,8 @@ import { usePDF } from 'react-to-pdf';
 import Invoice from '@/components/Invoice';
 import Payment from '@/app/(default)/checkout/Payment';
 import config from '@/config';
+import { paymentIcons } from '@/constants';
+import { paymentEncrypt } from '@/utils/helper';
 
 export const steps = [
   { title: 'Pending', icon: '/icons/check.svg' },
@@ -49,7 +56,11 @@ export const getCurrentStatus = (status: string) => {
 };
 
 const Orders = () => {
-  const { data: orders, isLoading: isOrdersLoading } = useQuery({
+  const {
+    data: orders,
+    isLoading: isOrdersLoading,
+    refetch,
+  } = useQuery({
     queryKey: ['orders'],
     queryFn: getOrders,
   });
@@ -74,7 +85,7 @@ const Orders = () => {
                   Product Name
                 </th>
                 <th className="text-xs font-semibold text-[#667085] py-3.5">
-                  Confirm Date
+                  Payment Method
                 </th>
                 <th className="text-xs font-semibold text-[#667085] py-3.5">
                   Quantity
@@ -105,7 +116,12 @@ const Orders = () => {
                     ))
                 : orders?.data?.data?.length! > 0 &&
                   orders?.data?.data.map((order: any, i: number) => (
-                    <Row key={order?.id} order={order} i={i} />
+                    <Row
+                      key={order?.id}
+                      order={order}
+                      i={i}
+                      refetch={refetch}
+                    />
                   ))}
             </tbody>
           </table>
@@ -145,7 +161,15 @@ const Orders = () => {
 
 export default Orders;
 
-const Row = ({ order, i }: { order: any; i: number }) => {
+const Row = ({
+  order,
+  i,
+  refetch,
+}: {
+  order: any;
+  i: number;
+  refetch: () => void;
+}) => {
   const { data: orderData, isLoading } = useQuery({
     queryKey: ['order', order?.id],
     queryFn: () => getOrder(order?.id),
@@ -154,9 +178,16 @@ const Row = ({ order, i }: { order: any; i: number }) => {
     queryKey: ['countries-phones'],
     queryFn: getCountries,
   });
+  const { data: payData, isLoading: isPayDataLoading } = useQuery({
+    queryKey: ['payMethods'],
+    queryFn: getPayMethods,
+  });
   const [isOpen, setOpen] = useState(false);
+  const [isPayMethodOpen, setIsPayMethodOpen] = useState(false);
   const [isPayOpen, setPayOpen] = useState(false);
   const [isFilePreviewOpen, setFilePreviewOpen] = useState(false);
+  const [orderMethod, setMethod] = useState(1);
+  const [isSubmitting, setSubmitting] = useState(false);
   const [status, setStatus] = useState<StatusTypes>(
     order?.cancelled === 1 || order.status === '6'
       ? 'cancelled'
@@ -207,12 +238,48 @@ const Row = ({ order, i }: { order: any; i: number }) => {
     }
   };
 
+  const handleConfirm = async () => {
+    const token = Cookies.get('user_token');
+    if (orderMethod === 2) {
+      setSubmitting(true);
+      try {
+        const paymentData = paymentEncrypt({
+          id: order?.id,
+          payment_token: '',
+          order_method: orderMethod,
+          user_token: token!,
+        });
+        const res = await api.post('order/payment-done', {
+          data: paymentData,
+        });
+        if (res?.data.message) {
+          console.log(res?.data?.data?.form[0]);
+          toast.error(res?.data?.data?.form[0]);
+          setSubmitting(false);
+          return;
+        }
+        refetch();
+        setSubmitting(false);
+        setIsPayMethodOpen(false);
+      } catch (error) {}
+    } else {
+      setIsPayMethodOpen(false);
+      setPayOpen(true);
+    }
+  };
+
   const handlePaySuccess = () => {
     setPayOpen(false);
     queryClient.invalidateQueries({ queryKey: ['orders', 'order'] });
     queryClient.refetchQueries({ queryKey: ['orders', 'order'] });
     toast.success('Payment done Successfully!');
   };
+
+  useEffect(() => {
+    if (!isPayDataLoading) {
+      setMethod(payData?.default!);
+    }
+  }, [payData, isPayDataLoading]);
 
   return (
     <>
@@ -234,11 +301,11 @@ const Row = ({ order, i }: { order: any; i: number }) => {
           </div>
         </td>
         <td className="py-4 w-[20%]">
-          <p className="text-xs lg:text-[13px]/[19px] text-neutral-500 uppercase">
-            {order?.created.slice(10)}
-          </p>
+          {/* <p className="text-xs lg:text-[13px]/[19px] text-neutral-500 uppercase">
+            {order?.order_method === '2' ? 'COD' : 'Stripe'}
+          </p> */}
           <p className="text-xs lg:text-[13px]/[19px] text-neutral-500 font-semibold uppercase">
-            {order?.created.slice(0, 5)}
+            {order?.order_method === '2' ? 'COD' : 'Stripe'}
           </p>
         </td>
         <td className="py-4 text-neutral-500 text-xs lg:text-sm">
@@ -247,14 +314,31 @@ const Row = ({ order, i }: { order: any; i: number }) => {
         <td className="py-4 text-neutral-500 text-xs lg:text-sm">
           {order?.total_amount}
         </td>
-        <td className="py-4">
-          <Tag
-            status={
-              order?.cancelled === 1 || order.status === '6'
-                ? 'cancelled'
-                : getCurrentStatus(order?.status)
-            }
-          />
+        <td className="py-4 space-y-2">
+          <div className="relative group">
+            <Tag
+              status={
+                order?.cancelled === 1 || order.status === '6'
+                  ? 'cancelled'
+                  : order.order_method !== '2' && order.payment_done === 0
+                  ? 'unpaid'
+                  : getCurrentStatus(order?.status)
+              }
+            />
+            {order.order_method !== '2' && order.payment_done === 0 && (
+              <div className="absolute w-[100px] text-center left-1/2 -translate-x-1/2 bottom-full mb-1 hidden group-hover:block bg-black/50 text-white text-[9px] px-1 py-1 rounded">
+                Waiting for payment
+              </div>
+            )}
+          </div>
+          {order.order_method !== '2' && order.payment_done === 0 && (
+            <button
+              onClick={() => setIsPayMethodOpen(true)}
+              className="text-xs underline text-green ml-2"
+            >
+              Pay now
+            </button>
+          )}
         </td>
       </tr>
       {isOpen && orderData && (
@@ -471,6 +555,79 @@ const Row = ({ order, i }: { order: any; i: number }) => {
               </p>
             </div>
           </div>
+        </div>
+      </Modal>
+      {/* Select payment method  */}
+      <Modal
+        show={isPayMethodOpen}
+        onClose={() => setIsPayMethodOpen(false)}
+        panelClassName={'max-w-[500px]'}
+      >
+        <div className="flex items-center justify-between">
+          <p className="text-black text-base font-bold">
+            Select Payment Method
+          </p>
+          <button
+            onClick={() => setIsPayMethodOpen(false)}
+            className=" rounded-full bg-gray-100 p-1"
+          >
+            <IoMdClose className="text-lg text-black" />
+          </button>
+        </div>
+        <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-5 sm:gap-y-0 sm:max-w-[506px]">
+          <button
+            disabled={payData?.stripe! === 0}
+            onClick={() => setMethod(3)}
+            className={`cursor-pointer px-4 py-4 border rounded-lg flex-1 ${
+              orderMethod === 3 ? 'border-[#9B9DFD]' : 'border-neutral-300'
+            }`}
+          >
+            <p className="text-sm font-semibold text-neutral-800">
+              Pay with Card
+            </p>
+            <div className="flex items-center justify-center mt-2 gap-x-2 px-3 py-2 bg-neutral-100">
+              {paymentIcons.map((icon, i) => (
+                <Image
+                  key={i}
+                  isLocal
+                  defaultSrc={icon}
+                  width={30}
+                  height={22}
+                  className="rounded"
+                  alt="payment icon"
+                />
+              ))}
+            </div>
+            <p className="text-xs text-neutral-400 mt-4">Secure Payment</p>
+            <p className="text-xs text-neutral-500 font-medium">
+              Powered by{' '}
+              <span className="font-semibold text-neutral-800">Stripe</span>.
+            </p>
+          </button>
+          <button
+            disabled={payData?.cash_on_delivery! === 0}
+            onClick={() => setMethod(2)}
+            className={`cursor-pointer p-6 border rounded-lg flex-1 h-full flex flex-col items-center justify-center ${
+              orderMethod === 2 ? 'border-[#9B9DFD]' : 'border-neutral-300'
+            }`}
+          >
+            <Avatar className="bg-neutral-50 mx-auto size-9">
+              <FaHandshake className="text-[#344054] text-lg" />
+            </Avatar>
+            <h5 className="mt-2 text-sm font-semibold text-neutral-800">COD</h5>
+            <p className="text-xs text-neutral-400 mt-6">
+              <span className="text-primary font-semibold">
+                Cash on delivery
+              </span>
+            </p>
+          </button>
+        </div>
+        <div className="mt-5 flex justify-end">
+          <Button loading={isSubmitting} onClick={handleConfirm}>
+            {orderMethod === 3
+              ? `Confirm & Pay now ${order?.total_amount}`
+              : 'Confirm order'}
+          </Button>
         </div>
       </Modal>
       {/* Payment  */}

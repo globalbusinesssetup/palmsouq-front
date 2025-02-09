@@ -112,7 +112,7 @@ const StripePay = ({
         type="submit"
         disabled={!stripe || !elements}
       >
-        Pay {payData.amount}
+        Pay {payData.amount} AED
       </Button>
     </form>
   );
