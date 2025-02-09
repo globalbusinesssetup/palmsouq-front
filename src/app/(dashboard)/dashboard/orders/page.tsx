@@ -1,21 +1,10 @@
 'use client';
-import {
-  Button,
-  Excel,
-  File,
-  FileDownload,
-  Input,
-  Modal,
-  Tag,
-  FileAttach,
-  Image,
-} from '@/components';
+import { Button, File, Input, Modal, Tag, Image } from '@/components';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { FaAngleLeft, FaAngleRight, FaCreditCard } from 'react-icons/fa6';
 import { FiCalendar, FiDownload } from 'react-icons/fi';
 import { BiMessageDots } from 'react-icons/bi';
-import { FiEdit, FiEye } from 'react-icons/fi';
 import { IoMdClose } from 'react-icons/io';
 import { StatusTypes } from '@/components/common/Tag';
 import OrderStep from '@/app/(default)/order/OrderStep';
@@ -71,22 +60,6 @@ const Orders = () => {
         <h5 className="text-sm sm:text-base lg:text-lg whitespace-nowrap font-semibold text-neutral-700">
           My Order&apos;s
         </h5>
-        {/* <div className="flex items-center justify-end gap-x-3">
-          <Input
-            control={control}
-            name="search"
-            type="search"
-            className="max-w-[320px] rounded-full text-sm h-8 sm:h-8 lg:h-[37px]"
-            placeholder="Search Product name"
-            wrapClassName="hidden sm:block"
-          />
-          <Button
-            outlined
-            className="h-9 w-[115px] sm:w-[135px] py-0 flex items-center gap-x-2 sm:gap-x-2.5 border-[#EAECF0] text-xs lg:text-sm font-medium sm:font-semibold whitespace-nowrap"
-          >
-            <Excel /> Export data
-          </Button>
-        </div> */}
       </div>
       <div className="">
         <div className="overflow-x-auto">
@@ -155,7 +128,7 @@ const Orders = () => {
               <FaAngleLeft className="text-sm sm:text-lg" />
             </button>
             <p className="text-xs sm:text-sm text-center text-neutral-500">
-              Page 1 of 1
+              Page {orders?.data?.current_page} of {orders?.data?.last_page}
             </p>
             <button
               disabled={isOrdersLoading || !orders?.data?.data?.length}
@@ -372,7 +345,10 @@ const Row = ({ order, i }: { order: any; i: number }) => {
               <div className="flex flex-col md:flex-row items-center gap-3">
                 {order.order_method !== '2' && order.payment_done === 0 && (
                   <Button
-                    onClick={() => setPayOpen(true)}
+                    onClick={() => {
+                      setOpen(false);
+                      setPayOpen(true);
+                    }}
                     className="sm:w-[115px] py-0 h-8 sm:h-9 !text-xs sm:!text-sm font-semibold flex items-center justify-center gap-x-2"
                   >
                     <FaCreditCard className="text-base sm:text-lg md:text-xl" />

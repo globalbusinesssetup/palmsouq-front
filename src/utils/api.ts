@@ -267,6 +267,7 @@ export const getOrders = async () => {
     const { data } = await api.post<{
       data: {
         current_page: string;
+        last_page: string;
         data: [];
       };
     }>(`/order/by-user`, {
