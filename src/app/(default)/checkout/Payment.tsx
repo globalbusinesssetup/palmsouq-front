@@ -33,14 +33,12 @@ const Payment = ({
           isLoading ? 'aria-disabled:opacity-75' : ''
         }`}
       >
-        {!isCheckout && (
-          <button
-            className="absolute -top-2 -right-2 p-1 rounded-full bg-gray-100"
-            onClick={onClose}
-          >
-            <IoMdClose className="text-sm text-primary/80" />
-          </button>
-        )}
+        <button
+          className="absolute -top-2 -right-2 p-1 rounded-full bg-gray-100"
+          onClick={onClose}
+        >
+          <IoMdClose className="text-sm text-primary/80" />
+        </button>
         <Elements stripe={stripePromise}>
           <StripePay
             payData={{ ...order, amount: order?.total_amount }}
