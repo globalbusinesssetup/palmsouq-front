@@ -4,7 +4,11 @@ import React, { ReactNode, useEffect, useState } from 'react';
 import { TbTruckDelivery } from 'react-icons/tb';
 import { Field, Label, Radio, RadioGroup } from '@headlessui/react';
 import { FiEdit, FiPlus } from 'react-icons/fi';
-import { IoIosArrowRoundBack, IoIosArrowRoundForward } from 'react-icons/io';
+import {
+  IoIosArrowRoundBack,
+  IoIosArrowRoundForward,
+  IoMdClose,
+} from 'react-icons/io';
 import { paymentIcons } from '@/constants';
 import Image from 'next/image';
 import { IoCardOutline, IoWalletOutline } from 'react-icons/io5';
@@ -660,7 +664,13 @@ const Checkout = () => {
         }}
         panelClassName={'max-w-[350px]'}
       >
-        <div className="min-h-60">
+        <div className="min-h-60 relative">
+          <button
+            className="absolute -top-2 -right-2 p-1 rounded-full bg-gray-100"
+            onClick={() => setOpen(false)}
+          >
+            <IoMdClose className="text-sm text-primary/80" />
+          </button>
           <Elements stripe={stripePromise}>
             <StripePay
               payData={order}
