@@ -91,7 +91,11 @@ const Checkout = () => {
   const { refetchProfile, isLoggedIn } = useAuth();
   // const [Razorpay] = useRazorpay();
   const queryClient = useQueryClient();
-  const { data: addresses, isLoading: isAddressLoading } = useQuery({
+  const {
+    data: addresses,
+    isLoading: isAddressLoading,
+    refetch: refetchAddress,
+  } = useQuery({
     queryKey: ['address'],
     queryFn: () => getAddress(),
   });
@@ -325,9 +329,11 @@ const Checkout = () => {
   };
 
   const onSuccess = () => {
-    refetchProfile();
-    queryClient.invalidateQueries({ queryKey: ['cart', 'orders'] });
-    queryClient.refetchQueries({ queryKey: ['cart', 'orders'] });
+    setTimeout(() => {
+      refetchProfile();
+      queryClient.invalidateQueries({ queryKey: ['cart', 'orders', 'user'] });
+    }, 100);
+    // queryClient.refetchQueries({ queryKey: ['cart', 'orders', 'user'] });
     toast.success('Order placed Successfully');
     setStep((prev) => prev + 1);
     router.push('/checkout?currentStep=2');
@@ -399,7 +405,7 @@ const Checkout = () => {
                   {deliveryOptions.map((opt) => (
                     <Field
                       key={opt.value}
-                      className={`flex-1 gap-2 p-3 xl:p-4 border h-full rounded-lg transition-all duration-300 cursor-pointer ${
+                      className={`flex-1 gap-2 p-3 xl:p-4 border h-auto rounded-lg transition-all duration-300 cursor-pointer ${
                         deliveryOption === opt.value
                           ? 'bg-neutral-50 border-[#9B9DFD]'
                           : ''
@@ -653,7 +659,10 @@ const Checkout = () => {
       {/* Add new address  */}
       <AddAddress
         show={isAddAddressOpen}
-        onClose={() => setAddAddressOpen(false)}
+        onClose={() => {
+          setAddAddressOpen(false);
+          refetchAddress();
+        }}
       />
       {/* Payment  */}
       <Modal
@@ -661,6 +670,7 @@ const Checkout = () => {
         onClose={() => {
           setOpen(false);
           router.push(isLoggedIn ? '/dashboard/orders' : '/orders');
+          refetchProfile();
         }}
         panelClassName={'max-w-[350px]'}
       >
