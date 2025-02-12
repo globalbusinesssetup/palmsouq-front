@@ -196,19 +196,19 @@ const Checkout = () => {
     }
   }, [payData, isPayDataLoading]);
 
-  useEffect(() => {
-    if (
-      deliveryOption === 'standard' &&
-      !supportedAreas.includes(defaultAddress?.state!)
-    ) {
-      setDeliveryOption(deliveryOptions[1].value);
-    } else if (
-      deliveryOption === 'paid' &&
-      supportedAreas.includes(defaultAddress?.state!)
-    ) {
-      setDeliveryOption(deliveryOptions[0].value);
-    }
-  }, [defaultAddress]);
+  // useEffect(() => {
+  //   if (
+  //     deliveryOption === 'standard' &&
+  //     !supportedAreas.includes(defaultAddress?.state!)
+  //   ) {
+  //     setDeliveryOption(deliveryOptions[1].value);
+  //   } else if (
+  //     deliveryOption === 'paid' &&
+  //     supportedAreas.includes(defaultAddress?.state!)
+  //   ) {
+  //     setDeliveryOption(deliveryOptions[0].value);
+  //   }
+  // }, [defaultAddress]);
 
   if (isPayDataLoading || isCountriesLoading || isLoading) {
     return (
@@ -242,13 +242,7 @@ const Checkout = () => {
   //   0
   // );
 
-  const totalPriceWithDelivery =
-    totalAmount +
-    (deliveryOption === 'paid'
-      ? deliveryCost
-      : deliveryOption === 'pickup'
-      ? pickupCost
-      : 0);
+  const totalPriceWithDelivery = totalAmount + deliveryCost;
   const vat = (totalAmount * tax) / 100; // 5% VAT rate
   const totalPriceWithDeliveryVat = totalPriceWithDelivery + vat;
 
@@ -390,7 +384,7 @@ const Checkout = () => {
                   </button>
                 </div>
               </div>
-              <div className="mt-5 md:mt-8">
+              {/* <div className="mt-5 md:mt-8">
                 <h4 className="md:text-lg text-neutral-900 font-semibold">
                   Delivery and Pickup
                 </h4>
@@ -450,7 +444,7 @@ const Checkout = () => {
                     </Field>
                   ))}
                 </RadioGroup>
-              </div>
+              </div> */}
             </>
           ) : currentStep === 1 ? (
             <div className="mt-8">
@@ -616,11 +610,7 @@ const Checkout = () => {
                   Delivery costs
                 </p>
                 <p className="text-sm font-medium text-[#4B4EFC]">
-                  {deliveryOption === 'paid'
-                    ? `${deliveryCost} AED`
-                    : deliveryOption === 'pickup'
-                    ? `${pickupCost} AED`
-                    : 'Free'}
+                  {deliveryCost} AED
                 </p>
               </div>
             </div>
@@ -630,10 +620,7 @@ const Checkout = () => {
                   Sub Total
                 </p>
                 <p className="text-sm font-medium text-neutral-600">
-                  {deliveryOption === 'paid'
-                    ? totalPriceWithDelivery
-                    : totalAmount}{' '}
-                  AED
+                  {totalPriceWithDelivery} AED
                 </p>
               </div>
               <div className="flex items-center justify-between">
@@ -641,7 +628,7 @@ const Checkout = () => {
                   VAT ({tax}%)
                 </p>
                 <p className="text-sm font-medium text-neutral-600">
-                  {vat.toFixed(2)}
+                  {vat.toFixed(2)} AED
                 </p>
               </div>
             </div>
