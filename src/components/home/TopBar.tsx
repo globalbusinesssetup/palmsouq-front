@@ -39,7 +39,7 @@ const TopBar = () => {
               {setting?.phone ?? '4534345656'}
             </Link>
           </p>
-          <div className="w-[1px] h-3.5 bg-neutral-400" />
+          {/* <div className="w-[1px] h-3.5 bg-neutral-400" />
           <Listbox value={language} onChange={setLanguage}>
             <div className="relative">
               <ListboxButton className="w-20 flex items-center gap-x-2 bg-transparent focus-visible:outline-none text-white text-xs font-semibold">
@@ -76,7 +76,7 @@ const TopBar = () => {
                 ))}
               </ListboxOptions>
             </div>
-          </Listbox>
+          </Listbox> */}
         </div>
       </div>
     </div>

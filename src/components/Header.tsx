@@ -326,7 +326,7 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
               >
                 <FaRegHeart className="text-2xl xl:text-[26px] text-green" />
                 <div className="text-green hidden md:block">
-                  <p className="text-tiny lg:text-xs">My Wislist</p>
+                  <p className="text-tiny lg:text-xs">My Wishlist</p>
                   <IoIosArrowDown className="xl:text-lg" />
                 </div>
               </Link>
@@ -406,7 +406,7 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
                     className="flex items-center gap-x-1 text-[#6B7280] hover:text-primary/90 py-2 text-sm xl:text-base font-medium xl:font-semibold"
                   >
                     <FaRegHeart className="text-lg" />
-                    My Wislist
+                    My Wishlist
                   </Link>
                 </li>
               </>

@@ -285,7 +285,7 @@ export default function ProductDeatils({ params }: Record<string, any>) {
                 </swiper-slide>
               ))}
             </swiper-container>
-            <div className="mt-4 py-4 px-[30px] flex items-center justify-center gap-x-4 border border-neutral-100 bg-neutral-100 rounded-lg">
+            {/* <div className="mt-4 py-4 px-[30px] flex items-center justify-center gap-x-4 border border-neutral-100 bg-neutral-100 rounded-lg">
               <Image
                 src={'/icons/free-delivery.svg'}
                 width={105}
@@ -308,7 +308,7 @@ export default function ProductDeatils({ params }: Record<string, any>) {
                 alt="icon"
                 className="hidden xs:block"
               />
-            </div>
+            </div> */}
             <div className="mt-4 py-[18px] flex flex-wrap items-center justify-center gap-4 px-2 border border-neutral-100 bg-neutral-100 rounded-lg">
               {features.slice(1).map((feature, i) => (
                 <div
@@ -452,7 +452,7 @@ export default function ProductDeatils({ params }: Record<string, any>) {
                 }}
               />
             </div>
-            <div className="">
+            {/* <div className="">
               <div className="mt-5 sm:mt-8 px-3 sm:px-4 py-1 xs:py-2 sm:py-3 xl:py-3.5 border border-dashed border-neutral-400 rounded-lg xl:rounded-[10px] flex items-center justify-between">
                 <p className="text-tiny sm:text-xs xl:text-sm text-neutral-600 flex-1">
                   Based on selection, your order will be ready within next
@@ -461,7 +461,7 @@ export default function ProductDeatils({ params }: Record<string, any>) {
                   24 Business Hours
                 </span>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
         <div className="mt-6 lg:mt-8 mb-10 border border-neutral-200 rounded-xl overflow-hidden">

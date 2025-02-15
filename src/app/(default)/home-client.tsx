@@ -657,9 +657,9 @@ const CatCard = ({ cat }: any) => {
           loading="lazy"
         />
       </div>
-      <div className="px-3 xs:px-5 py-3 text-xs font-semibold text-neutral-600 transition-all duration-300 hover:text-primary/70 flex items-center justify-center gap-x-2 whitespace-nowrap">
+      <div className="px-3 py-3 text-xs font-semibold text-neutral-600 transition-all duration-300 hover:text-primary/70 flex items-center justify-center gap-x-2 whitespace-nowrap">
         <p className="flex-1 overflow-hidden text-ellipsis">{cat?.title}</p>
-        <FaArrowRightLong className="text-base" />
+        {/* <FaArrowRightLong className="text-base" /> */}
       </div>
     </Link>
   );
