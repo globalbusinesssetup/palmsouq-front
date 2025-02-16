@@ -159,7 +159,7 @@ const Filter = ({
           </button>
         </div>
       </div>
-      {data?.brands && (
+      {data?.brands?.length > 0 && (
         <div className="mt-4">
           <h3 className="text-gray-700 text-xl font-bold mt-3">Brands</h3>
           <div
@@ -184,12 +184,14 @@ const Filter = ({
               </div>
             ))}
           </div>
-          <button
-            onClick={() => setShowAll(!isShowAll)}
-            className="mt-3 text-sm"
-          >
-            {isShowAll ? 'Hide all' : 'Show all'}
-          </button>
+          {data?.brands?.length > 5 && (
+            <button
+              onClick={() => setShowAll(!isShowAll)}
+              className="mt-3 text-sm"
+            >
+              {isShowAll ? 'Hide all' : 'Show all'}
+            </button>
+          )}
         </div>
       )}
     </div>

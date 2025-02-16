@@ -76,6 +76,7 @@ const uploadedFiles = [
 
 const Cart = () => {
   const router = useRouter();
+  const { refetchProfile } = useAuth();
   const [isCheckoutOpen, setCheckoutOpen] = useState(false);
   const [isDeleteLoading, setDeleteLoading] = useState(false);
   const [ids, setIds] = useState<number[]>([]);
@@ -147,6 +148,7 @@ const Cart = () => {
     try {
       await api.delete(`/cart/delete/${pd?.id}`);
       toast.success('Cart Remove SuccessfullY');
+      refetchProfile();
       await queryClient.invalidateQueries({ queryKey: ['cart'] });
       await queryClient.refetchQueries({ queryKey: ['cart'] });
     } catch (err) {

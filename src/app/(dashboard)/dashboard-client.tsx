@@ -18,6 +18,7 @@ export default function DashboardClient({
   const { data: user, isLoading } = useQuery<any>({
     queryKey: ['user'],
     queryFn: useGetUser,
+    refetchOnWindowFocus: false,
   });
   const { isLoggedIn } = useAuth();
 

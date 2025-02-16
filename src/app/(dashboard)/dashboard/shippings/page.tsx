@@ -162,9 +162,13 @@ const Shippings = () => {
       const { data } = await api.delete(
         `/user/address/delete/${id}?user_token=${token}`
       );
-      queryClient.invalidateQueries({ queryKey: ['address'] });
-      queryClient.refetchQueries({ queryKey: ['address'] });
-      toast.success(data?.message);
+      if (data?.data?.form) {
+        toast.warn(data?.message);
+      } else {
+        queryClient.invalidateQueries({ queryKey: ['address'] });
+        queryClient.refetchQueries({ queryKey: ['address'] });
+        toast.success(data?.message);
+      }
     } catch (err) {
       console.log(err);
     }

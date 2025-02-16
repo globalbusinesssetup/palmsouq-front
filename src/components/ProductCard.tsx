@@ -10,20 +10,26 @@ import { api } from '@/utils/fetcher';
 import { VscLoading } from 'react-icons/vsc';
 import config from '@/config';
 import Cookies from 'js-cookie';
+import { FaRegTrashCan } from 'react-icons/fa6';
+import { useQueryClient } from '@tanstack/react-query';
 
 const ProductCard = ({
   data,
   category,
   isWishList = false,
+  isFeatured = false,
 }: {
   data?: ProductData;
   category?: string | number;
   isWishList?: boolean;
+  isFeatured?: boolean;
 }) => {
   const { isLoggedIn, user, refetchProfile } = useAuth();
   const [image, setImage] = useState(config.imgUri + data?.image);
   const [isSubmitLoading, setSubmitLoading] = useState(false);
   const [isHover, setHover] = useState(false);
+  const [isWishListLoading, setWishListLoading] = useState(false);
+  const queryClient = useQueryClient();
 
   const handleError = () => {
     setImage('/default-image.webp'); // fallback image path
@@ -50,6 +56,7 @@ const ProductCard = ({
       } else {
         refetchProfile();
         toast.success('Product add Successfully');
+        await queryClient.invalidateQueries({ queryKey: ['cart'] });
         // await router.push('/order');
       }
       console.log('add cart res =>', res);
@@ -60,15 +67,42 @@ const ProductCard = ({
     setSubmitLoading(false);
   };
 
+  const removeFromWishlist = async () => {
+    if (!isLoggedIn) {
+      toast.warn('Unauthorized! sign in first.');
+      return;
+    }
+    setWishListLoading(true);
+    try {
+      const res = await api.post('/user/wishlist/action', {
+        product_id: data?.id,
+      });
+      if (res?.data?.data?.form) {
+        toast.error(res?.data?.data?.form[0]);
+      } else {
+        toast.success(res.data?.message);
+        await queryClient.invalidateQueries({ queryKey: ['wishlist'] });
+        // queryClient.refetchQueries({ queryKey: ['wishlist'] });
+      }
+      console.log('add wishlist res =>', res);
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setWishListLoading(false);
+    }
+  };
+
   return (
     <div
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
-      className="border border-neutral-200 rounded-lg bg-white p-2 sm:p-3 max-h-[382px]"
+      className="border border-neutral-200 rounded-lg bg-white p-2 sm:p-3 max-h-[382px] relative"
     >
       <Link
         href={`/${category}/${data?.slug}/${data?.id}`}
-        className="block w-full h-[120px] xs:h-[180px] sm:h-[220px] md:h-[200px] xl:h-[228px] rounded overflow-hidden bg-secondary relative"
+        className={`block w-full h-[120px] xs:h-[180px] border border-gray-100 rounded-md ${
+          isFeatured ? '' : 'sm:h-[220px] md:h-[200px] xl:h-[228px]'
+        } rounded overflow-hidden relative`}
       >
         <swiper-container
           className="w-full"
@@ -101,6 +135,18 @@ const ProductCard = ({
             ))}
         </swiper-container>
       </Link>
+      {isWishList && (
+        <button
+          onClick={removeFromWishlist}
+          className="absolute top-2 right-2 text-lg size-10 flex items-center justify-center border border-gray-200 bg-secondary z-50 rounded-full text-error hover:border-error/20"
+        >
+          {isWishListLoading ? (
+            <VscLoading size={20} className="animate-spin" />
+          ) : (
+            <FaRegTrashCan />
+          )}
+        </button>
+      )}
       <div className="mt-2 py-2.5">
         {/* <p className="text-xs text-success">Category name</p> */}
         <Link

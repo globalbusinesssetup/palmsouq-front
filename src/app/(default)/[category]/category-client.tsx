@@ -197,8 +197,6 @@ const CategoryClient: React.FC<CategoryClientProps> = ({ category }) => {
     refetch();
   }, [params, refetch]);
 
-  const brandTitle = data?.brands?.filter((b) => b.id === Number(brands));
-
   return (
     <>
       <main className="bg-[#FCFCFD]">
@@ -206,17 +204,15 @@ const CategoryClient: React.FC<CategoryClientProps> = ({ category }) => {
           <div className="w-full h-[150px] md:h-[180px] lg:h-[240px] bg-secondary rounded-md mt-6 relative overflow-hidden">
             {isLoading ? (
               <div className="animate-pulse" />
-            ) : (
+            ) : data?.category?.banner_image || data?.brand?.banner_image ? (
               <Image
-                defaultSrc={banner}
-                isLocal
                 src={data?.category?.banner_image ?? data?.brand?.banner_image}
                 fill
                 alt={data?.category?.title! ?? 'Category banner'}
                 className="object-fit"
                 loading="lazy"
               />
-            )}
+            ) : null}
           </div>
           <nav aria-label="breadcrumb" className="pt-6 lg:hidden">
             <div className="flex flex-wrap space-x-1">

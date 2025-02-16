@@ -26,12 +26,6 @@ import Cookies from 'js-cookie';
 import { register } from 'swiper/element/bundle';
 import Rate from 'rc-rate';
 import { IoClose } from 'react-icons/io5';
-import {
-  AiOutlineDislike,
-  AiOutlineLike,
-  AiFillDislike,
-  AiFillLike,
-} from 'react-icons/ai';
 register();
 
 type CategoryProps = {
@@ -83,10 +77,6 @@ export default function ProductDeatils({ params }: Record<string, any>) {
   };
 
   const addToCart = async () => {
-    // if (!isLoggedIn) {
-    //   toast.warn('Unauthorized! sign in first.');
-    //   return;
-    // }
     const token = Cookies.get('user_token');
     setSubmitLoading(true);
     try {
@@ -101,7 +91,7 @@ export default function ProductDeatils({ params }: Record<string, any>) {
       } else {
         refetchProfile();
         toast.success('Product add Successfully');
-        // await router.push('/order');
+        await queryClient.invalidateQueries({ queryKey: ['cart'] });
       }
       console.log('add cart res =>', res);
     } catch (err) {
@@ -110,10 +100,6 @@ export default function ProductDeatils({ params }: Record<string, any>) {
     setSubmitLoading(false);
   };
   const buyNow = async () => {
-    // if (!isLoggedIn) {
-    //   toast.warn('Unauthorized! sign in first.');
-    //   return;
-    // }
     const token = Cookies.get('user_token');
     setSubmitLoading(true);
     try {
@@ -127,8 +113,7 @@ export default function ProductDeatils({ params }: Record<string, any>) {
         toast.error(res?.data?.data?.form[0]);
       } else {
         refetchProfile();
-        // toast.success('Product add Successfully');
-        // addOrders(selectedProducts);
+        await queryClient.invalidateQueries({ queryKey: ['cart'] });
         router.push('/checkout');
       }
       console.log('add cart res =>', res);
@@ -150,11 +135,15 @@ export default function ProductDeatils({ params }: Record<string, any>) {
         toast.error(res?.data?.data?.form[0]);
       } else {
         toast.success(res.data?.message);
-        queryClient.invalidateQueries({ queryKey: ['wishlist'] });
-        queryClient.refetchQueries({ queryKey: ['wishlist'] });
+        setTimeout(() => {
+          queryClient.invalidateQueries({ queryKey: ['wishlist'] });
+        }, 500);
+        await queryClient.invalidateQueries({ queryKey: ['wishlist'] });
+        await queryClient.refetchQueries({ queryKey: ['wishlist'] });
       }
       console.log('add wishlist res =>', res);
     } catch (err) {
+      toast.error(err.data?.message);
       console.log(err);
     }
   };
@@ -164,12 +153,9 @@ export default function ProductDeatils({ params }: Record<string, any>) {
       const isWishListed = wishlist?.some(
         (pd: any) => pd.product_id == params?.id
       );
-      console.log('isWishListed =>', isWishListed);
-      console.log('isWishListed =>', params?.id);
-      console.log('isWishListed =>', wishlist);
       setWishListed(isWishListed);
     }
-  }, [wishlist]);
+  }, [wishlist, params]);
 
   if (isLoading) {
     return (
@@ -379,10 +365,7 @@ export default function ProductDeatils({ params }: Record<string, any>) {
                     {Number(product?.stock) > 0 ? 'In Stock' : 'Stock out'}
                   </p>
                 </div>
-                <button
-                  disabled={!isLoggedIn || wishListed}
-                  onClick={addToWishlist}
-                >
+                <button disabled={!isLoggedIn} onClick={addToWishlist}>
                   {wishListed ? (
                     <FaHeart size={26} />
                   ) : (

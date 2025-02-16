@@ -8,9 +8,9 @@ import { FiPlus, FiSearch, FiShoppingBag, FiUser } from 'react-icons/fi';
 import Drawer from 'react-modern-drawer';
 import 'react-modern-drawer/dist/index.css';
 import { HiArrowNarrowRight } from 'react-icons/hi';
-import { FaBars, FaBox, FaGifts } from 'react-icons/fa6';
+import { FaBars, FaBox } from 'react-icons/fa6';
 import useAuth from '@/hooks/useAuth';
-import { getSearchData, useGetUser } from '@/utils/api';
+import { getCart, getSearchData, getWishList } from '@/utils/api';
 import { useQuery } from '@tanstack/react-query';
 import {
   Input,
@@ -18,12 +18,14 @@ import {
   MenuButton,
   MenuItem,
   MenuItems,
+  Popover,
+  PopoverButton,
+  PopoverPanel,
 } from '@headlessui/react';
 import { BsBookmarkStar } from 'react-icons/bs';
 import { FaRegHeart } from 'react-icons/fa6';
 import config from '@/config';
-import { usePathname } from 'next/navigation';
-import { title } from 'process';
+import { usePathname, useRouter } from 'next/navigation';
 
 const dropdown = [
   {
@@ -44,12 +46,11 @@ const dropdown = [
 ];
 
 const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
-  const path = usePathname();
   const [isOpen, setIsOpen] = React.useState(false);
   const { isLoggedIn, isLoading, user: profile } = useAuth();
-  const { user } = useAuth();
   const [query, setQuery] = useState('');
   const [isFocus, setFocus] = useState(true);
+  const router = useRouter();
   const {
     data,
     isRefetching: isSearchLoading,
@@ -58,6 +59,25 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
     queryKey: ['search_data'],
     queryFn: () => getSearchData(query),
     enabled: false,
+  });
+  const {
+    data: cart,
+    isLoading: isCartLoading,
+    refetch: cartRefetch,
+  } = useQuery({
+    queryKey: ['cart'],
+    queryFn: () => getCart(),
+    refetchOnWindowFocus: false,
+    staleTime: 0,
+    enabled: isLoggedIn,
+  });
+
+  const { data: wishlist, isLoading: isWishlistLoading } = useQuery({
+    queryKey: ['wishlist'],
+    queryFn: () => getWishList(),
+    refetchOnWindowFocus: false,
+    staleTime: 0,
+    enabled: isLoggedIn,
   });
 
   const modalRef = useRef<HTMLDivElement>(null);
@@ -71,7 +91,7 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
     if (query && isFocus) {
       refetch();
     }
-  }, [query, isFocus]);
+  }, [query, isFocus, refetch]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -149,29 +169,18 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
               {isFocus && query && (
                 <div
                   ref={modalRef}
-                  className="absolute top-12 shadow-xl left-0 z-50 border-t border-gray-50 bg-white rounded-2xl w-full min-h-[400px] p-4 2xl:p-6"
+                  className="absolute top-12 shadow-xl left-0 z-50 border-t border-gray-50 bg-white rounded-2xl w-full min-h-[300px] p-4 2xl:p-5"
                 >
                   {isSearchLoading ? (
-                    <>
-                      <div className="grid grid-cols-8 gap-4">
-                        {Array(8)
-                          .fill(' ')
-                          .map((_, i) => (
-                            <div key={`l_${i}`} className="">
-                              <div className=" size-24 bg-gray-200 rounded-lg animate-pulse" />
-                            </div>
-                          ))}
-                      </div>
-                      <div className="grid grid-cols-3 gap-4 mt-6">
-                        {Array(6)
-                          .fill(' ')
-                          .map((_, i) => (
-                            <div key={`l_${i}`} className="">
-                              <div className="w-full h-24 bg-gray-200 rounded-lg animate-pulse" />
-                            </div>
-                          ))}
-                      </div>
-                    </>
+                    <div className="grid grid-cols-3 gap-4 mt-6">
+                      {Array(6)
+                        .fill(' ')
+                        .map((_, i) => (
+                          <div key={`l_${i}`} className="">
+                            <div className="w-full h-24 bg-gray-200 rounded-lg animate-pulse" />
+                          </div>
+                        ))}
+                    </div>
                   ) : !data?.category.length && !data?.product.length ? (
                     <div className="">
                       <p className="text-lg">
@@ -183,7 +192,7 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
                     </div>
                   ) : (
                     <>
-                      {data?.category.length! > 0 && (
+                      {/* {data?.category.length! > 0 && (
                         <>
                           <h4 className="text-gray-700 text-xl font-semibold">
                             Categories
@@ -198,13 +207,13 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
                             ))}
                           </div>
                         </>
-                      )}
+                      )} */}
                       {data?.product.length! > 0 && (
                         <>
-                          <h4 className="text-gray-700 text-xl font-semibold mt-5">
+                          {/* <h4 className="text-gray-700 text-xl font-semibold mt-5">
                             Products
-                          </h4>
-                          <div className="pt-6 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-2 2xl:gap-4 px-2 2xl:px-4">
+                          </h4> */}
+                          <div className="py-4 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-2 2xl:gap-4">
                             {data?.product?.map((pd, i) => (
                               <SearchPrdCard
                                 onClick={() => setFocus(false)}
@@ -304,32 +313,187 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
                   </MenuItems>
                 </Menu>
               </div>
-              <div className="hidden md:flex items-center gap-x-3 p-2">
-                <FiShoppingBag className="text-2xl xl:text-[26px] text-green" />
-                <div className="text-green hidden md:block">
-                  <p className="text-tiny lg:text-xs">My Cart</p>
-                  <Link
-                    href={'/dashboard/cart'}
-                    className="flex items-center gap-x-1"
-                  >
-                    <p className="text-xs lg:text-sm font-medium xl:font-semibold uppercase">
-                      {profile?.cart_count}
-                      {/* AED */}
+              <Popover>
+                {({ open, close }) => (
+                  <>
+                    <PopoverButton
+                      id="cart"
+                      onMouseEnter={() => {
+                        if (!open) {
+                          document.getElementById('cart')?.click();
+                        }
+                      }}
+                      // onMouseLeave={() => close()}
+                      className="hidden md:block focus-visible:outline-none"
+                    >
+                      <Link
+                        href={'/dashboard/cart'}
+                        className="flex items-center gap-x-3 p-2"
+                      >
+                        <FiShoppingBag className="text-2xl xl:text-[26px] text-green" />
+                        <div className="text-green hidden md:block">
+                          <p className="text-tiny lg:text-xs">My Cart</p>
+                          <div className="flex items-center gap-x-1">
+                            <p className="text-xs lg:text-sm font-medium xl:font-semibold uppercase">
+                              {profile?.cart_count}
+                              {/* AED */}
+                            </p>
+                            <IoIosArrowDown className="xl:text-lg" />
+                          </div>
+                        </div>
+                      </Link>
+                    </PopoverButton>
+                    <PopoverPanel
+                      anchor="bottom"
+                      className="bg-white rounded-lg mt-7 w-[300px] min-h-[100px] -ml-[55px] shadow-md transition duration-200 ease-in-out data-[closed]:-translate-y-1 data-[closed]:opacity-0"
+                    >
+                      {/* <div className="flex items-start justify-between px-4 py-2.5 border-b border-[#E1E1E1]">
+                    <p className="text-neutral-800 font-semibold">
+                      {cart?.data?.length}{' '}
+                      <span className="text-[#344054] text-sm">
+                        Order&apos;s
+                      </span>
                     </p>
-                    <IoIosArrowDown className="xl:text-lg" />
-                  </Link>
-                </div>
-              </div>
-              <Link
-                href={'/dashboard/wishlist'}
-                className="hidden md:flex items-center gap-x-3 p-2"
-              >
-                <FaRegHeart className="text-2xl xl:text-[26px] text-green" />
-                <div className="text-green hidden md:block">
-                  <p className="text-tiny lg:text-xs">My Wishlist</p>
-                  <IoIosArrowDown className="xl:text-lg" />
-                </div>
-              </Link>
+                    <Link href={'/dashboard/cart'}>
+                      <button className="w-[88px] h-8 hover:opacity-80 border rounded-full text-[#344054] font-semibold text-sm">
+                        View Cart
+                      </button>
+                    </Link>
+                  </div> */}
+                      {isCartLoading ? (
+                        <div className="h-20"></div>
+                      ) : cart && cart?.data?.length > 0 ? (
+                        <div className="max-h-[382px] overflow-y-auto">
+                          {cart?.data?.map((pd: any, i) => (
+                            <div key={pd.id} className="p-2">
+                              <div className="flex items-center justify-between gap-x-2 pb-3 border-b">
+                                <Image
+                                  src={pd?.flash_product?.image}
+                                  alt={pd?.flash_product?.image}
+                                  width={40}
+                                  height={30}
+                                  className="overflow-hidden object-cover bg-gray-200 text-sm"
+                                />
+                                <p className="text-black text-xs font-semibold flex-1 text-ellipsis">
+                                  {pd?.flash_product?.title}
+                                </p>
+                                <p className="text-primary text-xs font-bold">
+                                  {pd?.updated_inventory?.price === '0.00'
+                                    ? pd.flash_product?.selling
+                                    : pd.updated_inventory?.price}
+                                </p>
+                              </div>
+                              <div className="">
+                                <div className="space-y-1 pt-2.5">
+                                  <div className="flex items-center justify-between px-1">
+                                    <p className="text-[#9CA3AF] text-xs font-medium flex-1">
+                                      Quantity
+                                    </p>
+                                    <p className="text-[#9CA3AF] text-xs font-medium flex-1 text-right">
+                                      {pd?.quantity}
+                                    </p>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="text-black text-sm text-center py-8">
+                          Your cart is currently Empty!
+                        </p>
+                      )}
+                      {/* <div className="bg-[#F9FAFB] px-4 py-3 flex items-center justify-between">
+                    <div className="flex-1">
+                      <p className="uppercase text-primary text-sm font-bold">
+                        0.00 AED
+                      </p>
+                      <p className="text-xs font-semibold text-[#374151]">
+                        Total (Exc. Vat)
+                      </p>
+                    </div>
+                    <Button
+                      disabled={cart?.data?.length! < 1}
+                      onClick={() => router.push('/checkout')}
+                      className="h-9 w-[113px] flex gap-x-2 items-center justify-center text-sm"
+                    >
+                      <IoCheckmark className="text-base" /> Proceed
+                    </Button>
+                  </div> */}
+                    </PopoverPanel>
+                  </>
+                )}
+              </Popover>
+              <Popover>
+                {({ open, close }) => (
+                  <>
+                    <PopoverButton
+                      id="wishlist"
+                      onMouseEnter={() => {
+                        if (!open) {
+                          document.getElementById('wishlist')?.click();
+                        }
+                      }}
+                      // onMouseLeave={() => close()}
+                      className="hidden md:block focus-visible:outline-none"
+                    >
+                      <Link
+                        href={'/dashboard/wishlist'}
+                        className="hidden md:flex items-center gap-x-3 p-2"
+                      >
+                        <FaRegHeart className="text-2xl xl:text-[26px] text-green" />
+                        <div className="text-green hidden md:block">
+                          <p className="text-tiny lg:text-xs">My Wishlist</p>
+                          <div className="flex items-center gap-x-1">
+                            <p className="text-xs lg:text-sm font-medium xl:font-semibold uppercase">
+                              {wishlist?.length ?? 0}
+                              {/* AED */}
+                            </p>
+                            <IoIosArrowDown className="xl:text-lg" />
+                          </div>
+                        </div>
+                      </Link>
+                    </PopoverButton>
+                    <PopoverPanel
+                      anchor="bottom"
+                      className="bg-white rounded-lg mt-7 w-[300px] -ml-[55px] shadow-md transition duration-200 ease-in-out data-[closed]:-translate-y-1 data-[closed]:opacity-0"
+                    >
+                      {isWishlistLoading ? (
+                        <div className="h-20"></div>
+                      ) : wishlist && wishlist?.length > 0 ? (
+                        <div className="max-h-[382px] overflow-y-auto">
+                          {wishlist?.map((pd: any, i) => (
+                            <div key={pd.id} className="p-2">
+                              <div className="flex items-center justify-between gap-x-2 pb-3 border-b">
+                                <Image
+                                  src={pd?.product?.image}
+                                  alt={pd?.product?.image}
+                                  width={40}
+                                  height={30}
+                                  className="overflow-hidden object-cover bg-gray-200 text-sm"
+                                />
+                                <Link
+                                  href={`/wishlist/${pd?.product?.slug}/${pd?.product?.id}`}
+                                  className="text-black text-xs font-semibold flex-1 text-ellipsis hover:text-green"
+                                >
+                                  {pd?.product?.title}
+                                </Link>
+                                <p className="text-primary text-xs font-bold">
+                                  {pd.product?.offered ?? pd.product?.selling}
+                                </p>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="text-black text-sm text-center py-8">
+                          Your wishlist is currently Empty!
+                        </p>
+                      )}
+                    </PopoverPanel>
+                  </>
+                )}
+              </Popover>
             </div>
           ) : (
             <div className="hidden md:flex flex-row items-center gap-x-4">
@@ -537,10 +701,6 @@ const SearchCatCard = ({ cat, ...res }) => {
 };
 
 const SearchPrdCard = ({ pd, ...res }) => {
-  const [image, setImage] = useState('');
-  const handleError = () => {
-    setImage('/default-image.webp'); // fallback image path
-  };
   return (
     <Link
       href={`/search/${pd.slug}/${pd.id}`}
@@ -550,8 +710,7 @@ const SearchPrdCard = ({ pd, ...res }) => {
     >
       <div className="relative size-10 2xl:size-14 overflow-hidden rounded-lg px-2">
         <Image
-          src={image ?? config.imgUri + pd.image}
-          onError={handleError}
+          src={pd.image}
           fill
           className="object-contain bg-gray-200 text-xs"
           alt="product"
