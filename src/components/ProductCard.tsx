@@ -57,6 +57,9 @@ const ProductCard = ({
         refetchProfile();
         toast.success('Product add Successfully');
         await queryClient.invalidateQueries({ queryKey: ['cart'] });
+        setTimeout(() => {
+          queryClient.refetchQueries({ queryKey: ['cart'] });
+        }, 500);
         // await router.push('/order');
       }
       console.log('add cart res =>', res);
@@ -81,7 +84,16 @@ const ProductCard = ({
         toast.error(res?.data?.data?.form[0]);
       } else {
         toast.success(res.data?.message);
-        await queryClient.invalidateQueries({ queryKey: ['wishlist'] });
+        await queryClient.invalidateQueries({
+          queryKey: ['wishlist'],
+          refetchType: 'all',
+        });
+        setTimeout(() => {
+          queryClient.invalidateQueries({
+            queryKey: ['wishlist'],
+            refetchType: 'all',
+          });
+        }, 500);
         // queryClient.refetchQueries({ queryKey: ['wishlist'] });
       }
       console.log('add wishlist res =>', res);

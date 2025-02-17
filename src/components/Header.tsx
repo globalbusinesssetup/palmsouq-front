@@ -60,6 +60,7 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
     queryFn: () => getSearchData(query),
     enabled: false,
   });
+  console.log('isLoggedIn from header', isLoggedIn);
   const {
     data: cart,
     isLoading: isCartLoading,
@@ -69,7 +70,6 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
     queryFn: () => getCart(),
     refetchOnWindowFocus: false,
     staleTime: 0,
-    enabled: isLoggedIn,
   });
 
   const { data: wishlist, isLoading: isWishlistLoading } = useQuery({
@@ -233,7 +233,7 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
           <div className="flex md:hidden items-center gap-x-4">
             <Link href={'/cart'} className="flex items-center gap-x-1 relative">
               <p className="text-tiny font-medium xl:font-semibold uppercase absolute -top-1.5 -right-1.5 bg-green text-white rounded-full w-4 h-4 flex items-center justify-center">
-                {profile?.cart_count}
+                {cart?.data?.length ?? 0}
                 {/* AED */}
               </p>
               <FiShoppingBag className="text-2xl xl:text-[26px] text-green" />
@@ -335,7 +335,7 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
                           <p className="text-tiny lg:text-xs">My Cart</p>
                           <div className="flex items-center gap-x-1">
                             <p className="text-xs lg:text-sm font-medium xl:font-semibold uppercase">
-                              {profile?.cart_count}
+                              {cart?.data?.length ?? 0}
                               {/* AED */}
                             </p>
                             <IoIosArrowDown className="xl:text-lg" />
@@ -505,7 +505,7 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
                 className="flex items-center gap-x-1 relative"
               >
                 <p className="text-xs lg:text-sm font-medium xl:font-semibold uppercase absolute -top-1.5 -right-1.5 bg-green text-white rounded-full w-5 h-5 flex items-center justify-center">
-                  {profile?.cart_count}
+                  {cart?.data?.length ?? 0}
                   {/* AED */}
                 </p>
                 <FiShoppingBag className="text-2xl xl:text-[26px] text-green" />

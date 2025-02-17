@@ -92,6 +92,9 @@ export default function ProductDeatils({ params }: Record<string, any>) {
         refetchProfile();
         toast.success('Product add Successfully');
         await queryClient.invalidateQueries({ queryKey: ['cart'] });
+        setTimeout(() => {
+          queryClient.refetchQueries({ queryKey: ['cart'] });
+        }, 500);
       }
       console.log('add cart res =>', res);
     } catch (err) {
@@ -114,6 +117,9 @@ export default function ProductDeatils({ params }: Record<string, any>) {
       } else {
         refetchProfile();
         await queryClient.invalidateQueries({ queryKey: ['cart'] });
+        setTimeout(() => {
+          queryClient.refetchQueries({ queryKey: ['cart'] });
+        }, 500);
         router.push('/checkout');
       }
       console.log('add cart res =>', res);
@@ -135,11 +141,17 @@ export default function ProductDeatils({ params }: Record<string, any>) {
         toast.error(res?.data?.data?.form[0]);
       } else {
         toast.success(res.data?.message);
+        await queryClient.invalidateQueries({
+          queryKey: ['wishlist'],
+          refetchType: 'all',
+        });
         setTimeout(() => {
-          queryClient.invalidateQueries({ queryKey: ['wishlist'] });
+          queryClient.invalidateQueries({
+            queryKey: ['wishlist'],
+            refetchType: 'all',
+          });
         }, 500);
-        await queryClient.invalidateQueries({ queryKey: ['wishlist'] });
-        await queryClient.refetchQueries({ queryKey: ['wishlist'] });
+        // await queryClient.refetchQueries({ queryKey: ['wishlist'] });
       }
       console.log('add wishlist res =>', res);
     } catch (err) {

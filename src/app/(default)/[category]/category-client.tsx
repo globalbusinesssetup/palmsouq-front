@@ -201,19 +201,25 @@ const CategoryClient: React.FC<CategoryClientProps> = ({ category }) => {
     <>
       <main className="bg-[#FCFCFD]">
         <div className="container mx-auto px-4">
-          <div className="w-full h-[150px] md:h-[180px] lg:h-[240px] bg-secondary rounded-md mt-6 relative overflow-hidden">
-            {isLoading ? (
+          {!isLoading ? (
+            (data?.category?.banner_image || data?.brand?.banner_image) && (
+              <div className="w-full h-[150px] md:h-[180px] lg:h-[240px] bg-secondary rounded-md mt-6 relative overflow-hidden">
+                <Image
+                  src={
+                    data?.category?.banner_image ?? data?.brand?.banner_image
+                  }
+                  fill
+                  alt={data?.category?.title! ?? 'Category banner'}
+                  className="object-fit"
+                  loading="lazy"
+                />
+              </div>
+            )
+          ) : (
+            <div className="w-full h-[150px] md:h-[180px] lg:h-[240px] bg-secondary rounded-md mt-6 relative overflow-hidden">
               <div className="animate-pulse" />
-            ) : data?.category?.banner_image || data?.brand?.banner_image ? (
-              <Image
-                src={data?.category?.banner_image ?? data?.brand?.banner_image}
-                fill
-                alt={data?.category?.title! ?? 'Category banner'}
-                className="object-fit"
-                loading="lazy"
-              />
-            ) : null}
-          </div>
+            </div>
+          )}
           <nav aria-label="breadcrumb" className="pt-6 lg:hidden">
             <div className="flex flex-wrap space-x-1">
               {/* Home link */}

@@ -150,7 +150,10 @@ const Cart = () => {
       toast.success('Cart Remove SuccessfullY');
       refetchProfile();
       await queryClient.invalidateQueries({ queryKey: ['cart'] });
-      await queryClient.refetchQueries({ queryKey: ['cart'] });
+      setTimeout(() => {
+        queryClient.refetchQueries({ queryKey: ['cart'] });
+      }, 500);
+      // await queryClient.refetchQueries({ queryKey: ['cart'] });
     } catch (err) {
       console.log(err);
       toast.error(err as string);
