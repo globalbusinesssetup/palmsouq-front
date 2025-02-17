@@ -141,7 +141,7 @@ export default function HomeClient() {
       <div className="container mx-auto min-h-[55vh] mt-5 lg:mt-8 xl:mt-10 pb-7 px-4">
         {/* Banner  */}
         <section className="lg:flex lg:space-x-4">
-          <div className="lg:w-7/12 h-[200px] sm:h-[250px] xl:h-[304px] rounded-[10px] overflow-hidden">
+          <div className="lg:w-7/12 h-[120px] sm:h-[213px] md:h-[258px] lg:h-[199px] xl:h-[304px] rounded-[10px] overflow-hidden">
             <swiper-container
               className="w-full"
               pagination={{ clickable: true }}
@@ -151,7 +151,7 @@ export default function HomeClient() {
             >
               {home?.slider?.main.map((s: { image: string }, i) => (
                 <swiper-slide key={`banner_${i}`} style={{ width: '100%' }}>
-                  <div className="w-full h-[200px] sm:h-[250px] xl:h-[304px] relative overflow-hidden rounded-[10px]">
+                  <div className="w-full h-[120px] sm:h-[213px] md:h-[258px] lg:h-[199px] xl:h-[304px] relative overflow-hidden rounded-[10px]">
                     <Image
                       src={s?.image}
                       fill
@@ -165,7 +165,7 @@ export default function HomeClient() {
           </div>
           <Link
             href={home?.slider?.right_top?.url ?? '#'}
-            className="lg:w-5/12 h-[250px] xl:h-[304px] hidden lg:block relative overflow-hidden sm:rounded-[10px] mt-4 lg:mt-0"
+            className="lg:w-5/12 h-[120px] sm:h-[213px] md:h-[258px] lg:h-[199px] xl:h-[304px] hidden lg:block relative overflow-hidden sm:rounded-[10px] mt-4 lg:mt-0"
           >
             <Image
               src={home?.slider?.right_top?.image}
