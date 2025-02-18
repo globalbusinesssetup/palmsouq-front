@@ -26,6 +26,7 @@ import { BsBookmarkStar } from 'react-icons/bs';
 import { FaRegHeart } from 'react-icons/fa6';
 import config from '@/config';
 import { usePathname, useRouter } from 'next/navigation';
+import { IoCheckmark } from 'react-icons/io5';
 
 const dropdown = [
   {
@@ -313,7 +314,9 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
                   </MenuItems>
                 </Menu>
               </div>
-              <Popover>
+              <Popover
+                onMouseLeave={() => document.getElementById('cart')?.click()}
+              >
                 {({ open, close }) => (
                   <>
                     <PopoverButton
@@ -345,86 +348,67 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
                     </PopoverButton>
                     <PopoverPanel
                       anchor="bottom"
-                      className="bg-white rounded-lg mt-7 w-[300px] min-h-[100px] -ml-[55px] shadow-md transition duration-200 ease-in-out data-[closed]:-translate-y-1 data-[closed]:opacity-0"
+                      className=" w-[300px] min-h-[100px] -ml-[55px] rounded-lg transition duration-200 ease-in-out data-[closed]:-translate-y-1 data-[closed]:opacity-0"
                     >
-                      {/* <div className="flex items-start justify-between px-4 py-2.5 border-b border-[#E1E1E1]">
-                    <p className="text-neutral-800 font-semibold">
-                      {cart?.data?.length}{' '}
-                      <span className="text-[#344054] text-sm">
-                        Order&apos;s
-                      </span>
-                    </p>
-                    <Link href={'/dashboard/cart'}>
-                      <button className="w-[88px] h-8 hover:opacity-80 border rounded-full text-[#344054] font-semibold text-sm">
-                        View Cart
-                      </button>
-                    </Link>
-                  </div> */}
-                      {isCartLoading ? (
-                        <div className="h-20"></div>
-                      ) : cart && cart?.data?.length > 0 ? (
-                        <div className="max-h-[382px] overflow-y-auto">
-                          {cart?.data?.map((pd: any, i) => (
-                            <div key={pd.id} className="p-2">
-                              <div className="flex items-center justify-between gap-x-2 pb-3 border-b">
-                                <Image
-                                  src={pd?.flash_product?.image}
-                                  alt={pd?.flash_product?.image}
-                                  width={40}
-                                  height={30}
-                                  className="overflow-hidden object-cover bg-gray-200 text-sm"
-                                />
-                                <p className="text-black text-xs font-semibold flex-1 text-ellipsis">
-                                  {pd?.flash_product?.title}
-                                </p>
-                                <p className="text-primary text-xs font-bold">
-                                  {pd?.updated_inventory?.price === '0.00'
-                                    ? pd.flash_product?.selling
-                                    : pd.updated_inventory?.price}
-                                </p>
-                              </div>
-                              <div className="">
-                                <div className="space-y-1 pt-2.5">
-                                  <div className="flex items-center justify-between px-1">
-                                    <p className="text-[#9CA3AF] text-xs font-medium flex-1">
-                                      Quantity
+                      <div className="bg-white rounded-lg mt-6 shadow-md border border-gray-100">
+                        {isCartLoading ? (
+                          <div className="h-20"></div>
+                        ) : cart && cart?.data?.length > 0 ? (
+                          <div className="max-h-[382px] overflow-y-auto  divide-y">
+                            {cart?.data?.map((pd: any, i) => (
+                              <div key={pd.id} className="p-3">
+                                <div className="flex items-center justify-between gap-x-2 pb-3">
+                                  <Image
+                                    src={pd?.flash_product?.image}
+                                    alt={pd?.flash_product?.image}
+                                    width={60}
+                                    height={40}
+                                    className="overflow-hidden object-cover bg-gray-200 text-sm"
+                                  />
+                                  <div className="flex-1 overflow-hidden">
+                                    <p className="text-black text-xs font-semibold text-ellipsis text-nowrap max-w-[210px] overflow-hidden">
+                                      {pd?.flash_product?.title}
                                     </p>
-                                    <p className="text-[#9CA3AF] text-xs font-medium flex-1 text-right">
-                                      {pd?.quantity}
-                                    </p>
+                                    <div className="flex items-center justify-between mt-1">
+                                      <p className="text-green text-xs font-bold">
+                                        {pd?.updated_inventory?.price === '0.00'
+                                          ? pd.flash_product?.selling
+                                          : pd.updated_inventory?.price}{' '}
+                                        AED
+                                      </p>
+                                      <p className="text-gray-400 text-xs font-bold">
+                                        Quantity : {pd?.quantity}
+                                      </p>
+                                    </div>
                                   </div>
                                 </div>
                               </div>
-                            </div>
-                          ))}
+                            ))}
+                          </div>
+                        ) : (
+                          <p className="text-black text-sm text-center py-8">
+                            Your cart is currently Empty!
+                          </p>
+                        )}
+                        <div className="m-3 mt-0">
+                          <Button
+                            disabled={cart?.data?.length! < 1}
+                            onClick={() => router.push('/dashboard/cart')}
+                            className="h-9 w-full text-sm py-0 text-center"
+                          >
+                            View Cart
+                          </Button>
                         </div>
-                      ) : (
-                        <p className="text-black text-sm text-center py-8">
-                          Your cart is currently Empty!
-                        </p>
-                      )}
-                      {/* <div className="bg-[#F9FAFB] px-4 py-3 flex items-center justify-between">
-                    <div className="flex-1">
-                      <p className="uppercase text-primary text-sm font-bold">
-                        0.00 AED
-                      </p>
-                      <p className="text-xs font-semibold text-[#374151]">
-                        Total (Exc. Vat)
-                      </p>
-                    </div>
-                    <Button
-                      disabled={cart?.data?.length! < 1}
-                      onClick={() => router.push('/checkout')}
-                      className="h-9 w-[113px] flex gap-x-2 items-center justify-center text-sm"
-                    >
-                      <IoCheckmark className="text-base" /> Proceed
-                    </Button>
-                  </div> */}
+                      </div>
                     </PopoverPanel>
                   </>
                 )}
               </Popover>
-              <Popover>
+              <Popover
+                onMouseLeave={() =>
+                  document.getElementById('wishlist')?.click()
+                }
+              >
                 {({ open, close }) => (
                   <>
                     <PopoverButton
@@ -456,40 +440,62 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
                     </PopoverButton>
                     <PopoverPanel
                       anchor="bottom"
-                      className="bg-white rounded-lg mt-7 w-[300px] -ml-[55px] shadow-md transition duration-200 ease-in-out data-[closed]:-translate-y-1 data-[closed]:opacity-0"
+                      className="w-[250px] -ml-[55px] transition duration-200 ease-in-out rounded-lg data-[closed]:-translate-y-1 data-[closed]:opacity-0"
                     >
-                      {isWishlistLoading ? (
-                        <div className="h-20"></div>
-                      ) : wishlist && wishlist?.length > 0 ? (
-                        <div className="max-h-[382px] overflow-y-auto">
-                          {wishlist?.map((pd: any, i) => (
-                            <div key={pd.id} className="p-2">
-                              <div className="flex items-center justify-between gap-x-2 pb-3 border-b">
-                                <Image
-                                  src={pd?.product?.image}
-                                  alt={pd?.product?.image}
-                                  width={40}
-                                  height={30}
-                                  className="overflow-hidden object-cover bg-gray-200 text-sm"
-                                />
-                                <Link
-                                  href={`/wishlist/${pd?.product?.slug}/${pd?.product?.id}`}
-                                  className="text-black text-xs font-semibold flex-1 text-ellipsis hover:text-green"
-                                >
-                                  {pd?.product?.title}
-                                </Link>
-                                <p className="text-primary text-xs font-bold">
-                                  {pd.product?.offered ?? pd.product?.selling}
-                                </p>
+                      <div className="bg-white rounded-lg mt-6 shadow-md border border-gray-100">
+                        {isWishlistLoading ? (
+                          <div className="h-20"></div>
+                        ) : wishlist && wishlist?.length > 0 ? (
+                          <div className="max-h-[382px] overflow-y-auto divide-y">
+                            {wishlist?.map((pd: any, i) => (
+                              <div key={pd.id} className="p-3">
+                                <div className="flex items-center justify-between gap-x-2 pb-3">
+                                  <Image
+                                    src={pd?.product?.image}
+                                    alt={pd?.product?.image}
+                                    width={60}
+                                    height={40}
+                                    className="overflow-hidden object-cover bg-gray-200 text-sm"
+                                  />
+                                  <div className="flex-1 overflow-hidden">
+                                    <Link
+                                      href={`/wishlist/${pd?.product?.slug}/${pd?.product?.id}`}
+                                      className="text-black block text-xs font-semibold text-ellipsis text-nowrap hover:text-green max-w-[152px] overflow-hidden"
+                                    >
+                                      {pd?.product?.title}
+                                    </Link>
+                                    <p className="text-green text-xs font-bold mt-1.5">
+                                      {pd.product?.offered ??
+                                        pd.product?.selling}{' '}
+                                      AED
+                                    </p>
+                                  </div>
+                                </div>
                               </div>
-                            </div>
-                          ))}
+                            ))}
+                          </div>
+                        ) : (
+                          <p className="text-black text-sm text-center py-8">
+                            Your wishlist is currently Empty!
+                          </p>
+                        )}
+                        <div className="m-3 mt-0">
+                          <Link
+                            href={
+                              wishlist?.length! < 1
+                                ? '#'
+                                : '/dashboard/wishlist'
+                            }
+                          >
+                            <Button
+                              disabled={wishlist?.length! < 1}
+                              className="h-9 w-full text-sm py-0 text-center"
+                            >
+                              View Wishlist
+                            </Button>
+                          </Link>
                         </div>
-                      ) : (
-                        <p className="text-black text-sm text-center py-8">
-                          Your wishlist is currently Empty!
-                        </p>
-                      )}
+                      </div>
                     </PopoverPanel>
                   </>
                 )}
