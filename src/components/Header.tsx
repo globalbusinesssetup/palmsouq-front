@@ -348,7 +348,7 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
                     </PopoverButton>
                     <PopoverPanel
                       anchor="bottom"
-                      className=" w-[300px] min-h-[100px] -ml-[55px] rounded-lg transition duration-200 ease-in-out data-[closed]:-translate-y-1 data-[closed]:opacity-0"
+                      className=" w-[300px] min-h-[100px] -ml-[55px] rounded-lg transition duration-200 ease-in-out data-[closed]:-translate-y-1 data-[closed]:opacity-0 z-[1000]"
                     >
                       <div className="bg-white rounded-lg mt-6 shadow-md border border-gray-100">
                         {isCartLoading ? (
@@ -440,7 +440,7 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
                     </PopoverButton>
                     <PopoverPanel
                       anchor="bottom"
-                      className="w-[250px] -ml-[55px] transition duration-200 ease-in-out rounded-lg data-[closed]:-translate-y-1 data-[closed]:opacity-0"
+                      className="w-[250px] z-[1000] -ml-[55px] transition duration-200 ease-in-out rounded-lg data-[closed]:-translate-y-1 data-[closed]:opacity-0"
                     >
                       <div className="bg-white rounded-lg mt-6 shadow-md border border-gray-100">
                         {isWishlistLoading ? (

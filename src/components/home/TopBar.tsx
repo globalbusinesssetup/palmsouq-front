@@ -5,18 +5,13 @@ import {
   ListboxButton,
   ListboxOption,
   ListboxOptions,
-  ListboxSelectedOption,
-  Select,
 } from '@headlessui/react';
 import Link from 'next/link';
 import { FiPhoneForwarded } from 'react-icons/fi';
 import useAuth from '@/hooks/useAuth';
 import { FaAngleDown } from 'react-icons/fa6';
 
-const currencies = [
-  { name: 'AED', code: 'aed' },
-  { name: 'USD', code: 'usd' },
-];
+const currencies = [{ name: 'AED', code: 'aed' }];
 
 const TopBar = () => {
   const { languages, default_language, setting } = useAuth();
@@ -39,7 +34,7 @@ const TopBar = () => {
               {setting?.phone ?? '4534345656'}
             </Link>
           </p>
-          {/* <div className="w-[1px] h-3.5 bg-neutral-400" />
+          <div className="w-[1px] h-3.5 bg-neutral-400" />
           <Listbox value={language} onChange={setLanguage}>
             <div className="relative">
               <ListboxButton className="w-20 flex items-center gap-x-2 bg-transparent focus-visible:outline-none text-white text-xs font-semibold">
@@ -76,7 +71,7 @@ const TopBar = () => {
                 ))}
               </ListboxOptions>
             </div>
-          </Listbox> */}
+          </Listbox>
         </div>
       </div>
     </div>
