@@ -1,20 +1,18 @@
 'use client';
-import { Button, Header, Modal } from '@/components';
+import { Button, Modal } from '@/components';
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import { FiMinus, FiPlus } from 'react-icons/fi';
-import { features, cardCategoryData } from '@/constants';
+import { features } from '@/constants';
 import {
   Disclosure,
   DisclosureButton,
   DisclosurePanel,
-  Transition,
 } from '@headlessui/react';
 import { FaAngleDown, FaRegHeart, FaHeart } from 'react-icons/fa6';
-import { useRouter } from 'next/navigation';
-import { QueryClient, useQuery, useQueryClient } from '@tanstack/react-query';
-import { getProduct, getWishList, useGetUser } from '@/utils/api';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { getProduct } from '@/utils/api';
 import { api } from '@/utils/fetcher';
 import { toast } from 'react-toastify';
 import useAuth from '@/hooks/useAuth';
@@ -22,10 +20,10 @@ import config from '@/config';
 import { FaAngleRight } from 'react-icons/fa6';
 import ImageMagnifier from '@/components/common/ImageMagnifier';
 import { temp_banner } from '@/utils/helper';
-import Cookies from 'js-cookie';
 import { register } from 'swiper/element/bundle';
 import Rate from 'rc-rate';
 import { IoClose } from 'react-icons/io5';
+import { useGlobalContext } from '@/context/GlobalContext';
 register();
 
 type CategoryProps = {
@@ -36,12 +34,17 @@ type CategoryProps = {
 };
 
 export default function ProductDeatils({ params }: Record<string, any>) {
-  const router = useRouter();
-  const { user, isLoggedIn, refetchProfile, addOrders } = useAuth();
-  const [selectedType, setType] = useState('');
+  const { isLoggedIn } = useAuth();
+  const {
+    addToCart,
+    isAddToCartLoading,
+    buyNow,
+    isBuyNowLoading,
+    wishlistData,
+    addToWishlist,
+  } = useGlobalContext();
   const [quantity, setQuantity] = useState(1);
   const [selectedImage, setImage] = useState('');
-  const [isSubmitLoading, setSubmitLoading] = useState(false);
   const [bannerError, setBannerError] = useState(false);
   const [wishListed, setWishListed] = useState(false);
   const queryClient = useQueryClient();
@@ -55,11 +58,6 @@ export default function ProductDeatils({ params }: Record<string, any>) {
   } = useQuery({
     queryKey: ['product', params.id],
     queryFn: () => getProduct(params.id),
-  });
-
-  const { data: wishlist, isLoading: wishListLoading } = useQuery({
-    queryKey: ['wishlist', isLoggedIn],
-    queryFn: () => getWishList(),
   });
 
   const handleQuantity = (type: 'minus' | 'plus' | number) => {
@@ -76,98 +74,14 @@ export default function ProductDeatils({ params }: Record<string, any>) {
     }
   };
 
-  const addToCart = async () => {
-    const token = Cookies.get('user_token');
-    setSubmitLoading(true);
-    try {
-      const res = await api.post('/cart/action', {
-        product_id: product?.id,
-        inventory_id: product?.inventory[0]?.id,
-        quantity,
-        user_token: token,
-      });
-      if (res?.data?.data?.form) {
-        toast.error(res?.data?.data?.form[0]);
-      } else {
-        refetchProfile();
-        toast.success('Product add Successfully');
-        await queryClient.invalidateQueries({ queryKey: ['cart'] });
-        setTimeout(() => {
-          queryClient.refetchQueries({ queryKey: ['cart'] });
-        }, 500);
-      }
-      console.log('add cart res =>', res);
-    } catch (err) {
-      console.log(err);
-    }
-    setSubmitLoading(false);
-  };
-  const buyNow = async () => {
-    const token = Cookies.get('user_token');
-    setSubmitLoading(true);
-    try {
-      const res = await api.post('/cart/buy-now', {
-        product_id: product?.id,
-        inventory_id: product?.inventory[0]?.id,
-        quantity,
-        user_token: token,
-      });
-      if (res?.data?.data?.form) {
-        toast.error(res?.data?.data?.form[0]);
-      } else {
-        refetchProfile();
-        await queryClient.invalidateQueries({ queryKey: ['cart'] });
-        setTimeout(() => {
-          queryClient.refetchQueries({ queryKey: ['cart'] });
-        }, 500);
-        router.push('/checkout');
-      }
-      console.log('add cart res =>', res);
-    } catch (err) {
-      console.log(err);
-    }
-    setSubmitLoading(false);
-  };
-  const addToWishlist = async () => {
-    if (!isLoggedIn) {
-      toast.warn('Unauthorized! sign in first.');
-      return;
-    }
-    try {
-      const res = await api.post('/user/wishlist/action', {
-        product_id: product?.id,
-      });
-      if (res?.data?.data?.form) {
-        toast.error(res?.data?.data?.form[0]);
-      } else {
-        toast.success(res.data?.message);
-        await queryClient.invalidateQueries({
-          queryKey: ['wishlist'],
-          refetchType: 'all',
-        });
-        setTimeout(() => {
-          queryClient.invalidateQueries({
-            queryKey: ['wishlist'],
-            refetchType: 'all',
-          });
-        }, 500);
-        // await queryClient.refetchQueries({ queryKey: ['wishlist'] });
-      }
-      console.log('add wishlist res =>', res);
-    } catch (err) {
-      toast.error(err.data?.message);
-      console.log(err);
-    }
-  };
-
   useEffect(() => {
-    if (wishlist) {
-      const isWishListed = wishlist?.some(
+    if (wishlistData) {
+      const isWishListed = wishlistData?.some(
         (pd: any) => pd.product_id == params?.id
       );
       setWishListed(isWishListed);
     }
-  }, [wishlist, params]);
+  }, [wishlistData, params]);
 
   if (isLoading) {
     return (
@@ -377,7 +291,10 @@ export default function ProductDeatils({ params }: Record<string, any>) {
                     {Number(product?.stock) > 0 ? 'In Stock' : 'Stock out'}
                   </p>
                 </div>
-                <button disabled={!isLoggedIn} onClick={addToWishlist}>
+                <button
+                  disabled={!isLoggedIn}
+                  onClick={() => addToWishlist(product?.id)}
+                >
                   {wishListed ? (
                     <FaHeart size={26} />
                   ) : (
@@ -424,17 +341,29 @@ export default function ProductDeatils({ params }: Record<string, any>) {
               </div>
               <div className="flex justify-end gap-x-4 my-2">
                 <Button
-                  disabled={Number(product?.stock) < 1}
-                  loading={isSubmitLoading}
-                  onClick={addToCart}
+                  disabled={Number(product?.stock) < 1 || isBuyNowLoading}
+                  loading={isAddToCartLoading}
+                  onClick={() =>
+                    addToCart({
+                      productId: product?.id,
+                      inventoryId: product?.inventory[0]?.id,
+                      qty: quantity,
+                    })
+                  }
                   className="h-11 w-[167px]"
                 >
                   Add to Cart
                 </Button>
                 <Button
-                  disabled={Number(product?.stock) < 1}
-                  loading={isSubmitLoading}
-                  onClick={buyNow}
+                  disabled={Number(product?.stock) < 1 || isAddToCartLoading}
+                  loading={isBuyNowLoading}
+                  onClick={() =>
+                    buyNow({
+                      productId: product?.id,
+                      inventoryId: product?.inventory[0]?.id,
+                      qty: quantity,
+                    })
+                  }
                   className="h-11 w-[167px] bg-success border-success"
                 >
                   Buy it Now

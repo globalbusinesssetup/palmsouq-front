@@ -4,14 +4,10 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { HiArrowRight } from 'react-icons/hi';
 import { ProductData } from '@/types';
-import useAuth from '@/hooks/useAuth';
-import { toast } from 'react-toastify';
-import { api } from '@/utils/fetcher';
 import { VscLoading } from 'react-icons/vsc';
 import config from '@/config';
-import Cookies from 'js-cookie';
 import { FaRegTrashCan } from 'react-icons/fa6';
-import { useQueryClient } from '@tanstack/react-query';
+import { useGlobalContext } from '@/context/GlobalContext';
 
 const ProductCard = ({
   data,
@@ -24,12 +20,10 @@ const ProductCard = ({
   isWishList?: boolean;
   isFeatured?: boolean;
 }) => {
-  const { isLoggedIn, user, refetchProfile } = useAuth();
+  const { addToCart, isAddToCartLoading, addToWishlist, isAddWishListLoading } =
+    useGlobalContext();
   const [image, setImage] = useState(config.imgUri + data?.image);
-  const [isSubmitLoading, setSubmitLoading] = useState(false);
   const [isHover, setHover] = useState(false);
-  const [isWishListLoading, setWishListLoading] = useState(false);
-  const queryClient = useQueryClient();
 
   const handleError = () => {
     setImage('/default-image.webp'); // fallback image path
@@ -41,68 +35,6 @@ const ProductCard = ({
         parseFloat(data?.selling as string)) *
       100
     : 0;
-  const addToCart = async () => {
-    const token = Cookies.get('user_token');
-    setSubmitLoading(true);
-    try {
-      const res = await api.post('/cart/action', {
-        product_id: data?.id,
-        inventory_id: data?.inventory?.[0]?.id,
-        quantity: 1,
-        user_token: token,
-      });
-      if (res?.data?.data?.form) {
-        toast.error(res?.data?.data?.form[0]);
-      } else {
-        refetchProfile();
-        toast.success('Product add Successfully');
-        await queryClient.invalidateQueries({ queryKey: ['cart'] });
-        setTimeout(() => {
-          queryClient.refetchQueries({ queryKey: ['cart'] });
-        }, 500);
-        // await router.push('/order');
-      }
-      console.log('add cart res =>', res);
-    } catch (err) {
-      console.log(err);
-      toast.error('Error to add cart!');
-    }
-    setSubmitLoading(false);
-  };
-
-  const removeFromWishlist = async () => {
-    if (!isLoggedIn) {
-      toast.warn('Unauthorized! sign in first.');
-      return;
-    }
-    setWishListLoading(true);
-    try {
-      const res = await api.post('/user/wishlist/action', {
-        product_id: data?.id,
-      });
-      if (res?.data?.data?.form) {
-        toast.error(res?.data?.data?.form[0]);
-      } else {
-        toast.success(res.data?.message);
-        await queryClient.invalidateQueries({
-          queryKey: ['wishlist'],
-          refetchType: 'all',
-        });
-        setTimeout(() => {
-          queryClient.invalidateQueries({
-            queryKey: ['wishlist'],
-            refetchType: 'all',
-          });
-        }, 500);
-        // queryClient.refetchQueries({ queryKey: ['wishlist'] });
-      }
-      console.log('add wishlist res =>', res);
-    } catch (err) {
-      console.log(err);
-    } finally {
-      setWishListLoading(false);
-    }
-  };
 
   return (
     <div
@@ -149,10 +81,11 @@ const ProductCard = ({
       </Link>
       {isWishList && (
         <button
-          onClick={removeFromWishlist}
+          onClick={() => addToWishlist(data?.id)}
+          disabled={isAddWishListLoading}
           className="absolute top-2 right-2 text-lg size-10 flex items-center justify-center border border-gray-200 bg-secondary z-50 rounded-full text-error hover:border-error/20"
         >
-          {isWishListLoading ? (
+          {isAddWishListLoading ? (
             <VscLoading size={20} className="animate-spin" />
           ) : (
             <FaRegTrashCan />
@@ -177,18 +110,24 @@ const ProductCard = ({
       </div>
       {!isWishList && (
         <div className=" sm:pt-3 flex items-center justify-between gap-x-2.5">
-          <div className="flex-1 flex items-center justify-center gap-x-1 h-7 py-1 rounded-full text-center bg-secondary text-xs xl:text-sm text-[#344054] font-medium">
+          <div className="flex-1 flex items-center justify-center gap-x-1 h-7 py-1 rounded-full text-center bg-secondary text-xs text-[#344054] font-medium">
             Price:{' '}
             <span className="font-semibold">
               {Number(data?.offered) > 0 ? data?.offered : data?.selling}
             </span>
           </div>
           <button
-            onClick={addToCart}
-            disabled={isSubmitLoading}
-            className="flex-1 hidden sm:flex items-center justify-center gap-x-1 h-7 py-1 rounded-full text-center bg-secondary text-xs xl:text-sm text-[#344054] font-medium hover:bg-primary hover:text-white transition-all duration-300"
+            onClick={() =>
+              addToCart({
+                productId: data?.id,
+                inventoryId: data?.inventory?.[0]?.id,
+                qty: 1,
+              })
+            }
+            disabled={isAddToCartLoading}
+            className="flex-1 hidden sm:flex items-center justify-center gap-x-1 h-7 py-1 rounded-full text-center bg-secondary text-xs text-[#344054] font-medium hover:bg-primary hover:text-white transition-all duration-300"
           >
-            {isSubmitLoading ? (
+            {isAddToCartLoading ? (
               <VscLoading size={12} className="animate-spin" />
             ) : (
               'Add to cart'

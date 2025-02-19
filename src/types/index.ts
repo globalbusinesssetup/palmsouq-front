@@ -343,6 +343,7 @@ export type Address = {
   user_token: string | null;
   email: string;
   created: string;
+  label: string;
 };
 
 export type Collection = {

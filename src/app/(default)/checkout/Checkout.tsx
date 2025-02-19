@@ -91,7 +91,11 @@ const Checkout = () => {
   const router = useRouter();
   const params = useSearchParams();
   const { refetchProfile, isLoggedIn } = useAuth();
-  const { cartData:cart, cartLoading:isLoading, refetchCart } = useGlobalContext();
+  const {
+    cartData: cart,
+    cartLoading: isLoading,
+    refetchCart,
+  } = useGlobalContext();
   // const [Razorpay] = useRazorpay();
   const queryClient = useQueryClient();
   const {
@@ -132,23 +136,23 @@ const Checkout = () => {
 
   const handleLeavePage = async () => {
     const userConfirmed = window.confirm('Are you sure you want to leave?');
-    if(userConfirmed){
-      if(order.id && navigationGuard){
+    if (userConfirmed) {
+      if (order.id && navigationGuard) {
         await api.post('/order/payment-failed', {
           id: order.id,
-          user_token: Cookies.get('user_token')
+          user_token: Cookies.get('user_token'),
         });
         refetchCart();
       }
-    }else{
-      console.log("User not confirmed");
+    } else {
+      console.log('User not confirmed');
     }
     return userConfirmed;
   };
 
   useNavigationGuard({
     enabled: navigationGuard,
-    confirm: handleLeavePage
+    confirm: handleLeavePage,
   });
 
   useEffect(() => {
@@ -220,15 +224,15 @@ const Checkout = () => {
 
   useEffect(() => {
     if (currentStep === 1) {
-        setNavigationGuard(true);
+      setNavigationGuard(true);
     }
   }, [currentStep]);
 
   useEffect(() => {
-    if(paymentSuccess){
+    if (paymentSuccess) {
       router.replace('/checkout?currentStep=2');
     }
-  },[paymentSuccess]);
+  }, [paymentSuccess]);
 
   // useEffect(() => {
   //   if (
@@ -243,7 +247,6 @@ const Checkout = () => {
   //     setDeliveryOption(deliveryOptions[0].value);
   //   }
   // }, [defaultAddress]);
-
 
   if (isPayDataLoading || isCountriesLoading || isLoading) {
     return (
@@ -277,7 +280,8 @@ const Checkout = () => {
   //   0
   // );
 
-  const totalPriceWithDelivery = totalAmount + (totalAmount <= 100 ? deliveryCost : 0);
+  const totalPriceWithDelivery =
+    totalAmount + (totalAmount <= 100 ? deliveryCost : 0);
   const vat = (totalAmount * tax) / 100; // 5% VAT rate
   const totalPriceWithDeliveryVat = totalPriceWithDelivery + vat;
 
@@ -325,7 +329,7 @@ const Checkout = () => {
     const token = Cookies.get('user_token');
     setSubmitLoading(true);
     try {
-      if(Object.keys(order).length) setOpen(true);
+      if (Object.keys(order).length) setOpen(true);
       const encryptedOrder = orderEncrypt({
         user_token: token!,
         order_method: orderMethod,
@@ -755,27 +759,28 @@ const Address = ({
   };
   return (
     <div
-      key={address.state}
+      key={address.id}
       onClick={onClick}
       className={`flex-1 min-w-[47%] flex items-start gap-2 p-3 xl:p-4 border rounded-lg transition-all duration-300 cursor-pointer ${
-        defaultAddress?.state === address.state
+        defaultAddress?.id === address.id
           ? 'bg-neutral-50 border-[#9B9DFD]'
           : ''
       }`}
     >
       <div
         className={`group flex size-3 sm:size-4 xl:size-5 items-center justify-center rounded-full border bg-white duration-300 transition-all ${
-          defaultAddress?.state === address.state ? 'border-primary' : ''
+          defaultAddress?.id === address.id ? 'border-primary' : ''
         }`}
       >
-        {defaultAddress?.state === address.state && (
+        {defaultAddress?.id === address.id && (
           <span className="size-1 sm:size-1.5 xl:size-2 rounded-full bg-primary" />
         )}
       </div>
       <div className={'flex-1 flex gap-x-2.5 cursor-pointer'}>
         <div className="flex-1">
           <p className="text-xs md:text-sm xl:text-base text-[#344054] font-semibold">
-            {getStateTitle(countries, address.country, address.state)}
+            {address.label ||
+              getStateTitle(countries, address.country, address.state)}
           </p>
           <p className="text-tiny md:text-xs xl:text-sm text-neutral-400 mt-0.5">
             {getStateTitle(countries, address.country, address.state)},{' '}
@@ -794,7 +799,7 @@ const Address = ({
               <FiEdit />
             </button>
           </div>
-          {defaultAddress?.state === address.state && (
+          {defaultAddress?.id === address.id && (
             <p className="h-[18px] w-12 rounded-full text-neutral-200 font-medium bg-primary text-[8px]/[14px] flex items-center justify-center">
               Default
             </p>
