@@ -21,6 +21,7 @@
     "jwt-decode": "^4.0.0",
     "libphonenumber-js": "^1.11.3",
     "next": "14.2.3",
+    "next-navigation-guard": "^0.1.2",
     "razorpay": "^2.9.4",
     "rc-rate": "^2.13.0",
     "react": "^18",

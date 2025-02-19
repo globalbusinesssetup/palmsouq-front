@@ -18,6 +18,7 @@ import { CartItem, ProductData } from '@/types';
 import useAuth from '@/hooks/useAuth';
 import config from '@/config';
 import Link from 'next/link';
+import { useGlobalContext } from '@/context/GlobalContext';
 
 // export const metadata: Metadata = {
 //   title: 'Next.js',
@@ -83,14 +84,7 @@ const Cart = () => {
   const [checked, setChecked] = useState<number[]>([]);
   const [unChecked, setUnChecked] = useState<number[] | []>([]);
   const queryClient = useQueryClient();
-  const {
-    data: cart,
-    isLoading,
-    refetch,
-  } = useQuery({
-    queryKey: ['cart'],
-    queryFn: () => getCart(),
-  });
+  const { cartData:cart, refetchCart:refetch, cartLoading:isLoading } = useGlobalContext();
 
   useEffect(() => {
     if (!isLoading) {

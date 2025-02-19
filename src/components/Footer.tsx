@@ -147,7 +147,7 @@ const Footer = () => {
               alt="logo"
             />
             <p className="text-sm md:text-base text-neutral-200">
-              Copywrite {currentYear}, All right reserved.
+              &copy;Copyright {currentYear}. All rights reserved.
             </p>
           </div>
           <nav className="space-x-3 sm:space-x-6">
