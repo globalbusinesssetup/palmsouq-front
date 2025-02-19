@@ -10,7 +10,8 @@ import AuthProvider from '@/context/AuthContext';
 import 'react-toastify/dist/ReactToastify.css';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-
+import { NavigationGuardProvider } from 'next-navigation-guard';
+import GlobalContextProvider, { GlobalContext } from '@/context/GlobalContext';
 const inter = Inter({ subsets: ['latin'] });
 
 // export const metadata: Metadata = {
@@ -28,11 +29,17 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
+      <NavigationGuardProvider>
         <ToastContainer />
         <QueryClientProvider client={queryClient}>
           <ReactQueryDevtools initialIsOpen={false} />
-          <AuthProvider>{children}</AuthProvider>
+          <AuthProvider>
+            <GlobalContextProvider>
+              {children}
+            </GlobalContextProvider>
+          </AuthProvider>
         </QueryClientProvider>
+      </NavigationGuardProvider>
       </body>
     </html>
   );

@@ -27,6 +27,7 @@ import { FaRegHeart } from 'react-icons/fa6';
 import config from '@/config';
 import { usePathname, useRouter } from 'next/navigation';
 import { IoCheckmark } from 'react-icons/io5';
+import { useGlobalContext } from '@/context/GlobalContext';
 
 const dropdown = [
   {
@@ -61,25 +62,9 @@ const Header = ({ showSearch = false }: { showSearch?: boolean }) => {
     queryFn: () => getSearchData(query),
     enabled: false,
   });
-  console.log('isLoggedIn from header', isLoggedIn);
-  const {
-    data: cart,
-    isLoading: isCartLoading,
-    refetch: cartRefetch,
-  } = useQuery({
-    queryKey: ['cart'],
-    queryFn: () => getCart(),
-    refetchOnWindowFocus: false,
-    staleTime: 0,
-  });
-
-  const { data: wishlist, isLoading: isWishlistLoading } = useQuery({
-    queryKey: ['wishlist'],
-    queryFn: () => getWishList(),
-    refetchOnWindowFocus: false,
-    staleTime: 0,
-    enabled: isLoggedIn,
-  });
+  
+  const { cartData:cart, refetchCart, cartLoading:isCartLoading,
+    wishlistData:wishlist, refetchWishlist, wishlistLoading:isWishlistLoading } = useGlobalContext();
 
   const modalRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);

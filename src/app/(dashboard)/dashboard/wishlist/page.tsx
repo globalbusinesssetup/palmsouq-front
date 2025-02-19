@@ -1,14 +1,11 @@
 'use client';
 import { ProductCard } from '@/components';
-import { getWishList } from '@/utils/api';
-import { useQuery } from '@tanstack/react-query';
+import { useGlobalContext } from '@/context/GlobalContext';
 import React from 'react';
 
 const Wishlist = () => {
-  const { data: wishlist, isLoading } = useQuery({
-    queryKey: ['wishlist'],
-    queryFn: () => getWishList(),
-  });
+
+  const {wishlistData:wishlist, wishlistLoading:isLoading} = useGlobalContext();
 
   return (
     <div className="border border-neutral-200 bg-white rounded-xl overflow-hidden">

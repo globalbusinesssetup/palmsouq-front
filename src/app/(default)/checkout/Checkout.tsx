@@ -42,6 +42,8 @@ import AddAddress from './AddAddress';
 import { Address as AddressType, CartItem, Country } from '@/types';
 import UpdateAddress from './UpdateAddress';
 import Cookies from 'js-cookie';
+import { useNavigationGuard } from 'next-navigation-guard';
+import { useGlobalContext } from '@/context/GlobalContext';
 
 const steps = [
   {
@@ -89,6 +91,7 @@ const Checkout = () => {
   const router = useRouter();
   const params = useSearchParams();
   const { refetchProfile, isLoggedIn } = useAuth();
+  const { cartData:cart, cartLoading:isLoading, refetchCart } = useGlobalContext();
   // const [Razorpay] = useRazorpay();
   const queryClient = useQueryClient();
   const {
@@ -107,10 +110,6 @@ const Checkout = () => {
     queryKey: ['countries-phones'],
     queryFn: getCountries,
   });
-  const { data: cart, isLoading } = useQuery({
-    queryKey: ['cart'],
-    queryFn: () => getCart(),
-  });
 
   const [currentStep, setStep] = useState(0);
   const [defaultAddress, setDefaultAddress] = useState(addresses?.data?.[0]);
@@ -128,9 +127,32 @@ const Checkout = () => {
   const [pickupCost, setPickupCost] = useState(0);
   const [tax, setTax] = useState(0);
   const [order, setOrder] = useState<any>({});
+  const [navigationGuard, setNavigationGuard] = useState(false);
+  const [paymentSuccess, setPaymentSuccess] = useState(false);
+
+  const handleLeavePage = async () => {
+    const userConfirmed = window.confirm('Are you sure you want to leave?');
+    if(userConfirmed){
+      if(order.id && navigationGuard){
+        await api.post('/order/payment-failed', {
+          id: order.id,
+          user_token: Cookies.get('user_token')
+        });
+        refetchCart();
+      }
+    }else{
+      console.log("User not confirmed");
+    }
+    return userConfirmed;
+  };
+
+  useNavigationGuard({
+    enabled: navigationGuard,
+    confirm: handleLeavePage
+  });
 
   useEffect(() => {
-    if (cart?.data) {
+    if (cart?.data && Object.keys(order).length < 1) {
       const result = cart.data
         .filter((item) => item.selected !== '2')
         .reduce(
@@ -196,6 +218,18 @@ const Checkout = () => {
     }
   }, [payData, isPayDataLoading]);
 
+  useEffect(() => {
+    if (currentStep === 1) {
+        setNavigationGuard(true);
+    }
+  }, [currentStep]);
+
+  useEffect(() => {
+    if(paymentSuccess){
+      router.replace('/checkout?currentStep=2');
+    }
+  },[paymentSuccess]);
+
   // useEffect(() => {
   //   if (
   //     deliveryOption === 'standard' &&
@@ -209,6 +243,7 @@ const Checkout = () => {
   //     setDeliveryOption(deliveryOptions[0].value);
   //   }
   // }, [defaultAddress]);
+
 
   if (isPayDataLoading || isCountriesLoading || isLoading) {
     return (
@@ -242,7 +277,7 @@ const Checkout = () => {
   //   0
   // );
 
-  const totalPriceWithDelivery = totalAmount + deliveryCost;
+  const totalPriceWithDelivery = totalAmount + (totalAmount <= 100 ? deliveryCost : 0);
   const vat = (totalAmount * tax) / 100; // 5% VAT rate
   const totalPriceWithDeliveryVat = totalPriceWithDelivery + vat;
 
@@ -255,7 +290,6 @@ const Checkout = () => {
         selected_address: defaultAddress?.id,
         user_token: userToken,
       });
-      console.log('res', res);
       if (res?.data?.data?.form) {
         setUpdateLoading(false);
         toast.error(res?.data?.data?.form[0]);
@@ -291,21 +325,22 @@ const Checkout = () => {
     const token = Cookies.get('user_token');
     setSubmitLoading(true);
     try {
-      const order = orderEncrypt({
+      if(Object.keys(order).length) setOpen(true);
+      const encryptedOrder = orderEncrypt({
         user_token: token!,
         order_method: orderMethod,
         voucher: '',
         time_zone: timezone,
       });
       const res = await api.post('order/action', {
-        data: order,
+        data: encryptedOrder,
       });
       if (res?.data.message) {
-        console.log(res?.data?.data?.form[0]);
         toast.error(res?.data?.data?.form[0]);
         setSubmitLoading(false);
         return;
       }
+      refetchCart();
       setOrder(res.data?.data);
       if (orderMethod === 2) {
         await api.get(
@@ -323,14 +358,15 @@ const Checkout = () => {
   };
 
   const onSuccess = () => {
+    setNavigationGuard(false);
+    setOrder({});
+    setPaymentSuccess(true);
     setTimeout(() => {
       refetchProfile();
-      queryClient.invalidateQueries({ queryKey: ['cart', 'orders', 'user'] });
+      refetchCart();
     }, 100);
     // queryClient.refetchQueries({ queryKey: ['cart', 'orders', 'user'] });
     toast.success('Order placed Successfully');
-    setStep((prev) => prev + 1);
-    router.push('/checkout?currentStep=2');
   };
 
   return (
@@ -610,7 +646,7 @@ const Checkout = () => {
                   Delivery costs
                 </p>
                 <p className="text-sm font-medium text-[#4B4EFC]">
-                  {deliveryCost} AED
+                  {totalAmount >= 100 ? 0 : deliveryCost} AED
                 </p>
               </div>
             </div>
@@ -634,7 +670,7 @@ const Checkout = () => {
             </div>
             <div className="flex items-center justify-between lg:pt-3.5">
               <h6 className="text-xs md:text-sm font-bold text-neutral-800">
-                Total (Exc. Vat)
+                Total (Inc. Vat)
               </h6>
               <h4 className="md:text-lg font-bold text-primary">
                 {totalPriceWithDeliveryVat.toFixed(2)} AED
