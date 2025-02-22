@@ -288,7 +288,7 @@ export default function ProductDeatils({ params }: Record<string, any>) {
                   <p
                     className={`flex items-center justify-center text-xs xl:text-sm font-medium px-4 xl:px-5 h-8 xl:h-[34px] rounded-full text-neutral-600 bg-neutral-100`}
                   >
-                    {Number(product?.stock) > 0 ? 'In Stock' : 'Stock out'}
+                    {product?.in_stock ? 'In Stock' : 'Stock out'}
                   </p>
                 </div>
                 <button
