@@ -179,9 +179,12 @@ export default function HomeClient() {
         {home?.featured_categories?.length! > 0 && (
           <section className="mt-7 p-4 rounded-[10px] border border-neutral-200">
             <div className="flex items-center justify-between">
-              <h3 className="text-lg sm:text-xl lg:text-2xl text-primary font-semibold">
-                Explore by categories
-              </h3>
+              <Link href={'/categories'}>
+                <h3 className="text-lg sm:text-xl text-primary font-semibold flex gap-x-2 items-center">
+                  Explore all categories
+                  <HiArrowRight className="text-neutral-600 text-base sm:text-lg" />
+                </h3>
+              </Link>
               <div className="flex items-center gap-x-2">
                 <button
                   onClick={() => onPrev(1)}

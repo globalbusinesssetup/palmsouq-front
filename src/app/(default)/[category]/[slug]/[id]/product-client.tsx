@@ -341,7 +341,7 @@ export default function ProductDeatils({ params }: Record<string, any>) {
               </div>
               <div className="flex justify-end gap-x-4 my-2">
                 <Button
-                  disabled={Number(product?.stock) < 1 || isBuyNowLoading}
+                  disabled={!product?.in_stock || isBuyNowLoading}
                   loading={isAddToCartLoading}
                   onClick={() =>
                     addToCart({
@@ -355,7 +355,7 @@ export default function ProductDeatils({ params }: Record<string, any>) {
                   Add to Cart
                 </Button>
                 <Button
-                  disabled={Number(product?.stock) < 1 || isAddToCartLoading}
+                  disabled={!product?.in_stock || isAddToCartLoading}
                   loading={isBuyNowLoading}
                   onClick={() =>
                     buyNow({

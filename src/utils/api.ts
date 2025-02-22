@@ -140,6 +140,27 @@ export const getAbout = async (slug: string) => {
   }
 };
 type Brand = { id: number; image: string; slug: string; title: string };
+export const getAllCategories = async (pageParam = 0) => {
+  console.log('pageParam', pageParam);
+  try {
+    const res = await fetcher<{
+      data: {
+        data: Brand[];
+        current_page: number;
+        last_page: number;
+      };
+    }>(`/brands?page=${pageParam}`);
+    console.log('res', res);
+    return {
+      categories: res.data.data,
+      nextPage: res.data?.current_page + 1,
+      hasNextPage: res.data.current_page < res.data.last_page,
+    }; // Return the data array directly
+  } catch (err) {
+    console.error('Failed to fetch brands:', err);
+    return err; // Ensure a fallback return in case of failure
+  }
+};
 export const getBrands = async (pageParam = 0) => {
   console.log('pageParam', pageParam);
   try {
@@ -170,7 +191,8 @@ export const getProducts = async (
   brands?: any,
   collections?: any,
   shipping?: any,
-  sortby?: any
+  sortby?: any,
+  pageParam: number = 0
 ) => {
   try {
     const res = await fetcher<ProductsApiResponse>(
@@ -180,11 +202,21 @@ export const getProducts = async (
         brands ?? ''
       }&collection=${collections ?? ''}&rating=${rating ?? ''}&max=${
         max ?? ''
-      }&min=${min ?? ''}&page=&sidebar_data=true`
+      }&min=${min ?? ''}&page=&sidebar_data=true&page=${pageParam}`
     );
-    return res.data ?? {};
+    return {
+      products: res.data.result.data,
+      brands: res.data.brands,
+      collections: res.data.collections,
+      shipping: res.data.shipping,
+      category: res.data.category,
+      brand: res.data.brand,
+      nextPage: pageParam + 1,
+      hasNextPage: res.data.result.current_page < res.data.result.last_page,
+    };
   } catch (err) {
     console.error(err);
+    return err;
   }
 };
 export const getProduct = async (id: string | number) => {

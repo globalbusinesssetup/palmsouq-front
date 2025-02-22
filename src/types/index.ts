@@ -97,6 +97,8 @@ export type ProductsApiResponse = {
   data: {
     result: {
       data: ProductData[];
+      current_page: number;
+      last_page: number;
     };
     all_categories: { id: number; title: string; slug: string }[];
     brands: ProductsCommonType[];
