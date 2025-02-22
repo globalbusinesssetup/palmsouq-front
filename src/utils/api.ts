@@ -149,7 +149,7 @@ export const getAllCategories = async (pageParam = 0) => {
         current_page: number;
         last_page: number;
       };
-    }>(`/brands?page=${pageParam}`);
+    }>(`/categories?page=${pageParam}`);
     console.log('res', res);
     return {
       categories: res.data.data,
@@ -157,7 +157,7 @@ export const getAllCategories = async (pageParam = 0) => {
       hasNextPage: res.data.current_page < res.data.last_page,
     }; // Return the data array directly
   } catch (err) {
-    console.error('Failed to fetch brands:', err);
+    console.error('Failed to fetch categories:', err);
     return err; // Ensure a fallback return in case of failure
   }
 };
