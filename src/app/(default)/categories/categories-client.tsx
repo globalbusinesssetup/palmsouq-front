@@ -67,9 +67,9 @@ const CategriesClient = () => {
                   className="object-contain size-20 sm:size-[100px]"
                 />
               </div>
-              {/* <p className="flex-1 overflow-hidden text-ellipsis text-center mt-4 text-sm lg:text-base">
-              {b?.title}
-            </p> */}
+              <p className="flex-1 overflow-hidden text-ellipsis text-center text-sm lg:text-base">
+                {c?.title}
+              </p>
             </Link>
           ))
       )}
