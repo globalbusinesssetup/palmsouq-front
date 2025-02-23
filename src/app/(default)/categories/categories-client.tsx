@@ -15,6 +15,7 @@ import { ImSpinner6 } from 'react-icons/im';
 type Brand = { id: number; image: string; slug: string; title: string };
 
 const CategriesClient = () => {
+  
   const {
     data,
     isLoading,
