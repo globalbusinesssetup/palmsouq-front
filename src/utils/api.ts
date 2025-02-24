@@ -315,8 +315,9 @@ export const getOrders = async () => {
   }
 };
 export const getOrder = async (id) => {
+  const token = Cookies.get('user_token');
   try {
-    const { data } = await api.get(`/order/find/${id}`);
+    const { data } = await api.get(`/order/find/${id}?user_token=${token}`);
     return data?.data ?? {};
   } catch (err) {
     console.error(err);

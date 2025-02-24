@@ -280,11 +280,13 @@ export default function ProductDeatils({ params }: Record<string, any>) {
                   >
                     {product?.category_data?.[0]?.title}
                   </p>
-                  <p
-                    className={`flex items-center justify-center text-xs xl:text-sm font-medium px-4 xl:px-5 h-8 xl:h-[34px] rounded-full text-neutral-600 bg-neutral-100`}
-                  >
-                    {product?.brand?.title}
-                  </p>
+                  {product?.brand?.title && (
+                    <p
+                      className={`flex items-center justify-center text-xs xl:text-sm font-medium px-4 xl:px-5 h-8 xl:h-[34px] rounded-full text-neutral-600 bg-neutral-100`}
+                    >
+                      {product?.brand?.title}
+                    </p>
+                  )}
                   <p
                     className={`flex items-center justify-center text-xs xl:text-sm font-medium px-4 xl:px-5 h-8 xl:h-[34px] rounded-full text-neutral-600 bg-neutral-100`}
                   >

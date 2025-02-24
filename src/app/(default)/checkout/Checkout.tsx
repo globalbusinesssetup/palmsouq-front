@@ -36,6 +36,7 @@ import {
   getCountryTitle,
   getStateTitle,
   orderEncrypt,
+  paymentEncrypt,
   timezone,
 } from '@/utils/helper';
 import AddAddress from './AddAddress';
@@ -123,7 +124,7 @@ const Checkout = () => {
   const [isOpen, setOpen] = useState(false);
   const [isUpdateLoding, setUpdateLoading] = useState(false);
   const [isAddAddressOpen, setAddAddressOpen] = useState(false);
-  const [orderMethod, setMethod] = useState(1);
+  const [orderMethod, setMethod] = useState(3);
   const [isSubmitLoading, setSubmitLoading] = useState(false); //[isLoading]
   const [carts, setCarts] = useState({});
   const [totalAmount, setTotalAmount] = useState(0);
@@ -329,7 +330,38 @@ const Checkout = () => {
     const token = Cookies.get('user_token');
     setSubmitLoading(true);
     try {
-      if (Object.keys(order).length) setOpen(true);
+      if (Object.keys(order).length) {
+        if (orderMethod === 3) {
+          setOpen(true);
+          setSubmitLoading(false);
+          return;
+        } else {
+          try {
+            const paymentData = paymentEncrypt({
+              id: order?.id,
+              payment_token: '',
+              order_method: orderMethod,
+              user_token: token!,
+            });
+            const res = await api.post('order/payment-done', {
+              data: paymentData,
+            });
+            await api.get(
+              `/order/send-order-email/${order?.id}?id=${order?.id}&user_token=${token}&time_zone=${timezone}`
+            );
+            if (res?.data.message) {
+              console.log(res?.data?.data?.form[0]);
+              toast.error(res?.data?.data?.form[0]);
+              return;
+            }
+            onSuccess();
+          } catch (error) {
+            console.log(error);
+          }
+          setSubmitLoading(false);
+        }
+        return;
+      }
       const encryptedOrder = orderEncrypt({
         user_token: token!,
         order_method: orderMethod,
@@ -696,8 +728,8 @@ const Checkout = () => {
         show={isOpen}
         onClose={() => {
           setOpen(false);
-          router.push(isLoggedIn ? '/dashboard/orders' : '/orders');
-          refetchProfile();
+          // router.push(isLoggedIn ? '/dashboard/orders' : '/orders');
+          // refetchProfile();
         }}
         panelClassName={'max-w-[350px]'}
       >
