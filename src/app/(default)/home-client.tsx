@@ -137,7 +137,7 @@ export default function HomeClient() {
 
   return (
     <>
-      <CategoriesBar />
+      <CategoriesBar featuredCategories={home?.featured_categories} />
       <div className="container mx-auto min-h-[55vh] mt-5 lg:mt-8 xl:mt-10 pb-7 px-4">
         {/* Banner  */}
         <section className="lg:flex lg:space-x-4">

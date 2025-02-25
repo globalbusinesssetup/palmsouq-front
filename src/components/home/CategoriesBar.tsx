@@ -17,7 +17,11 @@ import useAuth from '@/hooks/useAuth';
 import Image from 'next/image';
 import { useWindowWidth } from '@/hooks';
 import { Categorydata } from '@/types';
-const CategoriesBar = () => {
+const CategoriesBar = ({
+  featuredCategories,
+}: {
+  featuredCategories: [] | undefined;
+}) => {
   const { categories } = useAuth();
 
   return (
@@ -29,7 +33,7 @@ const CategoriesBar = () => {
         >
           <MenuButton className="group w-full lg:w-auto flex-auto lg:flex-none text-left gap-2 xl:gap-4 flex items-center justify-between bg-primary rounded-md lg:rounded-lg py-2 xl:py-3 px-3 xl:px-5 text-white text-sm xl:text-base font-medium xl:font-semibold">
             <div className="flex items-center gap-2 xl:gap-3 flex-1">
-              <HiOutlineMenuAlt2 className="text-base xl:text-xl" /> 
+              <HiOutlineMenuAlt2 className="text-base xl:text-xl" />
               Browse Categories
             </div>
             <IoChevronDown className="text-lg xl:text-xl" />
@@ -44,19 +48,21 @@ const CategoriesBar = () => {
           </MenuItems>
         </Menu>
 
-        {/* <div className="w-[1px] h-[26px] bg-[#E1E1E1] hidden sm:block" />
+        <div className="w-[1px] h-[26px] bg-[#E1E1E1] hidden sm:block" />
         <div className="hidden lg:flex items-center gap-x-4 xl:gap-x-[30px]">
-          {topBarCategories.map((cat, i) => (
-            <Link
-              key={`cat_${i}`}
-              href={'#'}
-              className="flex items-center gap-x-1 text-[#6B7280] hover:text-primary/90 text-sm xl:text-base font-medium xl:font-semibold"
-            >
-              {cat.title}
-              <IoChevronDown className="text-lg xl:text-xl mt-0.5" />
-            </Link>
-          ))}
-        </div> */}
+          {featuredCategories
+            ?.slice(0, 4)
+            .map((cat: { slug: string; title: string; image: string }, i) => (
+              <Link
+                key={`cat_${i}`}
+                href={`/${cat.slug}`}
+                className="flex items-center gap-x-1 text-[#6B7280] hover:text-primary/90 text-sm xl:text-base font-medium xl:font-semibold"
+              >
+                {cat.title}
+                <IoChevronDown className="text-lg xl:text-xl mt-0.5 -rotate-90" />
+              </Link>
+            ))}
+        </div>
         <div className="flex-1 hidden lg:flex items-center justify-end gap-x-5">
           <Link
             href={'/track-order'}
