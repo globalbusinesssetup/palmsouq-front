@@ -28,12 +28,13 @@ import { IoMdStarOutline } from 'react-icons/io';
 import { IoMdStar } from 'react-icons/io';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { getProducts } from '@/utils/api';
-import { useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery } from '@tanstack/react-query';
 import { FaAngleRight } from 'react-icons/fa6';
 import config from '@/config';
 import Filter from './Filter';
 import Drawer from 'react-modern-drawer';
 import { IoClose, IoFilter } from 'react-icons/io5';
+import { ImSpinner6 } from 'react-icons/im';
 
 type CategoryClientProps = {
   category: string;
@@ -81,9 +82,17 @@ const CategoryClient: React.FC<CategoryClientProps> = ({ category }) => {
   const collections = params.get('collection') ?? selectedCollections;
   const shippings = params.get('shipping') ?? selectedShipping;
   const sortby = params.get('sortby');
-  const { data, isLoading, refetch, isRefetching } = useQuery({
+  const {
+    data,
+    isLoading,
+    refetch,
+    hasNextPage,
+    fetchNextPage,
+    isError,
+    isFetchingNextPage,
+  } = useInfiniteQuery({
     queryKey: ['Allproducts'],
-    queryFn: () =>
+    queryFn: ({ pageParam }) =>
       getProducts(
         category,
         min,
@@ -92,11 +101,13 @@ const CategoryClient: React.FC<CategoryClientProps> = ({ category }) => {
         brands,
         collections,
         shippings,
-        sortby
+        sortby,
+        pageParam
       ),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage, pages) =>
+      lastPage?.hasNextPage ? lastPage?.nextPage : undefined,
   });
-  const [bannerError, setBannerError] = useState(false);
-  const [isShowAll, setShowAll] = useState(false);
 
   useEffect(() => {
     const fetchCategoryData = () => {
@@ -197,27 +208,33 @@ const CategoryClient: React.FC<CategoryClientProps> = ({ category }) => {
     refetch();
   }, [params, refetch]);
 
-  const brandTitle = data?.brands?.filter((b) => b.id === Number(brands));
+  console.log('data', data);
 
   return (
     <>
       <main className="bg-[#FCFCFD]">
         <div className="container mx-auto px-4">
-          <div className="w-full h-[150px] md:h-[180px] lg:h-[240px] bg-secondary rounded-md mt-6 relative overflow-hidden">
-            {isLoading ? (
+          {!isLoading ? (
+            (data?.pages?.[0].category?.banner_image ||
+              data?.pages?.[0].brand?.banner_image) && (
+              <div className="w-full h-[150px] md:h-[180px] lg:h-[240px] bg-secondary rounded-md mt-6 relative overflow-hidden">
+                <Image
+                  src={
+                    data?.pages?.[0].category?.banner_image ??
+                    data?.pages?.[0].brand?.banner_image
+                  }
+                  fill
+                  alt={data?.pages?.[0].category?.title! ?? 'Category banner'}
+                  className="object-fit"
+                  loading="lazy"
+                />
+              </div>
+            )
+          ) : (
+            <div className="w-full h-[150px] md:h-[180px] lg:h-[240px] bg-secondary rounded-md mt-6 relative overflow-hidden">
               <div className="animate-pulse" />
-            ) : (
-              <Image
-                defaultSrc={banner}
-                isLocal
-                src={data?.category?.banner_image ?? data?.brand?.banner_image}
-                fill
-                alt={data?.category?.title! ?? 'Category banner'}
-                className="object-fit"
-                loading="lazy"
-              />
-            )}
-          </div>
+            </div>
+          )}
           <nav aria-label="breadcrumb" className="pt-6 lg:hidden">
             <div className="flex flex-wrap space-x-1">
               {/* Home link */}
@@ -229,7 +246,8 @@ const CategoryClient: React.FC<CategoryClientProps> = ({ category }) => {
               <div className="!ml-0 flex items-center">
                 <FaAngleRight size={12} />
                 <span className="text-gray-500">
-                  {data?.category?.title ?? data?.brand?.title}
+                  {data?.pages?.[0].category?.title ??
+                    data?.pages?.[0].brand?.title}
                 </span>
               </div>
             </div>
@@ -246,7 +264,8 @@ const CategoryClient: React.FC<CategoryClientProps> = ({ category }) => {
                 <div className="!ml-0 flex items-center">
                   <FaAngleRight size={12} />
                   <span className="text-gray-500">
-                    {data?.category?.title ?? data?.brand?.title}
+                    {data?.pages?.[0].category?.title ??
+                      data?.pages?.[0].brand?.title}
                   </span>
                 </div>
               </div>
@@ -300,7 +319,7 @@ const CategoryClient: React.FC<CategoryClientProps> = ({ category }) => {
               />
             </div>
             <div className="lg:pl-5 flex-1 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-6 pt-4 pb-10">
-              {isLoading || isRefetching ? (
+              {isLoading ? (
                 Array(8)
                   .fill('')
                   .map((_, i) => (
@@ -310,19 +329,36 @@ const CategoryClient: React.FC<CategoryClientProps> = ({ category }) => {
                       <div className="h-5 w-full bg-gray-200 rounded-md mt-4" />
                     </div>
                   ))
-              ) : data?.result?.data?.length ? (
-                data?.result?.data?.map((product: any, i: number) => (
-                  <ProductCard
-                    key={`product_${i}`}
-                    data={product}
-                    category={category}
-                  />
-                ))
+              ) : isError ? (
+                <p className="col-span-full text-center pt-5">
+                  Failed fetch categories
+                </p>
               ) : (
-                <div className="col-span-full h-[40vh] flex items-center justify-center text-center">
-                  No products found
-                </div>
+                data?.pages
+                  ?.flatMap((page) => page.products)
+                  ?.map((product: any, i: number) => (
+                    <ProductCard
+                      key={`product_${i}`}
+                      data={product}
+                      category={category}
+                    />
+                  ))
               )}
+              {hasNextPage ? (
+                <div className="col-span-full flex justify-center">
+                  <button
+                    onClick={() => fetchNextPage()}
+                    disabled={!hasNextPage || isFetchingNextPage}
+                    className="flex justify-center items-center w-32 py-3 text-sm border text-primary border-gray-200 rounded-md"
+                  >
+                    {isFetchingNextPage ? (
+                      <ImSpinner6 className="animate-spin text-lg" />
+                    ) : (
+                      'Load More'
+                    )}
+                  </button>
+                </div>
+              ) : null}
             </div>
           </div>
         </div>

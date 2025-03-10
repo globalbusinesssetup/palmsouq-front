@@ -8,11 +8,26 @@ import Cookies from 'js-cookie';
 import { toast } from 'react-toastify';
 import { Country, State, City } from '@/types';
 
-const AddAddress = ({ show, onClose }: { show: boolean; onClose: () => void }) => {
+const AddAddress = ({
+  show,
+  onClose,
+}: {
+  show: boolean;
+  onClose: () => void;
+}) => {
   const { data: user } = useQuery({ queryKey: ['user'], queryFn: useGetUser });
-  const { data: countriesPhones, isLoading: isCountriesLoading } = useQuery({ queryKey: ['countries-phones'], queryFn: getCountries });
+  const { data: countriesPhones, isLoading: isCountriesLoading } = useQuery({
+    queryKey: ['countries-phones'],
+    queryFn: getCountries,
+  });
   const [isSubmitLoading, setSubmitLoading] = useState(false);
-  const { control, handleSubmit, formState: { errors }, reset, clearErrors } = useForm({
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    reset,
+    clearErrors,
+  } = useForm({
     defaultValues: {
       phone: '',
       address: '',
@@ -20,9 +35,12 @@ const AddAddress = ({ show, onClose }: { show: boolean; onClose: () => void }) =
       email: '',
       name: '',
       zip: '',
+      label: '',
     },
   });
-  const [countryData, setCountryData] = useState<{ [key: string]: Country } | null>(null);
+  const [countryData, setCountryData] = useState<{
+    [key: string]: Country;
+  } | null>(null);
   const [selectedCountry, setSelectedCountry] = useState('AE');
   const [selectedStates, setStates] = useState<State>([]);
   const [selectedState, setSelectedState] = useState('');
@@ -37,7 +55,11 @@ const AddAddress = ({ show, onClose }: { show: boolean; onClose: () => void }) =
     if (selectedCountry && countryData) {
       setStates(Object.values(countryData[selectedCountry]?.states || []));
       if (selectedState) {
-        setCities(Object.values(countryData[selectedCountry].states[selectedState]?.cities || []));
+        setCities(
+          Object.values(
+            countryData[selectedCountry].states[selectedState]?.cities || []
+          )
+        );
       }
     } else {
       setStates([]);
@@ -68,7 +90,11 @@ const AddAddress = ({ show, onClose }: { show: boolean; onClose: () => void }) =
     const stateCode = event.target.value;
     setSelectedState(stateCode);
     if (countryData && countryData[selectedCountry]?.states[stateCode]) {
-      setCities(Object.values(countryData[selectedCountry].states[stateCode]?.cities || []));
+      setCities(
+        Object.values(
+          countryData[selectedCountry].states[stateCode]?.cities || []
+        )
+      );
     } else {
       setCities([]);
     }
@@ -84,14 +110,11 @@ const AddAddress = ({ show, onClose }: { show: boolean; onClose: () => void }) =
     const token = Cookies.get('user_token');
     try {
       const res = await api.post('/user/address/action', {
+        ...data,
         state: selectedState,
         country: selectedCountry,
-        phone: data.phone,
         address_1: data.address,
         user_token: token,
-        email: data.email,
-        name: data.name,
-        city: data.city,
       });
       if (res?.data?.data?.form) {
         toast.error(res?.data?.data?.form[0]);
@@ -116,16 +139,29 @@ const AddAddress = ({ show, onClose }: { show: boolean; onClose: () => void }) =
   return (
     <Modal show={show} onClose={handleClose}>
       <form onSubmit={handleSubmit(addNewAddress)} className="">
-        <h4 className="md:text-lg text-neutral-900 font-semibold">New Shipping Address</h4>
-        <Input
-          control={control}
-          rules={{ required: 'email is required' }}
-          name="email"
-          label="Email"
-          placeholder="example@mail.com"
-          wrapClassName="mt-4"
-          error={errors?.email}
-        />
+        <h4 className="md:text-lg text-neutral-900 font-semibold">
+          New Shipping Address
+        </h4>
+        <div className="flex flex-col md:flex-row gap-y-4 gap-x-6 mt-2 sm:mt-4">
+          <Input
+            control={control}
+            rules={{ required: 'label is required' }}
+            name="label"
+            label="Label"
+            placeholder="Exmp: Home, Office, etc."
+            wrapClassName="flex-1"
+            error={errors?.label}
+          />
+          <Input
+            control={control}
+            rules={{ required: 'email is required' }}
+            name="email"
+            label="Email"
+            placeholder="example@mail.com"
+            wrapClassName="flex-1"
+            error={errors?.email}
+          />
+        </div>
         <div className="flex flex-col md:flex-row gap-y-4 gap-x-6 mt-2 sm:mt-4">
           <Input
             control={control}
@@ -167,7 +203,12 @@ const AddAddress = ({ show, onClose }: { show: boolean; onClose: () => void }) =
         </div>
         <div className="flex flex-col md:flex-row gap-y-4 gap-x-6 mt-4">
           <div className="flex-1">
-            <label htmlFor="countries" className="text-sm font-medium text-[#344054] block">Country</label>
+            <label
+              htmlFor="countries"
+              className="text-sm font-medium text-[#344054] block"
+            >
+              Country
+            </label>
             <Select
               id="countries"
               value={selectedCountry}
@@ -178,7 +219,9 @@ const AddAddress = ({ show, onClose }: { show: boolean; onClose: () => void }) =
               <option value="">Select your Country</option>
               {countryData ? (
                 Object.values(countryData).map((country: any) => (
-                  <option key={country?.code2} value={country?.code2}>{country?.name}</option>
+                  <option key={country?.code2} value={country?.code2}>
+                    {country?.name}
+                  </option>
                 ))
               ) : (
                 <option>loading ...</option>
@@ -186,7 +229,12 @@ const AddAddress = ({ show, onClose }: { show: boolean; onClose: () => void }) =
             </Select>
           </div>
           <div className="flex-1">
-            <label htmlFor="state" className="text-sm font-medium text-[#344054] block">State</label>
+            <label
+              htmlFor="state"
+              className="text-sm font-medium text-[#344054] block"
+            >
+              State
+            </label>
             <Select
               id="state"
               value={selectedState}
@@ -197,7 +245,9 @@ const AddAddress = ({ show, onClose }: { show: boolean; onClose: () => void }) =
               <option value="">Select your State</option>
               {selectedStates ? (
                 selectedStates.map((state: any) => (
-                  <option key={state.code} value={state.code}>{state?.name}</option>
+                  <option key={state.code} value={state.code}>
+                    {state?.name}
+                  </option>
                 ))
               ) : (
                 <option>loading ...</option>

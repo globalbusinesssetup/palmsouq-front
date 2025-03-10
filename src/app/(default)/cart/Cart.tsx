@@ -18,6 +18,7 @@ import { CartItem, ProductData } from '@/types';
 import useAuth from '@/hooks/useAuth';
 import config from '@/config';
 import Link from 'next/link';
+import { useGlobalContext } from '@/context/GlobalContext';
 
 // export const metadata: Metadata = {
 //   title: 'Next.js',
@@ -76,20 +77,14 @@ const uploadedFiles = [
 
 const Cart = () => {
   const router = useRouter();
+  const { refetchProfile } = useAuth();
   const [isCheckoutOpen, setCheckoutOpen] = useState(false);
   const [isDeleteLoading, setDeleteLoading] = useState(false);
   const [ids, setIds] = useState<number[]>([]);
   const [checked, setChecked] = useState<number[]>([]);
   const [unChecked, setUnChecked] = useState<number[] | []>([]);
   const queryClient = useQueryClient();
-  const {
-    data: cart,
-    isLoading,
-    refetch,
-  } = useQuery({
-    queryKey: ['cart'],
-    queryFn: () => getCart(),
-  });
+  const { cartData:cart, refetchCart:refetch, cartLoading:isLoading } = useGlobalContext();
 
   useEffect(() => {
     if (!isLoading) {
@@ -147,8 +142,12 @@ const Cart = () => {
     try {
       await api.delete(`/cart/delete/${pd?.id}`);
       toast.success('Cart Remove SuccessfullY');
+      refetchProfile();
       await queryClient.invalidateQueries({ queryKey: ['cart'] });
-      await queryClient.refetchQueries({ queryKey: ['cart'] });
+      setTimeout(() => {
+        queryClient.refetchQueries({ queryKey: ['cart'] });
+      }, 500);
+      // await queryClient.refetchQueries({ queryKey: ['cart'] });
     } catch (err) {
       console.log(err);
       toast.error(err as string);
@@ -362,9 +361,6 @@ const Row = ({
   onDelete: () => void;
   pd: any;
 }) => {
-  const router = useRouter();
-  const [isPreviewOpen, setPreviewOpen] = useState(false);
-  const [isFilePreviewOpen, setFilePreviewOpen] = useState(false);
   const [isDeleteLoading, setDeleteLoading] = useState(false);
 
   const handleDelete = async () => {
@@ -380,7 +376,10 @@ const Row = ({
 
   return (
     <>
-      <tr className="border-b border-neutral-200">
+      <tr
+        onClick={onChange}
+        className="border-b border-neutral-200 cursor-pointer"
+      >
         <td className="py-4 pl-6 pr-2">
           <CheckBox checked={pd?.selected === '1'} onChange={onChange} />
         </td>
@@ -414,12 +413,12 @@ const Row = ({
         </td>
         <td className="py-4 overflow-hidden pr-2">
           <div className="max-w-[200px] overflow-hidden">
-            <Link
-              href={`/cart/${pd?.flash_product?.slug}/${pd?.flash_product?.id}`}
+            <p
+              // href={`/cart/${pd?.flash_product?.slug}/${pd?.flash_product?.id}`}
               className="text-sm text-neutral-600 font-semibold whitespace-nowrap text-ellipsis"
             >
               {pd?.flash_product?.title}
-            </Link>
+            </p>
           </div>
         </td>
         <td className="py-4 text-neutral-500 text-sm pr-2">{pd?.quantity}</td>

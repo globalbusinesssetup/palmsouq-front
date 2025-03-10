@@ -158,6 +158,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
           sameSite: 'lax',
           expires: dayjs(res.data?.data.expires_in).toDate(),
         });
+        setUserToken(null);
         setToken(token);
         queryClient.invalidateQueries({ queryKey: ['user'] });
         router.push('/dashboard/profile');
@@ -191,14 +192,18 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         if (decoded.exp && decoded.exp < currentTime) {
           throw new Error('Token has expired');
         }
-
+        const expiresAt = decoded.exp
+          ? dayjs(decoded.exp * 1000).toDate()
+          : dayjs().add(1, 'hour').toDate();
         Cookies.set('token', token as string, {
           secure: true,
           sameSite: 'lax',
-          expires: dayjs(decoded.exp).toDate(),
+          expires: expiresAt,
         });
+        setUserToken(null);
         setToken(token);
-        queryClient.invalidateQueries({ queryKey: ['user'] });
+        await queryClient.invalidateQueries({ queryKey: ['user'] });
+        await queryClient.refetchQueries({ queryKey: ['user'] });
         router.push('/dashboard/profile');
         toast.success('Login succesfully');
         return { isSuccess: true };

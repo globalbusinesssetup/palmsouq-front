@@ -1,14 +1,6 @@
 'use client';
-import {
-  CategoriesBar,
-  Footer,
-  Header,
-  ProductCard,
-  Image,
-} from '@/components';
+import { CategoriesBar, Footer, ProductCard, Image } from '@/components';
 import Link from 'next/link';
-import { FaArrowRightLong } from 'react-icons/fa6';
-import { features, orderSteps } from '@/constants';
 import { HiArrowLeft, HiArrowRight, HiOutlineMail } from 'react-icons/hi';
 import { GrLocation } from 'react-icons/gr';
 import { IoCallOutline } from 'react-icons/io5';
@@ -17,7 +9,7 @@ import { useEffect, useRef, useState } from 'react';
 import { register } from 'swiper/element/bundle';
 import { useResponsiveSlides } from '@/hooks';
 import { useQuery } from '@tanstack/react-query';
-import { getCategories, getHome } from '@/utils/api';
+import { getHome } from '@/utils/api';
 import useAuth from '@/hooks/useAuth';
 import config from '@/config';
 import { ProductData } from '@/types';
@@ -59,21 +51,17 @@ export default function HomeClient() {
   const getCatSlide = useResponsiveSlides(catBreakpoints, 2);
   const getBrandSlide = useResponsiveSlides(brandBreakpoints, 3);
   const getTestimonialSlide = useResponsiveSlides(testimonialBreakpoints);
-  const [rating, setRating] = useState<number>(3.5);
   const [swiperEl, setSwiperEl] = useState<NodeListOf<SwiperElement> | null>(
     null
   );
   const catRef = useRef<any>(null);
   const brandRef = useRef<any>(null);
-  const [bannerError, setBannerError] = useState(false);
-  const { data, isLoading: isCatLoading } = useQuery({
-    queryKey: ['categories'],
-    queryFn: getCategories,
-  });
 
   const { data: home, isLoading } = useQuery({
     queryKey: ['home'],
     queryFn: getHome,
+    staleTime: Infinity,
+    refetchOnWindowFocus: false,
   });
 
   useEffect(() => {
@@ -92,7 +80,7 @@ export default function HomeClient() {
     else if (id === 3) brandRef.current?.swiper?.slidePrev();
   };
 
-  if (isLoading || isCatLoading) {
+  if (isLoading) {
     return (
       <main>
         <div className="w-screen h-screen bg-white space-y-2 container mx-auto">
@@ -149,11 +137,11 @@ export default function HomeClient() {
 
   return (
     <>
-      <CategoriesBar />
+      <CategoriesBar featuredCategories={home?.featured_categories} />
       <div className="container mx-auto min-h-[55vh] mt-5 lg:mt-8 xl:mt-10 pb-7 px-4">
         {/* Banner  */}
         <section className="lg:flex lg:space-x-4">
-          <div className="lg:w-7/12 h-[200px] sm:h-[250px] xl:h-[304px] rounded-[10px] overflow-hidden">
+          <div className="lg:w-7/12 h-[120px] sm:h-[213px] md:h-[258px] lg:h-[199px] xl:h-[304px] rounded-[10px] overflow-hidden">
             <swiper-container
               className="w-full"
               pagination={{ clickable: true }}
@@ -163,12 +151,12 @@ export default function HomeClient() {
             >
               {home?.slider?.main.map((s: { image: string }, i) => (
                 <swiper-slide key={`banner_${i}`} style={{ width: '100%' }}>
-                  <div className="w-full h-[200px] sm:h-[250px] xl:h-[304px] relative overflow-hidden rounded-[10px]">
+                  <div className="w-full h-[120px] sm:h-[213px] md:h-[258px] lg:h-[199px] xl:h-[304px] relative overflow-hidden rounded-[10px]">
                     <Image
                       src={s?.image}
                       fill
                       alt={'banner'}
-                      className="object-cover"
+                      className="object-fill"
                     />
                   </div>
                 </swiper-slide>
@@ -177,11 +165,10 @@ export default function HomeClient() {
           </div>
           <Link
             href={home?.slider?.right_top?.url ?? '#'}
-            className="lg:w-5/12 h-[250px] xl:h-[304px] hidden lg:block relative overflow-hidden sm:rounded-[10px] mt-4 lg:mt-0"
+            className="lg:w-5/12 h-[120px] sm:h-[213px] md:h-[258px] lg:h-[199px] xl:h-[304px] hidden lg:block relative overflow-hidden sm:rounded-[10px] mt-4 lg:mt-0"
           >
             <Image
               src={home?.slider?.right_top?.image}
-              onError={() => setBannerError(true)}
               fill
               alt={home?.slider?.right_top?.title ?? 'Weekly offer Banner'}
               className="bg-gray-100"
@@ -192,9 +179,12 @@ export default function HomeClient() {
         {home?.featured_categories?.length! > 0 && (
           <section className="mt-7 p-4 rounded-[10px] border border-neutral-200">
             <div className="flex items-center justify-between">
-              <h3 className="text-lg sm:text-xl lg:text-2xl text-primary font-semibold">
-                Explore by categories
-              </h3>
+              <Link href={'/categories'}>
+                <h3 className="text-lg sm:text-xl text-primary font-semibold flex gap-x-2 items-center">
+                  Explore all categories
+                  <HiArrowRight className="text-neutral-600 text-base sm:text-lg" />
+                </h3>
+              </Link>
               <div className="flex items-center gap-x-2">
                 <button
                   onClick={() => onPrev(1)}
@@ -299,7 +289,7 @@ export default function HomeClient() {
         {/* in demand products */}
         {home?.collections?.[0]?.product_collections?.length! > 0 && (
           <>
-            <section className="flex items-center gap-x-4 mt-5 md:mt-8">
+            {/* <section className="flex items-center gap-x-4 mt-5 md:mt-8">
               <div className="flex-1 h-[108px] bg-[#F5F5F7] relative rounded overflow-hidden">
                 <Image
                   src={home?.banners[0].image}
@@ -316,7 +306,7 @@ export default function HomeClient() {
                   className="object-cover"
                 />
               </div>
-            </section>
+            </section> */}
 
             <section className="mt-7 bg-[#F9FAFB] rounded-[10px] px-2 lg:px-5 py-4">
               <div className="pb-4">
@@ -327,11 +317,12 @@ export default function HomeClient() {
                   Discover the Best Selling Products on the Market Today.
                 </p>
               </div>
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-6">
+              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-x-4 gap-y-6">
                 {home?.collections[0]?.product_collections?.map(
                   (product: ProductData & { inventory: any[] }, i) => (
                     <ProductCard
                       data={product}
+                      isFeatured
                       category={home?.collections[0]?.slug}
                       key={`product_${i}`}
                     />
@@ -437,45 +428,55 @@ export default function HomeClient() {
           </>
         )}
         {/* best selling paper bags  */}
-        <>
-          <section className="mt-5 md:mt-8 lg:mt-10 bg-[#F9FAFB] rounded-[10px] px-2 lg:px-5 py-4">
-            <div className="pb-4 flex items-center justify-between">
-              <div className="max-w-[70%] sm:max-w-none">
-                <h3 className="text-lg md:text-xl lg:text-2xl text-primary font-semibold">
-                  Flash sale
-                </h3>
-                <p className="text-sm sm:text-base text-neutral-600 mt-1">
-                  {home?.flash_sales?.[0]?.title}
-                </p>
+        {home?.flash_sales?.[0]?.public_products.length! > 0 && (
+          <>
+            <section className="mt-5 md:mt-8 lg:mt-10 bg-[#F9FAFB] rounded-[10px] px-2 lg:px-5 py-4">
+              <div className="pb-4 flex items-center justify-between">
+                <div className="max-w-[70%] sm:max-w-none">
+                  <h3 className="text-lg md:text-xl lg:text-2xl text-primary font-semibold">
+                    Flash sale
+                  </h3>
+                  <p className="text-sm sm:text-base text-neutral-600 mt-1">
+                    {home?.flash_sales?.[0]?.title}
+                  </p>
+                </div>
+                <Link
+                  href={'#'}
+                  className="sm:w-[115px] px-2 h-8 sm:h-10 flex text-xs sm:text-base items-center justify-center gap-x-2 rounded-full transition-all duration-300 text-[#6835B1] border border-[#6835B1] hover:scale-95"
+                >
+                  View All <HiArrowRight />
+                </Link>
               </div>
-              <Link
-                href={'#'}
-                className="sm:w-[115px] px-2 h-8 sm:h-10 flex text-xs sm:text-base items-center justify-center gap-x-2 rounded-full transition-all duration-300 text-[#6835B1] border border-[#6835B1] hover:scale-95"
-              >
-                View All <HiArrowRight />
-              </Link>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 gap-x-4 gap-y-6">
+                {home?.flash_sales?.[0]?.public_products?.map(
+                  (product: any, i) => (
+                    <ProductCard
+                      data={product}
+                      category={'flash-sale'}
+                      key={`b_product_${i}`}
+                    />
+                  )
+                )}
+              </div>
+            </section>
+            <div className="w-full h-[180px] lg:h-[240px] border border-gray-100 mt-8 lg:mt-10 rounded-md overflow-hidden relative">
+              <Image
+                src={home?.banners[5]?.image}
+                fill
+                alt={home?.banners[5]?.title}
+                className="object-cover"
+              />
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 gap-x-4 gap-y-6">
-              {home?.flash_sales?.[0]?.public_products?.map(
-                (product: any, i) => (
-                  <ProductCard
-                    data={product}
-                    category={'flash-sale'}
-                    key={`b_product_${i}`}
-                  />
-                )
-              )}
-            </div>
-          </section>
-          <div className="w-full h-[180px] lg:h-[240px] bg-secondary mt-8 lg:mt-10 rounded-md overflow-hidden relative">
-            <Image
-              src={home?.banners[5]?.image}
-              fill
-              alt={home?.banners[5]?.title}
-              className="object-cover"
-            />
-          </div>
-        </>
+          </>
+        )}
+        <div className="w-full h-[180px] lg:h-[240px] border border-gray-100 mt-8 lg:mt-10 rounded-md overflow-hidden relative">
+          <Image
+            src={home?.banners[5]?.image}
+            fill
+            alt={home?.banners[5]?.title}
+            className="object-cover"
+          />
+        </div>
         {/* client testimonial  */}
         {home?.testimonials?.length! > 0 && (
           <section className="p-4 lg:p-8 bg-[#A79F881A] mt-8 lg:mt-10">
@@ -657,9 +658,9 @@ const CatCard = ({ cat }: any) => {
           loading="lazy"
         />
       </div>
-      <div className="px-3 xs:px-5 py-3 text-xs font-semibold text-neutral-600 transition-all duration-300 hover:text-primary/70 flex items-center justify-center gap-x-2 whitespace-nowrap">
+      <div className="px-3 py-3 text-xs font-semibold text-neutral-600 transition-all duration-300 hover:text-primary/70 flex items-center justify-center gap-x-2 whitespace-nowrap">
         <p className="flex-1 overflow-hidden text-ellipsis">{cat?.title}</p>
-        <FaArrowRightLong className="text-base" />
+        {/* <FaArrowRightLong className="text-base" /> */}
       </div>
     </Link>
   );

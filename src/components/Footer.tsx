@@ -105,7 +105,7 @@ const Footer = () => {
                 key={`link_${i}`}
                 href={l.link}
                 target="_blank"
-                className="text-sm font-medium text-neutral-200 flex items-center gap-x-2"
+                className="text-sm font-medium text-neutral-200 flex items-center justify-center sm:justify-start gap-x-2"
               >
                 <Image defaultSrc={l.image} width={15} height={15} alt="s" />{' '}
                 {l.title}
@@ -113,10 +113,10 @@ const Footer = () => {
             ))}
           </nav>
           <div className="lg:pl-2.5">
-            <h3 className="text-lg lg:text-xl text-neutral-300 font-medium">
+            <h3 className="text-lg lg:text-xl text-neutral-300 font-medium text-center sm:text-left">
               Payment Methods
             </h3>
-            <div className="flex items-center mt-2 gap-x-1">
+            <div className="flex items-center justify-center sm:justify-start mt-2 gap-x-1">
               {payment.map((l, i) => (
                 <Image
                   key={i}
@@ -147,7 +147,7 @@ const Footer = () => {
               alt="logo"
             />
             <p className="text-sm md:text-base text-neutral-200">
-              Copywrite {currentYear}, All right reserved.
+              &copy;Copyright {currentYear}. All rights reserved.
             </p>
           </div>
           <nav className="space-x-3 sm:space-x-6">

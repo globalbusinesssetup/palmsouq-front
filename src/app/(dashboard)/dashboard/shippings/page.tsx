@@ -42,6 +42,8 @@ const Shippings = () => {
       address: '',
       city: '',
       name: '',
+      label: '',
+      email: '',
     },
   });
   // const [countryData, setCountryData] = useState<{
@@ -58,9 +60,10 @@ const Shippings = () => {
     if (!isLoading) {
       reset({
         name: `${user?.data?.first_name} ${user?.data?.last_name ?? ''}`,
+        email: user?.data?.email ?? '',
       });
     }
-  }, [isLoading, user]);
+  }, [isLoading, user, reset]);
 
   useEffect(() => {
     if (selectedCountry && countriesWithPhones) {
@@ -131,14 +134,11 @@ const Shippings = () => {
     const token = Cookies.get('user_token');
     try {
       const res = await api.post('/user/address/action', {
-        city: data.city,
+        ...data,
         state: selectedState,
         country: selectedCountry,
-        phone: data.phone,
         address_1: data.address,
         user_token: token,
-        email: user?.data?.email,
-        name: data.name,
       });
       if (res?.data?.data?.form) {
         toast.error(res?.data?.data?.form[0]);
@@ -162,9 +162,13 @@ const Shippings = () => {
       const { data } = await api.delete(
         `/user/address/delete/${id}?user_token=${token}`
       );
-      queryClient.invalidateQueries({ queryKey: ['address'] });
-      queryClient.refetchQueries({ queryKey: ['address'] });
-      toast.success(data?.message);
+      if (data?.data?.form) {
+        toast.warn(data?.message);
+      } else {
+        queryClient.invalidateQueries({ queryKey: ['address'] });
+        queryClient.refetchQueries({ queryKey: ['address'] });
+        toast.success(data?.message);
+      }
     } catch (err) {
       console.log(err);
     }
@@ -212,7 +216,27 @@ const Shippings = () => {
         <h4 className="md:text-lg text-neutral-900 font-semibold">
           New Shipping Address
         </h4>
-        <div className="flex flex-col md:flex-row gap-y-4 gap-x-6 mt-2 sm:mt-4 lg:mt-8">
+        <div className="flex flex-col md:flex-row gap-y-4 gap-x-4 lg:gap-x-6 mt-2 sm:mt-4 lg:mt-8">
+          <Input
+            control={control}
+            rules={{ required: 'label is required' }}
+            name="label"
+            label="Label"
+            placeholder="Exmp: Home, Office, etc."
+            wrapClassName="flex-1"
+            error={errors?.label}
+          />
+          <Input
+            control={control}
+            rules={{ required: 'email is required' }}
+            name="email"
+            label="Email"
+            placeholder="Email"
+            wrapClassName="flex-1"
+            error={errors?.email}
+          />
+        </div>
+        <div className="flex flex-col md:flex-row gap-y-4 gap-x-4 lg:gap-x-6 mt-2 sm:mt-4 lg:mt-8">
           <Input
             control={control}
             rules={{ required: 'name is required' }}
@@ -232,7 +256,7 @@ const Shippings = () => {
             error={errors?.address}
           />
         </div>
-        <div className="flex flex-col md:flex-row gap-y-4 gap-x-6 mt-2 sm:mt-4 lg:mt-8">
+        <div className="flex flex-col md:flex-row gap-y-4 gap-x-4 lg:gap-x-6 mt-2 sm:mt-4 lg:mt-8">
           <div className="flex-1">
             <Input
               prefix="+971"
@@ -258,7 +282,7 @@ const Shippings = () => {
             error={errors?.city}
           />
         </div>
-        <div className="flex flex-col md:flex-row gap-y-4 gap-x-6 mt-4 sm:mt-6 lg:mt-8">
+        <div className="flex flex-col md:flex-row gap-y-4 gap-x-4 lg:gap-x-6 mt-4 sm:mt-6 lg:mt-8">
           <div className="flex-1">
             <label
               htmlFor="countries"
@@ -367,7 +391,8 @@ const Address = ({
       <Label className={'flex-1 flex gap-x-2 md:gap-x-2.5 cursor-pointer'}>
         <div className="flex-1">
           <p className="text-sm lg:text-base text-[#344054] font-semibold">
-            {getStateTitle(countries, address.country, address.state)}
+            {address?.label ||
+              getStateTitle(countries, address.country, address.state)}
           </p>
           <p className="text-xs lg:text-sm text-neutral-400 mt-0.5">
             {getStateTitle(countries, address.country, address.state)},{' '}

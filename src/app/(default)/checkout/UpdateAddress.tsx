@@ -34,6 +34,7 @@ const UpdateAddress = ({
       name: data.name ?? '',
       address_1: data.address_1 ?? '',
       city: data.city ?? '',
+      label: data.label ?? '',
     },
   });
   const [countryData, setCountryData] = useState<{
@@ -136,15 +137,26 @@ const UpdateAddress = ({
         <h4 className="md:text-lg text-neutral-900 font-semibold">
           Update Shipping Address
         </h4>
-        <Input
-          control={control}
-          rules={{ required: 'email is required' }}
-          name="email"
-          label="Email"
-          placeholder="exampl@mail.com"
-          wrapClassName="mt-2 sm:mt-4 lg:mt-8"
-          error={errors?.email}
-        />
+        <div className="flex flex-col md:flex-row gap-y-4 gap-x-6 mt-2 sm:mt-4 lg:mt-8">
+          <Input
+            control={control}
+            rules={{ required: 'label is required' }}
+            name="label"
+            label="Label"
+            placeholder="Exmp: Home, Office, etc."
+            wrapClassName="flex-1"
+            error={errors?.label}
+          />
+          <Input
+            control={control}
+            rules={{ required: 'email is required' }}
+            name="email"
+            label="Email"
+            placeholder="exampl@mail.com"
+            wrapClassName="flex-1"
+            error={errors?.email}
+          />
+        </div>
         <div className="flex flex-col md:flex-row gap-y-4 gap-x-6 mt-2 sm:mt-4 lg:mt-8">
           <Input
             control={control}
@@ -157,11 +169,12 @@ const UpdateAddress = ({
           />
           <div className="flex-1">
             <InputPhoneNumber
-              name='phone'
+              name="phone"
               control={control}
-              label='Phone'
-              placeholder='000-000-000'
-              error={errors?.phone} />
+              label="Phone"
+              placeholder="000-000-000"
+              error={errors?.phone}
+            />
           </div>
           {/* <div className="flex-1">
             <label

@@ -19,8 +19,8 @@ const Filter = ({
   return (
     <div className="lg:w-[200px] pb-5">
       <div className="space-y-2">
-        {data?.category &&
-          data?.category?.child?.map((cat, i) => (
+        {data?.pages?.[0].category &&
+          data?.pages?.[0].category?.child?.map((cat, i) => (
             <Link
               href={`/${cat.slug}`}
               key={i}
@@ -159,7 +159,7 @@ const Filter = ({
           </button>
         </div>
       </div>
-      {data?.brands && (
+      {data?.pages?.[0].brands?.length > 0 && (
         <div className="mt-4">
           <h3 className="text-gray-700 text-xl font-bold mt-3">Brands</h3>
           <div
@@ -167,7 +167,7 @@ const Filter = ({
               isShowAll ? '' : 'h-[150px] overflow-hidden'
             }`}
           >
-            {data?.brands.map((b, i) => (
+            {data?.pages?.[0].brands.map((b, i) => (
               <div key={`brand_${i}`} className="flex items-center gap-x-2">
                 <CheckBox
                   checked={selectedBrands.includes(b.id)}
@@ -184,12 +184,14 @@ const Filter = ({
               </div>
             ))}
           </div>
-          <button
-            onClick={() => setShowAll(!isShowAll)}
-            className="mt-3 text-sm"
-          >
-            {isShowAll ? 'Hide all' : 'Show all'}
-          </button>
+          {data?.pages?.[0].brands?.length > 5 && (
+            <button
+              onClick={() => setShowAll(!isShowAll)}
+              className="mt-3 text-sm"
+            >
+              {isShowAll ? 'Hide all' : 'Show all'}
+            </button>
+          )}
         </div>
       )}
     </div>

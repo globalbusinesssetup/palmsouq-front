@@ -4,7 +4,11 @@ import React, { ReactNode, useEffect, useState } from 'react';
 import { TbTruckDelivery } from 'react-icons/tb';
 import { Field, Label, Radio, RadioGroup } from '@headlessui/react';
 import { FiEdit, FiPlus } from 'react-icons/fi';
-import { IoIosArrowRoundBack, IoIosArrowRoundForward } from 'react-icons/io';
+import {
+  IoIosArrowRoundBack,
+  IoIosArrowRoundForward,
+  IoMdClose,
+} from 'react-icons/io';
 import { paymentIcons } from '@/constants';
 import Image from 'next/image';
 import { IoCardOutline, IoWalletOutline } from 'react-icons/io5';
@@ -32,12 +36,15 @@ import {
   getCountryTitle,
   getStateTitle,
   orderEncrypt,
+  paymentEncrypt,
   timezone,
 } from '@/utils/helper';
 import AddAddress from './AddAddress';
 import { Address as AddressType, CartItem, Country } from '@/types';
 import UpdateAddress from './UpdateAddress';
 import Cookies from 'js-cookie';
+import { useNavigationGuard } from 'next-navigation-guard';
+import { useGlobalContext } from '@/context/GlobalContext';
 
 const steps = [
   {
@@ -85,9 +92,18 @@ const Checkout = () => {
   const router = useRouter();
   const params = useSearchParams();
   const { refetchProfile, isLoggedIn } = useAuth();
+  const {
+    cartData: cart,
+    cartLoading: isLoading,
+    refetchCart,
+  } = useGlobalContext();
   // const [Razorpay] = useRazorpay();
   const queryClient = useQueryClient();
-  const { data: addresses, isLoading: isAddressLoading } = useQuery({
+  const {
+    data: addresses,
+    isLoading: isAddressLoading,
+    refetch: refetchAddress,
+  } = useQuery({
     queryKey: ['address'],
     queryFn: () => getAddress(),
   });
@@ -99,10 +115,6 @@ const Checkout = () => {
     queryKey: ['countries-phones'],
     queryFn: getCountries,
   });
-  const { data: cart, isLoading } = useQuery({
-    queryKey: ['cart'],
-    queryFn: () => getCart(),
-  });
 
   const [currentStep, setStep] = useState(0);
   const [defaultAddress, setDefaultAddress] = useState(addresses?.data?.[0]);
@@ -112,7 +124,7 @@ const Checkout = () => {
   const [isOpen, setOpen] = useState(false);
   const [isUpdateLoding, setUpdateLoading] = useState(false);
   const [isAddAddressOpen, setAddAddressOpen] = useState(false);
-  const [orderMethod, setMethod] = useState(1);
+  const [orderMethod, setMethod] = useState(3);
   const [isSubmitLoading, setSubmitLoading] = useState(false); //[isLoading]
   const [carts, setCarts] = useState({});
   const [totalAmount, setTotalAmount] = useState(0);
@@ -120,9 +132,32 @@ const Checkout = () => {
   const [pickupCost, setPickupCost] = useState(0);
   const [tax, setTax] = useState(0);
   const [order, setOrder] = useState<any>({});
+  const [navigationGuard, setNavigationGuard] = useState(false);
+  const [paymentSuccess, setPaymentSuccess] = useState(false);
+
+  const handleLeavePage = async () => {
+    const userConfirmed = window.confirm('Are you sure you want to leave?');
+    if (userConfirmed) {
+      if (order.id && navigationGuard) {
+        await api.post('/order/payment-failed', {
+          id: order.id,
+          user_token: Cookies.get('user_token'),
+        });
+        refetchCart();
+      }
+    } else {
+      console.log('User not confirmed');
+    }
+    return userConfirmed;
+  };
+
+  useNavigationGuard({
+    enabled: navigationGuard,
+    confirm: handleLeavePage,
+  });
 
   useEffect(() => {
-    if (cart?.data) {
+    if (cart?.data && Object.keys(order).length < 1) {
       const result = cart.data
         .filter((item) => item.selected !== '2')
         .reduce(
@@ -189,18 +224,30 @@ const Checkout = () => {
   }, [payData, isPayDataLoading]);
 
   useEffect(() => {
-    if (
-      deliveryOption === 'standard' &&
-      !supportedAreas.includes(defaultAddress?.state!)
-    ) {
-      setDeliveryOption(deliveryOptions[1].value);
-    } else if (
-      deliveryOption === 'paid' &&
-      supportedAreas.includes(defaultAddress?.state!)
-    ) {
-      setDeliveryOption(deliveryOptions[0].value);
+    if (currentStep === 1) {
+      setNavigationGuard(true);
     }
-  }, [defaultAddress]);
+  }, [currentStep]);
+
+  useEffect(() => {
+    if (paymentSuccess) {
+      router.replace('/checkout?currentStep=2');
+    }
+  }, [paymentSuccess]);
+
+  // useEffect(() => {
+  //   if (
+  //     deliveryOption === 'standard' &&
+  //     !supportedAreas.includes(defaultAddress?.state!)
+  //   ) {
+  //     setDeliveryOption(deliveryOptions[1].value);
+  //   } else if (
+  //     deliveryOption === 'paid' &&
+  //     supportedAreas.includes(defaultAddress?.state!)
+  //   ) {
+  //     setDeliveryOption(deliveryOptions[0].value);
+  //   }
+  // }, [defaultAddress]);
 
   if (isPayDataLoading || isCountriesLoading || isLoading) {
     return (
@@ -235,12 +282,7 @@ const Checkout = () => {
   // );
 
   const totalPriceWithDelivery =
-    totalAmount +
-    (deliveryOption === 'paid'
-      ? deliveryCost
-      : deliveryOption === 'pickup'
-      ? pickupCost
-      : 0);
+    totalAmount + (totalAmount <= 100 ? deliveryCost : 0);
   const vat = (totalAmount * tax) / 100; // 5% VAT rate
   const totalPriceWithDeliveryVat = totalPriceWithDelivery + vat;
 
@@ -253,7 +295,6 @@ const Checkout = () => {
         selected_address: defaultAddress?.id,
         user_token: userToken,
       });
-      console.log('res', res);
       if (res?.data?.data?.form) {
         setUpdateLoading(false);
         toast.error(res?.data?.data?.form[0]);
@@ -289,23 +330,54 @@ const Checkout = () => {
     const token = Cookies.get('user_token');
     setSubmitLoading(true);
     try {
-      const order = orderEncrypt({
+      if (Object.keys(order).length) {
+        if (orderMethod === 3) {
+          setOpen(true);
+          setSubmitLoading(false);
+          return;
+        } else {
+          try {
+            const paymentData = paymentEncrypt({
+              id: order?.id,
+              payment_token: '',
+              order_method: orderMethod,
+              user_token: token!,
+            });
+            const res = await api.post('order/payment-done', {
+              data: paymentData,
+            });
+            await api.get(
+              `/order/send-order-email/${order?.id}?id=${order?.id}&user_token=${token}&time_zone=${timezone}`
+            );
+            if (res?.data.message) {
+              console.log(res?.data?.data?.form[0]);
+              toast.error(res?.data?.data?.form[0]);
+              return;
+            }
+            onSuccess();
+          } catch (error) {
+            console.log(error);
+          }
+          setSubmitLoading(false);
+        }
+        return;
+      }
+      const encryptedOrder = orderEncrypt({
         user_token: token!,
         order_method: orderMethod,
         voucher: '',
         time_zone: timezone,
       });
       const res = await api.post('order/action', {
-        data: order,
+        data: encryptedOrder,
       });
       if (res?.data.message) {
-        console.log(res?.data?.data?.form[0]);
         toast.error(res?.data?.data?.form[0]);
         setSubmitLoading(false);
         return;
       }
+      refetchCart();
       setOrder(res.data?.data);
-      setSubmitLoading(false);
       if (orderMethod === 2) {
         await api.get(
           `/order/send-order-email/${res.data?.data?.id}?id=${res.data?.data?.id}&user_token=${token}&time_zone=${timezone}`
@@ -314,6 +386,7 @@ const Checkout = () => {
       } else {
         setOpen(true);
       }
+      setSubmitLoading(false);
     } catch (error) {
       console.log(error);
     }
@@ -321,12 +394,15 @@ const Checkout = () => {
   };
 
   const onSuccess = () => {
-    refetchProfile();
-    queryClient.invalidateQueries({ queryKey: ['cart', 'orders'] });
-    queryClient.refetchQueries({ queryKey: ['cart', 'orders'] });
+    setNavigationGuard(false);
+    setOrder({});
+    setPaymentSuccess(true);
+    setTimeout(() => {
+      refetchProfile();
+      refetchCart();
+    }, 100);
+    // queryClient.refetchQueries({ queryKey: ['cart', 'orders', 'user'] });
     toast.success('Order placed Successfully');
-    setStep((prev) => prev + 1);
-    router.push('/checkout?currentStep=2');
   };
 
   return (
@@ -380,7 +456,7 @@ const Checkout = () => {
                   </button>
                 </div>
               </div>
-              <div className="mt-5 md:mt-8">
+              {/* <div className="mt-5 md:mt-8">
                 <h4 className="md:text-lg text-neutral-900 font-semibold">
                   Delivery and Pickup
                 </h4>
@@ -395,7 +471,7 @@ const Checkout = () => {
                   {deliveryOptions.map((opt) => (
                     <Field
                       key={opt.value}
-                      className={`flex-1 gap-2 p-3 xl:p-4 border h-full rounded-lg transition-all duration-300 cursor-pointer ${
+                      className={`flex-1 gap-2 p-3 xl:p-4 border h-auto rounded-lg transition-all duration-300 cursor-pointer ${
                         deliveryOption === opt.value
                           ? 'bg-neutral-50 border-[#9B9DFD]'
                           : ''
@@ -440,7 +516,7 @@ const Checkout = () => {
                     </Field>
                   ))}
                 </RadioGroup>
-              </div>
+              </div> */}
             </>
           ) : currentStep === 1 ? (
             <div className="mt-8">
@@ -606,11 +682,7 @@ const Checkout = () => {
                   Delivery costs
                 </p>
                 <p className="text-sm font-medium text-[#4B4EFC]">
-                  {deliveryOption === 'paid'
-                    ? `${deliveryCost} AED`
-                    : deliveryOption === 'pickup'
-                    ? `${pickupCost} AED`
-                    : 'Free'}
+                  {totalAmount >= 100 ? 0 : deliveryCost} AED
                 </p>
               </div>
             </div>
@@ -620,10 +692,7 @@ const Checkout = () => {
                   Sub Total
                 </p>
                 <p className="text-sm font-medium text-neutral-600">
-                  {deliveryOption === 'paid'
-                    ? totalPriceWithDelivery
-                    : totalAmount}{' '}
-                  AED
+                  {totalPriceWithDelivery} AED
                 </p>
               </div>
               <div className="flex items-center justify-between">
@@ -631,13 +700,13 @@ const Checkout = () => {
                   VAT ({tax}%)
                 </p>
                 <p className="text-sm font-medium text-neutral-600">
-                  {vat.toFixed(2)}
+                  {vat.toFixed(2)} AED
                 </p>
               </div>
             </div>
             <div className="flex items-center justify-between lg:pt-3.5">
               <h6 className="text-xs md:text-sm font-bold text-neutral-800">
-                Total (Exc. Vat)
+                Total (Inc. Vat)
               </h6>
               <h4 className="md:text-lg font-bold text-primary">
                 {totalPriceWithDeliveryVat.toFixed(2)} AED
@@ -649,18 +718,28 @@ const Checkout = () => {
       {/* Add new address  */}
       <AddAddress
         show={isAddAddressOpen}
-        onClose={() => setAddAddressOpen(false)}
+        onClose={() => {
+          setAddAddressOpen(false);
+          refetchAddress();
+        }}
       />
       {/* Payment  */}
       <Modal
         show={isOpen}
         onClose={() => {
           setOpen(false);
-          router.push(isLoggedIn ? '/dashboard/orders' : '/orders');
+          // router.push(isLoggedIn ? '/dashboard/orders' : '/orders');
+          // refetchProfile();
         }}
         panelClassName={'max-w-[350px]'}
       >
-        <div className="min-h-60">
+        <div className="min-h-60 relative">
+          <button
+            className="absolute -top-2 -right-2 p-1 rounded-full bg-gray-100"
+            onClick={() => setOpen(false)}
+          >
+            <IoMdClose className="text-sm text-primary/80" />
+          </button>
           <Elements stripe={stripePromise}>
             <StripePay
               payData={order}
@@ -712,27 +791,28 @@ const Address = ({
   };
   return (
     <div
-      key={address.state}
+      key={address.id}
       onClick={onClick}
       className={`flex-1 min-w-[47%] flex items-start gap-2 p-3 xl:p-4 border rounded-lg transition-all duration-300 cursor-pointer ${
-        defaultAddress?.state === address.state
+        defaultAddress?.id === address.id
           ? 'bg-neutral-50 border-[#9B9DFD]'
           : ''
       }`}
     >
       <div
         className={`group flex size-3 sm:size-4 xl:size-5 items-center justify-center rounded-full border bg-white duration-300 transition-all ${
-          defaultAddress?.state === address.state ? 'border-primary' : ''
+          defaultAddress?.id === address.id ? 'border-primary' : ''
         }`}
       >
-        {defaultAddress?.state === address.state && (
+        {defaultAddress?.id === address.id && (
           <span className="size-1 sm:size-1.5 xl:size-2 rounded-full bg-primary" />
         )}
       </div>
       <div className={'flex-1 flex gap-x-2.5 cursor-pointer'}>
         <div className="flex-1">
           <p className="text-xs md:text-sm xl:text-base text-[#344054] font-semibold">
-            {getStateTitle(countries, address.country, address.state)}
+            {address.label ||
+              getStateTitle(countries, address.country, address.state)}
           </p>
           <p className="text-tiny md:text-xs xl:text-sm text-neutral-400 mt-0.5">
             {getStateTitle(countries, address.country, address.state)},{' '}
@@ -751,7 +831,7 @@ const Address = ({
               <FiEdit />
             </button>
           </div>
-          {defaultAddress?.state === address.state && (
+          {defaultAddress?.id === address.id && (
             <p className="h-[18px] w-12 rounded-full text-neutral-200 font-medium bg-primary text-[8px]/[14px] flex items-center justify-center">
               Default
             </p>

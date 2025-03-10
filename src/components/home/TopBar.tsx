@@ -5,18 +5,13 @@ import {
   ListboxButton,
   ListboxOption,
   ListboxOptions,
-  ListboxSelectedOption,
-  Select,
 } from '@headlessui/react';
 import Link from 'next/link';
 import { FiPhoneForwarded } from 'react-icons/fi';
 import useAuth from '@/hooks/useAuth';
 import { FaAngleDown } from 'react-icons/fa6';
 
-const currencies = [
-  { name: 'AED', code: 'aed' },
-  { name: 'USD', code: 'usd' },
-];
+const currencies = [{ name: 'AED', code: 'aed' }];
 
 const TopBar = () => {
   const { languages, default_language, setting } = useAuth();

@@ -1,4 +1,5 @@
 import React from 'react';
+// import Rating from 'react-rating';
 import { MdStarBorder, MdStar } from 'react-icons/md';
 
 const Rate = ({ ...rest }) => {

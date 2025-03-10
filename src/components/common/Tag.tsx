@@ -5,6 +5,7 @@ import { GoDotFill } from 'react-icons/go';
 
 export type StatusTypes =
   | 'pending'
+  | 'unpaid'
   | 'confirmed'
   | 'picked_up'
   | 'on_the_way'
@@ -19,6 +20,7 @@ type Tagtype = {
 const Tag = ({ status, className }: Tagtype) => {
   const statusClassNames = {
     pending: 'text-yellow-700 bg-orange-100',
+    unpaid: 'text-yellow-700 bg-orange-100',
     confirmed: 'text-success bg-success/25',
     delivered: 'text-[#655937] bg-[#A79F8833]',
     cancelled: 'text-error bg-error/20',
@@ -30,6 +32,8 @@ const Tag = ({ status, className }: Tagtype) => {
     switch (status) {
       case 'pending':
         return 'Pending';
+      case 'unpaid':
+        return 'Unpaid';
       case 'confirmed':
         return 'Confirmed';
       case 'picked_up':
