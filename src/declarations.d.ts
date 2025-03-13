@@ -13,4 +13,9 @@ declare global {
       >;
     }
   }
+
+  interface Window {
+    gtag: (command: 'config' | 'event', id: string, params?: Record<string, any>) => void;
+    fbq: (event: string, ...args: any[]) => void;
+  }
 }
