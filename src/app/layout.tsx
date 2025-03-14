@@ -37,6 +37,7 @@ export default function RootLayout({
         {config.fbPixelId && (
           <>
             <Script
+              id='fb-pixel'
               strategy="afterInteractive"
               dangerouslySetInnerHTML={{
                 __html: `
