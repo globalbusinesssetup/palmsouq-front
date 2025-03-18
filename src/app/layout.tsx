@@ -1,5 +1,4 @@
 'use client';
-import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
 import 'react-phone-input-2/lib/style.css';
@@ -13,15 +12,9 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { NavigationGuardProvider } from 'next-navigation-guard';
 import GlobalContextProvider, { GlobalContext } from '@/context/GlobalContext';
 import config from '@/config';
-import Script from 'next/script';
 const inter = Inter({ subsets: ['latin'] });
 import { GoogleAnalytics } from '@next/third-parties/google'
 
-
-// export const metadata: Metadata = {
-//   title: 'Printcraft',
-//   description: 'Innovative printing solutions for all your needs!',
-// };
 
 export default function RootLayout({
   children,

@@ -374,7 +374,7 @@ const Row = ({
                   </h5>
                   <Tag
                     status={
-                      order?.cancelled === 1 || order.status === '6'
+                      order?.cancelled == 1 || order.status == '6'
                         ? 'cancelled'
                         : getCurrentStatus(order?.status)
                     }
@@ -394,7 +394,7 @@ const Row = ({
                     </p>
                   </div>
                 </div>
-                {order.status === '6' && (
+                {order.status == '6' && (
                   <p className="text-tiny sm:text-xs font-light text-error mt-3">
                     Order Cancelled by Palmsouq
                   </p>
@@ -441,7 +441,7 @@ const Row = ({
                       Pay now
                     </Button>
                   )}
-                  {order.status === '1' ? (
+                  {order.status == '1' ? (
                     <Button
                       outlined
                       disabled={order?.cancelled === 1 || order.status === '6'}
@@ -513,7 +513,7 @@ const Row = ({
                           alt="product"
                         />
                       </div>
-                      <p className="text-ellipsis w-[70px] xs:w-auto overflow-hidden text-nowrap text-xs lg:text-sm">
+                      <p className="w-[70px] xs:w-auto overflow-hidden text-ellipsis text-nowrap md:text-wrap text-xs lg:text-sm">
                         {pd?.product?.title}
                       </p>
                     </div>
