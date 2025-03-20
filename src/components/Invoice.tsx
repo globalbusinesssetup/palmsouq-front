@@ -137,7 +137,7 @@ const Invoice = forwardRef<HTMLDivElement, InvoiceTypes>(
                     Title
                   </th>
                   <th className="text-left bg-primary py-1.5">SKU</th>
-                  <th className="text-left bg-primary py-1.5">shipping</th>
+                  {/* <th className="text-left bg-primary py-1.5">shipping</th> */}
                   <th className="text-left bg-primary py-1.5">Quantity</th>
                   <th className="text-left bg-primary py-1.5">Price</th>
                   <th className="text-left bg-primary py-1.5 rounded-tr-lg">
@@ -149,8 +149,8 @@ const Invoice = forwardRef<HTMLDivElement, InvoiceTypes>(
                 {order?.ordered_products.map((value, index) => (
                   <tr key={index}>
                     <td
-                      style={{ minWidth: '200px', maxWidth: '300px' }}
-                      className="pl-4 py-2.5"
+                      style={{ minWidth: '200px', maxWidth: '350px' }}
+                      className="pl-4 pr-2 py-2.5"
                     >
                       {value.product.title}
                       {/* <div>
@@ -167,7 +167,7 @@ const Invoice = forwardRef<HTMLDivElement, InvoiceTypes>(
                     </div> */}
                     </td>
                     <td>SKU: {value?.inventory?.[0]?.sku ?? 'N/A'}</td>
-                    <td>{priceFormatting(value.shipping_price)}</td>
+                    {/* <td>{priceFormatting(value.shipping_price)}</td> */}
                     <td>{value.quantity}</td>
                     <td>{priceFormatting(value.selling)}</td>
                     <td>{priceFormatting(value.selling * value.quantity)}</td>
