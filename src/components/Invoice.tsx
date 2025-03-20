@@ -34,7 +34,7 @@ const Invoice = forwardRef<HTMLDivElement, InvoiceTypes>(
     },
     ref
   ) => {
-    const priceFormatting = (price) => `$${price}`;
+    const priceFormatting = (price) => `${price} AED`;
     const { setting } = useAuth();
 
     return (
@@ -78,7 +78,9 @@ const Invoice = forwardRef<HTMLDivElement, InvoiceTypes>(
                 {!isVendor && (
                   <li className="flex items-center">
                     <span className="w-full flex-1">Order Amount:</span>
-                    <span className="w-full flex-1">{totalPrice}</span>
+                    <span className="w-full flex-1">
+                      {totalPrice.toFixed(2)}
+                    </span>
                   </li>
                 )}
               </ul>
@@ -105,7 +107,7 @@ const Invoice = forwardRef<HTMLDivElement, InvoiceTypes>(
                       <span className="block">
                         {`${address?.address_1} ${
                           address?.city ?? address?.state
-                        }-${address?.zip} ${
+                        }-${address?.zip ?? ''} ${
                           address?.state && countries
                             ? getStateTitle(
                                 countries,
@@ -146,7 +148,10 @@ const Invoice = forwardRef<HTMLDivElement, InvoiceTypes>(
               <tbody>
                 {order?.ordered_products.map((value, index) => (
                   <tr key={index}>
-                    <td style={{ minWidth: '250px' }} className="pl-4 py-2.5">
+                    <td
+                      style={{ minWidth: '200px', maxWidth: '300px' }}
+                      className="pl-4 py-2.5"
+                    >
                       {value.product.title}
                       {/* <div>
                       {generatingAttribute(value).map((attr, i) => (
@@ -177,14 +182,12 @@ const Invoice = forwardRef<HTMLDivElement, InvoiceTypes>(
                   <li className="flex items-center gap-x-4 justify-end py-2.5 border-b">
                     <span className="text-right">Subtotal</span>
                     <span className="text-right">
-                      {priceFormatting(subtotalPrice)}
+                      {priceFormatting(subtotalPrice.toFixed(2))}
                     </span>
                   </li>
                   <li className="flex items-center gap-x-4 justify-end py-2.5 border-b">
                     <span className="text-right">Shipping Cost</span>
-                    <span>
-                      {isFreeShipping ? 'Free' : priceFormatting(shippingPrice)}
-                    </span>
+                    <span>{priceFormatting(shippingPrice)}</span>
                   </li>
                   {bundleOffer && (
                     <li className="flex items-center gap-x-4 justify-end py-2.5 border-b">
@@ -201,12 +204,12 @@ const Invoice = forwardRef<HTMLDivElement, InvoiceTypes>(
                   {taxPrice && (
                     <li className="flex items-center gap-x-4 justify-end py-2.5 border-b">
                       <span>Tax</span>
-                      <span>{priceFormatting(taxPrice)}</span>
+                      <span>{priceFormatting(taxPrice.toFixed(2))}</span>
                     </li>
                   )}
                   <li className="flex items-center gap-x-4 justify-end py-2.5">
                     <span>Total</span>
-                    <span>{priceFormatting(totalPrice)}</span>
+                    <span>{priceFormatting(totalPrice.toFixed(2))}</span>
                   </li>
                 </ul>
               </div>
