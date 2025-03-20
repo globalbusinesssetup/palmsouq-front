@@ -5,13 +5,16 @@ const config: Config = {
     './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
+    './node_modules/@headlessui/react/**/*.{js,ts,jsx,tsx}',
   ],
   theme: {
     extend: {
       colors: {
-        primary: '#002169',
+        primary: '#181818',
         secondary: '#F2F4F7',
         success: '#16A34A',
+        error: '#B42318',
+        green: '#006f2e',
       },
       dropShadow: {
         '3xl': [
@@ -19,13 +22,14 @@ const config: Config = {
           '0 45px 65px rgba(16, 24, 40, 0.05)',
         ],
       },
-      // backgroundImage: {
-      //   'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-      //   'gradient-conic':
-      //     'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
-      // },
+      fontSize: {
+        tiny: '10px',
+      },
+      screens: {
+        xs: '480px',
+      },
     },
   },
-  plugins: [],
+  plugins: [require('tailwind-scrollbar')],
 };
 export default config;
