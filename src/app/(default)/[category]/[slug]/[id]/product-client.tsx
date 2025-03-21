@@ -337,7 +337,7 @@ export default function ProductDeatils({ params }: Record<string, any>) {
                     {(product?.offered ?? product?.selling ?? 0) * quantity} AED
                   </h4>
                   <p className="text-tiny sm:text-xs lg:text-sm text-neutral-500">
-                    Estimated Total (Exc. Vat)
+                    Estimated Total (Inc. VAT)
                   </p>
                 </div>
               </div>
