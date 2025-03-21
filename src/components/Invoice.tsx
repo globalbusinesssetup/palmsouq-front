@@ -166,7 +166,7 @@ const Invoice = forwardRef<HTMLDivElement, InvoiceTypes>(
                       )}
                     </div> */}
                     </td>
-                    <td>SKU: {value?.inventory?.[0]?.sku ?? 'N/A'}</td>
+                    <td>SKU: {value?.product?.sku ?? 'N/A'}</td>
                     {/* <td>{priceFormatting(value.shipping_price)}</td> */}
                     <td>{value.quantity}</td>
                     <td>{priceFormatting(value.selling)}</td>
@@ -180,7 +180,7 @@ const Invoice = forwardRef<HTMLDivElement, InvoiceTypes>(
               <div className="flex justify-end mt-8">
                 <ul className="max-w-[300px]">
                   <li className="flex items-center gap-x-4 justify-end py-2.5 border-b">
-                    <span className="text-right">Subtotal</span>
+                    <span className="text-right">Subtotal(<span className='text-xs'>inc. VAT</span>)</span>
                     <span className="text-right">
                       {priceFormatting(subtotalPrice.toFixed(2))}
                     </span>
@@ -203,7 +203,7 @@ const Invoice = forwardRef<HTMLDivElement, InvoiceTypes>(
                   )}
                   {taxPrice && (
                     <li className="flex items-center gap-x-4 justify-end py-2.5 border-b">
-                      <span>Tax</span>
+                      <span>VAT</span>
                       <span>{priceFormatting(taxPrice.toFixed(2))}</span>
                     </li>
                   )}

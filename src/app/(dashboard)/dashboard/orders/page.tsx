@@ -134,7 +134,7 @@ const Orders = () => {
         <div className="flex items-center justify-between py-3.5 px-6">
           <p className="text-xs text-neutral-500 flex-1">
             Total Items:{' '}
-            <span className="font-semibold">{orders?.data?.data.length}</span>
+            <span className="font-semibold">{orders?.data?.data?.length}</span>
           </p>
           <div className="flex items-center justify-between gap-x-3 xs:w-6/12 lg:w-4/12">
             <button
@@ -528,33 +528,45 @@ const Row = ({
                   </div>
                 ))}
               </div>
-              <div className="mt-3">
-                <p className="text-xs md:text-sm text-neutral-500 text-right">
-                  <span className="inline-block uppercase font-bold text-primary">
-                    Order method :
-                  </span>
-                  <span className="w-[100px] inline-block">
-                    {order?.order_method === '2' ? 'COD' : 'Stripe'}
-                  </span>
-                </p>
-                {order?.order_method !== '2' && (
-                  <p className="text-xs md:text-sm text-neutral-500 mt-3 text-right">
+              <div className="mt-3 flex justify-between border-t border-neutral-300/50 pt-2">
+                <div className="">
+                  <p className="text-xs md:text-sm text-neutral-500 text-right">
                     <span className="inline-block uppercase font-bold text-primary">
-                      Payment status :
+                      Order method :
                     </span>
-                    <span className="w-[100px] inline-block ">
-                      {order?.payment_done === 0 ? 'Unpaid' : 'Paid'}
+                    <span className="w-[100px] inline-block">
+                      {order?.order_method === '2' ? 'COD' : 'Stripe'}
                     </span>
                   </p>
-                )}
-                <p className="text-xs md:text-sm text-neutral-500 mt-3 text-right">
-                  <span className="inline-block uppercase font-bold text-primary">
-                    Order amount :
-                  </span>
-                  <span className="w-[100px] inline-block ">
-                    {order?.total_amount} AED
-                  </span>
-                </p>
+                  {order?.order_method !== '2' && (
+                    <p className="text-xs md:text-sm text-neutral-500 mt-3 text-right">
+                      <span className="inline-block uppercase font-bold text-primary">
+                        Payment status :
+                      </span>
+                      <span className="w-[100px] inline-block ">
+                        {order?.payment_done === 0 ? 'Unpaid' : 'Paid'}
+                      </span>
+                    </p>
+                  )}
+                </div>
+                <div className="">
+                  <p className="text-xs md:text-sm text-neutral-500 mt-3 text-right">
+                    <span className="inline-block uppercase font-bold text-primary">
+                      Shipping charge :
+                    </span>
+                    <span className="w-[100px] inline-block ">
+                      {order?.shipping_price > 0 ? order?.shipping_price + 'AED' : 'Free'}
+                    </span>
+                  </p>
+                  <p className="text-xs md:text-sm text-neutral-500 mt-3 text-right">
+                    <span className="inline-block uppercase font-bold text-primary">
+                      Total Order amount :
+                    </span>
+                    <span className="w-[100px] inline-block ">
+                      {order?.total_amount} AED
+                    </span>
+                  </p>
+                </div>
               </div>
             </div>
           </div>
