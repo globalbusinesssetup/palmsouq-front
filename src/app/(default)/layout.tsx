@@ -8,10 +8,12 @@ export default function MainLayout({children}:{children:React.ReactNode}) {
     const pathname = usePathname();
     return (
         <main>
-            {
-                pathname == '/' ? <TopBar />  : null
-            }
-            <Header showSearch />
+            <React.Suspense>
+                {
+                    pathname == '/' ? <TopBar />  : null
+                }
+                <Header showSearch />
+            </React.Suspense>
             {children}
         </main>
     )

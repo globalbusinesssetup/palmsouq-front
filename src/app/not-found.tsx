@@ -12,7 +12,6 @@ const Page = () => {
         src={'/404.png'}
         fill
         alt="404"
-        objectFit="contain"
         className="max-h-[70vh] h-fit m-auto"
       />
     </div>

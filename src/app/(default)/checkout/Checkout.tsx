@@ -86,8 +86,6 @@ const deliveryOptions = [
   // },
 ];
 
-const supportedAreas = ['DU', 'AJ', 'SH'];
-
 const Checkout = () => {
   const router = useRouter();
   const params = useSearchParams();
@@ -188,6 +186,7 @@ const Checkout = () => {
         }, 100); // Add a small delay to ensure back action is handled smoothly
         return;
       }
+      const productsPrice = (result.carts * tax) / 100;
       setCarts(result.carts);
       setTotalAmount(result.totalAmount);
       const item = cart?.data[0]?.flash_product;
@@ -200,9 +199,6 @@ const Checkout = () => {
   }, [cart]);
 
   useEffect(() => {
-    if (!supportedAreas.includes(defaultAddress?.state!)) {
-      setDeliveryOption(deliveryOptions[1].value);
-    }
     setDefaultAddress(addresses?.data?.[0]!);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [addresses]);
@@ -235,20 +231,6 @@ const Checkout = () => {
     }
   }, [paymentSuccess]);
 
-  // useEffect(() => {
-  //   if (
-  //     deliveryOption === 'standard' &&
-  //     !supportedAreas.includes(defaultAddress?.state!)
-  //   ) {
-  //     setDeliveryOption(deliveryOptions[1].value);
-  //   } else if (
-  //     deliveryOption === 'paid' &&
-  //     supportedAreas.includes(defaultAddress?.state!)
-  //   ) {
-  //     setDeliveryOption(deliveryOptions[0].value);
-  //   }
-  // }, [defaultAddress]);
-
   if (isPayDataLoading || isCountriesLoading || isLoading) {
     return (
       <main className="w-full h-screen flex items-center justify-center">
@@ -260,15 +242,6 @@ const Checkout = () => {
   }
 
   const stripePromise = loadStripe(payData?.stripe_key!);
-  const isDisabled = (val: any) => {
-    if (val === 'standard') {
-      return !supportedAreas.includes(defaultAddress?.state!);
-    }
-    if (val === 'paid') {
-      return supportedAreas.includes(defaultAddress?.state!);
-    }
-    return false;
-  };
 
   // const totalPrice = (ordersData as CartItem[]).reduce(
   //   (total: number, item) => {
@@ -283,8 +256,8 @@ const Checkout = () => {
 
   const totalPriceWithDelivery =
     totalAmount + (totalAmount <= 100 ? deliveryCost : 0);
-  const vat = (totalAmount * tax) / 100; // 5% VAT rate
-  const totalPriceWithDeliveryVat = totalPriceWithDelivery + vat;
+  const vat = (totalAmount * tax) / (100 + tax); // 5% VAT rate
+  const totalPriceWithDeliveryVat = totalPriceWithDelivery;
 
   const handleUpdateCart = async () => {
     const userToken = Cookies.get('user_token');
@@ -674,7 +647,7 @@ const Checkout = () => {
               <div className="flex items-center justify-between">
                 <p className="text-sm font-medium text-neutral-400">Products</p>
                 <p className="text-sm font-medium text-neutral-600">
-                  {totalAmount} AED
+                  {(totalAmount - vat).toFixed(2)} AED
                 </p>
               </div>
               <div className="flex items-center justify-between">
@@ -692,7 +665,7 @@ const Checkout = () => {
                   Sub Total
                 </p>
                 <p className="text-sm font-medium text-neutral-600">
-                  {totalPriceWithDelivery} AED
+                  {(totalPriceWithDelivery - vat).toFixed(2)} AED
                 </p>
               </div>
               <div className="flex items-center justify-between">

@@ -34,8 +34,16 @@ const Invoice = forwardRef<HTMLDivElement, InvoiceTypes>(
     },
     ref
   ) => {
-    const priceFormatting = (price) => `${price} AED`;
+    const priceFormatting = (price) => `${Number(price).toFixed(2)} AED`;
     const { setting } = useAuth();
+
+    console.table({
+      subtotalPrice,
+      shippingPrice,
+      voucherPrice,
+      taxPrice,
+      totalPrice,
+    });
 
     return (
       <div className="absolute -z-[1000] top-0 -left-[9999px] w-screen bg-white h-screen min-w-[1000px]">
@@ -79,7 +87,7 @@ const Invoice = forwardRef<HTMLDivElement, InvoiceTypes>(
                   <li className="flex items-center">
                     <span className="w-full flex-1">Order Amount:</span>
                     <span className="w-full flex-1">
-                      {totalPrice.toFixed(2)}
+                      {Number(totalPrice ?? 0)?.toFixed(2)}
                     </span>
                   </li>
                 )}
@@ -137,7 +145,7 @@ const Invoice = forwardRef<HTMLDivElement, InvoiceTypes>(
                     Title
                   </th>
                   <th className="text-left bg-primary py-1.5">SKU</th>
-                  <th className="text-left bg-primary py-1.5">shipping</th>
+                  {/* <th className="text-left bg-primary py-1.5">shipping</th> */}
                   <th className="text-left bg-primary py-1.5">Quantity</th>
                   <th className="text-left bg-primary py-1.5">Price</th>
                   <th className="text-left bg-primary py-1.5 rounded-tr-lg">
@@ -149,8 +157,8 @@ const Invoice = forwardRef<HTMLDivElement, InvoiceTypes>(
                 {order?.ordered_products.map((value, index) => (
                   <tr key={index}>
                     <td
-                      style={{ minWidth: '200px', maxWidth: '300px' }}
-                      className="pl-4 py-2.5"
+                      style={{ minWidth: '200px', maxWidth: '350px' }}
+                      className="pl-4 pr-2 py-2.5"
                     >
                       {value.product.title}
                       {/* <div>
@@ -166,8 +174,8 @@ const Invoice = forwardRef<HTMLDivElement, InvoiceTypes>(
                       )}
                     </div> */}
                     </td>
-                    <td>SKU: {value?.inventory?.[0]?.sku ?? 'N/A'}</td>
-                    <td>{priceFormatting(value.shipping_price)}</td>
+                    <td>SKU: {value?.product?.sku ?? 'N/A'}</td>
+                    {/* <td>{priceFormatting(value.shipping_price)}</td> */}
                     <td>{value.quantity}</td>
                     <td>{priceFormatting(value.selling)}</td>
                     <td>{priceFormatting(value.selling * value.quantity)}</td>
@@ -180,9 +188,11 @@ const Invoice = forwardRef<HTMLDivElement, InvoiceTypes>(
               <div className="flex justify-end mt-8">
                 <ul className="max-w-[300px]">
                   <li className="flex items-center gap-x-4 justify-end py-2.5 border-b">
-                    <span className="text-right">Subtotal</span>
                     <span className="text-right">
-                      {priceFormatting(subtotalPrice.toFixed(2))}
+                      Subtotal(<span className="text-xs">inc. VAT</span>)
+                    </span>
+                    <span className="text-right">
+                      {priceFormatting(subtotalPrice)}
                     </span>
                   </li>
                   <li className="flex items-center gap-x-4 justify-end py-2.5 border-b">
@@ -203,13 +213,13 @@ const Invoice = forwardRef<HTMLDivElement, InvoiceTypes>(
                   )}
                   {taxPrice && (
                     <li className="flex items-center gap-x-4 justify-end py-2.5 border-b">
-                      <span>Tax</span>
-                      <span>{priceFormatting(taxPrice.toFixed(2))}</span>
+                      <span>VAT</span>
+                      <span>{priceFormatting(taxPrice)}</span>
                     </li>
                   )}
                   <li className="flex items-center gap-x-4 justify-end py-2.5">
                     <span>Total</span>
-                    <span>{priceFormatting(totalPrice.toFixed(2))}</span>
+                    <span>{priceFormatting(totalPrice)}</span>
                   </li>
                 </ul>
               </div>

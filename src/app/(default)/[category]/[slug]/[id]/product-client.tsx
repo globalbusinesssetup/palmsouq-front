@@ -337,7 +337,7 @@ export default function ProductDeatils({ params }: Record<string, any>) {
                     {(product?.offered ?? product?.selling ?? 0) * quantity} AED
                   </h4>
                   <p className="text-tiny sm:text-xs lg:text-sm text-neutral-500">
-                    Estimated Total (Exc. Vat)
+                    Estimated Total (Inc. VAT)
                   </p>
                 </div>
               </div>
@@ -485,7 +485,7 @@ export default function ProductDeatils({ params }: Record<string, any>) {
               />
             </DisclosurePanel>
           </Disclosure>
-          <Disclosure
+          {/* <Disclosure
             as="div"
             id="reviews"
             className={'overflow-hidden border-b border-neutral-200'}
@@ -500,7 +500,6 @@ export default function ProductDeatils({ params }: Record<string, any>) {
               </div>
             </DisclosureButton>
             <DisclosurePanel className="pt-4 lg:pt-5 bg-white px-4 lg:px-5 transition-all duration-0 pb-5">
-              {/* <h2 className="text-5xl font-bold text-neutral-800">Reviews</h2> */}
               <div className="flex flex-col lg:flex-row justify-between gap-6 lg:gap-10 px-3 lg:px-6">
                 <div className="flex-1 text-sm text-neutral-800">
                   <p>Rating Snapshot</p>
@@ -571,52 +570,8 @@ export default function ProductDeatils({ params }: Record<string, any>) {
                   </p>
                 </div>
               </div>
-              {/* <div className="mt-8 space-y-3 px-6">
-                <div className="">
-                  <div className="flex items-center gap-x-3">
-                    <div className="size-9 rounded-full bg-primary flex items-center justify-center">
-                      <p className="font-semibold text-center text-white">S</p>
-                    </div>
-                    <p className="text-neutral-800 text-sm">Shazzad Hossen</p>
-                  </div>
-                  <div className="mt-3 flex items-center gap-x-2 text-sm font-semibold text-neutral-600">
-                    <Rate value={2} disabled />
-                    <p className="text-xs font-normal text-neutral-500">
-                      {'December 9, 2024'}
-                    </p>
-                  </div>
-                  <p className="text-xs font-normal text-neutral-500 mt-2 lg:max-w-[60%]">
-                    {`Title: Lag Issues on Low-End Devices. "I’ve been playing
-                    Free Fire for a long time and always enjoyed the game.
-                    However, after recent updates, I’ve noticed significant lag,
-                    even on devices with 3GB RAM. The game used to run smoothly
-                    on 2GB RAM, but now it lags, even with low graphics
-                    settings. The lag makes it difficult to enjoy gameplay,
-                    especially during battles. Please optimize the game for
-                    low-end devices or release a lighter version to ensure a
-                    better experience for all players."`}
-                  </p>
-                  <div className="flex items-center gap-x-2 mt-2">
-                    <p className="text-xs font-normal text-neutral-500">
-                      Helpful?{' '}
-                    </p>
-                    <button className="flex items-start gap-1">
-                      <AiOutlineLike />
-                      <p className="text-tiny font-normal text-neutral-500">
-                        (0)
-                      </p>
-                    </button>
-                    <button className="flex items-start gap-1">
-                      <AiOutlineDislike />
-                      <p className="text-tiny font-normal text-neutral-500">
-                        (0)
-                      </p>
-                    </button>
-                  </div>
-                </div>
-              </div> */}
             </DisclosurePanel>
-          </Disclosure>
+          </Disclosure> */}
         </div>
         {product?.banner && (
           <div className="w-full h-[150px] md:h-[180px] lg:h-[200px] bg-secondary rounded-md mt-6 relative overflow-hidden mb-6">

@@ -31,7 +31,11 @@ export async function generateMetadata(
     title: product?.meta_title ?? product?.title,
     description: product?.meta_description,
     openGraph: {
+      title: product?.title,
+      description: product?.description,
+      url: `https://palmsouq.com/${product?.category_data[0]?.slug}/${product?.slug}/${product?.id}`,
       images: [config.imgUri + product?.image, ...previousImages],
+      type: 'website'
     },
   };
 }
