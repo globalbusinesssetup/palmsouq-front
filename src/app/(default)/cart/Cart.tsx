@@ -24,56 +24,6 @@ import { useGlobalContext } from '@/context/GlobalContext';
 //   title: 'Next.js',
 // };
 
-const checkoutData = [
-  {
-    title: 'Quantity',
-    value: '1000',
-  },
-  {
-    title: 'Size',
-    value: '9x5.5 cm',
-  },
-  {
-    title: 'Print Side',
-    value: 'Bothside',
-  },
-  {
-    title: 'File Type',
-    value: 'Upload file',
-  },
-  {
-    title: 'Turnaround',
-    value: '24 Business Hours',
-  },
-];
-
-const uploadedFiles = [
-  {
-    name: 'document.pdf',
-    size: '25kb',
-  },
-  {
-    name: 'document2.pdf',
-    size: '35kb',
-  },
-];
-
-// const initialProducts = [
-//   {
-//     id: 0o1,
-//     title: '',
-//     name: '',
-//     quantity: 1000,
-//     amount: '150.00',
-//   },
-//   {
-//     id: 0o2,
-//     title: '',
-//     name: '',
-//     quantity: 1000,
-//     amount: '150.00',
-//   },
-// ];
 
 const Cart = () => {
   const router = useRouter();
@@ -96,9 +46,9 @@ const Cart = () => {
       const newChecked: number[] = [];
       const newUnChecked: number[] = [];
 
-      cart.data.forEach((pd) => {
+      cart.data.forEach((pd:any) => {
         newIds.push(pd.id);
-        if (pd.selected === '1') {
+        if (pd.selected == 1) {
           newChecked.push(pd.id);
         } else {
           newUnChecked.push(pd.id);
@@ -168,7 +118,6 @@ const Cart = () => {
     router.push('/checkout');
   };
 
-  console.log(checked);
 
   return (
     <div className="border border-neutral-200 bg-white rounded-xl overflow-hidden">
