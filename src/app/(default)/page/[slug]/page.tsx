@@ -3,8 +3,8 @@ import Client from './client';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'About | Palmsouq',
-  description: 'Palmsouq About Page',
+  title: 'About | Shukransoouq',
+  description: 'Shukransoouq About Page',
 };
 
 const Page = ({ params }: any) => {

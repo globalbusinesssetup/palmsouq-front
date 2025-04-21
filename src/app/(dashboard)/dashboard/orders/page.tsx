@@ -397,7 +397,7 @@ export default Orders;
 //                 </div>
 //                 {order.status == '6' && (
 //                   <p className="text-tiny sm:text-xs font-light text-error mt-3">
-//                     Order Cancelled by Palmsouq
+//                     Order Cancelled by Shukransoouq
 //                   </p>
 //                 )}
 //                 {/* <div className="mt-3 hidden md:block">

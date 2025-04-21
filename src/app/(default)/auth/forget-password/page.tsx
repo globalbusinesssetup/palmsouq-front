@@ -4,8 +4,8 @@ import { Loader } from '@/components';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Forgot password | Palmsouq',
-  description: 'Palmsouq user Forgot password',
+  title: 'Forgot password | Shukransoouq',
+  description: 'Shukransoouq user Forgot password',
 };
 
 const ForgotPasswordPage = () => {

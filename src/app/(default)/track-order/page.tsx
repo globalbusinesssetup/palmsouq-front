@@ -2,8 +2,8 @@ import React from 'react';
 import TrackOrderClient from './client';
 
 export const metadata = {
-  title: 'Track order | Palmsouq',
-  description: 'Palmsouq Track order',
+  title: 'Track order | Shukransoouq',
+  description: 'Shukransoouq Track order',
 };
 
 const TrackOrder = () => {

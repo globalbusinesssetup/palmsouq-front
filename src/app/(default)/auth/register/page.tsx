@@ -4,8 +4,8 @@ import { Loader } from '@/components';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Register | Palmsouq',
-  description: 'Palmsouq user Register',
+  title: 'Register | Shukransoouq',
+  description: 'Shukransoouq user Register',
 };
 
 const RegisterPage = () => {

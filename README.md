@@ -1,4 +1,4 @@
-## Palmsouq
+## ShukranSoouq
 # An ecommerce for outdoor accessories
 
 ## Getting Started
