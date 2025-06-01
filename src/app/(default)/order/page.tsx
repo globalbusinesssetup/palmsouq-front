@@ -3,8 +3,8 @@ import OrderClient from './order-client';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Place order | Palmsouq',
-  description: 'Palmsouq user Place order',
+  title: 'Place order | Shukransoouq',
+  description: 'Shukransoouq user Place order',
 };
 
 const Checkout = () => {

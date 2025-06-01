@@ -4,8 +4,8 @@ import { Loader } from '@/components';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Sign in | Palmsouq',
-  description: 'Palmsouq user Sign in',
+  title: 'Sign in | Shukransoouq',
+  description: 'Shukransoouq user Sign in',
 };
 
 const RegisterPage = () => {

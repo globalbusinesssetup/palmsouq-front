@@ -63,7 +63,7 @@ const Invoice = forwardRef<HTMLDivElement, InvoiceTypes>(
                   alt="Logo"
                 />
               </picture>
-              <h4 className="font-semibold mb-1.5 mt-6">Palmsouq</h4>
+              <h4 className="font-semibold mb-1.5 mt-6">Shukransoouq</h4>
               <p>{`${setting?.address_1} ${setting?.city ?? setting?.state}-${
                 setting?.zip
               } ${setting?.state}`}</p>

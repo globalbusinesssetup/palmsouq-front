@@ -1,8 +1,8 @@
 import Orders from '@/app/(dashboard)/dashboard/orders/page';
 
 export const metadata = {
-  title: 'My Orders | Palmsouq',
-  description: 'Palmsouq user Orders',
+  title: 'My Orders | Shukransoouq',
+  description: 'Shukransoouq user Orders',
 };
 
 const MyOrders = () => {

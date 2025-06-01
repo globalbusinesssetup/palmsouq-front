@@ -2,8 +2,8 @@ import React, { Suspense } from 'react';
 import Checkout from './Checkout';
 import { Loader } from '@/components';
 export const metadata = {
-  title: 'Checkout | Palmsouq',
-  description: 'Palmsouq Checkout Page',
+  title: 'Checkout | Shukransoouq',
+  description: 'Shukransoouq Checkout Page',
 };
 
 const Page = () => {

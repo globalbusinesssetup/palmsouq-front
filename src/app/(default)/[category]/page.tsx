@@ -32,10 +32,10 @@ import config from '@/config'
 //   const previousImages = (await parent).openGraph?.images || [];
 
 //   return {
-//     title: cat?.category?.meta_title ?? 'Outdoor & Adventure Store | Palmsouq',
+//     title: cat?.category?.meta_title ?? 'Outdoor & Adventure Store | Shukransoouq',
 //     description:
 //       cat?.category?.meta_description ??
-//       'Palmsouq online shopping Outdoor & Adventure Store | Palmsouq',
+//       'Shukransoouq online shopping Outdoor & Adventure Store | Shukransoouq',
 //     openGraph: {
 //       images: [
 //         config.imgUri + (cat?.category?.image ?? cat?.brand?.image),

@@ -2,8 +2,8 @@ import BrandsClient from './brands-client';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Outdoor & Adventure Store | Palmsouq',
-  description: 'Outdoor & Adventure | Palmsouq',
+  title: 'Outdoor & Adventure Store | Shukransoouq',
+  description: 'Outdoor & Adventure | Shukransoouq',
 };
 
 const Brands = () => {

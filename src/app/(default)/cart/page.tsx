@@ -2,8 +2,8 @@ import React from 'react';
 import Cart from './Cart';
 
 export const metadata = {
-  title: 'My Cart | Palmsouq',
-  description: 'Palmsouq Cart Page',
+  title: 'My Cart | Shukransoouq',
+  description: 'Shukransoouq Cart Page',
 };
 
 const Page = () => {

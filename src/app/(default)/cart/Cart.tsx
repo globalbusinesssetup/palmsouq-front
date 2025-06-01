@@ -24,56 +24,6 @@ import { useGlobalContext } from '@/context/GlobalContext';
 //   title: 'Next.js',
 // };
 
-const checkoutData = [
-  {
-    title: 'Quantity',
-    value: '1000',
-  },
-  {
-    title: 'Size',
-    value: '9x5.5 cm',
-  },
-  {
-    title: 'Print Side',
-    value: 'Bothside',
-  },
-  {
-    title: 'File Type',
-    value: 'Upload file',
-  },
-  {
-    title: 'Turnaround',
-    value: '24 Business Hours',
-  },
-];
-
-const uploadedFiles = [
-  {
-    name: 'document.pdf',
-    size: '25kb',
-  },
-  {
-    name: 'document2.pdf',
-    size: '35kb',
-  },
-];
-
-// const initialProducts = [
-//   {
-//     id: 0o1,
-//     title: '',
-//     name: '',
-//     quantity: 1000,
-//     amount: '150.00',
-//   },
-//   {
-//     id: 0o2,
-//     title: '',
-//     name: '',
-//     quantity: 1000,
-//     amount: '150.00',
-//   },
-// ];
 
 const Cart = () => {
   const router = useRouter();
@@ -84,21 +34,30 @@ const Cart = () => {
   const [checked, setChecked] = useState<number[]>([]);
   const [unChecked, setUnChecked] = useState<number[] | []>([]);
   const queryClient = useQueryClient();
-  const { cartData:cart, refetchCart:refetch, cartLoading:isLoading } = useGlobalContext();
+  const {
+    cartData: cart,
+    refetchCart: refetch,
+    cartLoading: isLoading,
+  } = useGlobalContext();
 
   useEffect(() => {
-    if (!isLoading) {
-      setChecked([]);
-      setUnChecked([]);
-      setIds([]);
-      cart?.data?.map((pd) => {
-        setIds((prev) => [...prev, pd.id]);
-        if (pd.selected === '1') {
-          setChecked((prev) => [...prev, pd.id]);
+    if (!isLoading && cart?.data?.length) {
+      const newIds: number[] = [];
+      const newChecked: number[] = [];
+      const newUnChecked: number[] = [];
+
+      cart.data.forEach((pd:any) => {
+        newIds.push(pd.id);
+        if (pd.selected == 1) {
+          newChecked.push(pd.id);
         } else {
-          setUnChecked((prev) => [...prev, pd.id]);
+          newUnChecked.push(pd.id);
         }
       });
+
+      setIds(newIds);
+      setChecked(newChecked);
+      setUnChecked(newUnChecked);
     }
   }, [isLoading, cart]);
 
@@ -120,20 +79,20 @@ const Cart = () => {
     }
   };
 
-  const handleSelectAll = async (checked: boolean) => {
-    if (cart?.data?.length! > 0) {
+  const handleSelectAll = async (isChecked: boolean) => {
+    if (cart?.data?.length) {
       try {
         await api.post('/cart/change', {
-          checked: checked ? ids : [],
-          unchecked: checked ? [] : ids,
+          checked: isChecked ? ids : [],
+          unchecked: isChecked ? [] : ids,
           isBundle: false,
         });
         refetch();
       } catch (err) {
         console.log(err);
       }
-      setChecked(checked ? ids : []);
-      setUnChecked(checked ? [] : ids);
+      setChecked(isChecked ? ids : []);
+      setUnChecked(isChecked ? [] : ids);
     }
   };
 
@@ -158,6 +117,7 @@ const Cart = () => {
   const handleCheckout = () => {
     router.push('/checkout');
   };
+
 
   return (
     <div className="border border-neutral-200 bg-white rounded-xl overflow-hidden">
@@ -381,12 +341,15 @@ const Row = ({
         className="border-b border-neutral-200 cursor-pointer"
       >
         <td className="py-4 pl-6 pr-2">
-          <CheckBox checked={pd?.selected === '1'} onChange={onChange} />
+          <CheckBox checked={Number(pd?.selected) === 1} />
         </td>
         <td className="py-4 flex pr-2 items-center gap-x-2">
           <button
             disabled={isDeleteLoading}
-            onClick={handleDelete}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleDelete();
+            }}
             className="size-8 md:size-10 bg-neutral-100 text-[#475467] transition-all duration-300 hover:bg-red-100 hover:text-red-600 rounded-lg flex items-center justify-center"
           >
             {!isDeleteLoading ? (

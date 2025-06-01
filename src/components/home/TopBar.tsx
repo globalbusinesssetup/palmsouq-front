@@ -21,7 +21,7 @@ const TopBar = () => {
     <div className="bg-primary px-auto py-2 hidden lg:block">
       <div className="container mx-auto flex items-center justify-between px-4">
         <p className="text-neutral-50 text-sm">
-          Outdoor & Adventure solution, Palmsouq welcomes you
+          Outdoor & Adventure solution, Shukransoouq welcomes you
         </p>
         <div className="flex items-center justify-end gap-2">
           <p className="text-neutral-50 text-xs flex items-center gap-x-2">

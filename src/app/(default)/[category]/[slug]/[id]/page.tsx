@@ -33,7 +33,7 @@ export async function generateMetadata(
     openGraph: {
       title: product?.title,
       description: product?.description,
-      url: `https://palmsouq.com/${product?.category_data[0]?.slug}/${product?.slug}/${product?.id}`,
+      url: `https://Shukransoouq.com/${product?.category_data[0]?.slug}/${product?.slug}/${product?.id}`,
       images: [config.imgUri + product?.image, ...previousImages],
       type: 'website'
     },

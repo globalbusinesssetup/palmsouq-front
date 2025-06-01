@@ -395,11 +395,11 @@ export const footerLinks = [
     title: 'Company',
     links: [
       {
-        title: 'About Palmsouq',
+        title: 'About Shukransoouq',
         url: '/page/about',
       },
       {
-        title: 'Palmsouq Blog',
+        title: 'Shukransoouq Blog',
         url: '#',
       },
       {
