@@ -1,0 +1,10 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://sukransouq.com
+
+# Sitemaps
+Sitemap: https://sukransouq.com/sitemap.xml
+CategorySitemap: https://sukransouq.com/category/sitemap.xml
