@@ -155,9 +155,34 @@ export const getAllCategories = async (pageParam = 0) => {
       categories: res.data.data,
       nextPage: res.data?.current_page + 1,
       hasNextPage: res.data.current_page < res.data.last_page,
+      lastpage: res.data.last_page,
     }; // Return the data array directly
   } catch (err) {
     console.error('Failed to fetch categories:', err);
+    return err; // Ensure a fallback return in case of failure
+  }
+};
+export const getAllProducts = async (pageParam = 1) => {
+  console.log('pageParam', pageParam);
+  try {
+    const res = await fetcher<{
+      data: {
+        result: {
+          data: { category: { id: number; primary: 0 | 1 }[] } & ProductData[];
+          current_page: number;
+          last_page: number;
+        };
+      };
+    }>(`/products?page=${pageParam}`);
+    console.log('res', res);
+    return {
+      products: res.data.result.data,
+      nextPage: res.data?.result.current_page + 1,
+      hasNextPage: res.data.result.current_page < res.data.result.last_page,
+      lastpage: res.data.result.last_page,
+    }; // Return the data array directly
+  } catch (err) {
+    console.error('Failed to fetch products:', err);
     return err; // Ensure a fallback return in case of failure
   }
 };

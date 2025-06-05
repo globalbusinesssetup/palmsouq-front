@@ -7,4 +7,5 @@ Host: https://sukransouq.com
 
 # Sitemaps
 Sitemap: https://sukransouq.com/sitemap.xml
-CategorySitemap: https://sukransouq.com/category/sitemap.xml
+Sitemap: https://sukransouq.com/categories/sitemap/0.xml
+Sitemap: https://sukransouq.com/product/sitemap/0.xml
